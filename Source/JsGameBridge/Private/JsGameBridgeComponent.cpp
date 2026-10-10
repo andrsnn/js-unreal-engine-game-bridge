@@ -86,6 +86,7 @@ bool UJsGameBridgeComponent::ApplyScene(const FString& JSON){
   for(const auto& Index:I){const int32 N=Index->AsNumber();if(N<0||N>=Positions.Num()){Valid=false;break;}Indices.Add(N);}if(!Valid||Indices.Num()%3)continue;for(int32 N=0;N<Indices.Num();N+=3)Swap(Indices[N+1],Indices[N+2]);
   // Three (X,Y,Z) -> Unreal (X,Z,Y) is a reflection; reverse triangle winding.
   const auto& Ns=Array(R,TEXT("normals"));for(int32 N=0;N+2<Ns.Num();N+=3)Normals.Add(Vector(Ns,N));
+  const auto& Cs=Array(R,TEXT("colors"));if(Cs.Num()==Positions.Num()*4)for(int32 N=0;N<Cs.Num();N+=4)Colors.Add(FLinearColor(Cs[N]->AsNumber(),Cs[N+1]->AsNumber(),Cs[N+2]->AsNumber(),Cs[N+3]->AsNumber()));
   const auto& Us=Array(R,TEXT("uv"));for(int32 N=0;N+1<Us.Num();N+=2)UV.Add(FVector2D(Us[N]->AsNumber(),Us[N+1]->AsNumber()));
   auto* Mesh=Chunks.FindRef(Id).Get();if(!Mesh){Mesh=NewObject<UProceduralMeshComponent>(GetOwner());Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);Mesh->RegisterComponent();Chunks.Add(Id,Mesh);}
   Mesh->CreateMeshSection_LinearColor(0,Positions,Indices,Normals,UV,Colors,Tangents,false);Mesh->SetVisibility(false);ChunkVersions.Add(Id,Revision);

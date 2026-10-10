@@ -39,7 +39,8 @@ void AJsGameBridgeGameMode::BeginPlay(){
   .ShowControls(false).ShowAddressBar(false).ShowInitialThrobber(false)
   .SupportsTransparency(true).BackgroundColor(FColor::Transparent).BrowserFrameRate(60)
   .PopupMenuMethod(EPopupMethod::UseCurrentWindow)
-  .OnLoadCompleted_Lambda([this](){bDocumentReady=true;})
+  .OnLoadStarted_Lambda([this](){bDocumentReady=false;})
+  .OnLoadCompleted_Lambda([this](){bDocumentReady=true;LastHTML.Reset();})
   .OnBeforePopup_Lambda([](FString,FString){return true;});
  Browser->BindUObject(TEXT("jsgame"),Host,true);
  GEngine->GameViewport->AddViewportWidgetContent(Browser.ToSharedRef(),100);

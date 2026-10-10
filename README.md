@@ -15,3 +15,12 @@ Audio v4 is registered in `Registry/audio-cues-v4.json`, the per-game `*-sounds.
 Use `UnrealAudioCatalog.mjs` to merge game sound keys into the complete asset registry before `SetAssetRegistry`, which replaces the registry. Sound events carry volume/pitch at the top level. Engines, cutters and score stems require retained, stoppable AudioComponents; the helper rejects looping cues through the one-shot event path. Bus/master/mute and adaptive stem controls remain the port adapter's responsibility. The cook must include `/JsGameBridge/Audio`; JSON alone does not root assets for packaging. See `Tools/AudioImporter/README.txt` for the verified import and loop contract.
 
 A generic viewport host is `/Script/JsGameBridge.JsGameBridgeGameMode`. Launch it with `JsBundle`, `JsSourceRoot`, `JsBootstrap`, and `JsRegistry` paths; optional `JsReloadPort` overrides5292. It hosts the shared body/CSS through one transparent CEF UI, forwards input/layout to the original Puerts handlers, and contains no game UI definitions or simulation rules. The UI mirror has CPU service checks and compiles; native GUI validation is pending. Audio currently remains a silent bootstrap graph.
+
+Audio v5 retains the same249 event/alias keys and191 cue object paths. Updated
+`Registry/audio-cues-v5.json` and per-game `*-sounds.json` maps include calibrated
+mixer and lifecycle metadata for hbue, uwopus and kvopus. Six shorter PDC variants
+and separate cutter/shot-cycle release contracts passed incremental native import
+and fresh UE disk reload; see `Tools/AudioImporter/reports/audio-cues-v5-acceptance.json`.
+Port handoffs and current browser/editor ownership are appended in `NOTES.md`.
+
+Imported geometry is marked with `userData.assetContent`; its material retains `userData.assetMaterialKey` through clones/batches. A root override honors the source geometry's camera layers and preserves unmarked runtime attachments through LOD/content containers. Dirty geometry carries RGBA vertex colours without spatial axis conversion. Native references pass one batched433-path existence check; that is not rendered parity.

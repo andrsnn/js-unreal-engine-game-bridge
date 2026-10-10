@@ -6,6 +6,9 @@
 #include "Misc/Paths.h"
 #include "Misc/FileHelper.h"
 #include "HAL/FileManager.h"
+#include "HAL/PlatformMisc.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "Misc/SecureHash.h"
 THIRD_PARTY_INCLUDES_START
 #include <openssl/sha.h>
@@ -90,8 +93,19 @@ bool UJsGameBridgeHost::StartReloadServer(){
    if(Ext==TEXT("png"))Mime=TEXT("image/png");else if(Ext==TEXT("jpg")||Ext==TEXT("jpeg"))Mime=TEXT("image/jpeg");else if(Ext==TEXT("svg"))Mime=TEXT("image/svg+xml");else if(Ext==TEXT("ogg"))Mime=TEXT("audio/ogg");else if(Ext==TEXT("wav"))Mime=TEXT("audio/wav");else if(Ext==TEXT("woff2"))Mime=TEXT("font/woff2");
    Complete(FHttpServerResponse::Create(MoveTemp(Body),Mime));return true;
   }
+  if(Route==TEXT("/bridge/ui/snapshot")&&Request.Verb==EHttpServerRequestVerbs::VERB_GET&&Weak.IsValid()){
+   Complete(FHttpServerResponse::Create(Weak->UIHTML,TEXT("text/html; charset=utf-8")));return true;
+  }
+  if((Route==TEXT("/bridge/input")||Route==TEXT("/bridge/close"))&&Request.Verb==EHttpServerRequestVerbs::VERB_POST&&Weak.IsValid()){
+   if(!FParse::Param(FCommandLine::Get(),TEXT("JsAllowRemoteInput"))){Complete(FHttpServerResponse::Error(EHttpServerResponseCodes::Forbidden));return true;}
+   if(Route==TEXT("/bridge/close")){Complete(FHttpServerResponse::Create(TEXT("{\"closing\":true}"),TEXT("application/json")));FPlatformMisc::RequestExit(false);return true;}
+   if(Request.Body.Num()>65536||!Weak->bReady){Complete(FHttpServerResponse::Error(EHttpServerResponseCodes::BadRequest));return true;}
+   FString Input=FString(FUTF8ToTCHAR(reinterpret_cast<const ANSICHAR*>(Request.Body.GetData()),Request.Body.Num()));TSharedPtr<FJsonObject> ParsedInput;
+   if(!FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Input),ParsedInput)||!ParsedInput){Complete(FHttpServerResponse::Error(EHttpServerResponseCodes::BadRequest));return true;}
+   Weak->SendInput(Input);Complete(FHttpServerResponse::Create(TEXT("{\"accepted\":true}"),TEXT("application/json")));return true;
+  }
   if(Request.FullPath.GetPath()==TEXT("/bridge/status")&&Request.Verb==EHttpServerRequestVerbs::VERB_GET&&Weak.IsValid()){
-   auto Receipt=MakeShared<FJsonObject>();Receipt->SetStringField(TEXT("sourceCommit"),Weak->SourceCommit);Receipt->SetStringField(TEXT("bundleSHA256"),Weak->BundleSHA256);Receipt->SetBoolField(TEXT("ready"),Weak->bReady);FString Text;FJsonSerializer::Serialize(Receipt,TJsonWriterFactory<>::Create(&Text));Complete(FHttpServerResponse::Create(Text,TEXT("application/json")));return true;
+   auto Receipt=MakeShared<FJsonObject>();Receipt->SetStringField(TEXT("sourceCommit"),Weak->SourceCommit);Receipt->SetStringField(TEXT("bundleSHA256"),Weak->BundleSHA256);Receipt->SetBoolField(TEXT("ready"),Weak->bReady);Receipt->SetNumberField(TEXT("bootGeneration"),Weak->BootGeneration);Receipt->SetNumberField(TEXT("sceneFrames"),Weak->SceneFrames);FString Text;FJsonSerializer::Serialize(Receipt,TJsonWriterFactory<>::Create(&Text));Complete(FHttpServerResponse::Create(Text,TEXT("application/json")));return true;
   }
   if(Request.FullPath.GetPath()!=TEXT("/bridge/reload"))return false;
   if(Request.Verb!=EHttpServerRequestVerbs::VERB_POST||Request.Body.Num()>65536||!Weak.IsValid()){Complete(FHttpServerResponse::Error(EHttpServerResponseCodes::BadRequest));return true;}
