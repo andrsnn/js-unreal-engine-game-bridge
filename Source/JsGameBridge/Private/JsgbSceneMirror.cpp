@@ -694,6 +694,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	ParentFor(VLit);
 	const double T0 = FPlatformTime::Seconds();
 	SkippedEntities = 0; CompilingEntities = 0;
+	FrameLines.Reset();
 	const double StallAtStart = StallMs;
 	++Stamp;
 	++FrameCounter;
@@ -899,14 +900,6 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			FJsgbGeometry* G = Geometries.Find(Geo);
 			if (!G || G->LinePoints.Num() == 0) { continue; }
 			FJsgbEntity& Ent = EntityOf(Id, RLines);
-			if (!Ent.Component)
-			{
-				ULineBatchComponent* L = NewObject<ULineBatchComponent>(GetOwner());
-				L->SetupAttachment(GetOwner()->GetRootComponent());
-				L->RegisterComponent();
-				Ent.Component = L;
-			}
-			ULineBatchComponent* L = CastChecked<ULineBatchComponent>(Ent.Component);
 			const FJsgbMaterial* MatInfo = Materials.Find(Mat);
 			const FLinearColor Base = MatInfo ? MatInfo->Color : FLinearColor::White;
 			const float Alpha = MatInfo ? MatInfo->Opacity : 1.f;
@@ -917,9 +910,9 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			{
 				Ent.LineSignature = Sig;
 				const FMatrix W = ToUE(M);
-				L->Flush();
-				TArray<FBatchedLine> Batch;
-				Batch.Reserve(G->LinePoints.Num() / 2);
+				Ent.LineCenter = W.GetOrigin();
+				TArray<FBatchedLine>& Batch = Ent.Lines;
+				Batch.Reset(G->LinePoints.Num() / 2);
 				for (int32 I = 0; I + 1 < G->LinePoints.Num(); I += 2)
 				{
 					const FVector3f& A3 = G->LinePoints[I]; const FVector3f& B3 = G->LinePoints[I + 1];
@@ -930,9 +923,9 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 					C.A = Alpha;
 					Batch.Emplace(A, B, C, 0.f, 0.f, SDPG_World);
 				}
-				L->DrawLines(Batch);
 			}
-			Show(Ent, L, 0);
+			Ent.Seen = Stamp;
+			if (!(DebugHiddenKinds & (1 << RLines))) { FrameLines.Add(TPair<double, int32>(FVector::DistSquared(CameraLocation, Ent.LineCenter), Id)); ++Drawn; TraceRecord(Id, 1, TEXT("")); }
 		}
 		else if (Type == RAsset)
 		{
@@ -998,6 +991,28 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 		}
 	}
 	DrawnEntities = Drawn;
+	// Lines in three.js's transparent order: farthest first, equal distances by object id.
+	FrameLines.Sort([](const TPair<double, int32>& A, const TPair<double, int32>& B) { return A.Key != B.Key ? A.Key > B.Key : A.Value < B.Value; });
+	{
+		FString Order;
+		for (const TPair<double, int32>& P : FrameLines) { const FJsgbEntity* LineEnt = Entities.Find(P.Value); Order += FString::Printf(TEXT("%d:%u,"), P.Value, LineEnt ? GetTypeHash(LineEnt->LineSignature) : 0u); }
+		if (Order != SharedLinesOrder)
+		{
+			SharedLinesOrder = Order;
+			if (!SharedLines)
+			{
+				SharedLines = NewObject<ULineBatchComponent>(GetOwner());
+				SharedLines->SetupAttachment(GetOwner()->GetRootComponent());
+				SharedLines->RegisterComponent();
+			}
+			SharedLines->Flush();
+			TArray<FBatchedLine> All;
+			for (const TPair<double, int32>& P : FrameLines) { if (const FJsgbEntity* LineEnt = Entities.Find(P.Value)) { All.Append(LineEnt->Lines); } }
+			if (All.Num()) { SharedLines->DrawLines(All); }
+			LineSegmentsDrawn = All.Num();
+		}
+	}
+	FrameLines.Reset();
 	CheckGenerated();
 	if (StallMs - StallAtStart > 50.0) { UE_LOG(LogJsgbMirror, Display, TEXT("Frame %d built new meshes for %.0f ms before drawing; the game clock leaves this out"), FrameCounter, StallMs - StallAtStart); }
 
@@ -1368,6 +1383,8 @@ UStaticMesh* UJsgbSceneMirror::FirstBuild(int32 GeometryId, FJsgbGeometry* G)
 void UJsgbSceneMirror::ResetAll()
 {
 	StallMs = 0;
+	if (SharedLines) { SharedLines->Flush(); }
+	SharedLinesOrder.Reset();
 	for (TPair<int32, FJsgbEntity>& E : Entities) { if (E.Value.Component) { E.Value.Component->DestroyComponent(); } if (E.Value.Effect) { E.Value.Effect->DestroyComponent(); } }
 	for (TPair<int32, FJsgbLight>& L : Lights) { if (L.Value.Component) { L.Value.Component->DestroyComponent(); } }
 	Entities.Reset(); Lights.Reset(); Geometries.Reset(); Materials.Reset(); Textures.Reset(); BuildQueue.Reset(); KeyNames.Reset();

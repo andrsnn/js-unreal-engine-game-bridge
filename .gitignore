@@ -6,3 +6,4 @@ __pycache__/
 Runtime/node_modules/
 jsgb.local.json
 Builds/
+node_modules/

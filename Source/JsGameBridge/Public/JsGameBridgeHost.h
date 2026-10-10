@@ -56,6 +56,7 @@ private:
  FString StorageDirectory()const;
  FString StoragePath(const FString& Key)const;
  FString CurrentBundle,CurrentPublication,PendingBundle;
+ int32 UILayoutMessages=0;
  bool bReloadRequested=false;
  bool StartReloadServer();
  FString ResolveAssetPath(const FString& Path) const;

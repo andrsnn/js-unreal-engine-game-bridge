@@ -34,15 +34,23 @@ export function installVisibleObjects() {
     const n = o.geometry?.attributes?.position?.count ?? 0;
     return n > 0 && o.geometry.drawRange.count !== 0;
   };
-  window.__jsgbVisibleObjects = () => {
-    if (!last) return 0;
-    let n = 0;
+  // Line segments a line object draws: pairs for LineSegments, a closed loop for LineLoop, a strip for Line.
+  const segments = o => {
+    const g = o.geometry, n = g.index ? g.index.count : g.attributes.position.count;
+    const count = Math.min(n - g.drawRange.start, g.drawRange.count);
+    return o.isLineSegments ? Math.floor(count / 2) : o.isLineLoop ? (count > 2 ? count : Math.max(0, count - 1)) : Math.max(0, count - 1);
+  };
+  const census = () => {
+    const out = {objects: 0, lines: 0};
+    if (!last) return out;
     const walk = o => {
       if (!o.visible) return;
-      if ((!last.camera || o.layers.test(last.camera.layers)) && (o.isMesh || o.isPoints || o.isLine || o.isSprite) && drawable(o)) n++;
+      if ((!last.camera || o.layers.test(last.camera.layers)) && (o.isMesh || o.isPoints || o.isLine || o.isSprite) && drawable(o)) { out.objects++; if (o.isLine) out.lines += segments(o); }
       for (const c of o.children) walk(c);
     };
     walk(last.scene);
-    return n;
+    return out;
   };
+  window.__jsgbVisibleObjects = () => census().objects;
+  window.__jsgbCensus = census;
 }

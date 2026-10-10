@@ -226,6 +226,9 @@ void UJsgbUIPort::SendInput(const FString& Json)
 		++LayoutMessages;
 		const int32 At = Json.Find(TEXT("\"version\":"));
 		if (At >= 0) { AppliedUIVersion = FCString::Atoi(*Json.Mid(At + 10, 12)); }
+		const int32 W = Json.Find(TEXT("\"width\":")), H = Json.Find(TEXT("\"height\":")), R = Json.Find(TEXT("\"pixelRatio\":"));
+		const FString Size = FString::Printf(TEXT("%s x %s, pixel ratio %s"), W >= 0 ? *Json.Mid(W + 8, 6) : TEXT("?"), H >= 0 ? *Json.Mid(H + 9, 6) : TEXT("?"), R >= 0 ? *Json.Mid(R + 13, 6) : TEXT("?"));
+		if (Size != LastLayoutSize) { LastLayoutSize = Size; UE_LOG(LogTemp, Display, TEXT("UI overlay page size %s"), *Size); }
 	}
 	if (Bridge && Bridge->OnUIInput.IsBound()) { Bridge->OnUIInput.Execute(Json); }
 }
@@ -694,7 +697,7 @@ void AJsgbHost::Tick(float DeltaSeconds)
 			Capture(CaptureDir / Name);
 			// What the mirror drew in this frame: objects drawn, objects the game drew that are missing,
 			// and drawn objects still without their real material.
-			CaptureTimes += FString::Printf(TEXT("%s %.3f drawn=%d missing=%d untextured=%d\n"), *Name, T, Mirror->DrawnEntities, Mirror->SkippedEntities, Mirror->CompilingEntities);
+			CaptureTimes += FString::Printf(TEXT("%s %.3f drawn=%d missing=%d untextured=%d lines=%d\n"), *Name, T, Mirror->DrawnEntities, Mirror->SkippedEntities, Mirror->CompilingEntities, Mirror->LineSegmentsDrawn);
 			NextCapture = FMath::Max(NextCapture + 1.0 / CaptureFps, T);
 			if (CaptureIndex % 20 == 0) { FFileHelper::SaveStringToFile(CaptureTimes, *(CaptureDir / TEXT("times.txt"))); }
 		}

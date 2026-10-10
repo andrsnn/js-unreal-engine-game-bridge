@@ -17,6 +17,7 @@ private:
  UPROPERTY() TObjectPtr<AActor> BridgeActor;
  UPROPERTY() TObjectPtr<UJsGameBridgeHost> Host;
  TSharedPtr<SWebBrowser> Browser;
- FString LastHTML;
+ void InitializeViewport();
+ FString HostBundle,HostBootstrap,LastHTML;
  bool bDocumentReady=false,bInputConfigured=false;
 };

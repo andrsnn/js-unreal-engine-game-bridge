@@ -1,0 +1,8 @@
+# Orbit Demo conformance: the scene, then two button clicks, on the web and in Unreal.
+0 wait 'LAUNCH SHIP'
+2 shot orbit-start
+4 click 'LAUNCH SHIP'
+6 click 'PING'
+10 shot orbit-10s
+20 shot orbit-20s
+22 quit

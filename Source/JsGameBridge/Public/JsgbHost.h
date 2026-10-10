@@ -25,6 +25,7 @@ public:
 	int32 LayoutMessages = 0;
 	/** The UI version the overlay last reported as applied (from its layout reports). */
 	int32 AppliedUIVersion = -1;
+	FString LastLayoutSize;
 };
 
 /** One timed step of a host script (-JsgbScript=file): "<seconds|@frame> <verb> <args>". */

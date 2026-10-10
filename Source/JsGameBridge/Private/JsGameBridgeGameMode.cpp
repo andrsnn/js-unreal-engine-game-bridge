@@ -5,6 +5,7 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h"
 #include "SWebBrowser.h"
+#include "WebBrowserModule.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
 #include "Misc/Paths.h"
@@ -29,18 +30,28 @@ void AJsGameBridgeGameMode::BeginPlay(){
  Host->AssetRoot=SourceRoot;Host->BootstrapPath=Bootstrap;Host->AssetRegistryPath=Registry;
  FParse::Value(FCommandLine::Get(),TEXT("JsReloadPort="),Host->ReloadPort);
  if(!Host->Boot(Bundle,FPaths::GetPath(Bundle)/TEXT("publication.json"))){UE_LOG(LogTemp,Error,TEXT("JsGameBridge publication rejected"));return;}
- if(!GEngine||!GEngine->GameViewport||FParse::Param(FCommandLine::Get(),TEXT("nullrhi")))return;
+ HostBundle=Bundle;HostBootstrap=Bootstrap;InitializeViewport();
+}
+void AJsGameBridgeGameMode::InitializeViewport(){
+ if(!Host||Browser||!GEngine||!GEngine->GameViewport||FParse::Param(FCommandLine::Get(),TEXT("nullrhi")))return;
+ const FString& Bundle=HostBundle;const FString& Bootstrap=HostBootstrap;
+ UE_LOG(LogTemp,Display,TEXT("JsGameBridge creating shared UI viewport"));
  FString CSS,Client;
  TArray<FString> Stylesheets;IFileManager::Get().FindFiles(Stylesheets,*(FPaths::GetPath(Bundle)/TEXT("*.css")),true,false);Stylesheets.Sort();
  for(const FString& Name:Stylesheets){FString Style;FFileHelper::LoadFileToString(Style,*(FPaths::GetPath(Bundle)/Name));CSS+=Style;}
  FFileHelper::LoadFileToString(Client,*(FPaths::GetPath(Bootstrap)/TEXT("UIClient.js")));
  if(Client.IsEmpty()){UE_LOG(LogTemp,Error,TEXT("JsGameBridge UI client missing"));return;}
+ // Direct Slate users must load the module; SWebBrowserView only checks
+ // availability because its usual UMG caller initializes it first.
+ if(!IWebBrowserModule::Get().IsWebModuleAvailable()){UE_LOG(LogTemp,Error,TEXT("JsGameBridge CEF module unavailable"));return;}
  SAssignNew(Browser,SWebBrowser).InitialURL(TEXT("about:blank"))
   .ShowControls(false).ShowAddressBar(false).ShowInitialThrobber(false)
   .SupportsTransparency(true).BackgroundColor(FColor::Transparent).BrowserFrameRate(60)
   .PopupMenuMethod(EPopupMethod::UseCurrentWindow)
   .OnLoadStarted_Lambda([this](){bDocumentReady=false;})
-  .OnLoadCompleted_Lambda([this](){bDocumentReady=true;LastHTML.Reset();})
+  .OnLoadCompleted_Lambda([this](){bDocumentReady=true;LastHTML.Reset();UE_LOG(LogTemp,Display,TEXT("JsGameBridge shared UI document loaded"));})
+  .OnLoadError_Lambda([](){UE_LOG(LogTemp,Error,TEXT("JsGameBridge UI document failed to load"));})
+  .OnConsoleMessage_Lambda([](const FString& Message,const FString& Source,int32 Line,EWebBrowserConsoleLogSeverity Severity){UE_LOG(LogTemp,Display,TEXT("JsGameBridge UI console %d %s:%d %s"),static_cast<int32>(Severity),*Source,Line,*Message.Left(2048));})
   .OnBeforePopup_Lambda([](FString,FString){return true;});
  Browser->BindUObject(TEXT("jsgame"),Host,true);
  GEngine->GameViewport->AddViewportWidgetContent(Browser.ToSharedRef(),100);
@@ -50,6 +61,7 @@ void AJsGameBridgeGameMode::BeginPlay(){
 }
 void AJsGameBridgeGameMode::Tick(float Seconds){
  Super::Tick(Seconds);
+ InitializeViewport();
  if(!Host||!Browser)return;
  if(!bInputConfigured){if(auto* PC=GetWorld()->GetFirstPlayerController()){
   PC->bShowMouseCursor=true;FInputModeGameAndUI Mode;Mode.SetWidgetToFocus(Browser);Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);Mode.SetHideCursorDuringCapture(false);PC->SetInputMode(Mode);bInputConfigured=true;

@@ -87,6 +87,8 @@ const check = (pair, w, ue, held) => {
   if (ue.missing > 0) problems.push(`${ue.missing} objects missing in Unreal`);
   if (ue.untextured > 0) problems.push(`${ue.untextured} objects without their material in Unreal`);
   if (!held && w.objects >= 0 && w.objects !== undefined) { compared++; if (ue.drawn < w.objects) problems.push(`Unreal drew ${ue.drawn} objects, the browser ${w.objects}`); }
+  // Line coverage: every segment of every visible line (rings, grids, routes) must be drawn.
+  if (!held && w.lines >= 0 && ue.lines !== undefined && ue.lines < w.lines) problems.push(`Unreal drew ${ue.lines} line segments, the browser ${w.lines}`);
   if (problems.length) violations.push({pair, film: +(pair / fps).toFixed(1), web: w.file && path.basename(w.file), unreal: path.basename(ue.file), problems});
 };
 for (let i = 0; i + 1 < bw.length && web.list.length && unreal.list.length; i++) {
@@ -107,11 +109,11 @@ console.log(report.objectCheck.pass ? `object check passed: ${checked} Unreal fr
 if (pairs > 1) {
   const font = 'C\\:/Windows/Fonts/arial.ttf';
   const label = (text, x) => `drawtext=fontfile='${font}':text='${text}':x=${x}:y=16:fontsize=26:fontcolor=white:box=1:boxcolor=black@0.55:boxborderw=8`;
-  const filter = `[0:v]scale=960:540,setsar=1,${label('Browser (Chrome, WebGL)', 16)}[a];[1:v]scale=960:540,setsar=1,${label('Unreal Engine 5.8 (JsGameBridge)', 16)}[b];` +
+  const filter = `[0:v]scale=1280:720,setsar=1,${label('Browser (Chrome, WebGL)', 16)}[a];[1:v]scale=1280:720,setsar=1,${label('Unreal Engine 5.8 (JsGameBridge)', 16)}[b];` +
     `[a][b]hstack=inputs=2,${label(`${game.title ?? game.id}  ${commit.slice(0, 10)}  same commit, same script`, '(w-text_w)/2').replace('y=16', 'y=h-48')}[v]`;
   fs.mkdirSync(path.dirname(film), {recursive: true});
   const ff = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(fps), '-i', path.join(pairDir, 'web_%05d.png'), '-framerate', String(fps), '-i', path.join(pairDir, 'ue_%05d.png'),
-    '-filter_complex', filter, '-map', '[v]', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '20', '-r', '30', film], {encoding: 'utf8'});
+    '-filter_complex', filter, '-map', '[v]', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-b:v', '6M', '-minrate', '6M', '-maxrate', '6M', '-bufsize', '12M', '-x264-params', 'nal-hrd=cbr', '-preset', 'slow', '-r', '30', film], {encoding: 'utf8'});
   if (ff.status !== 0) throw Error('ffmpeg: ' + ff.stderr);
   report.film = film;
   console.log(`film: ${film} (${(pairs / fps).toFixed(1)} s)`);

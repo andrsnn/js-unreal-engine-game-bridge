@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Components/LineBatchComponent.h"
 #include "ArrayBuffer.h"
 #include "JsgbSceneMirror.generated.h"
 
@@ -92,6 +93,9 @@ struct FJsgbEntity
 	uint32 Seen = 0;
 	int32 InstanceCount = 0;
 	FString LineSignature;
+	/** A line object's segments in world space, drawn through the mirror's one shared line component. */
+	TArray<FBatchedLine> Lines;
+	FVector LineCenter = FVector::ZeroVector;
 	float Model[16] = {0};
 };
 
@@ -129,6 +133,12 @@ public:
 	void ResetAll();
 
 	UPROPERTY() TObjectPtr<UCameraComponent> Camera;
+	/** All three.js lines draw through this one component, in three.js's transparent order, so
+	 *  overlapping lines never swap order between frames (separate components did, and broke rings into segments). */
+	UPROPERTY() TObjectPtr<ULineBatchComponent> SharedLines;
+	FString SharedLinesOrder;
+	/** Line segments the shared line component draws this frame. */
+	int32 LineSegmentsDrawn = 0;
 	UPROPERTY() TObjectPtr<UJsgbBridge> Bridge;
 	float BuildBudgetMs = 6.f;
 	float LightScale = 1.f;
@@ -192,6 +202,8 @@ private:
 	// Trace state per object id: 1 drawn, 2 skipped, 3 drawn with a compiling material.
 	TMap<int32, uint8> TraceState;
 	TMap<int32, int32> TraceSince;
+	/** This frame's line objects: squared distance from the camera, and object id. */
+	TArray<TPair<double, int32>> FrameLines;
 	void TraceRecord(int32 Id, uint8 State, const TCHAR* Why);
 	bool MaterialCompiling(int32 MaterialId) const;
 };

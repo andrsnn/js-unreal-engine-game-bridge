@@ -83,8 +83,8 @@ async function capture() {
       if (t >= next) {
         const name = `frame_${String(index++).padStart(5, '0')}.png`;
         await page.screenshot({path: path.join(frames, name)});
-        const objects = await page.evaluate(() => window.__jsgbVisibleObjects?.() ?? -1).catch(() => -1);
-        times.push(`${name} ${t.toFixed(3)} objects=${objects}`);
+        const c = await page.evaluate(() => window.__jsgbCensus?.() ?? {objects: -1, lines: -1}).catch(() => ({objects: -1, lines: -1}));
+        times.push(`${name} ${t.toFixed(3)} objects=${c.objects} lines=${c.lines}`);
         next = Math.max(next + 1 / fps, t);
       }
       else await new Promise(r => setTimeout(r, 5));

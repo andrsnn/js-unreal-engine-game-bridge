@@ -48,6 +48,8 @@ if (has('--no-post')) args.push('-JsgbNoPost');
 if (has('--fresh')) args.push('-JsgbFresh');
 if (has('--mute')) args.push('-JsgbVolume=0');
 if (has('--trace')) args.push('-JsgbTraceMirror');
+// --ue "<args>": extra Unreal command-line arguments, e.g. --ue "-ExecCmds=r.AntiAliasingMethod 1".
+if (flag('--ue')) args.push(...flag('--ue').match(/(?:[^\s"]+|"[^"]*")+/g).map(a => a.replace(/"/g, '')));
 for (const [option, name] of [['--script', 'JsgbScript'], ['--capture', 'JsgbCapture'], ['--capture-fps', 'JsgbCaptureFps'], ['--fixed-fps', 'JsgbFixedFps'], ['--frames', 'JsgbFrames'], ['--search', 'JsgbSearch'], ['--seed', 'JsgbSeed']]) {
   const value = flag(option); if (value !== undefined) args.push(`-${name}=${/^(--script|--capture)$/.test(option) ? path.resolve(value) : value}`);
 }
