@@ -1,0 +1,10 @@
+{
+  "title": "Fixture",
+  "repo": "Tests/fixture",
+  "index": "index.html",
+  "public": [
+    "public"
+  ],
+  "search": "",
+  "registry": []
+}

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Orbit Demo</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="hud">
+    <div class="panel title">
+      <strong>ORBIT DEMO</strong>
+      <span>A small three.js scene for JS Unreal Engine Game Bridge</span>
+    </div>
+    <div class="panel stats">
+      <div><span class="label">SHIPS</span><b id="ships">0</b></div>
+      <div><span class="label">ORBITS</span><b id="orbits">0</b></div>
+      <div><span class="label">TIME</span><b id="clock">0.0 s</b></div>
+    </div>
+    <div class="panel actions">
+      <button id="launch">LAUNCH SHIP</button>
+      <button id="ping">PING</button>
+    </div>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

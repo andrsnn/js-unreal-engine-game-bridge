@@ -1,0 +1,30 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "0.1",
+  "FriendlyName": "JS Game Bridge",
+  "Description": "Generic Three.js scene backend; gameplay stays in JavaScript.",
+  "Category": "Rendering",
+  "CanContainContent": true,
+  "Modules": [
+    {
+      "Name": "JsGameBridge",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ],
+  "Plugins": [
+    {
+      "Name": "ProceduralMeshComponent",
+      "Enabled": true
+    },
+    {
+      "Name": "Niagara",
+      "Enabled": true
+    },
+    {
+      "Name": "Puerts",
+      "Enabled": true
+    }
+  ]
+}

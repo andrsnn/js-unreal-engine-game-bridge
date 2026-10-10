@@ -1,0 +1,17 @@
+{
+  "name": "js-unreal-engine-game-bridge",
+  "private": true,
+  "type": "module",
+  "description": "Run an unchanged three.js browser game inside Unreal Engine 5, with live reload.",
+  "scripts": {
+    "build": "node Tools/jsgb.mjs build",
+    "smoke": "node Tools/jsgb.mjs smoke",
+    "unreal": "node Tools/jsgb.mjs unreal",
+    "web": "node Tools/web.mjs dev",
+    "start": "node Tools/run-unreal.mjs",
+    "conformance": "node Tools/conformance.mjs",
+    "demo": "node Tools/demo.mjs"
+  },
+  "license": "MIT",
+  "version": "0.1.0"
+}

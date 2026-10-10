@@ -1,0 +1,13 @@
+html, body { margin: 0; height: 100%; overflow: hidden; background: #05080d; color: #d8e6ea; font: 14px "Segoe UI", Arial, sans-serif; }
+canvas { display: block; }
+#hud { position: fixed; inset: 0; pointer-events: none; }
+.panel { position: absolute; background: rgba(8, 18, 24, 0.82); border: 1px solid #2c5f68; padding: 10px 14px; pointer-events: auto; }
+.title { left: 16px; top: 16px; display: flex; flex-direction: column; gap: 2px; }
+.title strong { font-size: 18px; letter-spacing: 3px; color: #8fe3e0; }
+.title span { color: #9fb3b8; font-size: 12px; }
+.stats { right: 16px; top: 16px; display: flex; gap: 18px; }
+.stats .label { display: block; color: #7f9aa0; font-size: 11px; letter-spacing: 2px; }
+.stats b { font-size: 18px; color: #ffd27a; }
+.actions { left: 50%; bottom: 18px; transform: translateX(-50%); display: flex; gap: 10px; }
+button { background: #12323a; color: #d8f4f2; border: 1px solid #3f8f97; padding: 8px 16px; font: 600 13px "Segoe UI", Arial, sans-serif; letter-spacing: 2px; cursor: pointer; }
+button:hover { background: #1b4a55; }

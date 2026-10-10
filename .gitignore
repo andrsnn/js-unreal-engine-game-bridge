@@ -1,0 +1,8 @@
+Binaries/
+Intermediate/
+Builds/
+node_modules/
+__pycache__/
+*.log
+jsgb.local.json
+NOTES.md

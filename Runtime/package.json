@@ -1,0 +1,14 @@
+{
+  "name": "jsgamebridge-runtime",
+  "private": true,
+  "type": "module",
+  "description": "Browser environment and Three.js scene mirror that run unchanged web games inside Unreal through Puerts.",
+  "dependencies": {
+    "esbuild": "0.25.12",
+    "fflate": "0.8.2",
+    "linkedom": "0.18.12"
+  },
+  "devDependencies": {
+    "three": "^0.186.1"
+  }
+}
