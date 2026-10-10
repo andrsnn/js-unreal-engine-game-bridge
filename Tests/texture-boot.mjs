@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+import * as THREE from '/mnt/c/Users/Aidan Anderson/falling-frontier-clone/node_modules/three/build/three.module.js';
+import {KTX2Loader} from '/mnt/c/Users/Aidan Anderson/falling-frontier-clone/node_modules/three/examples/jsm/loaders/KTX2Loader.js';
+import {installBrowserHost} from '../JavaScript/BrowserHost.mjs';
+import {createThreeUnrealRenderer} from '../JavaScript/ThreeUnrealRenderer.mjs';
+const root='/mnt/c/Users/Aidan Anderson/falling-frontier-clone/public/';
+installBrowserHost({OnFrame:{Bind(){}},Report:console.log,ReadBytes(path){const data=fs.readFileSync(root+path);return data.buffer.slice(data.byteOffset,data.byteOffset+data.byteLength);},ReadText(){return '';}},{html:'<html><body></body></html>'});
+const data=fs.readFileSync(root+'models/vault-planar/concept-tdf-corvette/1bcf3e1f4b0a/lod0.glb');const view=new DataView(data.buffer,data.byteOffset,data.byteLength);const len=view.getUint32(12,true),json=JSON.parse(data.toString('utf8',20,20+len).replace(/\0+$/,''));const bv=json.bufferViews[json.images[0].bufferView];const bytes=data.subarray(28+len+bv.byteOffset,28+len+bv.byteOffset+bv.byteLength);
+const renderer=createThreeUnrealRenderer(THREE,{ApplyScene(){} });
+const loader=new KTX2Loader().setTranscoderPath('/decoders/pixal-basis/').detectSupport(renderer);
+await new Promise((resolve,reject)=>loader.parse(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength),resolve,reject)).then(t=>{console.log('DECODED',t.image);loader.dispose();},e=>{console.error('DECODE ERROR',e.stack);process.exitCode=1;});
