@@ -92,11 +92,7 @@ namespace
 		P.bOverride_DynamicGlobalIlluminationMethod = true; P.DynamicGlobalIlluminationMethod = EDynamicGlobalIlluminationMethod::None;
 		P.bOverride_ReflectionMethod = true; P.ReflectionMethod = EReflectionMethod::ScreenSpace;
 		P.bOverride_AmbientOcclusionIntensity = true; P.AmbientOcclusionIntensity = 0.35f;
-		if (FParse::Param(FCommandLine::Get(), TEXT("JsgbNoPost"))) { return; }
-		if (UMaterialInterface* Fog = LoadObject<UMaterialInterface>(nullptr, TEXT("/JsGameBridge/Mirror/M_JsgbScenePost.M_JsgbScenePost"), nullptr, LOAD_NoWarn | LOAD_Quiet))
-		{
-			P.WeightedBlendables.Array.Add(FWeightedBlendable(1.f, Fog));
-		}
+		// The fog/background post material is added by the mirror as an instance (UJsgbSceneMirror::ApplyPost).
 	}
 
 	FString DomCode(const FKey& Key)
@@ -297,6 +293,8 @@ void AJsgbHost::BeginPlay()
 	}
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbPort="), Port);
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbFrames="), ExitFrame);
+	FParse::Value(FCommandLine::Get(), TEXT("JsgbMaxSeconds="), MaxSeconds);
+	HostStartSeconds = FPlatformTime::Seconds();
 	CaptureDir = Arg(TEXT("JsgbCapture="));
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbCaptureFps="), CaptureFps);
 	if (!CaptureDir.IsEmpty()) { IFileManager::Get().MakeDirectory(*CaptureDir, true); }
@@ -445,6 +443,14 @@ void AJsgbHost::StartServer()
 			O->SetNumberField(TEXT("voicesUnplayable"), H->Audio->UnplayableVoices);
 			O->SetNumberField(TEXT("jsMs"), H->TimedFrames ? H->JsMs / H->TimedFrames : 0);
 			Json(O);
+			return true;
+		}
+		if (Route == TEXT("/bridge/describe"))
+		{
+			const FString Request = Body(R);
+			if (Request.StartsWith(TEXT("hide:"))) { H->Mirror->DebugHiddenKinds = FCString::Atoi(*Request.Mid(5)); }
+			TUniquePtr<FHttpServerResponse> Resp = FHttpServerResponse::Create(H->Mirror->Describe(Request.StartsWith(TEXT("hide:")) ? 0 : FCString::Atoi(*Request)), TEXT("application/json"));
+			Done(MoveTemp(Resp));
 			return true;
 		}
 		if (Route == TEXT("/bridge/reload") && bPost)
@@ -621,6 +627,12 @@ void AJsgbHost::Tick(float DeltaSeconds)
 			NextCapture = FMath::Max(NextCapture + 1.0 / CaptureFps, T);
 			if (CaptureIndex % 20 == 0) { FFileHelper::SaveStringToFile(CaptureTimes, *(CaptureDir / TEXT("times.txt"))); }
 		}
+	}
+	// A hard time limit, so a forgotten debugging session cannot hold the shared Unreal slot.
+	if (MaxSeconds > 0 && FPlatformTime::Seconds() - HostStartSeconds > MaxSeconds && ExitFrame < 0)
+	{
+		Bridge->Log(TEXT("warn"), FString::Printf(TEXT("time limit of %.0f s reached; exiting"), MaxSeconds));
+		ExitFrame = Frame + 1;
 	}
 	if (ExitFrame > 0 && Frame >= ExitFrame)
 	{

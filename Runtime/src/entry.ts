@@ -7,6 +7,7 @@ import {setViewport} from './dom';
 import './fetch';
 import {flushAudio, audioTime} from './audio';
 import './worker';
+import './text';
 import {input} from './input';
 import {publishUI, uiInput, clickElement, findElement} from './ui';
 import {lastFrame} from './renderer';

@@ -49,6 +49,9 @@ public:
 	UFUNCTION() FString LoadStore(const FString& Key);
 	UFUNCTION() void SaveStore(const FString& Key, const FString& Data);
 	UFUNCTION() void JsReady(const FString& Info);
+	/** Canvas text: glyph coverage for one run of text. Returns five floats (width, height, ascent,
+	 *  descent, advance) followed by width*height alpha bytes; empty when the font cannot load. */
+	UFUNCTION() FArrayBufferValue Text(const FString& FontPath, float SizePx, const FString& Run);
 
 	// Scene sink (Runtime/src/sceneExport.ts describes the layout).
 	UFUNCTION() void Geometry(int32 Id, FArrayBuffer Positions, FArrayBuffer Normals, FArrayBuffer UVs, FArrayBuffer Colors, int32 ColorSize, FArrayBuffer Indices, const FString& Groups);

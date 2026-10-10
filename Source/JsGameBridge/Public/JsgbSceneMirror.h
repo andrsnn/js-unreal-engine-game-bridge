@@ -69,7 +69,7 @@ USTRUCT()
 struct FJsgbTexture
 {
 	GENERATED_BODY()
-	UPROPERTY() TObjectPtr<UTexture2D> Texture;
+	UPROPERTY() TObjectPtr<UTexture> Texture;
 	bool bFlipY = true;
 	FVector4f UVTransform = FVector4f(1, 1, 0, 0);
 };
@@ -118,6 +118,8 @@ public:
 	void ApplyFrame(const float* Data, int32 Count, const float* Inst, int32 InstCount);
 	void ApplyEvents(const FString& Json);
 	void SetShader(const FString& Key, const FString& Json);
+	FString Describe(int32 Kind) const;
+	int32 DebugHiddenKinds = 0;
 	bool SetAssetRegistry(const FString& Json);
 	void ResetAll();
 
@@ -145,6 +147,8 @@ private:
 	FJsgbEntity& EntityOf(int32 Id, int32 Kind);
 	void ApplyLight(const float* S, uint32 Stamp, FLinearColor& Ambient, FLinearColor& HemiSky, FLinearColor& HemiGround);
 	void ApplyPost(const float* Header);
+	void SetScene(FName Name, const FLinearColor& Value);
+	void ApplySceneParams(UMaterialInstanceDynamic* Mid, int32 Variant);
 	TSharedPtr<class FJsonObject> Asset(int32 KeyId) const;
 	UMaterialInterface* GeneratedParent(const FString& Key, int32 Blend, bool bTwoSided);
 	void SetModelData(FJsgbEntity& Ent, UPrimitiveComponent* C, const float* M, const float* Mats, int32 NumMats);
@@ -159,6 +163,8 @@ private:
 	UPROPERTY() TObjectPtr<UMaterialInterface> Fallback;
 	UPROPERTY() TObjectPtr<UMaterialParameterCollection> Globals;
 	UPROPERTY() TObjectPtr<UStaticMesh> Quad;
+	UPROPERTY() TObjectPtr<UMaterialInstanceDynamic> PostMid;
+	TMap<FName, FLinearColor> SceneParams;
 	UPROPERTY() TMap<FString, TObjectPtr<UObject>> LoadedAssets;
 	TMap<FString, TSharedPtr<class FJsonObject>> Registry;
 	TMap<FString, TSharedPtr<class FJsonObject>> Shaders;

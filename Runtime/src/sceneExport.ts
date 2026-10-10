@@ -1,5 +1,5 @@
 import * as THREE from 'three-real';
-import {host, assetRegistry, type SceneSink} from './host';
+import {host, assetRegistry, registrySwaps, type SceneSink} from './host';
 import {lastFrame, post} from './renderer';
 import {translateShaderMaterial} from './shaders';
 import {channelFor, isExtraAttribute} from './attributes';
@@ -124,6 +124,10 @@ function textureSource(tex: THREE.Texture): {json: Record<string, unknown>; byte
   if (pixels && pixels.width && pixels.height) return {json: {...base, kind: 'rgba8', width: pixels.width, height: pixels.height}, bytes: (pixels.data as Uint8ClampedArray).slice().buffer};
   if (img.__jsgbAsset) return {json: {...base, kind: 'file', path: img.__jsgbAsset}, bytes: null};
   if (img.__bytes) return {json: {...base, kind: 'encoded'}, bytes: (img.__bytes as Uint8Array).slice().buffer};
+  if ((tex as THREE.Data3DTexture).isData3DTexture && img.data && img.width && img.height && img.depth) {
+    return {json: {...base, kind: 'rgba8_3d', width: img.width, height: img.height, depth: img.depth},
+      bytes: rgba8(img.width * img.height, img.depth, img.data, channelsOf(tex.format), tex).buffer as ArrayBuffer};
+  }
   if (img.data && img.width && img.height) {
     return {json: {...base, kind: 'rgba8', width: img.width, height: img.height}, bytes: rgba8(img.width, img.height, img.data, channelsOf(tex.format), tex).buffer as ArrayBuffer};
   }
@@ -293,11 +297,14 @@ function emitSprite(s: THREE.Sprite) {
 }
 
 /** Registry swap for an object: an Unreal mesh (assetKey) or a Niagara system (vfxKey). */
+/** Swaps are opt-in per game (Games/<game>.json "swaps"): the game's own objects are what the
+ *  browser shows, and a registry mesh or Niagara system only matches when the game says it does. */
 function registrySwap(o: THREE.Object3D): {kind: number; key: string} | null {
   const data = o.userData; if (!data) return null;
-  const reg = assetRegistry();
-  if (typeof data.vfxKey === 'string' && reg[data.vfxKey]?.niagara) return {kind: EFFECT, key: data.vfxKey};
-  if (typeof data.assetKey === 'string' && reg[data.assetKey]?.mesh) return {kind: ASSET, key: data.assetKey};
+  const reg = assetRegistry(), swaps = registrySwaps();
+  if (swaps.effects && typeof data.vfxKey === 'string' && reg[data.vfxKey]?.niagara) return {kind: EFFECT, key: data.vfxKey};
+  const assetKey = swaps.assets ? (typeof data.assetKey === 'string' ? data.assetKey : typeof data.glbKey === 'string' ? data.glbKey : null) : null;
+  if (assetKey && reg[assetKey]?.mesh) return {kind: ASSET, key: assetKey};
   return null;
 }
 function hasContentTag(o: THREE.Object3D, key: string): boolean {

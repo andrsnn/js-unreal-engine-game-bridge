@@ -7,7 +7,7 @@ AT = unreal.AssetToolsHelpers.get_asset_tools()
 MEL = unreal.MaterialEditingLibrary
 EAL = unreal.EditorAssetLibrary
 ROOT = '/JsGameBridge/Mirror'
-MPC_PARAMS = ['Ambient', 'HemiSky', 'HemiGround', 'Background', 'FogColor', 'FogParams', 'CameraParams', 'ViewParams', 'ViewCol0', 'ViewCol1', 'ViewCol2', 'ViewCol3', 'ProjCol0', 'ProjCol1', 'ProjCol2', 'ProjCol3', 'CameraPos', 'CamCol0', 'CamCol1', 'CamCol2', 'CamCol3', 'ProjInvCol0', 'ProjInvCol1', 'ProjInvCol2', 'ProjInvCol3']
+MPC_PARAMS = ['Ambient', 'HemiSky', 'HemiGround', 'Background', 'FogColor', 'FogParams', 'CameraParams', 'ViewParams', 'ViewCol0', 'ViewCol1', 'ViewCol2', 'ViewCol3', 'ProjCol0', 'ProjCol1', 'ProjCol2', 'ProjCol3', 'CameraPos', 'CamCol0', 'CamCol1', 'CamCol2', 'CamCol3', 'ProjInvCol0', 'ProjInvCol1', 'ProjInvCol2', 'ProjInvCol3', 'CamRight', 'CamUp']
 
 
 def fresh(name, cls, factory):
@@ -131,12 +131,9 @@ def billboard_offset(g):
         p.set_editor_property('primitive_data_index', i)
         data.append(p)
     g.link(g.append(g.append(data[0], data[1]), g.append(data[2], data[3])), '', custom, 'Data')
-    for axis, vec in [('Right', (1, 0, 0)), ('Up', (0, 1, 0))]:
-        t = g.node(unreal.MaterialExpressionTransform)
-        t.set_editor_property('transform_source_type', unreal.MaterialVectorCoordTransformSource.TRANSFORMSOURCE_VIEW)
-        t.set_editor_property('transform_type', unreal.MaterialVectorCoordTransform.TRANSFORM_WORLD)
-        g.link(g.const3(*vec), '', t, '')
-        g.link(t, '', custom, axis)
+    # Camera axes in Unreal world space, written by the host each frame.
+    g.link(g.collection(MPC, 'CamRight'), '', custom, 'Right')
+    g.link(g.collection(MPC, 'CamUp'), '', custom, 'Up')
     g.link(g.node(unreal.MaterialExpressionWorldPosition), '', custom, 'WorldPos')
     g.link(g.node(unreal.MaterialExpressionCameraPositionWS), '', custom, 'CamPos')
     g.link(g.collection(MPC, 'ViewParams', rgb=False), '', custom, 'View')

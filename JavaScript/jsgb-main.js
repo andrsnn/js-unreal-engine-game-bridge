@@ -13,6 +13,7 @@ globalThis.__jsgbHost = {
   log: (level, text) => bridge.Log(level, String(text)),
   reload: () => bridge.RequestReload(),
   ready: info => bridge.JsReady(String(info ?? '')),
+  text: (font, size, run) => { const b = bridge.Text(font, size, run); return b && b.byteLength > 0 ? b : null; },
   storage: {load: key => bridge.LoadStore(key) || null, save: (key, data) => bridge.SaveStore(key, data)},
   sink: {
     geometry: (id, pos, nrm, uv, col, colorSize, idx, groups) => bridge.Geometry(id, buf(pos), buf(nrm), buf(uv), buf(col), colorSize, buf(idx), groups),

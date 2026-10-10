@@ -91,6 +91,7 @@ private:
 	FString PendingBundle;
 	int64 Frame = 0, ExitFrame = -1, ReadyFrame = -1;
 	double ReadySeconds = 0;
+	double MaxSeconds = 0, HostStartSeconds = 0;
 	FString CaptureDir;
 	double CaptureFps = 0, NextCapture = 0;
 	int32 CaptureIndex = 0;

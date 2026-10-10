@@ -9,7 +9,7 @@ import {channelFor, isExtraAttribute} from './attributes';
  *  attributes, so its varyings reach the fragment stage unchanged for the usual transforms;
  *  uniforms arrive as material parameters of the same name. */
 
-export type ShaderInput = {name: string; source: 'localPosition' | 'localNormal' | 'uv' | 'vertexColor' | 'primitiveData' | 'collection' | 'scalar' | 'vector' | 'texture' | 'cube' | 'worldPosition';
+export type ShaderInput = {name: string; source: 'localPosition' | 'localAxis' | 'localOrigin' | 'localNormal' | 'uv' | 'vertexColor' | 'primitiveData' | 'collection' | 'scalar' | 'vector' | 'texture' | 'cube' | 'volume' | 'worldPosition';
   param?: string; index?: number};
 export type TranslatedShader = {key: string; hlsl: string; inputs: ShaderInput[]; vertexHlsl: string; vertexInputs: ShaderInput[]};
 
@@ -129,8 +129,10 @@ function modernSampling(s: string): string {
     texCUBE: a => `${a[0]}.Sample(${a[0]}Sampler, ${a[1]})`,
     texCUBElod: a => `${a[0]}.SampleLevel(${a[0]}Sampler, (${a[1]}).xyz, (${a[1]}).w)`,
     texCUBEbias: a => `${a[0]}.SampleBias(${a[0]}Sampler, (${a[1]}).xyz, (${a[1]}).w)`,
-    // 3D textures do not reach Unreal yet.
-    tex3D: () => 'float4(0.0f, 0.0f, 0.0f, 1.0f)', tex3Dlod: () => 'float4(0.0f, 0.0f, 0.0f, 1.0f)', tex3Dgrad: () => 'float4(0.0f, 0.0f, 0.0f, 1.0f)', tex3Dbias: () => 'float4(0.0f, 0.0f, 0.0f, 1.0f)',
+    tex3D: a => `${a[0]}.Sample(${a[0]}Sampler, ${a[1]})`,
+    tex3Dlod: a => `${a[0]}.SampleLevel(${a[0]}Sampler, (${a[1]}).xyz, (${a[1]}).w)`,
+    tex3Dbias: a => `${a[0]}.SampleBias(${a[0]}Sampler, (${a[1]}).xyz, (${a[1]}).w)`,
+    tex3Dgrad: a => `${a[0]}.SampleGrad(${a[0]}Sampler, ${a[1]}, ${a[2]}, ${a[3]})`,
   };
   const rx = /\b(tex2Dlod|tex2Dbias|tex2Dgrad|tex2Dproj|tex2D|texCUBElod|texCUBEbias|texCUBE|tex3Dlod|tex3Dgrad|tex3Dbias|tex3D)\s*\(/g;
   let out = '', last = 0, m: RegExpExecArray | null;
@@ -142,7 +144,7 @@ function modernSampling(s: string): string {
   return out + s.slice(last);
 }
 
-type Member = {type: string; name: string; array: string; resource?: 'tex' | 'cube'};
+type Member = {type: string; name: string; array: string; resource?: 'tex' | 'cube' | 'volume'};
 /** SPIRV-Cross HLSL as a struct: globals become members, functions become methods. */
 function toStruct(hlsl: string, name: string): {struct: string; members: Member[]; types: string; entry: string} {
   let src = hlsl.replace(/\r/g, '');
@@ -157,9 +159,7 @@ function toStruct(hlsl: string, name: string): {struct: string; members: Member[
     }
   }
   src = src.replace(/^\s*uniform\s+(sampler2D|samplerCUBE)\s+(\w+)\s*;\s*$/gm, (_m, t: string, n: string) => { members.push({type: t === 'samplerCUBE' ? 'TextureCube' : 'Texture2D', name: n, array: '', resource: t === 'samplerCUBE' ? 'cube' : 'tex'}); return ''; });
-  // 3D textures do not reach Unreal yet: their samples read as opaque black.
-  const volumes: string[] = [];
-  src = src.replace(/^\s*uniform\s+sampler3D\s+(\w+)\s*;\s*$/gm, (_m, n: string) => { volumes.push(n); return ''; });
+  src = src.replace(/^\s*uniform\s+sampler3D\s+(\w+)\s*;\s*$/gm, (_m, n: string) => { members.push({type: 'Texture3D', name: n, array: '', resource: 'volume'}); return ''; });
   // Other plain uniforms SPIRV-Cross declares outside the block (gl_HalfPixel) become members.
   src = src.replace(/^\s*uniform\s+(\w+)\s+(\w+)(\[[^\]]*\])?\s*;\s*$/gm, (_m, t: string, n: string, arr: string) => { members.push({type: t, name: n, array: arr ?? ''}); return ''; });
   src = src.replace(/^static\s+(?!const)([\w]+)\s+(\w+)(\[[^\]]*\])?\s*;\s*$/gm, (_m, t: string, n: string, arr: string) => { members.push({type: t, name: n, array: arr ?? ''}); return ''; });
@@ -208,7 +208,9 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial): Transla
     const fh = run(fs.glsl, c.ShaderStage.Fragment, 'fragment');
     const V = toStruct(vh, 'JsgbVS'), F = toStruct(fh, 'JsgbFS');
     const inputs: ShaderInput[] = [{name: 'JsgbP', source: 'localPosition'}, {name: 'JsgbN', source: 'localNormal'}, {name: 'JsgbUV', source: 'uv'}, {name: 'JsgbC', source: 'vertexColor'}];
-    for (let i = 0; i < 4; i++) inputs.push({name: `JsgbM${i}`, source: 'primitiveData', index: 4 + i * 4});
+    // Three.js modelMatrix from Unreal's own local-to-world (per instance for instanced meshes):
+    // Three x/y/z axes are Unreal local X/Z/Y; the origin is in centimetres.
+    inputs.push({name: 'JsgbMX', source: 'localAxis', index: 0}, {name: 'JsgbMY', source: 'localAxis', index: 2}, {name: 'JsgbMZ', source: 'localAxis', index: 1}, {name: 'JsgbMO', source: 'localOrigin'});
     for (let i = 0; i < 4; i++) inputs.push({name: `JsgbV${i}`, source: 'collection', param: `ViewCol${i}`});
     for (let i = 0; i < 4; i++) inputs.push({name: `JsgbPr${i}`, source: 'collection', param: `ProjCol${i}`});
     inputs.push({name: 'JsgbCam', source: 'collection', param: 'CameraPos'});
@@ -216,14 +218,14 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial): Transla
     const seen = new Set<string>();
     const bind = (target: string, S: typeof V) => {
       for (const m of S.members) glue.push(zero(target, m));
-      glue.push(`${target}.modelMatrix = float4x4(JsgbM0, JsgbM1, JsgbM2, JsgbM3);`, `${target}.viewMatrix = float4x4(JsgbV0, JsgbV1, JsgbV2, JsgbV3);`,
+      glue.push(`${target}.modelMatrix = float4x4(float4(JsgbMX.xzy, 0), float4(JsgbMY.xzy, 0), float4(JsgbMZ.xzy, 0), float4(JsgbMO.xzy * 0.01, 1));`, `${target}.viewMatrix = float4x4(JsgbV0, JsgbV1, JsgbV2, JsgbV3);`,
         `${target}.projectionMatrix = float4x4(JsgbPr0, JsgbPr1, JsgbPr2, JsgbPr3);`, `${target}.cameraPosition = JsgbCam.xyz;`, `${target}.isOrthographic = JsgbPr3.w > 0.5;`);
       for (const m of S.members) {
         if (m.name in BUILTIN_UNIFORMS || DERIVED.includes(m.name) || m.array) continue;
         const decl = [...vsDecls, ...fsDecls].find(d => d.name === m.name);
         if (!decl) continue;
         if (m.resource) {
-          if (!seen.has(m.name)) { seen.add(m.name); inputs.push({name: 'T_' + m.name, source: m.resource === 'cube' ? 'cube' : 'texture', param: m.name}); }
+          if (!seen.has(m.name)) { seen.add(m.name); inputs.push({name: 'T_' + m.name, source: m.resource === 'cube' ? 'cube' : m.resource === 'volume' ? 'volume' : 'texture', param: m.name}); }
           glue.push(`${target}.${m.name} = T_${m.name}; ${target}.${m.name}Sampler = T_${m.name}Sampler;`);
           continue;
         }

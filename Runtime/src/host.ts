@@ -31,6 +31,8 @@ export interface JsgbHost {
   ui?: {publish(html: string): void};
   /** WebAudio voices as a JSON array of start/update/stop operations. */
   audio?: {voices(json: string): void; pcm?(id: number, samples: ArrayBuffer, sampleRate: number): void};
+  /** Canvas text: alpha mask and metrics for a run (see JsgbBridge::Text). */
+  text?(fontPath: string, sizePx: number, run: string): ArrayBuffer | null;
   /** Asset registry JSON ({assets: {key: {mesh, material, niagara, sound}}}); empty when none. */
   registry?: string;
 }
@@ -47,4 +49,14 @@ export function assetRegistry(): Record<string, RegistryEntry> {
     catch (error) { host.log('warn', 'asset registry unreadable: ' + error); registry = {}; }
   }
   return registry;
+}
+
+let swaps: {assets: boolean; effects: boolean} | null = null;
+/** Which registry swaps the game turned on (registry.json "swaps", from Games/<game>.json). */
+export function registrySwaps(): {assets: boolean; effects: boolean} {
+  if (!swaps) {
+    try { const j = JSON.parse(host.registry || '{}').swaps ?? {}; swaps = {assets: !!j.assets, effects: !!j.effects}; }
+    catch { swaps = {assets: false, effects: false}; }
+  }
+  return swaps;
 }

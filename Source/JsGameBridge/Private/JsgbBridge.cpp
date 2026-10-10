@@ -6,6 +6,10 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Misc/SecureHash.h"
+THIRD_PARTY_INCLUDES_START
+#include "ft2build.h"
+#include FT_FREETYPE_H
+THIRD_PARTY_INCLUDES_END
 
 DEFINE_LOG_CATEGORY_STATIC(LogJsgb, Log, All);
 
@@ -93,4 +97,74 @@ void UJsgbBridge::AudioVoices(const FString& Json) { if (Audio) { Audio->ApplyVo
 void UJsgbBridge::AudioPcm(int32 Id, FArrayBuffer Samples, int32 SampleRate)
 {
 	if (Audio && Samples.Data) { Audio->SetPcm(Id, static_cast<const float*>(Samples.Data), static_cast<int32>(Samples.Length / sizeof(float)), SampleRate); }
+}
+
+namespace
+{
+	FT_Library FreeTypeLibrary()
+	{
+		static FT_Library Library = nullptr;
+		if (!Library) { FT_Init_FreeType(&Library); }
+		return Library;
+	}
+}
+
+FArrayBufferValue UJsgbBridge::Text(const FString& FontPath, float SizePx, const FString& Run)
+{
+	FArrayBufferValue Out;
+	// Faces stay loaded for the session; FreeType reads from the cached bytes.
+	static TMap<FString, TArray<uint8>> FontBytes;
+	static TMap<FString, FT_Face> Faces;
+	FT_Face* Found = Faces.Find(FontPath);
+	if (!Found)
+	{
+		TArray<uint8>& Bytes = FontBytes.Add(FontPath);
+		if (FontPath.StartsWith(TEXT("@engine/"))) { FFileHelper::LoadFileToArray(Bytes, *(FPaths::EngineContentDir() / TEXT("Slate/Fonts") / FontPath.Mid(8))); }
+		else { Bytes = ReadFile(FontPath).Data; }
+		FT_Face Face = nullptr;
+		if (Bytes.Num() == 0 || !FreeTypeLibrary() || FT_New_Memory_Face(FreeTypeLibrary(), Bytes.GetData(), Bytes.Num(), 0, &Face) != 0) { Face = nullptr; }
+		Found = &Faces.Add(FontPath, Face);
+	}
+	FT_Face Face = *Found;
+	if (!Face || Run.IsEmpty()) { return Out; }
+	FT_Set_Pixel_Sizes(Face, 0, FMath::Clamp(FMath::RoundToInt(SizePx), 1, 512));
+	const int32 Ascent = Face->size->metrics.ascender >> 6, Descent = FMath::Max(0, static_cast<int32>(-(Face->size->metrics.descender >> 6)));
+	struct FGlyph { TArray<uint8> Alpha; int32 W = 0, H = 0, X = 0, Y = 0; };
+	TArray<FGlyph> Glyphs;
+	int32 Pen = 0, MinX = 0, MaxX = 0;
+	FT_UInt Previous = 0;
+	for (int32 I = 0; I < Run.Len(); ++I)
+	{
+		uint32 Code = Run[I];
+		if (Code >= 0xD800 && Code < 0xDC00 && I + 1 < Run.Len()) { Code = 0x10000 + ((Code - 0xD800) << 10) + (Run[I + 1] - 0xDC00); ++I; }
+		const FT_UInt Index = FT_Get_Char_Index(Face, Code);
+		if (Previous && Index && FT_HAS_KERNING(Face)) { FT_Vector K; FT_Get_Kerning(Face, Previous, Index, FT_KERNING_DEFAULT, &K); Pen += K.x >> 6; }
+		Previous = Index;
+		if (FT_Load_Glyph(Face, Index, FT_LOAD_RENDER) != 0) { continue; }
+		const FT_GlyphSlot Slot = Face->glyph;
+		FGlyph G;
+		G.W = Slot->bitmap.width; G.H = Slot->bitmap.rows; G.X = Pen + Slot->bitmap_left; G.Y = Ascent - Slot->bitmap_top;
+		G.Alpha.SetNumUninitialized(G.W * G.H);
+		for (int32 Y = 0; Y < G.H; ++Y) { FMemory::Memcpy(G.Alpha.GetData() + Y * G.W, Slot->bitmap.buffer + Y * Slot->bitmap.pitch, G.W); }
+		MinX = FMath::Min(MinX, G.X); MaxX = FMath::Max(MaxX, G.X + G.W);
+		Pen += Slot->advance.x >> 6;
+		Glyphs.Add(MoveTemp(G));
+	}
+	const int32 Width = FMath::Max(Pen, MaxX) - FMath::Min(0, MinX), Height = Ascent + Descent, Shift = -FMath::Min(0, MinX);
+	if (Width <= 0 || Height <= 0) { return Out; }
+	Out.Data.SetNumZeroed(5 * sizeof(float) + Width * Height);
+	float* Header = reinterpret_cast<float*>(Out.Data.GetData());
+	Header[0] = Width; Header[1] = Height; Header[2] = Ascent; Header[3] = Descent; Header[4] = Pen;
+	uint8* Alpha = Out.Data.GetData() + 5 * sizeof(float);
+	for (const FGlyph& G : Glyphs)
+	{
+		for (int32 Y = 0; Y < G.H; ++Y) for (int32 X = 0; X < G.W; ++X)
+		{
+			const int32 DX = G.X + X + Shift, DY = G.Y + Y;
+			if (DX < 0 || DX >= Width || DY < 0 || DY >= Height) { continue; }
+			uint8& D = Alpha[DY * Width + DX];
+			D = FMath::Max(D, G.Alpha[Y * G.W + X]);
+		}
+	}
+	return Out;
 }

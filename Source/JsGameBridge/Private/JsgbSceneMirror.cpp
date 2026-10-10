@@ -23,6 +23,7 @@
 #include "NiagaraSystem.h"
 #include "Sound/SoundBase.h"
 #include "Engine/Texture2D.h"
+#include "Engine/VolumeTexture.h"
 #include "ImageUtils.h"
 #include "MeshDescription.h"
 #include "StaticMeshAttributes.h"
@@ -30,12 +31,16 @@
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 #include "HAL/PlatformTime.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #if WITH_EDITOR
 #include "MaterialDomain.h"
 #include "Materials/MaterialExpressionCustom.h"
 #include "Materials/MaterialExpressionLocalPosition.h"
 #include "Materials/MaterialExpressionWorldPosition.h"
 #include "Materials/MaterialExpressionTransform.h"
+#include "Materials/MaterialExpressionTransformPosition.h"
+#include "Materials/MaterialExpressionConstant3Vector.h"
 #include "Materials/MaterialExpressionVertexNormalWS.h"
 #include "Materials/MaterialExpressionTextureCoordinate.h"
 #include "Materials/MaterialExpressionVertexColor.h"
@@ -292,7 +297,9 @@ UStaticMesh* UJsgbSceneMirror::BuildMesh(const FJsgbPendingGeometry& G, int32& O
 			for (int32 C = 0; C < 4; ++C)
 			{
 				const FVertexID V = MD.CreateVertex();
-				VPos[V] = Pos(&G.Positions[P * 3]);
+				// A millimetre of real extent keeps the mesh build from dropping the quad as degenerate;
+				// the billboard material does the actual sizing.
+				VPos[V] = Pos(&G.Positions[P * 3]) + FVector3f((Corners[C].X - 0.5f) * 0.1f, (Corners[C].Y - 0.5f) * 0.1f, 0.f);
 				Q[C] = MD.CreateVertexInstance(V);
 				VNrm[Q[C]] = FVector3f::UpVector;
 				VUV.Set(Q[C], 0, Corners[C]);
@@ -411,7 +418,31 @@ void UJsgbSceneMirror::SetTexture(int32 Id, const FString& Json, const FArrayBuf
 		Tex->AddressY = WrapT == 1001 ? TA_Clamp : WrapT == 1002 ? TA_Mirror : TA_Wrap;
 		Tex->UpdateResource();
 	}
-	T.Texture = Tex;
+	UTexture* Result = Tex;
+	if (Kind == TEXT("rgba8_3d") && Bytes.Data)
+	{
+		// Data3DTexture (noise volumes for custom shaders): a transient volume texture.
+		const int32 W = static_cast<int32>(Num(J, TEXT("width"))), H = static_cast<int32>(Num(J, TEXT("height"))), D3 = static_cast<int32>(Num(J, TEXT("depth")));
+		if (W > 0 && H > 0 && D3 > 0 && Bytes.Length >= static_cast<size_t>(W) * H * D3 * 4)
+		{
+			UVolumeTexture* V = NewObject<UVolumeTexture>(GetTransientPackage(), NAME_None, RF_Transient);
+			FTexturePlatformData* PD = new FTexturePlatformData();
+			PD->SizeX = W; PD->SizeY = H; PD->SetNumSlices(D3); PD->PixelFormat = PF_R8G8B8A8;
+			FTexture2DMipMap* Mip = new FTexture2DMipMap(W, H, D3);
+			Mip->BulkData.Lock(LOCK_READ_WRITE);
+			void* Dest = Mip->BulkData.Realloc(static_cast<int64>(W) * H * D3 * 4);
+			FMemory::Memcpy(Dest, Bytes.Data, static_cast<SIZE_T>(W) * H * D3 * 4);
+			Mip->BulkData.Unlock();
+			PD->Mips.Add(Mip);
+			V->SetPlatformData(PD);
+			V->SRGB = Flag(J, TEXT("srgb"));
+			V->Filter = Flag(J, TEXT("nearest")) ? TF_Nearest : TF_Bilinear;
+			V->AddressMode = Num(J, TEXT("wrapS")) == 1001 ? TA_Clamp : TA_Wrap;
+			V->UpdateResource();
+			Result = V;
+		}
+	}
+	T.Texture = Result;
 	T.bFlipY = Flag(J, TEXT("flipY"));
 	const TArray<TSharedPtr<FJsonValue>>* Rep = nullptr; const TArray<TSharedPtr<FJsonValue>>* Off = nullptr;
 	if (J->TryGetArrayField(TEXT("repeat"), Rep) && J->TryGetArrayField(TEXT("offset"), Off) && Rep->Num() == 2 && Off->Num() == 2)
@@ -471,6 +502,7 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 	{
 		M.Instance = UMaterialInstanceDynamic::Create(Parent ? Parent : ParentFor(Variant), this);
 		M.Variant = VariantKey;
+		ApplySceneParams(M.Instance, VariantKey);
 	}
 	UMaterialInstanceDynamic* Mid = M.Instance;
 	const FLinearColor Color = JsonColor(J, TEXT("color"), FLinearColor::White);
@@ -603,9 +635,46 @@ void UJsgbSceneMirror::ApplyLight(const float* S, uint32 FrameStamp, FLinearColo
 	}
 }
 
+void UJsgbSceneMirror::SetScene(FName Name, const FLinearColor& V)
+{
+	// Generated shader materials read the collection; the authored base materials read plain
+	// parameters (collections made from Python have no parameter ids), so changes go to each instance.
+	if (Globals && GetWorld()) { UKismetMaterialLibrary::SetVectorParameterValue(GetWorld(), Globals, Name, V); }
+	if (const FLinearColor* Old = SceneParams.Find(Name)) { if (Old->Equals(V, 1e-6f)) { return; } }
+	SceneParams.Add(Name, V);
+	const bool bBillboardOnly = Name == TEXT("CamRight") || Name == TEXT("CamUp") || Name == TEXT("ViewParams");
+	for (TPair<int32, FJsgbMaterial>& M : Materials)
+	{
+		if (!M.Value.Instance || M.Value.bCustom || M.Value.Variant >= 1000) { continue; }
+		if (bBillboardOnly && M.Value.Variant != VBillboard && M.Value.Variant != VBillboardAdd) { continue; }
+		M.Value.Instance->SetVectorParameterValue(Name, V);
+	}
+	if (PostMid) { PostMid->SetVectorParameterValue(Name, V); }
+}
+
+void UJsgbSceneMirror::ApplySceneParams(UMaterialInstanceDynamic* Mid, int32 Variant)
+{
+	if (Variant >= 1000) { return; }
+	for (const TPair<FName, FLinearColor>& P : SceneParams)
+	{
+		const bool bBillboardOnly = P.Key == TEXT("CamRight") || P.Key == TEXT("CamUp") || P.Key == TEXT("ViewParams");
+		if (!bBillboardOnly || Variant == VBillboard || Variant == VBillboardAdd) { Mid->SetVectorParameterValue(P.Key, P.Value); }
+	}
+}
+
 void UJsgbSceneMirror::ApplyPost(const float* H)
 {
 	if (!Camera) { return; }
+	if (!PostMid && !FParse::Param(FCommandLine::Get(), TEXT("JsgbNoPost")))
+	{
+		// The fog/background post material, as an instance so the scene values can reach it.
+		if (UMaterialInterface* Post = LoadObject<UMaterialInterface>(nullptr, TEXT("/JsGameBridge/Mirror/M_JsgbScenePost.M_JsgbScenePost"), nullptr, LOAD_NoWarn | LOAD_Quiet))
+		{
+			PostMid = UMaterialInstanceDynamic::Create(Post, this);
+			for (const TPair<FName, FLinearColor>& P : SceneParams) { PostMid->SetVectorParameterValue(P.Key, P.Value); }
+			Camera->PostProcessSettings.WeightedBlendables.Array.Add(FWeightedBlendable(1.f, PostMid));
+		}
+	}
 	FPostProcessSettings& P = Camera->PostProcessSettings;
 	// Three.js exposure multiplies linear colour; Unreal's bias is in stops.
 	P.bOverride_AutoExposureBias = true; P.AutoExposureBias = FMath::Log2(FMath::Max(1e-3f, H[35]));
@@ -664,11 +733,14 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 		{
 			const int32 Mat = static_cast<int32>(Mats[FMath::Min(S, NumMats - 1)]);
 			if (Ent.Materials.Num() <= S) { Ent.Materials.Add(-1); }
-			if (Ent.Materials[S] != Mat) { Ent.Materials[S] = Mat; if (UMaterialInstanceDynamic* Mid = MaterialFor(Mat)) { C->SetMaterial(S, Mid); } }
+			// Compare the instance too: a material can get a new parent (a generated shader material arriving later).
+			UMaterialInstanceDynamic* Mid = MaterialFor(Mat);
+			if (Ent.Materials[S] != Mat || (Mid && C->GetMaterial(S) != Mid)) { Ent.Materials[S] = Mat; if (Mid) { C->SetMaterial(S, Mid); } }
 		}
 	};
 	auto Show = [this, &Drawn](FJsgbEntity& Ent, UPrimitiveComponent* C, int32 Flags)
 	{
+		if (DebugHiddenKinds & (1 << Ent.Kind)) { if (C->IsVisible()) { C->SetVisibility(false); } Ent.Seen = Stamp; return; }
 		const bool bShadow = (Flags & 1) != 0;
 		if (C->CastShadow != bShadow) { C->SetCastShadow(bShadow); }
 		if (!C->IsVisible()) { C->SetVisibility(true); }
@@ -694,7 +766,6 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			if (Ent.Geometry != Geo || Ent.GeometryRevision != G->BuiltRevision) { C->SetStaticMesh(G->Mesh); Ent.Geometry = Geo; Ent.GeometryRevision = G->BuiltRevision; Ent.Materials.Reset(); }
 			SetSlots(Ent, C, G->Slots, Mats, NumMats);
 			C->SetWorldTransform(ToTransform(M));
-			SetModelData(Ent, C, M, Mats, NumMats);
 			Show(Ent, C, Flags);
 		}
 		else if (Type == RInstanced)
@@ -722,7 +793,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			UInstancedStaticMeshComponent* C = CastChecked<UInstancedStaticMeshComponent>(Ent.Component);
 			const bool bNewMesh = Ent.Geometry != Geo || Ent.GeometryRevision != Revision;
 			if (bNewMesh) { C->SetStaticMesh(Mesh); Ent.Geometry = Geo; Ent.GeometryRevision = Revision; Ent.Materials.Reset(); }
-			if (Geo >= 0 && (Ent.Materials.Num() == 0 || Ent.Materials[0] != Mat))
+			if (Geo >= 0 && (Ent.Materials.Num() == 0 || Ent.Materials[0] != Mat || (MaterialFor(Mat) && C->GetMaterial(0) != MaterialFor(Mat))))
 			{
 				Ent.Materials.SetNum(1); Ent.Materials[0] = Mat;
 				if (UMaterialInstanceDynamic* Mid = MaterialFor(Mat)) { for (int32 S = 0; S < Slots; ++S) { C->SetMaterial(S, Mid); } }
@@ -796,7 +867,6 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			C->SetCustomPrimitiveDataFloat(1, SizeY);
 			C->SetCustomPrimitiveDataFloat(2, Rotation);
 			C->SetCustomPrimitiveDataFloat(3, Mode);
-			if (!bSprite) { SetModelData(Ent, C, &D[K - 16], &MatF, 1); }
 			Show(Ent, C, Flags);
 		}
 		else if (Type == RLines)
@@ -934,28 +1004,31 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 
 	// Ambient, hemisphere, background and fog drive the shared material parameters. Three.js
 	// divides ambient irradiance by pi in its Lambert term; the materials add BaseColor * value.
-	if (Globals && GetWorld())
 	{
-		UWorld* W = GetWorld();
 		const float InvPi = 1.f / PI;
-		UKismetMaterialLibrary::SetVectorParameterValue(W, Globals, TEXT("Ambient"), Ambient * InvPi);
-		UKismetMaterialLibrary::SetVectorParameterValue(W, Globals, TEXT("HemiSky"), HemiSky * InvPi);
-		UKismetMaterialLibrary::SetVectorParameterValue(W, Globals, TEXT("HemiGround"), HemiGround * InvPi);
-		UKismetMaterialLibrary::SetVectorParameterValue(W, Globals, TEXT("Background"), FLinearColor(D[23], D[24], D[25], D[22]));
-		UKismetMaterialLibrary::SetVectorParameterValue(W, Globals, TEXT("FogColor"), FLinearColor(D[27], D[28], D[29], D[26]));
-		UKismetMaterialLibrary::SetVectorParameterValue(W, Globals, TEXT("CameraParams"), FLinearColor(D[18] * Cm, D[19] * Cm * 0.999f, 3e6f, 0));
-		UKismetMaterialLibrary::SetVectorParameterValue(W, Globals, TEXT("FogParams"), FLinearColor(D[30] * Cm, D[31] * Cm, D[32] / Cm, D[26]));
-		UKismetMaterialLibrary::SetVectorParameterValue(W, Globals, TEXT("ViewParams"), FLinearColor(TanHalf, ViewportSize.Y, ViewportSize.X, 0));
+		SetScene(TEXT("Ambient"), Ambient * InvPi);
+		SetScene(TEXT("HemiSky"), HemiSky * InvPi);
+		SetScene(TEXT("HemiGround"), HemiGround * InvPi);
+		SetScene(TEXT("Background"), FLinearColor(D[23], D[24], D[25], D[22]));
+		SetScene(TEXT("FogColor"), FLinearColor(D[27], D[28], D[29], D[26]));
+		SetScene(TEXT("CameraParams"), FLinearColor(D[18] * Cm, D[19] * Cm * 0.999f, 3e6f, 0));
+		SetScene(TEXT("FogParams"), FLinearColor(D[30] * Cm, D[31] * Cm, D[32] / Cm, D[26]));
+		SetScene(TEXT("ViewParams"), FLinearColor(TanHalf, ViewportSize.Y, ViewportSize.X, 0));
 		// The Three.js camera for generated shader materials: view and projection matrix columns
 		// (column-major, as GLSL reads them) and the camera position, all in Three.js units.
 		for (int32 I = 0; I < 4; ++I)
 		{
-			UKismetMaterialLibrary::SetVectorParameterValue(W, Globals, *FString::Printf(TEXT("ViewCol%d"), I), FLinearColor(D[40 + I * 4], D[41 + I * 4], D[42 + I * 4], D[43 + I * 4]));
-			UKismetMaterialLibrary::SetVectorParameterValue(W, Globals, *FString::Printf(TEXT("ProjCol%d"), I), FLinearColor(D[56 + I * 4], D[57 + I * 4], D[58 + I * 4], D[59 + I * 4]));
-			UKismetMaterialLibrary::SetVectorParameterValue(W, Globals, *FString::Printf(TEXT("CamCol%d"), I), FLinearColor(D[I * 4], D[I * 4 + 1], D[I * 4 + 2], D[I * 4 + 3]));
-			UKismetMaterialLibrary::SetVectorParameterValue(W, Globals, *FString::Printf(TEXT("ProjInvCol%d"), I), FLinearColor(D[72 + I * 4], D[73 + I * 4], D[74 + I * 4], D[75 + I * 4]));
+			SetScene(*FString::Printf(TEXT("ViewCol%d"), I), FLinearColor(D[40 + I * 4], D[41 + I * 4], D[42 + I * 4], D[43 + I * 4]));
+			SetScene(*FString::Printf(TEXT("ProjCol%d"), I), FLinearColor(D[56 + I * 4], D[57 + I * 4], D[58 + I * 4], D[59 + I * 4]));
+			SetScene(*FString::Printf(TEXT("CamCol%d"), I), FLinearColor(D[I * 4], D[I * 4 + 1], D[I * 4 + 2], D[I * 4 + 3]));
+			SetScene(*FString::Printf(TEXT("ProjInvCol%d"), I), FLinearColor(D[72 + I * 4], D[73 + I * 4], D[74 + I * 4], D[75 + I * 4]));
 		}
-		UKismetMaterialLibrary::SetVectorParameterValue(W, Globals, TEXT("CameraPos"), FLinearColor(D[12], D[13], D[14], 1));
+		SetScene(TEXT("CameraPos"), FLinearColor(D[12], D[13], D[14], 1));
+		// Billboards (points, sprites) spread along the camera's right and up axes in Unreal space.
+		const FRotationMatrix CamAxes(CameraRotation);
+		const FVector Right = CamAxes.GetUnitAxis(EAxis::Y), CamUp = CamAxes.GetUnitAxis(EAxis::Z);
+		SetScene(TEXT("CamRight"), FLinearColor(Right.X, Right.Y, Right.Z, 0));
+		SetScene(TEXT("CamUp"), FLinearColor(CamUp.X, CamUp.Y, CamUp.Z, 0));
 	}
 }
 
@@ -1049,6 +1122,24 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 			UMaterialExpression* E = nullptr;
 			if (Source == TEXT("localPosition")) { E = NewObject<UMaterialExpressionLocalPosition>(Mat); }
 			else if (Source == TEXT("worldPosition")) { E = NewObject<UMaterialExpressionWorldPosition>(Mat); }
+			else if (Source == TEXT("localAxis"))
+			{
+				UMaterialExpressionConstant3Vector* Axis = NewObject<UMaterialExpressionConstant3Vector>(Mat);
+				Axis->Constant = FLinearColor(Index == 0 ? 1 : 0, Index == 1 ? 1 : 0, Index == 2 ? 1 : 0);
+				UMaterialExpressionTransform* T = NewObject<UMaterialExpressionTransform>(Mat);
+				T->TransformSourceType = TRANSFORMSOURCE_Local; T->TransformType = TRANSFORM_World;
+				T->Input.Connect(0, Add(Axis));
+				E = T;
+			}
+			else if (Source == TEXT("localOrigin"))
+			{
+				UMaterialExpressionConstant3Vector* Zero = NewObject<UMaterialExpressionConstant3Vector>(Mat);
+				Zero->Constant = FLinearColor(0, 0, 0);
+				UMaterialExpressionTransformPosition* T = NewObject<UMaterialExpressionTransformPosition>(Mat);
+				T->TransformSourceType = TRANSFORMPOSSOURCE_Local; T->TransformType = TRANSFORMPOSSOURCE_World;
+				T->Input.Connect(0, Add(Zero));
+				E = T;
+			}
 			else if (Source == TEXT("localNormal"))
 			{
 				UMaterialExpressionTransform* T = NewObject<UMaterialExpressionTransform>(Mat);
@@ -1075,11 +1166,12 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 			}
 			else if (Source == TEXT("scalar")) { UMaterialExpressionScalarParameter* P = NewObject<UMaterialExpressionScalarParameter>(Mat); P->ParameterName = *Param; P->DefaultValue = 0; E = P; }
 			else if (Source == TEXT("vector")) { UMaterialExpressionVectorParameter* P = NewObject<UMaterialExpressionVectorParameter>(Mat); P->ParameterName = *Param; P->DefaultValue = FLinearColor(0, 0, 0, 0); E = P; }
-			else if (Source == TEXT("texture") || Source == TEXT("cube"))
+			else if (Source == TEXT("texture") || Source == TEXT("cube") || Source == TEXT("volume"))
 			{
 				UMaterialExpressionTextureObjectParameter* P = NewObject<UMaterialExpressionTextureObjectParameter>(Mat);
 				P->ParameterName = *Param;
 				P->Texture = Source == TEXT("cube") ? LoadObject<UTexture>(nullptr, TEXT("/Engine/EngineResources/DefaultTextureCube.DefaultTextureCube"))
+					: Source == TEXT("volume") ? LoadObject<UTexture>(nullptr, TEXT("/Engine/EngineResources/DefaultVolumeTexture.DefaultVolumeTexture"))
 					: LoadObject<UTexture>(nullptr, TEXT("/Engine/EngineResources/WhiteSquareTexture.WhiteSquareTexture"));
 				P->SamplerType = SAMPLERTYPE_Color;
 				E = P;
@@ -1154,6 +1246,28 @@ void UJsgbSceneMirror::SetModelData(FJsgbEntity& Ent, UPrimitiveComponent* C, co
 	if (!bCustom || FMemory::Memcmp(Ent.Model, M, sizeof(Ent.Model)) == 0) { return; }
 	FMemory::Memcpy(Ent.Model, M, sizeof(Ent.Model));
 	for (int32 I = 0; I < 4; ++I) { C->SetCustomPrimitiveDataVector4(4 + I * 4, FVector4(M[I * 4], M[I * 4 + 1], M[I * 4 + 2], M[I * 4 + 3])); }
+}
+
+FString UJsgbSceneMirror::Describe(int32 Kind) const
+{
+	// Debugging aid behind /bridge/describe: what the mirror holds for one record kind (0 = all).
+	// A body of "hide:<bitmask>" hides whole record kinds (1 << kind) regardless of the game.
+	FString Out = FString::Printf(TEXT("{\"entities\":%d,\"geometries\":%d,\"materials\":%d,\"textures\":%d,\"items\":["), Entities.Num(), Geometries.Num(), Materials.Num(), Textures.Num());
+	int32 Listed = 0;
+	for (const TPair<int32, FJsgbEntity>& E : Entities)
+	{
+		if ((Kind && E.Value.Kind != Kind) || Listed >= 40) { continue; }
+		const UPrimitiveComponent* C = E.Value.Component;
+		const UStaticMeshComponent* S = Cast<UStaticMeshComponent>(C);
+		FString Cpd;
+		if (C) { for (const float V : C->GetCustomPrimitiveData().Data) { Cpd += FString::Printf(TEXT("%s%.3g"), Cpd.IsEmpty() ? TEXT("") : TEXT(","), V); } }
+		Out += FString::Printf(TEXT("%s{\"id\":%d,\"kind\":%d,\"visible\":%d,\"loc\":\"%s\",\"scale\":\"%s\",\"mesh\":\"%s\",\"meshBounds\":\"%s\",\"material\":\"%s\",\"parent\":\"%s\",\"cpd\":[%s]}"),
+			Listed ? TEXT(",") : TEXT(""), E.Key, E.Value.Kind, C && C->IsVisible() ? 1 : 0, C ? *C->GetComponentLocation().ToString() : TEXT(""), C ? *C->GetComponentScale().ToString() : TEXT(""),
+			S && S->GetStaticMesh() ? *S->GetStaticMesh()->GetName() : TEXT(""), S && S->GetStaticMesh() ? *S->GetStaticMesh()->GetBounds().BoxExtent.ToString() : TEXT(""),
+			C && C->GetMaterial(0) ? *C->GetMaterial(0)->GetName() : TEXT(""), C && C->GetMaterial(0) && C->GetMaterial(0)->GetMaterial() ? *C->GetMaterial(0)->GetMaterial()->GetName() : TEXT(""), *Cpd);
+		++Listed;
+	}
+	return Out + TEXT("]}");
 }
 
 void UJsgbSceneMirror::ResetAll()

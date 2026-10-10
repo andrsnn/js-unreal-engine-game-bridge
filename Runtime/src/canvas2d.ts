@@ -84,6 +84,10 @@ function sourcePixels(src: any): Bitmap | null {
 }
 let imageReader: ((path: string) => Uint8Array | undefined) = () => undefined;
 export function setImageReader(fn: (path: string) => Uint8Array | undefined) { imageReader = fn; }
+/** A run of text as an alpha mask with its metrics, from the host's font rasterizer (text.ts). */
+export type TextRun = {width: number; height: number; ascent: number; descent: number; advance: number; alpha: Uint8Array};
+let textRasterizer: ((font: string, text: string) => TextRun | null) | null = null;
+export function setTextRasterizer(fn: (font: string, text: string) => TextRun | null) { textRasterizer = fn; }
 function readImage(path: string) { return imageReader(path); }
 
 interface State {
@@ -286,13 +290,44 @@ export class Context2D {
   isPointInPath() { return false; }
   isPointInStroke() { return false; }
 
-  // ---- text: measured, not drawn (no font rasterizer yet).
+  // ---- text: glyph coverage from the host's font rasterizer, filled with the current paint.
   measureText(t: string) {
-    const size = parseFloat(/(\d+(?:\.\d+)?)px/.exec(this.s.font)?.[1] ?? '10'), width = String(t).length * size * 0.56;
-    return {width, actualBoundingBoxAscent: size * 0.8, actualBoundingBoxDescent: size * 0.2, actualBoundingBoxLeft: 0, actualBoundingBoxRight: width, fontBoundingBoxAscent: size * 0.8, fontBoundingBoxDescent: size * 0.2, emHeightAscent: size * 0.8, emHeightDescent: size * 0.2, alphabeticBaseline: 0, hangingBaseline: size * 0.8, ideographicBaseline: -size * 0.2};
+    const run = textRasterizer?.(this.s.font, String(t));
+    const size = parseFloat(/(\d+(?:\.\d+)?)px/.exec(this.s.font)?.[1] ?? '10');
+    const width = run ? run.advance : String(t).length * size * 0.56, ascent = run ? run.ascent : size * 0.8, descent = run ? run.descent : size * 0.2;
+    return {width, actualBoundingBoxAscent: ascent, actualBoundingBoxDescent: descent, actualBoundingBoxLeft: 0, actualBoundingBoxRight: width, fontBoundingBoxAscent: ascent, fontBoundingBoxDescent: descent,
+      emHeightAscent: ascent, emHeightDescent: descent, alphabeticBaseline: 0, hangingBaseline: ascent, ideographicBaseline: -descent};
   }
-  fillText() { /* text needs a font rasterizer; textures keep their other strokes */ }
-  strokeText() { /* see fillText */ }
+  fillText(t: string, x: number, y: number, maxWidth?: number) { this.drawText(String(t), x, y, maxWidth, this.s.fill); }
+  strokeText(t: string, x: number, y: number, maxWidth?: number) { this.drawText(String(t), x, y, maxWidth, this.s.stroke); }
+  private drawText(t: string, x: number, y: number, maxWidth: number | undefined, paint: Paint) {
+    const run = textRasterizer?.(this.s.font, t);
+    if (!run || !run.width || !this.w || !this.h) return;
+    const scaleX = maxWidth !== undefined && maxWidth > 0 && run.advance > maxWidth ? maxWidth / run.advance : 1;
+    const align = this.s.textAlign, rtl = this.direction === 'rtl';
+    const left = align === 'center' ? x - run.advance * scaleX / 2 : align === 'right' || (align === 'end' && !rtl) || (align === 'start' && rtl) ? x - run.advance * scaleX : x;
+    const base = this.s.textBaseline;
+    const top = base === 'top' || base === 'hanging' ? y : base === 'middle' ? y - (run.ascent + run.descent) / 2 : base === 'bottom' || base === 'ideographic' ? y - run.ascent - run.descent : y - run.ascent;
+    const dw = run.width * scaleX, dh = run.height;
+    const corners = [this.tx(left, top), this.tx(left + dw, top), this.tx(left, top + dh), this.tx(left + dw, top + dh)];
+    let x0 = Math.floor(Math.min(...corners.map(p => p[0]))), x1 = Math.ceil(Math.max(...corners.map(p => p[0])));
+    let y0 = Math.floor(Math.min(...corners.map(p => p[1]))), y1 = Math.ceil(Math.max(...corners.map(p => p[1])));
+    [x0, y0, x1, y1] = this.clipBox(x0, y0, x1, y1);
+    const inv = this.inverse(), col: RGBA = paint.kind === 'color' ? [...paint.c] as RGBA : [0, 0, 0, 0];
+    this.beginCoverage();
+    for (let py = y0; py < y1; py++) for (let px = x0; px < x1; px++) {
+      const cx = px + 0.5, cy = py + 0.5;
+      const ux = inv[0] * cx + inv[2] * cy + inv[4], uy = inv[1] * cx + inv[3] * cy + inv[5];
+      const bx = Math.floor((ux - left) / scaleX), by = Math.floor(uy - top);
+      if (bx < 0 || bx >= run.width || by < 0 || by >= run.height) continue;
+      const cov = run.alpha[by * run.width + bx] / 255;
+      if (cov <= 0) continue;
+      if (paint.kind !== 'color') this.paintAt(paint, inv, cx, cy, col);
+      this.blendPixel(py * this.w + px, col[0], col[1], col[2], col[3] * cov * this.s.alpha);
+    }
+    this.endCoverage();
+    this.version++;
+  }
 
   // ---- images
   drawImage(src: any, a: number, b: number, c?: number, d?: number, e?: number, f?: number, g?: number, h?: number) {

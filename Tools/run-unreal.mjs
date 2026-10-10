@@ -39,9 +39,10 @@ for (let running = unrealProcesses(); running.length; running = unrealProcesses(
 
 const log = `jsgb-${game.id}.log`;
 const args = [project, '/Engine/Maps/Entry?game=/Script/JsGameBridge.JsgbGameMode', '-game', '-windowed', `-ResX=${resX}`, `-ResY=${resY}`,
-  `-JsgbGame=${game.out}`, `-JsgbPort=${port}`, '-JsgbAllowRemote', '-nosplash', '-unattended', `-log=${log}`];
+  `-JsgbGame=${game.out}`, `-JsgbPort=${port}`, '-JsgbAllowRemote', '-nosplash', '-unattended', `-log=${log}`, `-JsgbMaxSeconds=${timeout / 1000}`];
 if (has('--offscreen')) args.push('-RenderOffScreen');
 if (has('--no-ui')) args.push('-JsgbNoUI');
+if (has('--no-post')) args.push('-JsgbNoPost');
 if (has('--fresh')) args.push('-JsgbFresh');
 if (has('--mute')) args.push('-JsgbVolume=0');
 for (const [option, name] of [['--script', 'JsgbScript'], ['--capture', 'JsgbCapture'], ['--capture-fps', 'JsgbCaptureFps'], ['--fixed-fps', 'JsgbFixedFps'], ['--frames', 'JsgbFrames'], ['--search', 'JsgbSearch']]) {

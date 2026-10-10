@@ -56,7 +56,9 @@ function readPage(game) {
 }
 
 function threeFiles(game) {
-  const dir = path.join(game.repo, 'node_modules/three/build');
+  // The game's own three, or the runtime's copy for games without node_modules (test fixtures).
+  let dir = path.join(game.repo, 'node_modules/three/build');
+  if (!fs.existsSync(dir)) dir = path.join(runtime, 'node_modules/three/build');
   return {core: path.join(dir, 'three.module.js'), webgpu: path.join(dir, 'three.webgpu.js')};
 }
 
@@ -187,7 +189,19 @@ export async function build(game) {
   // index.html stylesheets come after the CSS the modules import, as in the page.
   const cssFile = path.join(game.out, game.id + '.css');
   const moduleCss = fs.existsSync(cssFile) ? fs.readFileSync(cssFile, 'utf8') : '';
-  fs.writeFileSync(cssFile, page.css.map(c => c.text).join('\n') + '\n' + moduleCss);
+  const allCss = page.css.map(c => c.text).join('\n') + '\n' + moduleCss;
+  fs.writeFileSync(cssFile, allCss);
+  // Font faces the canvas text rasterizer can load (FreeType reads TTF and OTF, not WOFF2).
+  const faces = [];
+  for (const m of allCss.matchAll(/@font-face\s*{([^}]*)}/g)) {
+    const family = /font-family\s*:\s*['"]?([^;'"]+)/.exec(m[1])?.[1]?.trim();
+    const url = [...m[1].matchAll(/url\(\s*['"]?([^'")]+\.(?:ttf|otf))['"]?\s*\)/gi)].map(u => u[1])[0];
+    if (!family || !url) continue;
+    const weight = /font-weight\s*:\s*(\w+)/.exec(m[1])?.[1] ?? '400';
+    faces.push({family, url: url.startsWith('/') ? url : '/' + url.replace(/^\.\//, ''), weight: weight === 'bold' ? 700 : weight === 'normal' ? 400 : +weight || 400,
+      style: /font-style\s*:\s*italic/.test(m[1]) ? 'italic' : 'normal'});
+  }
+  fs.writeFileSync(path.join(game.out, 'jsgb/fonts.json'), JSON.stringify(faces));
   fs.writeFileSync(path.join(game.out, 'page.json'), JSON.stringify({...pageInfo, css: game.id + '.css'}, null, 1));
   const bundlePath = path.join(game.out, game.id + '.mjs');
   const bundle = fs.readFileSync(bundlePath);
@@ -200,7 +214,7 @@ export async function build(game) {
     const cues = JSON.parse(fs.readFileSync(path.resolve(bridge, game.audioCues.file), 'utf8')).games?.[game.audioCues.game]?.cues ?? {};
     for (const cue of Object.values(cues)) for (const v of cue.variants ?? []) if (v.source && v.wave) files[v.source.replaceAll('\\', '/').replace(/^.*?\/public(?=\/)/, '')] = v.wave;
   }
-  fs.writeFileSync(path.join(game.out, 'registry.json'), JSON.stringify({version: 1, assets, files}));
+  fs.writeFileSync(path.join(game.out, 'registry.json'), JSON.stringify({version: 1, assets, files, swaps: {assets: !!game.swaps?.assets, effects: !!game.swaps?.effects}}));
   const publication = {version: 1, game: game.id, sourceCommit: commit || '0'.repeat(40), sourceDirty: !!git(game.repo, 'status', '--porcelain', '--untracked-files=no'),
     bridgeCommit: git(bridge, 'rev-parse', 'HEAD'), bundle: bundlePath, bundleSHA256: sha256(bundle), modules: Object.keys(result.metafile.inputs).length,
     bytes: bundle.length, buildMilliseconds: Math.round(performance.now() - started), publicRoots: game.publicRoots, search: game.search ?? '', title: page.title};
