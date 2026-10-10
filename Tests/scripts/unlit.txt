@@ -1,0 +1,9 @@
+# Unlit Worlds conformance: title, New Game, Begin Journey, first planet seconds.
+0 wait 'New Game'
+1 shot uw-title
+2 click 'New Game'
+3 wait 'Begin Journey'
+4 click 'Begin Journey'
+30 shot uw-planet-30s
+45 shot uw-planet-45s
+46 quit

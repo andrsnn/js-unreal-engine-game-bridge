@@ -1,0 +1,92 @@
+#!/usr/bin/env node
+// Conformance check for one game: from one source commit, build the browser and Unreal targets, run
+// the same script on both (Tests/scripts/<game>.txt), and write a side-by-side film and stills.
+//   node Tools/conformance.mjs <game> [--script file] [--fps 10] [--film out.mp4] [--skip-web] [--skip-unreal]
+import fs from 'node:fs';
+import path from 'node:path';
+import {execFileSync, spawnSync} from 'node:child_process';
+import {fileURLToPath, pathToFileURL} from 'node:url';
+
+const bridge = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const {loadGame, build} = await import(pathToFileURL(path.join(bridge, 'Tools/jsgb.mjs')).href);
+const [gameArg, ...rest] = process.argv.slice(2);
+const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
+const has = name => rest.includes(name);
+const game = loadGame(gameArg);
+const script = path.resolve(flag('--script', path.join(bridge, 'Tests/scripts', game.id + '.txt')));
+const fps = +flag('--fps', 10);
+const root = path.join(game.out, 'conformance');
+const webDir = path.join(root, 'web'), unrealDir = path.join(root, 'unreal'), pairDir = path.join(root, 'pairs');
+const film = path.resolve(flag('--film', path.join(root, `${game.id}-side-by-side.mp4`)));
+const node = process.execPath;
+const git = (...a) => execFileSync('git', ['--no-optional-locks', '-C', game.repo, ...a], {encoding: 'utf8'}).trim();
+const run = (args, label) => {
+  console.log(`== ${label}`);
+  const r = spawnSync(node, args, {cwd: bridge, stdio: ['ignore', 'pipe', 'pipe'], encoding: 'utf8', timeout: 1800000});
+  const out = (r.stdout ?? '') + (r.stderr ?? '');
+  console.log(out.split(/\r?\n/).filter(l => l && !/duplicate-object-key|original key|^\s|~~~/.test(l)).slice(-12).join('\n'));
+  return out;
+};
+
+const commit = git('rev-parse', 'HEAD');
+const dirty = git('status', '--porcelain', '--untracked-files=no').split('\n').filter(Boolean);
+console.log(`${game.id} at ${commit}${dirty.length ? ` (${dirty.length} modified tracked files)` : ''}`);
+const publication = await build(game);
+if (publication.sourceCommit !== commit) throw Error('source moved during the Unreal build');
+const report = {game: game.id, sourceCommit: commit, modifiedTrackedFiles: dirty.length, script: path.relative(bridge, script), fps};
+
+if (!has('--skip-web')) {
+  fs.rmSync(webDir, {recursive: true, force: true});
+  run(['Tools/web.mjs', 'build', game.id], 'web build');
+  if (git('rev-parse', 'HEAD') !== commit) throw Error('source moved during the web build');
+  const out = run(['Tools/web.mjs', 'capture', game.id, '--script', script, '--frames', path.join(webDir, 'frames'), '--shots', webDir, '--fps', String(fps), '--res', '1280x720'], 'browser run');
+  report.web = JSON.parse(out.trim().split(/\r?\n/).filter(l => l.startsWith('{')).pop() ?? '{}');
+}
+if (!has('--skip-unreal')) {
+  fs.rmSync(unrealDir, {recursive: true, force: true});
+  const out = run(['Tools/run-unreal.mjs', game.id, '--offscreen', '--fresh', '--res', '1280x720', '--script', script, '--capture', unrealDir, '--capture-fps', String(fps), '--timeout', '900'], 'Unreal run');
+  report.unreal = {ready: /\nready /.test('\n' + out), status: JSON.parse(/ready (\{.*\})/.exec(out)?.[1] ?? '{}'), exited: /Unreal exited with 0/.test(out),
+    errors: +(/(\d+) JsGameBridge errors/.exec(out)?.[1] ?? -1)};
+}
+
+// Pair frames by time after each side's first "wait" finished, so both start at the same game moment.
+function frames(dir) {
+  const file = path.join(dir, 'times.txt');
+  if (!fs.existsSync(file)) return {list: [], start: 0};
+  let start = 0; const list = [];
+  for (const line of fs.readFileSync(file, 'utf8').split(/\r?\n/)) {
+    const [a, b] = line.trim().split(' ');
+    if (a === 'wait-end') { if (!start) start = +b; } else if (a && fs.existsSync(path.join(dir, a))) list.push({file: path.join(dir, a), t: +b});
+  }
+  return {list, start};
+}
+const web = frames(path.join(webDir, 'frames')), unreal = frames(unrealDir);
+fs.rmSync(pairDir, {recursive: true, force: true}); fs.mkdirSync(pairDir, {recursive: true});
+const nearest = (side, t) => side.list.reduce((best, f) => Math.abs(f.t - side.start - t) < Math.abs(best.t - side.start - t) ? f : best, side.list[0]);
+const duration = Math.min(...[web, unreal].map(s => s.list.length ? s.list[s.list.length - 1].t - s.start : 0));
+let pairs = 0;
+for (let t = 0; t <= duration; t += 1 / fps, pairs++) {
+  fs.copyFileSync(nearest(web, t).file, path.join(pairDir, `web_${String(pairs).padStart(5, '0')}.png`));
+  fs.copyFileSync(nearest(unreal, t).file, path.join(pairDir, `ue_${String(pairs).padStart(5, '0')}.png`));
+}
+report.pairs = pairs;
+if (pairs > 1) {
+  const font = 'C\\:/Windows/Fonts/arial.ttf';
+  const label = (text, x) => `drawtext=fontfile='${font}':text='${text}':x=${x}:y=16:fontsize=26:fontcolor=white:box=1:boxcolor=black@0.55:boxborderw=8`;
+  const filter = `[0:v]scale=960:540,setsar=1,${label('Browser (Chrome, WebGL)', 16)}[a];[1:v]scale=960:540,setsar=1,${label('Unreal Engine 5.8 (JsGameBridge)', 16)}[b];` +
+    `[a][b]hstack=inputs=2,${label(`${game.title ?? game.id}  ${commit.slice(0, 10)}  same commit, same script`, '(w-text_w)/2').replace('y=16', 'y=h-48')}[v]`;
+  fs.mkdirSync(path.dirname(film), {recursive: true});
+  const ff = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-framerate', String(fps), '-i', path.join(pairDir, 'web_%05d.png'), '-framerate', String(fps), '-i', path.join(pairDir, 'ue_%05d.png'),
+    '-filter_complex', filter, '-map', '[v]', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '20', '-r', '30', film], {encoding: 'utf8'});
+  if (ff.status !== 0) throw Error('ffmpeg: ' + ff.stderr);
+  report.film = film;
+  console.log(`film: ${film} (${(pairs / fps).toFixed(1)} s)`);
+}
+// Named stills from the script's "shot" steps, side by side.
+for (const name of fs.readFileSync(script, 'utf8').split(/\r?\n/).map(l => /^\S+\s+shot\s+(\S+)/.exec(l.trim())?.[1]).filter(Boolean)) {
+  const a = path.join(webDir, name + '.png'), b = path.join(unrealDir, name + '.png');
+  if (!fs.existsSync(a) || !fs.existsSync(b)) continue;
+  spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', a, '-i', b, '-filter_complex', '[0]scale=960:540[a];[1]scale=960:540[b];[a][b]hstack', path.join(root, `${name}-side-by-side.png`)]);
+}
+fs.writeFileSync(path.join(root, 'report.json'), JSON.stringify(report, null, 1));
+console.log(JSON.stringify(report));

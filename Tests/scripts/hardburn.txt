@@ -1,0 +1,9 @@
+# Hard Burn conformance: title, New Game, faction screen. Same script on web and Unreal.
+# Times are seconds after the game entry finished; wait holds until the element exists.
+0 wait 'NEW GAME'
+1 shot hb-title
+2 click 'NEW GAME'
+8 shot hb-newgame-8s
+20 shot hb-newgame-20s
+40 shot hb-newgame-40s
+42 quit

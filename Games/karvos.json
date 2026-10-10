@@ -1,0 +1,17 @@
+{
+  "title": "Karvos",
+  "repo": "C:/Users/Aidan Anderson/karvos",
+  "index": "index.html",
+  "public": [
+    "public"
+  ],
+  "search": "",
+  "registry": [
+    "JavaScript/karvos-assets.json"
+  ],
+  "out": "G:/JsGameBridgeBuilds/karvos",
+  "audioCues": {
+    "file": "Registry/audio-cues-v5.json",
+    "game": "karvos"
+  }
+}

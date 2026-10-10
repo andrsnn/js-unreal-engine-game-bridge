@@ -1,0 +1,9 @@
+# Hard Burn in Unreal: title, New Game, first campaign seconds. Times are seconds after the
+# game entry finished evaluating; "wait" holds until the element exists.
+0 wait 'NEW GAME'
+1 shot hb-title
+2 click 'NEW GAME'
+8 shot hb-newgame-8s
+20 shot hb-newgame-20s
+22 eval JSON.stringify(__jsgb.describeScene())
+24 quit

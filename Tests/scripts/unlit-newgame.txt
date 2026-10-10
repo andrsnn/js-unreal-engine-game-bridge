@@ -1,0 +1,7 @@
+# Unlit Worlds: title -> New Game -> Begin Journey.
+0: waitFor('New Game')
+1: click('New Game')
+5: waitFor('Begin Journey')
+6: click('Begin Journey')
+600: JSON.stringify(__game.snapshot()).slice(0,400)
+601: shot('after-newgame')

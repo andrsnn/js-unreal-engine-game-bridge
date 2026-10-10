@@ -1,0 +1,13 @@
+{
+  "name": "jsgamebridge",
+  "private": true,
+  "type": "module",
+  "description": "Run unchanged Three.js browser games inside Unreal Engine through Puerts.",
+  "scripts": {
+    "build": "node Tools/jsgb.mjs build",
+    "smoke": "node Tools/jsgb.mjs smoke",
+    "unreal": "node Tools/jsgb.mjs unreal",
+    "start": "node Tools/run-unreal.mjs",
+    "conformance": "node Tools/conformance.mjs"
+  }
+}

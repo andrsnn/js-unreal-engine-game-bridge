@@ -1,0 +1,4 @@
+# Hard Burn: title -> New Game -> first campaign frames.
+0: waitFor('NEW GAME')
+1: click('NEW GAME')
+60: shot('after-newgame')

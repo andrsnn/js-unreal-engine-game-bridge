@@ -1,0 +1,17 @@
+{
+  "title": "Unlit Worlds",
+  "repo": "C:/Users/Aidan Anderson/space-game",
+  "index": "index.html",
+  "public": [
+    "public"
+  ],
+  "search": "",
+  "registry": [
+    "JavaScript/unlit-assets.json"
+  ],
+  "out": "G:/JsGameBridgeBuilds/unlit",
+  "audioCues": {
+    "file": "Registry/audio-cues-v5.json",
+    "game": "unlit"
+  }
+}
