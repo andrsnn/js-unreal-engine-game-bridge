@@ -3,13 +3,14 @@
 // reloads it into a running Unreal, and boots it headlessly in Node for quick checks.
 //   node Tools/jsgb.mjs build  <game>            write <out>/<game>.mjs, .css, page.json, publication.json
 //   node Tools/jsgb.mjs smoke  <game> [--frames 600] [--script steps.txt] [--search ?x] [--no-build]
-//   node Tools/jsgb.mjs unreal <game>            build, then hot-reload the running Unreal host
+//   node Tools/jsgb.mjs unreal <game>            build, start Unreal (or hot-reload it), then reload on every save
 //   node Tools/jsgb.mjs reload <game>            hot-reload the last build
+//   node Tools/jsgb.mjs watch  <game>            build and hot-reload on every save in the game's folder
 // <game> names Games/<game>.json, or is a path to such a file.
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
-import {execFileSync} from 'node:child_process';
+import {execFileSync, spawnSync} from 'node:child_process';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 
 const bridge = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -18,12 +19,20 @@ const [command, gameArg, ...rest] = process.argv.slice(2);
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 const has = name => rest.includes(name);
 
+/** Machine settings: jsgb.local.json (not in git), overridden by JSGB_ENGINE, JSGB_PROJECT, JSGB_BUILDS. */
+export function settings() {
+  const file = path.join(bridge, 'jsgb.local.json');
+  const local = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : {};
+  return {engine: process.env.JSGB_ENGINE ?? local.engine, project: process.env.JSGB_PROJECT ?? local.project,
+    builds: path.resolve(bridge, process.env.JSGB_BUILDS ?? local.builds ?? 'Builds')};
+}
+
 export function loadGame(name) {
   const file = fs.existsSync(name) ? path.resolve(name) : path.join(bridge, 'Games', name + '.json');
   const game = JSON.parse(fs.readFileSync(file, 'utf8'));
   game.id ??= path.basename(file, '.json');
-  game.repo = path.resolve(game.repo);
-  game.out = path.resolve(game.out ?? path.join('G:/JsGameBridgeBuilds', game.id));
+  game.repo = path.resolve(bridge, game.repo);
+  game.out = path.resolve(game.out ?? path.join(settings().builds, game.id));
   game.publicRoots = [...(game.public ?? ['public']).map(p => path.resolve(game.repo, p)), game.out, game.repo];
   game.registry = (game.registry ?? []).map(p => path.resolve(bridge, p));
   return game;
@@ -229,14 +238,17 @@ export async function reload(game) {
   let response;
   try {
     response = await fetch(endpoint, {method: 'POST', headers: {'Content-Type': 'application/json'}, signal: AbortSignal.timeout(5000),
-      body: JSON.stringify({version: 1, sourceCommit: publication.sourceCommit, bundlePath: publication.bundle, bundleSHA256: publication.bundleSHA256})});
+      body: JSON.stringify({version: 1, sourceCommit: publication.sourceCommit, bundlePath: publication.bundle, bundleSHA256: publication.bundleSHA256, buildMs: publication.buildMilliseconds})});
   } catch (error) { throw Error(`Built, but no JsGameBridge host answers at ${endpoint}. Start Unreal with Tools/run-unreal.mjs ${game.id}. (${error.message})`); }
   if (!response.ok) throw Error(`Host rejected the reload: ${response.status} ${await response.text()}`);
   const deadline = performance.now() + 120000;
   for (;;) {
     const status = await (await fetch(new URL('/bridge/status', endpoint), {signal: AbortSignal.timeout(30000)})).json();
     if (status.bundleSHA256 !== publication.bundleSHA256) throw Error('Host is running a different bundle: ' + JSON.stringify(status));
-    if (status.ready) { console.log(`reloaded ${game.id} in Unreal: ${JSON.stringify(status)}`); return status; }
+    if (status.ready && status.lastReloadMs >= 0) {
+      console.log(`hot reload of ${game.id}: build ${(publication.buildMilliseconds / 1000).toFixed(2)} s + Unreal ${(status.lastReloadMs / 1000).toFixed(2)} s = ${((publication.buildMilliseconds + status.lastReloadMs) / 1000).toFixed(2)} s (${status.jsErrors} JS errors)`);
+      return status;
+    }
     if (performance.now() > deadline) throw Error('Host accepted the bundle but the game did not boot within 120 s');
     await new Promise(r => setTimeout(r, 250));
   }
@@ -245,8 +257,39 @@ export async function reload(game) {
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
 if (!isMain) { /* imported as a library */ }
 else if (command === 'build') await build(loadGame(gameArg));
-else if (command === 'unreal') { const game = loadGame(gameArg); await build(game); await reload(game); }
 else if (command === 'reload') await reload(loadGame(gameArg));
+else if (command === 'unreal' || command === 'watch') {
+  const game = loadGame(gameArg);
+  if (command === 'unreal') {
+    // One command: build, then reload the game into a running host or start one in a window.
+    await build(game);
+    const port = game.reloadPort ?? 5292;
+    const running = await fetch(`http://127.0.0.1:${port}/bridge/status`, {signal: AbortSignal.timeout(2000)}).then(r => r.json()).catch(() => null);
+    if (running && path.dirname(path.resolve(running.bundle ?? '')) === game.out) await reload(game);
+    else if (running) throw Error(`Unreal is running another game (${running.game}); close it first`);
+    else {
+      const started = spawnSync(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), gameArg, '--res', flag('--res', '1600x900'), '--timeout', flag('--timeout', '14400'), '--detach', ...(flag('--search') ? ['--search', flag('--search')] : [])], {stdio: 'inherit'});
+      if (started.status !== 0) throw Error('Unreal did not start; see the log above');
+    }
+  }
+  // Every save in the game's folder (outside node_modules, builds and dot folders) rebuilds the
+  // bundle and reloads it into the running Unreal host.
+  const skip = /(^|[\\/])(node_modules|dist[^\\/]*|output|\.[^\\/]+)([\\/]|$)/;
+  let timer = null, busy = false, again = false;
+  const run = async file => {
+    if (busy) { again = true; return; }
+    busy = true;
+    console.log(`\nchanged ${file}`);
+    try { await build(game); await reload(game); } catch (error) { console.log('reload failed: ' + error.message); }
+    busy = false;
+    if (again) { again = false; run('(more changes)'); }
+  };
+  fs.watch(game.repo, {recursive: true}, (event, file) => {
+    if (!file || skip.test(file) || !/\.(m?[jt]sx?|css|html|json|glsl|vert|frag|wgsl)$/.test(file)) return;
+    clearTimeout(timer); timer = setTimeout(() => run(file), 120);
+  });
+  console.log(`watching ${game.repo} for ${game.id}; save a file to reload it into Unreal`);
+}
 else if (command === 'smoke') {
   const game = loadGame(gameArg);
   if (!has('--no-build')) await build(game);

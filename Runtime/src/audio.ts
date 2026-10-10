@@ -244,6 +244,12 @@ class MediaElement {
   play() { if (!this.id) { this.id = ++voiceSerial; this.last = ''; mediaElements.add(this); } this.paused = false; return Promise.resolve(); }
   pause() { this.paused = true; if (this.id) ops.push({op: 'stop', id: this.id}); this.id = 0; mediaElements.delete(this); }
   load() {} canPlayType() { return 'probably'; }
+  // Attribute access as on an <audio> element; games clear src with removeAttribute('src') to release it.
+  private attrs: Record<string, string> = {};
+  setAttribute(name: string, value: string) { if (name === 'src') this.src = String(value); else if (name === 'loop' || name === 'muted') (this as Record<string, unknown>)[name] = true; else this.attrs[name] = String(value); }
+  getAttribute(name: string) { return name === 'src' ? this.src || null : this.attrs[name] ?? null; }
+  hasAttribute(name: string) { return this.getAttribute(name) !== null; }
+  removeAttribute(name: string) { if (name === 'src') { this.pause(); this.src = ''; } else if (name === 'loop' || name === 'muted') (this as Record<string, unknown>)[name] = false; else delete this.attrs[name]; }
   addEventListener(type: string, fn: (e: unknown) => void) { (this.listeners[type] ??= []).push(fn); if (type === 'canplaythrough' || type === 'loadeddata') setTimeout(() => fn({type, target: this}), 0); }
   removeEventListener(type: string, fn: (e: unknown) => void) { this.listeners[type] = (this.listeners[type] ?? []).filter(f => f !== fn); }
   flush() {

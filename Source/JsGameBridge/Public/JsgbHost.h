@@ -76,6 +76,7 @@ private:
 	void Capture(const FString& Path);
 	void LoadScript(const FString& Path);
 	void RunScript();
+	void ShowReloadBanner(const FString& Text);
 	double GameSeconds() const;
 
 	TSharedPtr<PUERTS_NAMESPACE::FJsEnv> JsEnv;
@@ -101,9 +102,15 @@ private:
 	TArray<FJsgbScriptStep> Script;
 	int32 ScriptCursor = 0;
 	FString WaitFor;
+	bool bWaitGone = false;
 	double WaitStart = 0;
 	double JsMs = 0;
 	int32 TimedFrames = 0;
+	// Hot reload timing: from the moment a new bundle arrives to the first frame it draws.
+	double ReloadStart = -1, ReloadBuildMs = -1, LastReloadMs = -1, LastBuildMs = -1;
+	TSharedPtr<class SWidget> Banner;
+	TSharedPtr<class STextBlock> BannerText;
+	double BannerUntil = 0;
 };
 
 UCLASS()

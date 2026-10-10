@@ -41,6 +41,19 @@ g.__jsgb = {
   get bootError() { return bootError; },
 };
 
+// A fixed seed (-JsgbSeed / conformance --seed) makes Math.random repeat, so a browser and an
+// Unreal run of the same script build the same world.
+// Scripts can re-seed later (seed <n>) so both runs share the moment the world is built.
+function seedRandom(seed: number) {
+  let a = seed >>> 0;
+  Math.random = () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  return seed;
+}
+if (host.seed) seedRandom(host.seed);
+// A script's "seed <n>" re-seeds when the next click event starts, after pointer/mouse handlers,
+// at the same point as the browser side of a conformance run (Tools/web.mjs).
+g.__jsgb.seed = (seed: number) => { g.addEventListener('click', () => seedRandom(seed), {capture: true, once: true}); return seed; };
+
 // Classic inline <script> blocks from index.html run first, in page order, as in a browser.
 declare const __JSGB_INLINE__: string[];
 for (const code of typeof __JSGB_INLINE__ === 'object' ? __JSGB_INLINE__ : []) {

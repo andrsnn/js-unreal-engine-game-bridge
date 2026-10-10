@@ -59,6 +59,36 @@ void UJsgbBridge::SaveStore(const FString& Key, const FString& Data)
 	FFileHelper::SaveStringToFile(Data, *(StoreDir / (FMD5::HashAnsiString(*Key) + TEXT(".json"))), FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
 }
 
+// Process-wide, so it survives the JS environment restart of a hot reload. Past 4 GB the oldest
+// entries go first.
+static TMap<FString, TArray<uint8>> GJsgbCache;
+static TArray<FString> GJsgbCacheOrder;
+static int64 GJsgbCacheBytes = 0;
+static constexpr int64 GJsgbCacheLimit = int64(4) << 30;
+
+FArrayBufferValue UJsgbBridge::CacheGet(const FString& Key)
+{
+	FArrayBufferValue Out;
+	if (const TArray<uint8>* Found = GJsgbCache.Find(Key)) { Out.Data = *Found; }
+	return Out;
+}
+
+void UJsgbBridge::CachePut(const FString& Key, FArrayBuffer Bytes)
+{
+	if (!Bytes.Data || Bytes.Length <= 0) { return; }
+	if (const TArray<uint8>* Old = GJsgbCache.Find(Key)) { GJsgbCacheBytes -= Old->Num(); GJsgbCache.Remove(Key); GJsgbCacheOrder.Remove(Key); }
+	int32 Evict = 0;
+	while (GJsgbCacheBytes + Bytes.Length > GJsgbCacheLimit && Evict < GJsgbCacheOrder.Num())
+	{
+		if (const TArray<uint8>* Gone = GJsgbCache.Find(GJsgbCacheOrder[Evict])) { GJsgbCacheBytes -= Gone->Num(); GJsgbCache.Remove(GJsgbCacheOrder[Evict]); }
+		++Evict;
+	}
+	if (Evict) { GJsgbCacheOrder.RemoveAt(0, Evict); }
+	GJsgbCache.Add(Key, TArray<uint8>(static_cast<const uint8*>(Bytes.Data), Bytes.Length));
+	GJsgbCacheOrder.Add(Key);
+	GJsgbCacheBytes += Bytes.Length;
+}
+
 void UJsgbBridge::JsReady(const FString& Info)
 {
 	bReady = true;

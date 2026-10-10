@@ -1,9 +1,10 @@
-# Hard Burn conformance: title, New Game, faction screen. Same script on web and Unreal.
-# Times are seconds after the game entry finished; wait holds until the element exists.
-0 wait 'NEW GAME'
-1 shot hb-title
-2 click 'NEW GAME'
-8 shot hb-newgame-8s
-20 shot hb-newgame-20s
-40 shot hb-newgame-40s
-42 quit
+# Hard Burn conformance. Both sides boot with ?conformance=1 (Games/hardburn.json conformanceSearch),
+# which starts a new campaign in fixed sector 2545 and skips the title menu.
+# The title flow (NEW GAME, faction) is covered by hardburn-newgame.txt.
+# Times are seconds after the game entry finished. "gone #startup" holds until the loading screen
+# closes, so both films start at the first campaign frame.
+0 gone #startup
+2 shot hb-campaign-start
+15 shot hb-campaign-15s
+30 shot hb-campaign-30s
+32 quit

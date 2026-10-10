@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 // The browser side of a conformance check, from the same source commit as the Unreal bundle.
 //   node Tools/web.mjs build   <game>                  the game's own Vite build into <out>/web
+//   node Tools/web.mjs dev     <game>                  the game's Vite dev server, opened in the browser
 //   node Tools/web.mjs capture <game> --script s.txt [--frames dir --fps 10] [--res 1280x720]
 // capture serves <out>/web plus the public folders, opens it in headless Chrome, and runs the same
-// script format as the Unreal host (seconds after load: wait/click/key/eval/shot/quit).
+// script format as the Unreal host (seconds after load: wait/gone/click/key/eval/seed/shot/quit).
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
@@ -18,8 +19,14 @@ const game = loadGame(gameArg);
 const webOut = path.join(game.out, 'web');
 const requireFromGame = createRequire(path.join(game.repo, 'package.json'));
 
+// The game's own Vite. Older versions resolve to a CommonJS wrapper that puts the API on default.
+async function loadVite() {
+  const m = await import(pathToFileURL(requireFromGame.resolve('vite')).href);
+  return m.build ? m : m.default;
+}
+
 async function build() {
-  const vite = await import(pathToFileURL(requireFromGame.resolve('vite')).href);
+  const vite = await loadVite();
   const started = Date.now();
   await vite.build({root: game.repo, logLevel: 'warn', cacheDir: path.join(game.out, '.vite-cache'),
     build: {outDir: webOut, emptyOutDir: true, copyPublicDir: false, reportCompressedSize: false}});
@@ -49,13 +56,19 @@ async function capture() {
   const browser = await chromium.launch({headless: true, args: ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required']});
   const page = await browser.newPage({viewport: {width: w, height: h}});
   const errors = [];
+  // The same seeded Math.random as the runtime (entry.ts), so both runs build the same world.
+  const seed = +flag('--seed', 0);
+  await page.addInitScript(s0 => {
+    window.__jsgbSeed = seed => { let a = seed >>> 0; Math.random = () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return seed; };
+    if (s0) window.__jsgbSeed(s0);
+  }, seed);
   page.on('pageerror', e => errors.push(String(e)));
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
   const frames = flag('--frames'), fps = +flag('--fps', 10), shots = flag('--shots', path.join(game.out, 'web-shots'));
   if (frames) fs.mkdirSync(frames, {recursive: true});
   fs.mkdirSync(shots, {recursive: true});
   const t0 = Date.now();
-  await page.goto(`http://127.0.0.1:${port}/${game.search ?? ''}`, {waitUntil: 'load', timeout: 120000});
+  await page.goto(`http://127.0.0.1:${port}/${flag('--search', game.search ?? '')}`, {waitUntil: 'load', timeout: 120000});
   const ready = Date.now();
   console.log(`web ${game.id} loaded in ${ready - t0} ms`);
   // Frame grabber: one screenshot per 1/fps seconds after load, for the side-by-side film.
@@ -71,8 +84,8 @@ async function capture() {
   const grabber = grab();
   const find = what => page.evaluate(w => {
     try { const el = document.querySelector(w); if (el) return true; } catch { /* text */ }
-    return [...document.querySelectorAll('button,a,[role=button],li,div,span,label,option,summary')].some(el => el.textContent.trim() === w && el.offsetParent !== null)
-      || [...document.querySelectorAll('button,a')].some(el => el.textContent.trim().toUpperCase().includes(w.toUpperCase()) && el.offsetParent !== null);
+    return [...document.querySelectorAll('button,a,[role=button],li,div,span,label,option,summary')].some(el => el.textContent.trim() === w && el.getClientRects().length > 0)
+      || [...document.querySelectorAll('button,a')].some(el => el.textContent.trim().toUpperCase().includes(w.toUpperCase()) && el.getClientRects().length > 0);
   }, what);
   const steps = fs.readFileSync(flag('--script'), 'utf8').split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith('#'))
     .map(l => { const [when, verb, ...args] = l.split(' '); return {time: +when, verb, args: args.join(' ')}; }).sort((a, b) => a.time - b.time);
@@ -81,9 +94,10 @@ async function capture() {
   for (const s of steps) {
     const due = ready + (s.time + offset) * 1000;
     while (Date.now() < due) await new Promise(r => setTimeout(r, 10));
-    if (s.verb === 'wait') {
-      const start = Date.now();
-      while (!(await find(unquote(s.args))) && Date.now() - start < 120000) await new Promise(r => setTimeout(r, 100));
+    if (s.verb === 'wait' || s.verb === 'gone') {
+      // wait: until the element exists. gone: until it no longer exists (a loading screen closing).
+      const start = Date.now(), present = s.verb === 'wait';
+      while ((await find(unquote(s.args))) !== present && Date.now() - start < 120000) await new Promise(r => setTimeout(r, 100));
       offset += (Date.now() - start) / 1000;
       times.push(`wait-end ${((Date.now() - ready) / 1000).toFixed(3)}`);
       console.log(`wait ${s.args} ${((Date.now() - start) / 1000).toFixed(1)}s`);
@@ -99,6 +113,8 @@ async function capture() {
       console.log(`click ${s.args} ${box ? 'ok' : 'missing'}`);
     } else if (s.verb === 'key') await page.keyboard.press(unquote(s.args.split(',')[0]).replace(/^Key/, ''));
     else if (s.verb === 'eval') console.log('eval ->', String(await page.evaluate(s.args)).slice(0, 600));
+    // Re-seed when the next click event starts (after pointer/mouse handlers), as the Unreal runtime does.
+    else if (s.verb === 'seed') await page.evaluate(n => window.addEventListener('click', () => window.__jsgbSeed(n), {capture: true, once: true}), +s.args);
     else if (s.verb === 'shot') await page.screenshot({path: path.join(shots, s.args + '.png')});
     else if (s.verb === 'quit') break;
   }
@@ -108,7 +124,29 @@ async function capture() {
   console.log(JSON.stringify({game: game.id, frames: index, errors: errors.slice(0, 20)}));
 }
 
+// The dev server shows how long each page load took to its first frame, like the Unreal reload line.
+const loadBanner = {
+  name: 'jsgb-load-banner',
+  transformIndexHtml: () => [{tag: 'script', injectTo: 'head', children: `addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(() => {
+  const ms = performance.now(), el = document.createElement('div');
+  el.textContent = 'Page reload: first frame after ' + (ms / 1000).toFixed(2) + ' s';
+  el.style.cssText = 'position:fixed;left:16px;bottom:72px;z-index:2147483647;padding:8px 14px;background:rgba(0,0,0,.72);color:#ffd159;font:700 18px sans-serif;pointer-events:none';
+  document.body.append(el); setTimeout(() => el.remove(), 8000);
+  console.log('[jsgb] first frame after', Math.round(ms), 'ms');
+})));`}],
+};
+
+async function dev() {
+  const vite = await loadVite();
+  const server = await vite.createServer({root: game.repo, cacheDir: path.join(game.out, '.vite-dev-cache'), plugins: [loadBanner],
+    server: {port: +flag('--port', 5173), strictPort: false, open: rest.includes('--no-open') ? false : flag('--search', '/')}});
+  await server.listen();
+  server.printUrls();
+  console.log(`serving ${game.id} from ${game.repo}; saving a file reloads the page`);
+}
+
 if (command === 'build') await build();
+else if (command === 'dev') await dev();
 else if (command === 'capture') await capture();
 else if (command === 'serve') { await serve(+flag('--port', 5391)); console.log('serving ' + webOut); }
-else { console.error('usage: web.mjs build|capture|serve <game>'); process.exit(2); }
+else { console.error('usage: web.mjs build|capture|serve|dev <game>'); process.exit(2); }

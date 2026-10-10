@@ -4,3 +4,5 @@ JavaScript/node_modules/
 __pycache__/
 *.log
 Runtime/node_modules/
+jsgb.local.json
+Builds/

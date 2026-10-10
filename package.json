@@ -7,7 +7,10 @@
     "build": "node Tools/jsgb.mjs build",
     "smoke": "node Tools/jsgb.mjs smoke",
     "unreal": "node Tools/jsgb.mjs unreal",
+    "web": "node Tools/web.mjs dev",
     "start": "node Tools/run-unreal.mjs",
-    "conformance": "node Tools/conformance.mjs"
-  }
+    "conformance": "node Tools/conformance.mjs",
+    "demo": "node Tools/demo.mjs"
+  },
+  "license": "MIT"
 }

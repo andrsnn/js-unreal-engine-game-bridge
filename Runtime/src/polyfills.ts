@@ -150,8 +150,11 @@ if (!g.AbortController) {
 }
 
 g.crypto ??= {};
-g.crypto.getRandomValues ??= (a: Uint8Array) => { for (let i = 0; i < a.length; i++) a[i] = Math.random() * 256 | 0; return a; };
-g.crypto.randomUUID ??= () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === 'x' ? r : r & 3 | 8).toString(16); });
+// crypto has its own generator, so it never shifts a seeded Math.random sequence.
+let cryptoState = (Date.now() ^ 0x9e3779b9) >>> 0;
+const cryptoByte = () => { cryptoState ^= cryptoState << 13; cryptoState ^= cryptoState >>> 17; cryptoState ^= cryptoState << 5; return (cryptoState >>> 0) & 255; };
+g.crypto.getRandomValues ??= (a: ArrayBufferView) => { const b = new Uint8Array(a.buffer, a.byteOffset, a.byteLength); for (let i = 0; i < b.length; i++) b[i] = cryptoByte(); return a; };
+g.crypto.randomUUID ??= () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => { const r = cryptoByte() & 15; return (c === 'x' ? r : r & 3 | 8).toString(16); });
 
 const nav = (g.navigator ??= {});
 try { Object.assign(nav, {userAgent: 'JsGameBridge-Unreal', language: 'en-US', languages: ['en-US'], hardwareConcurrency: 8, maxTouchPoints: 0, platform: 'Win32'}); } catch { /* read-only host navigator */ }

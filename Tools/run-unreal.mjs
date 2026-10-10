@@ -2,7 +2,8 @@
 // Starts Unreal on the JsGameBridge test host with a built game, once no other Unreal process runs.
 //   node Tools/run-unreal.mjs <game> [--offscreen] [--res 1920x1080] [--script file] [--capture dir]
 //        [--capture-fps 30] [--fixed-fps 30] [--frames N] [--search ?x] [--fresh] [--timeout 900]
-//        [--project G:/JsgbTest/JsgbTest.uproject] [--no-ui] [--detach]
+//        [--project path/to/Host.uproject] [--no-ui] [--detach]
+// The engine and host project come from jsgb.local.json or JSGB_ENGINE / JSGB_PROJECT.
 // Prints the host's /bridge/status once the game is ready. Without --detach it waits for Unreal to
 // exit (use --frames or a script `quit` step) and kills it when --timeout seconds pass.
 import fs from 'node:fs';
@@ -11,13 +12,14 @@ import {spawn, execFileSync} from 'node:child_process';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 
 const bridge = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const {loadGame} = await import(pathToFileURL(path.join(bridge, 'Tools/jsgb.mjs')).href);
+const {loadGame, settings} = await import(pathToFileURL(path.join(bridge, 'Tools/jsgb.mjs')).href);
 const [gameArg, ...rest] = process.argv.slice(2);
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 const has = name => rest.includes(name);
 const game = loadGame(gameArg);
-const engine = process.env.JSGB_ENGINE ?? 'F:/UE_5.8/Engine/Binaries/Win64/UnrealEditor.exe';
-const project = flag('--project', 'G:/JsgbTest/JsgbTest.uproject');
+const engine = settings().engine;
+const project = flag('--project', settings().project);
+if (!engine || !project) throw Error('Set "engine" (UnrealEditor.exe) and "project" (the host .uproject) in jsgb.local.json, or JSGB_ENGINE and JSGB_PROJECT');
 const port = +(flag('--port', game.reloadPort ?? 5292));
 const timeout = +flag('--timeout', 900) * 1000;
 const [resX, resY] = flag('--res', '1920x1080').split('x');
@@ -45,7 +47,7 @@ if (has('--no-ui')) args.push('-JsgbNoUI');
 if (has('--no-post')) args.push('-JsgbNoPost');
 if (has('--fresh')) args.push('-JsgbFresh');
 if (has('--mute')) args.push('-JsgbVolume=0');
-for (const [option, name] of [['--script', 'JsgbScript'], ['--capture', 'JsgbCapture'], ['--capture-fps', 'JsgbCaptureFps'], ['--fixed-fps', 'JsgbFixedFps'], ['--frames', 'JsgbFrames'], ['--search', 'JsgbSearch']]) {
+for (const [option, name] of [['--script', 'JsgbScript'], ['--capture', 'JsgbCapture'], ['--capture-fps', 'JsgbCaptureFps'], ['--fixed-fps', 'JsgbFixedFps'], ['--frames', 'JsgbFrames'], ['--search', 'JsgbSearch'], ['--seed', 'JsgbSeed']]) {
   const value = flag(option); if (value !== undefined) args.push(`-${name}=${/^(--script|--capture)$/.test(option) ? path.resolve(value) : value}`);
 }
 const started = Date.now();

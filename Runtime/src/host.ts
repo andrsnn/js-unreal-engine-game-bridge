@@ -26,6 +26,8 @@ export interface JsgbHost {
   ready?(info: string): void;
   /** Persistent key/value store for localStorage and sessionStorage. */
   storage?: {load(key: string): string | null; save(key: string, data: string): void};
+  /** Bytes that outlive a hot reload (the JS environment restarts, the host keeps them). */
+  cache?: {get(key: string): ArrayBuffer | null; put(key: string, bytes: ArrayBuffer): void};
   sink?: SceneSink;
   /** The game's DOM UI, serialized for the CEF overlay. */
   ui?: {publish(html: string): void};
@@ -33,6 +35,8 @@ export interface JsgbHost {
   audio?: {voices(json: string): void; pcm?(id: number, samples: ArrayBuffer, sampleRate: number): void};
   /** Canvas text: alpha mask and metrics for a run (see JsgbBridge::Text). */
   text?(fontPath: string, sizePx: number, run: string): ArrayBuffer | null;
+  /** Seed for Math.random (deterministic captures); 0 or absent keeps it random. */
+  seed?: number;
   /** Asset registry JSON ({assets: {key: {mesh, material, niagara, sound}}}); empty when none. */
   registry?: string;
 }

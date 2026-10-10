@@ -1,26 +1,175 @@
 # JsGameBridge
 
-One generic Unreal renderer for ordinary Three.js scene graphs. Gameplay remains in the browser repository; generated target bundles are build products, not a second editable game implementation.
+JsGameBridge runs a Three.js browser game inside Unreal Engine 5 without changing the game. You keep
+writing the game for the web. The bridge builds the same source into one script for Unreal, runs it
+in V8 through Puerts, and copies the Three.js scene into Unreal meshes, materials and lights every
+frame. The
+page's HTML and CSS show up as an overlay, and Web Audio plays through Unreal's audio engine.
 
-`JavaScript/ThreeUnrealRenderer.mjs` implements the renderer surface and sends version-1 scene packets to `UJsGameBridgeComponent::ApplyScene`. Geometry is cached by uuid plus index/attribute versions. Frames carry entities, lights, camera, materials, imported asset keys, instanced batches and one-shot events. Input returns through `OnAction` as `{action, parameters}`. Asset overrides live in JSON, rather than gameplay-specific C++.
+When you save a file, the browser and Unreal both reload, and each one shows how long the reload
+took.
 
-Coordinate contract: positions are Three units, matrices are column-major `matrixWorld`. Unreal uses `(X,Z,Y) * UnitsToCentimeters`, with reversed procedural triangle winding. Camera FOV is vertical on the wire and converted to horizontal using the supplied aspect ratio. Registry objects map keys to `mesh`, `material`, `niagara`, `sound`, `cameraShake` paths.
+## Try it
 
-The generic renderer, Puerts host and support modules **compile in UE 5.8**. The original whole-game module graph builds from the canonical browser repo; native original-main/New Game/faction reload/save execution passes in NullRHI; visual/audio playability acceptance is still pending. The first adapter reports unsupported point/line/sprite and ambient-light cases explicitly. Multi-material geometry, texture uniforms, imported multipart hull overrides, environment application, animation state, native UI/audio validation still require integration. The reload command acknowledges the exact canonical commit and hash after actual entry completion. Do not call this a whole-game run, feature parity or performance proof yet.
+You need Windows, Unreal Engine 5.8, Node 22 and a host project (see Setup).
 
-The owner-facing Hard Burn delivery stays on its checked renderer until the shared backend passes native compilation and a full original-source campaign boot. See `NOTES.md` for ownership and cross-project coordination. No other game project is modified by this module.
+1. Double-click `Play in Browser.cmd`. The demo game opens in your browser.
+2. Double-click `Play in Unreal.cmd`. The same game starts in an Unreal window.
+3. Double-click `Demo/Add Feature.cmd`. It adds a small HUD label to the game's source. The browser
+   reloads, then Unreal reloads, and each one shows how long the reload took.
+4. Double-click `Demo/Remove Feature.cmd` to take it out again.
 
-Audio v4 is registered in `Registry/audio-cues-v4.json`, the per-game `*-sounds.json` maps, and `JavaScript/{hardburn,karvos,unlit}-assets.json`. Existing mesh/material/Niagara entries are preserved. All 249 native event keys resolve to 191 actual SoundCue assets with 507 SoundWaves; independent UE 5.8.2 disk reload passed all 530 variant references. See `Tools/AudioImporter/reports/audio-cues-v4-acceptance.json` and the final metadata receipt.
+The demo works on a private copy of the game made by `node Tools/demo.mjs prepare`, so the game's own
+repository never changes.
 
-Use `UnrealAudioCatalog.mjs` to merge game sound keys into the complete asset registry before `SetAssetRegistry`, which replaces the registry. Sound events carry volume/pitch at the top level. Engines, cutters and score stems require retained, stoppable AudioComponents; the helper rejects looping cues through the one-shot event path. Bus/master/mute and adaptive stem controls remain the port adapter's responsibility. The cook must include `/JsGameBridge/Audio`; JSON alone does not root assets for packaging. See `Tools/AudioImporter/README.txt` for the verified import and loop contract.
+## How it works
 
-A generic viewport host is `/Script/JsGameBridge.JsGameBridgeGameMode`. Launch it with `JsBundle`, `JsSourceRoot`, `JsBootstrap`, and `JsRegistry` paths; optional `JsReloadPort` overrides5292. It hosts the shared body/CSS through one transparent CEF UI, forwards input/layout to the original Puerts handlers, and contains no game UI definitions or simulation rules. The UI mirror has CPU service checks and compiles; native GUI validation is pending. Audio currently remains a silent bootstrap graph.
+```mermaid
+flowchart LR
+  subgraph Source["Game repository (unchanged)"]
+    SRC["index.html, JS modules, CSS, shaders, assets"]
+  end
+  SRC -- "Vite" --> WEB["Browser: WebGL, DOM, Web Audio"]
+  SRC -- "esbuild + bridge runtime" --> BUNDLE["One bundle (.mjs)"]
+  subgraph Unreal["Unreal Engine 5.8"]
+    V8["Puerts V8: game code and browser APIs"]
+    MIRROR["Scene mirror: meshes, instances, lights, billboards, generated materials"]
+    UI["Web overlay (CEF): the page's HTML and CSS"]
+    AUDIO["Audio voices: decoded files and synthesized sound"]
+  end
+  BUNDLE --> V8
+  V8 -- "scene frames" --> MIRROR
+  V8 -- "DOM changes" --> UI
+  UI -- "clicks, keys, layout" --> V8
+  V8 -- "voices" --> AUDIO
+```
 
-Audio v5 retains the same249 event/alias keys and191 cue object paths. Updated
-`Registry/audio-cues-v5.json` and per-game `*-sounds.json` maps include calibrated
-mixer and lifecycle metadata for hbue, uwopus and kvopus. Six shorter PDC variants
-and separate cutter/shot-cycle release contracts passed incremental native import
-and fresh UE disk reload; see `Tools/AudioImporter/reports/audio-cues-v5-acceptance.json`.
-Port handoffs and current browser/editor ownership are appended in `NOTES.md`.
+The pieces:
 
-Imported geometry is marked with `userData.assetContent`; its material retains `userData.assetMaterialKey` through clones/batches. A root override honors the source geometry's camera layers and preserves unmarked runtime attachments through LOD/content containers. Dirty geometry carries RGBA vertex colours without spatial axis conversion. Native references pass one batched433-path existence check; that is not rendered parity.
+- **Browser APIs** (`Runtime/src`). A DOM from linkedom, `window`, timers and
+  `requestAnimationFrame`, `fetch` for files in the build, `localStorage`, keyboard, mouse and
+  gamepad input, canvas 2D with real text, Web Workers, and Web Audio.
+- **Renderer stand-in.** The bundle swaps `THREE.WebGLRenderer` for a renderer that records the scene
+  instead of drawing it. Each frame it sends the camera, lights, fog, meshes, instances, points,
+  lines and sprites to Unreal as one float array. Geometry, textures and materials are sent once, then
+  again only when they change.
+- **Custom shaders.** `ShaderMaterial` GLSL is compiled to HLSL with glslang and SPIRV-Cross (built to
+  WebAssembly), and the host builds an Unreal material from it for both the vertex and pixel stages. Bloom, fog,
+  tone mapping and exposure map to Unreal post processing.
+- **UI overlay.** The page's body and stylesheets render in a transparent browser over the game view.
+  Clicks and key presses go back to the game's own handlers.
+- **Hot reload.** `Tools/jsgb.mjs` rebuilds the bundle in about a second and asks the running host to
+  restart V8 with it. Compiled shaders and results from game workers are kept across reloads.
+- **Asset swaps (optional).** A registry can map a game's model or effect keys to Unreal meshes,
+  materials and Niagara systems. They are off unless a game turns them on.
+
+## Setup
+
+1. Make an Unreal 5.8 C++ project to host games. Add [Puerts](https://github.com/Tencent/puerts) and
+   this repository as plugins (`Plugins/Puerts`, `Plugins/JsGameBridge`), then build the editor target.
+2. Run `npm install` in `Runtime/`.
+3. Create `jsgb.local.json` in this folder:
+
+   ```json
+   {
+     "engine": "C:/Program Files/Epic Games/UE_5.8/Engine/Binaries/Win64/UnrealEditor.exe",
+     "project": "C:/Projects/GameHost/GameHost.uproject",
+     "builds": "Builds"
+   }
+   ```
+
+   `JSGB_ENGINE`, `JSGB_PROJECT` and `JSGB_BUILDS` override these.
+4. Run `npm install` in the game's own folder. The bridge uses the game's Vite for the browser side,
+   and the game's Playwright for the conformance test.
+5. Install FFmpeg if you want side-by-side films from the conformance test.
+
+## Port a game
+
+Most games need only a config file. Plan on under an hour.
+
+1. Add `Games/<name>.json`:
+
+   ```json
+   {
+     "title": "My Game",
+     "repo": "../my-game",
+     "index": "index.html",
+     "public": ["public"]
+   }
+   ```
+
+   Optional keys: `search` (the query string the game boots with), `env` and `define` (build
+   constants), `registry` and `swaps` (Unreal asset swaps), `audioCues`, and `conformanceSearch`.
+2. Run `node Tools/jsgb.mjs smoke <name>`. It boots the game in Node with the same browser APIs as
+   Unreal and prints missing files, errors and what the scene contains. Fix anything it reports
+   before you open Unreal.
+3. Run `npm run unreal -- <name>`. It builds the game, starts Unreal, and reloads on every save.
+4. Write `Tests/scripts/<name>.txt` and run `npm run conformance -- <name>` (see below).
+
+A port may still need:
+
+- A file the game loads in a way the build can't see (a path built at run time). Put it in a public
+  folder.
+- A shader that doesn't translate. The log names it, and it draws with a generic material. A registry
+  material can replace it.
+- A query string or seed so both targets build the same world for the conformance test.
+
+## Conformance test
+
+`npm run conformance -- <name>` builds the browser and Unreal targets from the same commit, runs the
+same script in headless Chrome and in Unreal, and writes a side-by-side film and stills. A script is
+one step per line, in seconds after the game starts:
+
+```
+0 wait 'NEW GAME'      wait until an element with this text (or CSS selector) exists
+0 gone #loading        wait until an element no longer exists
+1 shot title           save a screenshot
+3 click 'NEW GAME'     click it
+5 key Escape           press a key
+6 seed 1234            reseed Math.random at the next click on both sides
+20 quit
+```
+
+Pairs of frames line up at each `wait` and `gone`, so a slower load on one side doesn't shift the film.
+
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `npm run unreal -- <game>` | Build, start Unreal or reload it, then reload on every save |
+| `npm run web -- <game>` | The game's Vite dev server with a reload timer |
+| `node Tools/jsgb.mjs build <game>` | Build the Unreal bundle only |
+| `node Tools/jsgb.mjs smoke <game>` | Boot the bundle in Node and report problems |
+| `npm run conformance -- <game>` | Browser and Unreal side by side from one commit |
+| `node Tools/run-unreal.mjs <game> --offscreen --script s.txt --capture dir` | Scripted Unreal run with frame capture |
+
+## Why this helps when an AI writes the game
+
+An AI agent works well in a web codebase. It can read every file, run the game in a headless
+browser, take screenshots and fix what it sees in seconds. In an Unreal project much of the game
+lives in binary assets and Blueprints, and every check needs the editor.
+
+With the bridge, the agent keeps working in the web project, and Unreal is one more build target.
+The conformance test gives it a film of the browser and Unreal side by side from the same commit, so
+it can check the Unreal version without opening Unreal itself.
+
+## Limits
+
+- Generated shader materials need an editor build of the host (`UnrealEditor -game`). In a packaged
+  game they fall back to generic materials unless the registry supplies one.
+- Loading is slower than in the browser. Workers run on the game thread, and V8 in Puerts is older
+  than Chrome's. Hard Burn's first frame after a reload takes about 15 seconds in Unreal and about 4
+  in the browser.
+- Custom post-processing passes (your own `EffectComposer` passes) are not translated. Bloom, fog,
+  tone mapping and exposure are.
+- Canvases that a second renderer draws into the page (minimaps, previews) show as empty in the
+  overlay.
+- Web Audio sources play with their gain, pitch, pan, 3D position and low-pass cutoff. Other effect
+  nodes (delay, convolver, compressor) are skipped.
+- Line width is always one pixel, as in most WebGL browsers.
+- Windows only for now.
+
+## License
+
+MIT. See [LICENSE](LICENSE). The vendored shader compiler in `Runtime/vendor/cross-shader` keeps its
+own license.

@@ -8,11 +8,13 @@ const buf = b => b || EMPTY;
 globalThis.__jsgbHost = {
   search: bridge.Search,
   registry: bridge.Registry,
+  seed: bridge.Seed,
   now: () => bridge.NowMs(),
   readFile: path => { const b = bridge.ReadFile(path); return b && b.byteLength > 0 ? b : null; },
   log: (level, text) => bridge.Log(level, String(text)),
   reload: () => bridge.RequestReload(),
   ready: info => bridge.JsReady(String(info ?? '')),
+  cache: {get: key => { const b = bridge.CacheGet(key); return b && b.byteLength > 0 ? b : null; }, put: (key, bytes) => bridge.CachePut(key, bytes)},
   text: (font, size, run) => { const b = bridge.Text(font, size, run); return b && b.byteLength > 0 ? b : null; },
   storage: {load: key => bridge.LoadStore(key) || null, save: (key, data) => bridge.SaveStore(key, data)},
   sink: {

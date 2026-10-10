@@ -9,7 +9,6 @@
   "registry": [
     "JavaScript/unlit-assets.json"
   ],
-  "out": "G:/JsGameBridgeBuilds/unlit",
   "audioCues": {
     "file": "Registry/audio-cues-v5.json",
     "game": "unlit"

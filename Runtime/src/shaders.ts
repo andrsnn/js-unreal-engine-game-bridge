@@ -185,27 +185,44 @@ function zero(target: string, m: Member): string {
 }
 
 const cache = new Map<string, TranslatedShader | null>();
+function textHash(s: string) {
+  let a = 0x811c9dc5, b = 0x9747b28c;
+  for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); a = Math.imul(a ^ c, 0x01000193); b = Math.imul(b ^ c, 0x5bd1e995) ^ (b >>> 13); }
+  return (a >>> 0).toString(16) + (b >>> 0).toString(16) + s.length.toString(16);
+}
 /** The generated-material description for a ShaderMaterial; undefined while the compiler loads, null when it cannot be translated. */
 export function translateShaderMaterial(material: THREE.ShaderMaterial): TranslatedShader | null | undefined {
   const key = sourceKey(material);
   if (cache.has(key)) return cache.get(key);
-  const c = crossShader();
-  if (!c) return c === null ? null : undefined;
+  let vs: ReturnType<typeof prepare>, fs: ReturnType<typeof prepare>;
+  try { vs = prepare(material, 'vertex'); fs = prepare(material, 'fragment'); } catch (error) {
+    host.log('warn', `custom shader ${material.name || key} stays generic: ${error instanceof Error ? error.message : error}`);
+    cache.set(key, null);
+    return null;
+  }
+  // Compiled stages persist in the host store, so a reload or relaunch skips the compiler.
+  const stageKey = (glsl: string, label: string) => 'jsgb-shader-v1:' + label + ':' + textHash(glsl);
+  const compiled = (out: string) => /\bvoid\s+(vert|frag)_main\b/.test(out);
+  const stored = (glsl: string, label: string) => { const out = host.storage?.load(stageKey(glsl, label)) ?? ''; return compiled(out) ? out : ''; };
+  let vh = stored(vs.glsl, 'vertex'), fh = stored(fs.glsl, 'fragment');
+  const c = vh && fh ? null : crossShader();
+  if (!c && !(vh && fh)) return c === null ? null : undefined;
   let result: TranslatedShader | null = null;
   try {
-    const vs = prepare(material, 'vertex'), fs = prepare(material, 'fragment');
-    const opts = (stage: number) => [{format: c.ShaderFormat.GLSL, stage, es: false, glslVersion: 450}, {format: c.ShaderFormat.HLSL, es: false, glslVersion: 450}];
-    const run = (glsl: string, stage: number, label: string) => {
+    const run = (glsl: string, label: 'vertex' | 'fragment') => {
+      const stage = label === 'vertex' ? c!.ShaderStage.Vertex : c!.ShaderStage.Fragment;
+      const opts = [{format: c!.ShaderFormat.GLSL, stage, es: false, glslVersion: 450}, {format: c!.ShaderFormat.HLSL, es: false, glslVersion: 450}];
       let out = '';
-      try { out = c.compile(glsl, ...opts(stage) as [object, object]); } catch (e) { out = 'exception ' + e; }
-      if (!/\bvoid\s+(vert|frag)_main\b/.test(out)) {
+      try { out = c!.compile(glsl, ...opts as [object, object]); } catch (e) { out = 'exception ' + e; }
+      if (!compiled(out)) {
         (globalThis as Record<string, any>).__jsgbShaderFailures?.push({key, label, glsl, out});
         throw Error(`${label} stage (${typeof out}, ${out.length}): ${out.slice(-300) || "no output"}`);
       }
+      host.storage?.save(stageKey(glsl, label), out);
       return out;
     };
-    const vh = run(vs.glsl, c.ShaderStage.Vertex, 'vertex');
-    const fh = run(fs.glsl, c.ShaderStage.Fragment, 'fragment');
+    vh ||= run(vs.glsl, 'vertex');
+    fh ||= run(fs.glsl, 'fragment');
     const V = toStruct(vh, 'JsgbVS'), F = toStruct(fh, 'JsgbFS');
     const inputs: ShaderInput[] = [{name: 'JsgbP', source: 'localPosition'}, {name: 'JsgbN', source: 'localNormal'}, {name: 'JsgbUV', source: 'uv'}, {name: 'JsgbC', source: 'vertexColor'}];
     // Three.js modelMatrix from Unreal's own local-to-world (per instance for instanced meshes):

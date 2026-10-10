@@ -9,7 +9,6 @@
   "registry": [
     "JavaScript/karvos-assets.json"
   ],
-  "out": "G:/JsGameBridgeBuilds/karvos",
   "audioCues": {
     "file": "Registry/audio-cues-v5.json",
     "game": "karvos"

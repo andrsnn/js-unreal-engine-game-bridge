@@ -1,0 +1,16 @@
+{
+  "title": "Hard Burn (demo copy)",
+  "repo": "../JsGameBridgeDemo/hardburn",
+  "index": "index.html",
+  "public": [
+    "public"
+  ],
+  "search": "",
+  "registry": [
+    "JavaScript/hardburn-assets.json"
+  ],
+  "audioCues": {
+    "file": "Registry/audio-cues-v5.json",
+    "game": "hardburn"
+  }
+}

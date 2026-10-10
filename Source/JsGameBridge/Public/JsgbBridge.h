@@ -38,6 +38,8 @@ public:
 	UPROPERTY() FString Search;
 	/** The merged asset registry JSON the build wrote. */
 	UPROPERTY() FString Registry;
+	/** Math.random seed for deterministic captures (-JsgbSeed=); 0 keeps it random. */
+	UPROPERTY() int32 Seed = 0;
 	/** Absolute path of the bundle (.mjs). */
 	UPROPERTY() FString BundlePath;
 
@@ -49,6 +51,9 @@ public:
 	UFUNCTION() FString LoadStore(const FString& Key);
 	UFUNCTION() void SaveStore(const FString& Key, const FString& Data);
 	UFUNCTION() void JsReady(const FString& Info);
+	/** Bytes kept for the life of the Unreal process, so a hot reload can reuse earlier work (worker results). */
+	UFUNCTION() FArrayBufferValue CacheGet(const FString& Key);
+	UFUNCTION() void CachePut(const FString& Key, FArrayBuffer Bytes);
 	/** Canvas text: glyph coverage for one run of text. Returns five floats (width, height, ascent,
 	 *  descent, advance) followed by width*height alpha bytes; empty when the font cannot load. */
 	UFUNCTION() FArrayBufferValue Text(const FString& FontPath, float SizePx, const FString& Run);

@@ -24,12 +24,16 @@
 #include "Framework/Application/IInputProcessor.h"
 #include "Widgets/SWindow.h"
 #include "SWebBrowser.h"
+#include "Widgets/Text/STextBlock.h"
+#include "Widgets/Layout/SBorder.h"
+#include "Widgets/Layout/SBox.h"
 #include "WebBrowserModule.h"
 #include "HttpServerModule.h"
 #include "IHttpRouter.h"
 #include "HttpServerResponse.h"
 #include "Interfaces/IPluginManager.h"
 #include "HAL/FileManager.h"
+#include "HAL/IConsoleManager.h"
 #include "HAL/PlatformTime.h"
 #include "Misc/CommandLine.h"
 #include "Misc/FileHelper.h"
@@ -266,6 +270,8 @@ void AJsgbHost::BeginPlay()
 {
 	Super::BeginPlay();
 	UWorld* World = GetWorld();
+	// Custom depth with stencil: the scene post reads it to leave fog-free surfaces unfogged.
+	if (IConsoleVariable* CustomDepth = IConsoleManager::Get().FindConsoleVariable(TEXT("r.CustomDepth"))) { CustomDepth->Set(3, ECVF_SetByCode); }
 	// The web scene supplies all lighting, fog and sky. Remove whatever the boot map brought.
 	for (TActorIterator<AActor> It(World); It; ++It)
 	{
@@ -318,6 +324,7 @@ void AJsgbHost::StartJs()
 	double FixedFps = 0;
 	if (FParse::Value(FCommandLine::Get(), TEXT("JsgbFixedFps="), FixedFps) && FixedFps > 0) { Bridge->FixedStepMs = 1000.0 / FixedFps; }
 	Bridge->Search = Search;
+	FParse::Value(FCommandLine::Get(), TEXT("JsgbSeed="), Bridge->Seed);
 	Bridge->Registry = RegistryJson;
 	Bridge->BundlePath = BundlePath;
 	Bridge->PublicRoots = PublicRoots;
@@ -395,6 +402,25 @@ void AJsgbHost::CreateOverlay()
 	}
 }
 
+void AJsgbHost::ShowReloadBanner(const FString& Text)
+{
+	if (!GEngine || !GEngine->GameViewport) { return; }
+	if (!Banner.IsValid())
+	{
+		Banner = SNew(SBox).HAlign(HAlign_Left).VAlign(VAlign_Bottom).Padding(FMargin(16, 0, 0, 72)).Visibility(EVisibility::HitTestInvisible)
+			[
+				SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(0.f, 0.f, 0.f, 0.72f)).Padding(FMargin(14, 8))
+				[
+					SAssignNew(BannerText, STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 18)).ColorAndOpacity(FLinearColor(1.f, 0.82f, 0.35f))
+				]
+			];
+		GEngine->GameViewport->AddViewportWidgetContent(Banner.ToSharedRef(), 200);
+	}
+	BannerText->SetText(FText::FromString(Text));
+	Banner->SetVisibility(EVisibility::HitTestInvisible);
+	BannerUntil = FPlatformTime::Seconds() + 8.0;
+}
+
 void AJsgbHost::PushUI()
 {
 	if (!Browser.IsValid() || !bDocumentReady || !Bridge || Bridge->UIVersion == PushedUIVersion) { return; }
@@ -432,6 +458,8 @@ void AJsgbHost::StartServer()
 			O->SetStringField(TEXT("bundle"), H->BundlePath);
 			O->SetBoolField(TEXT("ready"), H->Bridge && H->Bridge->bReady && !H->bRestart);
 			O->SetNumberField(TEXT("hostFrames"), H->Frame);
+			O->SetNumberField(TEXT("lastReloadMs"), H->ReloadStart >= 0 ? -1 : H->LastReloadMs);
+			O->SetNumberField(TEXT("lastBuildMs"), H->LastBuildMs);
 			O->SetNumberField(TEXT("sceneFrames"), H->Bridge ? H->Bridge->SceneFrames : 0);
 			O->SetNumberField(TEXT("drawn"), H->Mirror->DrawnEntities);
 			O->SetNumberField(TEXT("pendingBuilds"), H->Mirror->PendingBuilds());
@@ -468,6 +496,8 @@ void AJsgbHost::StartServer()
 			// Reboot V8 on the next tick, outside this request and any JS callback.
 			H->PendingBundle = Path;
 			H->bRestart = true;
+			H->ReloadStart = FPlatformTime::Seconds();
+			H->ReloadBuildMs = In->HasField(TEXT("buildMs")) ? In->GetNumberField(TEXT("buildMs")) : -1;
 			auto O = MakeShared<FJsonObject>();
 			O->SetStringField(TEXT("bundleSHA256"), Hash);
 			O->SetBoolField(TEXT("ready"), false);
@@ -514,6 +544,8 @@ void AJsgbHost::EndPlay(const EEndPlayReason::Type Reason)
 		Browser->UnbindUObject(TEXT("jsgb"), UIPort, true);
 		Browser.Reset();
 	}
+	if (Banner.IsValid() && GEngine && GEngine->GameViewport) { GEngine->GameViewport->RemoveViewportWidgetContent(Banner.ToSharedRef()); }
+	Banner.Reset(); BannerText.Reset();
 	if (Router) { Router->UnregisterRequestPreprocessor(RouteHandle); Router.Reset(); }
 	StopJs();
 	Super::EndPlay(Reason);
@@ -555,14 +587,23 @@ void AJsgbHost::LoadScript(const FString& Path)
 	UE_LOG(LogJsgbHost, Display, TEXT("Loaded %d script steps from %s"), Script.Num(), *Path);
 }
 
+// Script arguments may be quoted ('NEW GAME') or bare (.colony-pointer); bare ones become a JS string.
+static FString ScriptArg(const FString& Args)
+{
+	const FString A = Args.TrimStartAndEnd();
+	if (A.IsEmpty() || A[0] == TCHAR('\'') || A[0] == TCHAR('"') || A[0] == TCHAR('`')) { return A; }
+	return TEXT("\"") + A.ReplaceCharWithEscapedChar() + TEXT("\"");
+}
+
 void AJsgbHost::RunScript()
 {
 	if (Script.Num() == 0 || ReadyFrame < 0) { return; }
 	if (!WaitFor.IsEmpty())
 	{
-		// "wait <text or selector>" holds the script until that element exists; later steps keep their spacing.
+		// "wait <text or selector>" holds the script until that element exists, "gone" until it no
+		// longer does (a loading screen closing). Later steps keep their spacing.
 		const double Now = GameSeconds();
-		const bool bFound = Eval(FString::Printf(TEXT("__jsgb.find(%s)"), *WaitFor)) == TEXT("true");
+		const bool bFound = (Eval(FString::Printf(TEXT("__jsgb.find(%s)"), *ScriptArg(WaitFor))) == TEXT("true")) != bWaitGone;
 		if (!bFound && Now - WaitStart < 120.0) { return; }
 		Bridge->Log(bFound ? TEXT("log") : TEXT("error"), FString::Printf(TEXT("script wait %s %s after %.1fs"), *WaitFor, bFound ? TEXT("found") : TEXT("timed out"), Now - WaitStart));
 		ReadySeconds += Now - WaitStart;
@@ -574,9 +615,10 @@ void AJsgbHost::RunScript()
 	{
 		const FJsgbScriptStep& S = Script[ScriptCursor++];
 		FString Result;
-		if (S.Verb == TEXT("wait")) { WaitFor = S.Args; WaitStart = GameSeconds(); Bridge->Log(TEXT("log"), TEXT("script waiting for ") + S.Args); return; }
+		if (S.Verb == TEXT("wait") || S.Verb == TEXT("gone")) { WaitFor = S.Args; bWaitGone = S.Verb == TEXT("gone"); WaitStart = GameSeconds(); Bridge->Log(TEXT("log"), TEXT("script waiting for ") + S.Verb + TEXT(" ") + S.Args); return; }
 		if (S.Verb == TEXT("eval")) { Result = Eval(S.Args); }
-		else if (S.Verb == TEXT("click")) { Result = Eval(FString::Printf(TEXT("__jsgb.click(%s)"), *S.Args)); }
+		else if (S.Verb == TEXT("click")) { Result = Eval(FString::Printf(TEXT("__jsgb.click(%s)"), *ScriptArg(S.Args))); }
+		else if (S.Verb == TEXT("seed")) { Result = Eval(FString::Printf(TEXT("__jsgb.seed(%s)"), *S.Args)); }
 		else if (S.Verb == TEXT("key")) { Result = Eval(FString::Printf(TEXT("__jsgb.key(%s)"), *S.Args)); }
 		else if (S.Verb == TEXT("shot")) { Capture(CaptureDir.IsEmpty() ? FPaths::ProjectSavedDir() / TEXT("JsGameBridge") / (S.Args + TEXT(".png")) : CaptureDir / (S.Args + TEXT(".png"))); }
 		else if (S.Verb == TEXT("quit")) { ExitFrame = Frame + 2; }
@@ -591,6 +633,7 @@ void AJsgbHost::Tick(float DeltaSeconds)
 	if (bRestart || (Bridge && Bridge->bReloadRequested))
 	{
 		bRestart = false;
+		if (ReloadStart < 0) { ReloadStart = FPlatformTime::Seconds(); ReloadBuildMs = -1; }
 		StopJs();
 		if (!PendingBundle.IsEmpty()) { LoadPublication(GameDir, PendingBundle); PendingBundle.Reset(); }
 		StartJs();
@@ -602,12 +645,25 @@ void AJsgbHost::Tick(float DeltaSeconds)
 	if (UGameViewportClient* Vp = GetWorld()->GetGameViewport()) { FVector2D S; Vp->GetViewportSize(S); if (S.X > 0) { Size = FIntPoint(S.X, S.Y); } }
 	if (Size != Viewport) { Viewport = Size; Mirror->ViewportSize = Size; if (Bridge->OnViewport.IsBound()) { Bridge->OnViewport.Execute(Size.X, Size.Y); } }
 
-	if (ReadyFrame < 0 && Bridge->bReady) { ReadyFrame = Frame; ReadySeconds = GameSeconds(); Bridge->Log(TEXT("log"), FString::Printf(TEXT("game ready at host frame %lld"), Frame)); }
+	if (ReadyFrame < 0 && Bridge->bReady) { ReadyFrame = Frame; ReadySeconds = GameSeconds(); CaptureStart = ReadySeconds; Bridge->Log(TEXT("log"), FString::Printf(TEXT("game ready at host frame %lld"), Frame)); }
 	RunScript();
 	const double T0 = FPlatformTime::Seconds();
 	Bridge->OnFrame.Execute(ReadyFrame < 0 ? 40.f : 8.f);
 	JsMs += (FPlatformTime::Seconds() - T0) * 1000.0; ++TimedFrames;
 	PushUI();
+	// The first frame the reloaded game draws stops the reload timer.
+	if (ReloadStart >= 0 && ReadyFrame >= 0 && Frame > ReadyFrame)
+	{
+		LastReloadMs = (FPlatformTime::Seconds() - ReloadStart) * 1000.0;
+		LastBuildMs = ReloadBuildMs;
+		ReloadStart = -1;
+		const FString Line = LastBuildMs >= 0
+			? FString::Printf(TEXT("Hot reload: build %.2f s + Unreal %.2f s = %.2f s"), LastBuildMs / 1000.0, LastReloadMs / 1000.0, (LastBuildMs + LastReloadMs) / 1000.0)
+			: FString::Printf(TEXT("Hot reload: Unreal %.2f s"), LastReloadMs / 1000.0);
+		Bridge->Log(TEXT("log"), Line);
+		ShowReloadBanner(Line);
+	}
+	if (Banner.IsValid() && BannerUntil > 0 && FPlatformTime::Seconds() > BannerUntil) { Banner->SetVisibility(EVisibility::Collapsed); BannerUntil = 0; }
 	if (Frame % 600 == 0)
 	{
 		Bridge->Log(TEXT("log"), FString::Printf(TEXT("host frame %lld: js+mirror %.2f ms, frame %.2f ms, drawn %d, pending builds %d, voices %d, js errors %d"),

@@ -9,10 +9,10 @@
   "registry": [
     "JavaScript/hardburn-assets.json"
   ],
-  "out": "G:/JsGameBridgeBuilds/hardburn",
   "web": "http://100.69.252.53:5181/",
   "audioCues": {
     "file": "Registry/audio-cues-v5.json",
     "game": "hardburn"
-  }
+  },
+  "conformanceSearch": "?conformance=1"
 }

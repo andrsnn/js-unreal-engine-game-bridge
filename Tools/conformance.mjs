@@ -15,6 +15,9 @@ const has = name => rest.includes(name);
 const game = loadGame(gameArg);
 const script = path.resolve(flag('--script', path.join(bridge, 'Tests/scripts', game.id + '.txt')));
 const fps = +flag('--fps', 10);
+const seed = flag('--seed', '1234');
+// A query string both sides boot with (Games/<game>.json conformanceSearch), e.g. to fix a world seed.
+const search = flag('--search', game.conformanceSearch ?? game.search ?? '');
 const root = path.join(game.out, 'conformance');
 const webDir = path.join(root, 'web'), unrealDir = path.join(root, 'unreal'), pairDir = path.join(root, 'pairs');
 const film = path.resolve(flag('--film', path.join(root, `${game.id}-side-by-side.mp4`)));
@@ -33,18 +36,18 @@ const dirty = git('status', '--porcelain', '--untracked-files=no').split('\n').f
 console.log(`${game.id} at ${commit}${dirty.length ? ` (${dirty.length} modified tracked files)` : ''}`);
 const publication = await build(game);
 if (publication.sourceCommit !== commit) throw Error('source moved during the Unreal build');
-const report = {game: game.id, sourceCommit: commit, modifiedTrackedFiles: dirty.length, script: path.relative(bridge, script), fps};
+const report = {game: game.id, search, sourceCommit: commit, modifiedTrackedFiles: dirty.length, script: path.relative(bridge, script), fps};
 
 if (!has('--skip-web')) {
   fs.rmSync(webDir, {recursive: true, force: true});
   run(['Tools/web.mjs', 'build', game.id], 'web build');
   if (git('rev-parse', 'HEAD') !== commit) throw Error('source moved during the web build');
-  const out = run(['Tools/web.mjs', 'capture', game.id, '--script', script, '--frames', path.join(webDir, 'frames'), '--shots', webDir, '--fps', String(fps), '--res', '1280x720'], 'browser run');
+  const out = run(['Tools/web.mjs', 'capture', game.id, '--script', script, '--frames', path.join(webDir, 'frames'), '--shots', webDir, '--fps', String(fps), '--res', '1280x720', '--seed', seed, ...(search ? ['--search', search] : [])], 'browser run');
   report.web = JSON.parse(out.trim().split(/\r?\n/).filter(l => l.startsWith('{')).pop() ?? '{}');
 }
 if (!has('--skip-unreal')) {
   fs.rmSync(unrealDir, {recursive: true, force: true});
-  const out = run(['Tools/run-unreal.mjs', game.id, '--offscreen', '--fresh', '--res', '1280x720', '--script', script, '--capture', unrealDir, '--capture-fps', String(fps), '--timeout', '900'], 'Unreal run');
+  const out = run(['Tools/run-unreal.mjs', game.id, '--offscreen', '--fresh', '--res', '1280x720', '--script', script, '--capture', unrealDir, '--capture-fps', String(fps), '--timeout', '900', '--seed', seed, ...(search ? ['--search', search] : [])], 'Unreal run');
   report.unreal = {ready: /\nready /.test('\n' + out), status: JSON.parse(/ready (\{.*\})/.exec(out)?.[1] ?? '{}'), exited: /Unreal exited with 0/.test(out),
     errors: +(/(\d+) JsGameBridge errors/.exec(out)?.[1] ?? -1)};
 }
@@ -52,22 +55,29 @@ if (!has('--skip-unreal')) {
 // Pair frames by time after each side's first "wait" finished, so both start at the same game moment.
 function frames(dir) {
   const file = path.join(dir, 'times.txt');
-  if (!fs.existsSync(file)) return {list: [], start: 0};
-  let start = 0; const list = [];
+  if (!fs.existsSync(file)) return {list: [], start: 0, anchors: []};
+  const anchors = [], list = [];
   for (const line of fs.readFileSync(file, 'utf8').split(/\r?\n/)) {
     const [a, b] = line.trim().split(' ');
-    if (a === 'wait-end') { if (!start) start = +b; } else if (a && fs.existsSync(path.join(dir, a))) list.push({file: path.join(dir, a), t: +b});
+    if (a === 'wait-end') anchors.push(+b); else if (a && fs.existsSync(path.join(dir, a))) list.push({file: path.join(dir, a), t: +b});
   }
-  return {list, start};
+  // Each "wait" ends at its own time on each side (Unreal may load slower); pairing re-aligns there.
+  return {list, start: anchors[0] ?? 0, anchors};
 }
 const web = frames(path.join(webDir, 'frames')), unreal = frames(unrealDir);
 fs.rmSync(pairDir, {recursive: true, force: true}); fs.mkdirSync(pairDir, {recursive: true});
-const nearest = (side, t) => side.list.reduce((best, f) => Math.abs(f.t - side.start - t) < Math.abs(best.t - side.start - t) ? f : best, side.list[0]);
-const duration = Math.min(...[web, unreal].map(s => s.list.length ? s.list[s.list.length - 1].t - s.start : 0));
+const nearest = (side, t) => side.list.reduce((best, f) => Math.abs(f.t - t) < Math.abs(best.t - t) ? f : best, side.list[0]);
+// Unreal time for a browser time: offset by the latest wait both sides have passed.
+const ueTime = tw => {
+  let k = 0;
+  for (let i = 0; i < Math.min(web.anchors.length, unreal.anchors.length); i++) if (web.anchors[i] <= tw) k = i;
+  return (unreal.anchors[k] ?? unreal.start) + tw - (web.anchors[k] ?? web.start);
+};
+const webEnd = web.list.length ? web.list[web.list.length - 1].t : 0, ueEnd = unreal.list.length ? unreal.list[unreal.list.length - 1].t : 0;
 let pairs = 0;
-for (let t = 0; t <= duration; t += 1 / fps, pairs++) {
-  fs.copyFileSync(nearest(web, t).file, path.join(pairDir, `web_${String(pairs).padStart(5, '0')}.png`));
-  fs.copyFileSync(nearest(unreal, t).file, path.join(pairDir, `ue_${String(pairs).padStart(5, '0')}.png`));
+for (let tw = web.start; tw <= webEnd && ueTime(tw) <= ueEnd; tw += 1 / fps, pairs++) {
+  fs.copyFileSync(nearest(web, tw).file, path.join(pairDir, `web_${String(pairs).padStart(5, '0')}.png`));
+  fs.copyFileSync(nearest(unreal, ueTime(tw)).file, path.join(pairDir, `ue_${String(pairs).padStart(5, '0')}.png`));
 }
 report.pairs = pairs;
 if (pairs > 1) {

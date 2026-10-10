@@ -244,7 +244,19 @@ def make_post(mpc):
     g.link(g.op(unreal.MaterialExpressionSubtract, d, g.mask(cam, b=True)), '', sky_mask, '')
     not_sky = g.node(unreal.MaterialExpressionOneMinus)
     g.link(sky_mask, '', not_sky, '')
-    factor = g.mul(g.mul(g.lerp(smooth, exp2, is_exp), has_fog), not_sky)
+    # Surfaces drawn with fog: false write custom stencil 1 (JsgbSceneMirror). Skip fog where such a
+    # surface is the one in front, i.e. its custom depth matches the scene depth.
+    stencil = g.node(unreal.MaterialExpressionSceneTexture, scene_texture_id=unreal.SceneTextureId.PPI_CUSTOM_STENCIL)
+    cdepth = g.node(unreal.MaterialExpressionSceneTexture, scene_texture_id=unreal.SceneTextureId.PPI_CUSTOM_DEPTH)
+    marked = g.node(unreal.MaterialExpressionSaturate)
+    g.link(g.mask(stencil, r=True, aout='Color'), '', marked, '')
+    gap = g.node(unreal.MaterialExpressionAbs)
+    g.link(g.op(unreal.MaterialExpressionSubtract, g.mask(cdepth, r=True, aout='Color'), d), '', gap, '')
+    in_front = g.node(unreal.MaterialExpressionSaturate)
+    g.link(g.op(unreal.MaterialExpressionSubtract, g.const(1), g.op(unreal.MaterialExpressionDivide, gap, g.op(unreal.MaterialExpressionAdd, g.mul(d, g.const(0.002)), g.const(2)))), '', in_front, '')
+    fog_on = g.node(unreal.MaterialExpressionOneMinus)
+    g.link(g.mul(marked, in_front), '', fog_on, '')
+    factor = g.mul(g.mul(g.mul(g.lerp(smooth, exp2, is_exp), has_fog), not_sky), fog_on)
     fogged = g.lerp(g.mask(scene, r=True, g=True, b=True, aout='Color'), g.mask(fogc, r=True, g=True, b=True), factor)
     # Nothing nearer than the three.js far plane: show the scene background colour.
     camfar = g.mask(cam, g=True)

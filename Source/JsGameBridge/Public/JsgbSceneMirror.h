@@ -63,6 +63,10 @@ struct FJsgbMaterial
 	float Rotation = 0.f;
 	/** Drawn with a material generated from the game's own shader (needs the model matrix). */
 	bool bCustom = false;
+	/** three.js fog: false. Such surfaces write custom stencil 1 and the scene post skips their fog. */
+	bool bNoFog = false;
+	/** three.js side: 0 front, 1 back, 2 double. Back-side surfaces draw with reversed culling. */
+	int32 Side = 0;
 };
 
 USTRUCT()

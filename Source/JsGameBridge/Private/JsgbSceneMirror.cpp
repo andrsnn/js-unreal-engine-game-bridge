@@ -474,7 +474,8 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 	const bool bBillboard = Type.StartsWith(TEXT("Points")) || Type.StartsWith(TEXT("Sprite"));
 	const bool bUnlit = Flag(J, TEXT("unlit"));
 	const bool bTransparent = Flag(J, TEXT("transparent"));
-	const bool bDouble = Num(J, TEXT("side")) != 0;
+	const int32 Side = static_cast<int32>(Num(J, TEXT("side")));
+	const bool bDouble = Side != 0;
 	double AlphaTest = Num(J, TEXT("alphaTest"));
 	if (Flag(J, TEXT("alphaHash")) && AlphaTest <= 0) { AlphaTest = 0.5; }
 	const double Blending = Num(J, TEXT("blending"), 1);
@@ -495,9 +496,10 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 	// A game shader translated to HLSL (Runtime/src/shaders.ts) draws with its generated material.
 	const FString CustomKey = Str(J, TEXT("custom"));
 	const int32 BlendMode = Blending == 2 ? 2 : bTransparent ? 1 : 0;
-	if (!Parent && !CustomKey.IsEmpty()) { Parent = GeneratedParent(CustomKey, BlendMode, bDouble || bTransparent); }
+	// Only DoubleSide draws both faces; BackSide draws back faces through reversed culling (see Show).
+	if (!Parent && !CustomKey.IsEmpty()) { Parent = GeneratedParent(CustomKey, BlendMode, Side == 2); }
 	M.bCustom = Parent && !CustomKey.IsEmpty();
-	const int32 VariantKey = Parent ? 1000 + (GetTypeHash(RegistryPath + CustomKey) + BlendMode * 7 + (bDouble ? 1 : 0)) % 100000 : Variant;
+	const int32 VariantKey = Parent ? 1000 + (GetTypeHash(RegistryPath + CustomKey) + BlendMode * 7 + (Side == 2 ? 1 : 0)) % 100000 : Variant;
 	if (!M.Instance || M.Variant != VariantKey)
 	{
 		M.Instance = UMaterialInstanceDynamic::Create(Parent ? Parent : ParentFor(Variant), this);
@@ -519,7 +521,9 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 	Mid->SetScalarParameterValue(TEXT("Opacity"), M.Opacity);
 	Mid->SetScalarParameterValue(TEXT("AlphaTest"), AlphaTest);
 	Mid->SetScalarParameterValue(TEXT("VertexColorMix"), M.bVertexColors ? 1.f : 0.f);
-	Mid->SetScalarParameterValue(TEXT("Fogged"), J->HasField(TEXT("fog")) && !Flag(J, TEXT("fog")) ? 0.f : 1.f);
+	M.bNoFog = J->HasField(TEXT("fog")) && !Flag(J, TEXT("fog"));
+	M.Side = Side;
+	Mid->SetScalarParameterValue(TEXT("Fogged"), M.bNoFog ? 0.f : 1.f);
 	Mid->SetScalarParameterValue(TEXT("Specular"), Num(J, TEXT("specular"), 0.5));
 	if (bUniforms)
 	{
@@ -743,6 +747,15 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 		if (DebugHiddenKinds & (1 << Ent.Kind)) { if (C->IsVisible()) { C->SetVisibility(false); } Ent.Seen = Stamp; return; }
 		const bool bShadow = (Flags & 1) != 0;
 		if (C->CastShadow != bShadow) { C->SetCastShadow(bShadow); }
+		// Surfaces three.js draws without fog mark themselves in the custom stencil for the scene post.
+		const FJsgbMaterial* First = Ent.Materials.Num() ? Materials.Find(Ent.Materials[0]) : nullptr;
+		const bool bNoFog = First && First->bNoFog;
+		if (C->bRenderCustomDepth != bNoFog) { C->SetRenderCustomDepth(bNoFog); C->SetCustomDepthStencilValue(bNoFog ? 1 : 0); }
+		if (UStaticMeshComponent* Sm = Cast<UStaticMeshComponent>(C))
+		{
+			const bool bBack = First && First->Side == 1;
+			if (Sm->bReverseCulling != bBack) { Sm->bReverseCulling = bBack; Sm->MarkRenderStateDirty(); }
+		}
 		if (!C->IsVisible()) { C->SetVisibility(true); }
 		Ent.Seen = Stamp;
 		++Drawn;

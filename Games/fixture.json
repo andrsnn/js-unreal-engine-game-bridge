@@ -1,9 +1,10 @@
 {
   "title": "Fixture",
-  "repo": "G:/JsGameBridge/Tests/fixture",
+  "repo": "Tests/fixture",
   "index": "index.html",
-  "public": ["public"],
+  "public": [
+    "public"
+  ],
   "search": "",
-  "registry": [],
-  "out": "G:/JsGameBridgeBuilds/fixture"
+  "registry": []
 }
