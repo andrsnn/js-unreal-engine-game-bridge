@@ -32,7 +32,7 @@ g.__jsgb = {
     try { publishUI(); } catch (e) { host.log('error', 'ui publish: ' + (e instanceof Error ? e.stack : e)); }
     try { flushAudio(audioTime()); } catch (e) { host.log('error', 'audio: ' + (e instanceof Error ? e.stack : e)); }
   },
-  input, ui: uiInput, viewport: setViewport, emit: emitEvent,
+  input, ui: uiInput, publish: () => publishUI(0), viewport: setViewport, emit: emitEvent,
   click: clickElement, find: (what: string) => !!findElement(what),
   key: (code: string, how = 'press') => { if (how !== 'up') input.key('keydown', code); if (how !== 'down') input.key('keyup', code); return code; },
   pendingTimers, lastFrame, describeScene,

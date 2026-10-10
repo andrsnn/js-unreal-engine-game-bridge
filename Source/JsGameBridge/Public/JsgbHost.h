@@ -23,6 +23,8 @@ public:
 	UFUNCTION() void SendInput(const FString& Json);
 	UPROPERTY() TObjectPtr<UJsgbBridge> Bridge;
 	int32 LayoutMessages = 0;
+	/** The UI version the overlay last reported as applied (from its layout reports). */
+	int32 AppliedUIVersion = -1;
 };
 
 /** One timed step of a host script (-JsgbScript=file): "<seconds|@frame> <verb> <args>". */
@@ -106,6 +108,8 @@ private:
 	int32 ScriptCursor = 0;
 	FString WaitFor;
 	bool bWaitGone = false;
+	/** A wait that came true in the game ends once the overlay shows this UI version. */
+	int32 WaitUIVersion = -1;
 	double WaitStart = 0;
 	double JsMs = 0;
 	int32 TimedFrames = 0;

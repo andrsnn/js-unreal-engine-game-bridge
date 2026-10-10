@@ -47,6 +47,7 @@ if (has('--no-ui')) args.push('-JsgbNoUI');
 if (has('--no-post')) args.push('-JsgbNoPost');
 if (has('--fresh')) args.push('-JsgbFresh');
 if (has('--mute')) args.push('-JsgbVolume=0');
+if (has('--trace')) args.push('-JsgbTraceMirror');
 for (const [option, name] of [['--script', 'JsgbScript'], ['--capture', 'JsgbCapture'], ['--capture-fps', 'JsgbCaptureFps'], ['--fixed-fps', 'JsgbFixedFps'], ['--frames', 'JsgbFrames'], ['--search', 'JsgbSearch'], ['--seed', 'JsgbSeed']]) {
   const value = flag(option); if (value !== undefined) args.push(`-${name}=${/^(--script|--capture)$/.test(option) ? path.resolve(value) : value}`);
 }

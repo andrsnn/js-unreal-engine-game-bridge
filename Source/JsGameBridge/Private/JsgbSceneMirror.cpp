@@ -147,7 +147,7 @@ UMaterialInterface* UJsgbSceneMirror::ParentFor(int32 Variant)
 		for (UMaterialInterface* P : Parents)
 		{
 			UMaterial* M = P ? P->GetMaterial() : nullptr;
-			FMaterialResource* R = M ? M->GetMaterialResource(GShaderPlatformForFeatureLevel[Level]) : nullptr;
+			FMaterialResource* R = M ? M->GetMaterialResource(GMaxRHIShaderPlatform) : nullptr;
 			if (!R) { continue; }
 			R->FinishCompilation();
 			for (const FString& E : R->GetCompileErrors()) { UE_LOG(LogJsgbMirror, Error, TEXT("%s: %s"), *M->GetName(), *E); }
@@ -582,6 +582,7 @@ UStaticMeshComponent* UJsgbSceneMirror::NewComponent(bool bInstanced)
 FJsgbEntity& UJsgbSceneMirror::EntityOf(int32 Id, int32 Kind)
 {
 	FJsgbEntity& Ent = Entities.FindOrAdd(Id);
+	Ent.Id = Id;
 	if (Ent.Kind != Kind)
 	{
 		if (Ent.Component) { Ent.Component->DestroyComponent(); Ent.Component = nullptr; }
@@ -692,6 +693,8 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	if (Count < HeaderFloats) { return; }
 	ParentFor(VLit);
 	const double T0 = FPlatformTime::Seconds();
+	SkippedEntities = 0; CompilingEntities = 0;
+	const double StallAtStart = StallMs;
 	++Stamp;
 	++FrameCounter;
 
@@ -759,6 +762,9 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 		if (!C->IsVisible()) { C->SetVisibility(true); }
 		Ent.Seen = Stamp;
 		++Drawn;
+		const bool bCompiling = Ent.Materials.Num() && MaterialCompiling(Ent.Materials[0]);
+		if (bCompiling) { ++CompilingEntities; }
+		TraceRecord(Ent.Id, bCompiling ? 3 : 1, bCompiling ? TEXT("generated material still compiling") : TEXT(""));
 	};
 	while (K < Count)
 	{
@@ -772,7 +778,8 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			const float* M = &D[K + 5 + NumMats];
 			K += 5 + NumMats + 16;
 			FJsgbGeometry* G = Geometries.Find(Geo);
-			if (!G || !G->Mesh) { continue; }
+			if (G && !G->Mesh) { FirstBuild(Geo, G); }
+			if (!G || !G->Mesh) { ++SkippedEntities; TraceRecord(Id, 2, G ? TEXT("mesh could not be built") : TEXT("geometry released")); continue; }
 			FJsgbEntity& Ent = EntityOf(Id, RMesh);
 			if (!Ent.Component) { Ent.Component = NewComponent(false); }
 			UStaticMeshComponent* C = CastChecked<UStaticMeshComponent>(Ent.Component);
@@ -799,8 +806,8 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 				if (!Cached && !Path.IsEmpty()) { Cached = LoadObject<UStaticMesh>(nullptr, *Path); }
 				Mesh = Cast<UStaticMesh>(Cached); Revision = 1;
 			}
-			else if (FJsgbGeometry* G = Geometries.Find(Geo)) { Mesh = G->Mesh; Slots = G->Slots; Revision = G->BuiltRevision; }
-			if (!Mesh) { continue; }
+			else if (FJsgbGeometry* G = Geometries.Find(Geo)) { if (!G->Mesh) { FirstBuild(Geo, G); } Mesh = G->Mesh; Slots = G->Slots; Revision = G->BuiltRevision; }
+			if (!Mesh) { ++SkippedEntities; TraceRecord(Id, 2, TEXT("instanced mesh could not be built")); continue; }
 			FJsgbEntity& Ent = EntityOf(Id, RInstanced);
 			if (!Ent.Component) { Ent.Component = NewComponent(true); }
 			UInstancedStaticMeshComponent* C = CastChecked<UInstancedStaticMeshComponent>(Ent.Component);
@@ -863,7 +870,8 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 				Xf = ToTransform(&D[K + 5]);
 				K += 21;
 				FJsgbGeometry* G = Geometries.Find(Geo);
-				if (!G || !G->Mesh) { continue; }
+				if (G && !G->Mesh) { FirstBuild(Geo, G); }
+				if (!G || !G->Mesh) { ++SkippedEntities; TraceRecord(Id, 2, TEXT("point mesh could not be built")); continue; }
 				Mesh = G->Mesh; Revision = G->BuiltRevision;
 				const float Size = MatInfo ? MatInfo->Size : 1.f;
 				// three.js: attenuated points are size * tan(fov/2) world units across; others are pixels.
@@ -991,12 +999,14 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	}
 	DrawnEntities = Drawn;
 	CheckGenerated();
+	if (StallMs - StallAtStart > 50.0) { UE_LOG(LogJsgbMirror, Display, TEXT("Frame %d built new meshes for %.0f ms before drawing; the game clock leaves this out"), FrameCounter, StallMs - StallAtStart); }
 
 	// Hide what the scene no longer contains; destroy what stays gone.
 	for (auto It = Entities.CreateIterator(); It; ++It)
 	{
 		FJsgbEntity& Ent = It.Value();
 		if (Ent.Seen == Stamp) { continue; }
+		if (bTrace && TraceState.FindRef(Ent.Id) == 1 && Ent.Seen == Stamp - 1) { UE_LOG(LogJsgbMirror, Display, TEXT("TRACE f%d id %d removed: the game stopped drawing it"), FrameCounter, Ent.Id); TraceState.Remove(Ent.Id); }
 		if (Stamp - Ent.Seen > 600)
 		{
 			if (Ent.Component) { Ent.Component->DestroyComponent(); }
@@ -1226,6 +1236,16 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 		if (Blend == 1) { Ed->Opacity.Connect(0, Alpha); }
 		Mat->PreEditChange(nullptr);
 		Mat->PostEditChange();
+		// Finish compiling now, so the first frame that uses it draws the game's shader and not
+		// Unreal's default material. The time comes off the game clock (StallMs).
+		{
+			const double C0 = FPlatformTime::Seconds();
+			const ERHIFeatureLevel::Type Level = GetWorld() ? GetWorld()->GetFeatureLevel() : GMaxRHIFeatureLevel;
+			if (FMaterialResource* R = Mat->GetMaterialResource(GMaxRHIShaderPlatform)) { R->FinishCompilation(); }
+			const double Ms = (FPlatformTime::Seconds() - C0) * 1000.0;
+			StallMs += Ms;
+			UE_LOG(LogJsgbMirror, Display, TEXT("Generated material %s compiled in %.0f ms before first use"), *Key, Ms);
+		}
 		GeneratedPending.Add(CacheKey);
 		UE_LOG(LogJsgbMirror, Display, TEXT("Generated material for shader %s (%d inputs, blend %d)"), *Key, Custom->Inputs.Num(), Blend);
 		Result = Mat;
@@ -1233,6 +1253,53 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 #endif
 	Generated.Add(CacheKey, Result);
 	return Result;
+}
+
+bool UJsgbSceneMirror::MaterialCompiling(int32 MaterialId) const
+{
+#if WITH_EDITOR
+	const FJsgbMaterial* M = Materials.Find(MaterialId);
+	if (!M || !M->bCustom || !M->Instance) { return false; }
+	UMaterial* Base = M->Instance->GetMaterial();
+	const ERHIFeatureLevel::Type Level = GetWorld() ? GetWorld()->GetFeatureLevel() : GMaxRHIFeatureLevel;
+	if (!Base) { return false; }
+	const EShaderPlatform Platform = GMaxRHIShaderPlatform;
+	const FMaterialResource* R = Base->GetMaterialResource(Platform);
+	static TSet<const UMaterial*> Reported;
+	if (bTrace && !Reported.Contains(Base))
+	{
+		Reported.Add(Base);
+		FString Q;
+		for (int32 I = 0; I < EMaterialQualityLevel::Num; ++I)
+		{
+			const FMaterialResource* RQ = Base->GetMaterialResource(Platform, static_cast<EMaterialQualityLevel::Type>(I));
+			Q += FString::Printf(TEXT(" q%d=%s/%s/%s"), I, RQ ? TEXT("res") : TEXT("none"), RQ && RQ->GetGameThreadShaderMap() ? TEXT("map") : TEXT("nomap"), RQ && RQ->IsGameThreadShaderMapComplete() ? TEXT("complete") : TEXT("incomplete"));
+		}
+		const FMaterialResource* RF = Base->GetMaterialResource(GShaderPlatformForFeatureLevel[Level]);
+		UE_LOG(LogJsgbMirror, Display, TEXT("TRACE material %s platform %d: default=%s%s featurelevel-platform %d=%s/%s"), *Base->GetName(), static_cast<int32>(Platform),
+			R ? TEXT("res") : TEXT("none"), *Q, static_cast<int32>(GShaderPlatformForFeatureLevel[Level]), RF ? TEXT("res") : TEXT("none"), RF && RF->GetGameThreadShaderMap() ? TEXT("map") : TEXT("nomap"));
+	}
+	// Without a resource or a shader map, Unreal draws its default material in place of this one.
+	// (On-demand shader maps report "incomplete" while drawing correctly, so that flag is not used.)
+	return !R || !R->GetGameThreadShaderMap();
+#else
+	return false;
+#endif
+}
+
+void UJsgbSceneMirror::TraceRecord(int32 Id, uint8 State, const TCHAR* Why)
+{
+	if (!bTrace) { return; }
+	const uint8 Old = TraceState.FindRef(Id);
+	if (Old == State) { return; }
+	const int32 Since = TraceSince.FindRef(Id);
+	// Only changes after an object was first drawn are dropouts; a new object waiting for its first build is logged once.
+	if (State == 2 && Old == 1) { UE_LOG(LogJsgbMirror, Display, TEXT("TRACE f%d id %d DROPOUT after %d drawn frames: %s"), FrameCounter, Id, FrameCounter - Since, Why); }
+	else if (State == 2 && Old == 0) { UE_LOG(LogJsgbMirror, Display, TEXT("TRACE f%d id %d waiting: %s"), FrameCounter, Id, Why); }
+	else if (State == 3) { UE_LOG(LogJsgbMirror, Display, TEXT("TRACE f%d id %d drawn untextured: %s"), FrameCounter, Id, Why); }
+	else if (State == 1 && Old != 0) { UE_LOG(LogJsgbMirror, Display, TEXT("TRACE f%d id %d drawn again after %d frames %s"), FrameCounter, Id, FrameCounter - Since, Old == 2 ? TEXT("missing") : TEXT("untextured")); }
+	TraceState.Add(Id, State);
+	TraceSince.Add(Id, FrameCounter);
 }
 
 void UJsgbSceneMirror::CheckGenerated()
@@ -1243,7 +1310,7 @@ void UJsgbSceneMirror::CheckGenerated()
 	{
 		UMaterial* Mat = Generated.FindRef(GeneratedPending[I]);
 		const ERHIFeatureLevel::Type Level = GetWorld() ? GetWorld()->GetFeatureLevel() : GMaxRHIFeatureLevel;
-		FMaterialResource* R = Mat ? Mat->GetMaterialResource(GShaderPlatformForFeatureLevel[Level]) : nullptr;
+		FMaterialResource* R = Mat ? Mat->GetMaterialResource(GMaxRHIShaderPlatform) : nullptr;
 		if (R && !R->IsCompilationFinished()) { continue; }
 		if (R) { for (const FString& E : R->GetCompileErrors()) { UE_LOG(LogJsgbMirror, Error, TEXT("Generated material %s: %s"), *GeneratedPending[I], *E.Left(600)); } }
 		GeneratedPending.RemoveAt(I);
@@ -1283,8 +1350,24 @@ FString UJsgbSceneMirror::Describe(int32 Kind) const
 	return Out + TEXT("]}");
 }
 
+UStaticMesh* UJsgbSceneMirror::FirstBuild(int32 GeometryId, FJsgbGeometry* G)
+{
+	if (!G || G->Mesh || !G->Pending) { return G ? G->Mesh.Get() : nullptr; }
+	const double T0 = FPlatformTime::Seconds();
+	int32 Slots = 1;
+	G->Mesh = BuildMesh(*G->Pending, Slots);
+	if (!G->Mesh) { ++EmptyBuilds; }
+	G->Slots = Slots;
+	G->BuiltRevision = G->Revision;
+	G->Pending.Reset();
+	BuildQueue.Remove(GeometryId);
+	StallMs += (FPlatformTime::Seconds() - T0) * 1000.0;
+	return G->Mesh;
+}
+
 void UJsgbSceneMirror::ResetAll()
 {
+	StallMs = 0;
 	for (TPair<int32, FJsgbEntity>& E : Entities) { if (E.Value.Component) { E.Value.Component->DestroyComponent(); } if (E.Value.Effect) { E.Value.Effect->DestroyComponent(); } }
 	for (TPair<int32, FJsgbLight>& L : Lights) { if (L.Value.Component) { L.Value.Component->DestroyComponent(); } }
 	Entities.Reset(); Lights.Reset(); Geometries.Reset(); Materials.Reset(); Textures.Reset(); BuildQueue.Reset(); KeyNames.Reset();

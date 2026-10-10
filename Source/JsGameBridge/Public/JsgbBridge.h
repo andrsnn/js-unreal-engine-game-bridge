@@ -36,6 +36,8 @@ public:
 
 	/** location.search the game boots with (e.g. "?play"). */
 	UPROPERTY() FString Search;
+	/** -JsgbTraceMirror: the runtime logs each object's type, name and uuid the first time it is drawn. */
+	UPROPERTY() bool Trace = false;
 	/** The merged asset registry JSON the build wrote. */
 	UPROPERTY() FString Registry;
 	/** Math.random seed for deterministic captures (-JsgbSeed=); 0 keeps it random. */

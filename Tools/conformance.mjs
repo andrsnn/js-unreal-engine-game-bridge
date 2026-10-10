@@ -60,8 +60,10 @@ function frames(dir) {
   if (!fs.existsSync(file)) return {list: [], start: 0, anchors: []};
   const anchors = [], list = [];
   for (const line of fs.readFileSync(file, 'utf8').split(/\r?\n/)) {
-    const [a, b] = line.trim().split(' ');
-    if (a === 'wait-end') anchors.push(+b); else if (a && fs.existsSync(path.join(dir, a))) list.push({file: path.join(dir, a), t: +b});
+    const [a, b, ...fields] = line.trim().split(' ');
+    // Extra fields: objects=N (browser), drawn=N missing=N untextured=N (Unreal).
+    const counts = Object.fromEntries(fields.map(f => f.split('=')).filter(([k, v]) => k && v !== undefined).map(([k, v]) => [k, +v]));
+    if (a === 'wait-end') anchors.push(+b); else if (a && fs.existsSync(path.join(dir, a))) list.push({file: path.join(dir, a), t: +b, ...counts});
   }
   // Each "wait" ends at its own time on each side (Unreal may load slower); pairing re-aligns there.
   return {list, start: anchors[0] ?? 0, anchors};
@@ -73,16 +75,35 @@ const anchors = Math.min(web.anchors.length, unreal.anchors.length);
 const bounds = side => [0, ...side.anchors.slice(0, anchors), side.list.length ? side.list[side.list.length - 1].t : 0];
 const bw = bounds(web), bu = bounds(unreal);
 let pairs = 0;
+// The object check: every Unreal frame must draw all the objects the game drew, each with its
+// own material, and no paired frame may draw fewer objects than the browser frame beside it.
+// Pairs where one side is holding at a wait are compared only on the Unreal side's own counts.
+const violations = [];
+let checked = 0, compared = 0;
+const check = (pair, w, ue, held) => {
+  if (ue.drawn === undefined) return;
+  checked++;
+  const problems = [];
+  if (ue.missing > 0) problems.push(`${ue.missing} objects missing in Unreal`);
+  if (ue.untextured > 0) problems.push(`${ue.untextured} objects without their material in Unreal`);
+  if (!held && w.objects >= 0 && w.objects !== undefined) { compared++; if (ue.drawn < w.objects) problems.push(`Unreal drew ${ue.drawn} objects, the browser ${w.objects}`); }
+  if (problems.length) violations.push({pair, film: +(pair / fps).toFixed(1), web: w.file && path.basename(w.file), unreal: path.basename(ue.file), problems});
+};
 for (let i = 0; i + 1 < bw.length && web.list.length && unreal.list.length; i++) {
   const dw = Math.max(0, bw[i + 1] - bw[i]), du = Math.max(0, bu[i + 1] - bu[i]);
   // Between anchors the film runs as long as the slower side; after the last one, until either side ends.
   const span = i + 2 < bw.length ? Math.max(dw, du) : Math.min(dw, du);
   for (let u = 0; u < span; u += 1 / fps, pairs++) {
-    fs.copyFileSync(nearest(web, bw[i] + Math.min(u, dw)).file, path.join(pairDir, `web_${String(pairs).padStart(5, '0')}.png`));
-    fs.copyFileSync(nearest(unreal, bu[i] + Math.min(u, du)).file, path.join(pairDir, `ue_${String(pairs).padStart(5, '0')}.png`));
+    const w = nearest(web, bw[i] + Math.min(u, dw)), ue = nearest(unreal, bu[i] + Math.min(u, du));
+    fs.copyFileSync(w.file, path.join(pairDir, `web_${String(pairs).padStart(5, '0')}.png`));
+    fs.copyFileSync(ue.file, path.join(pairDir, `ue_${String(pairs).padStart(5, '0')}.png`));
+    check(pairs, w, ue, u > dw || u > du);
   }
 }
 report.pairs = pairs;
+report.objectCheck = {pass: violations.length === 0 && checked > 0, unrealFramesChecked: checked, pairsCompared: compared, failures: violations.length, first: violations.slice(0, 20)};
+console.log(report.objectCheck.pass ? `object check passed: ${checked} Unreal frames, ${compared} compared with the browser`
+  : `OBJECT CHECK FAILED on ${violations.length} of ${checked} frames; first: ${JSON.stringify(violations.slice(0, 3))}`);
 if (pairs > 1) {
   const font = 'C\\:/Windows/Fonts/arial.ttf';
   const label = (text, x) => `drawtext=fontfile='${font}':text='${text}':x=${x}:y=16:fontsize=26:fontcolor=white:box=1:boxcolor=black@0.55:boxborderw=8`;
@@ -103,3 +124,4 @@ for (const name of fs.readFileSync(script, 'utf8').split(/\r?\n/).map(l => /^\S+
 }
 fs.writeFileSync(path.join(root, 'report.json'), JSON.stringify(report, null, 1));
 console.log(JSON.stringify(report));
+if (!report.objectCheck.pass) process.exitCode = 1;

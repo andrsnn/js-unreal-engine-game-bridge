@@ -20,6 +20,8 @@ export interface JsgbHost {
   log(level: 'log' | 'warn' | 'error', text: string): void;
   /** location.search the web build would have (e.g. "?play"). */
   search: string;
+  /** Log each drawn object's identity the first time it is drawn (-JsgbTraceMirror). */
+  trace?: boolean;
   /** Restart the whole game (location.reload). */
   reload(): void;
   /** The game's entry module finished evaluating. */

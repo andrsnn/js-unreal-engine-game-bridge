@@ -29,6 +29,7 @@
     while (current.childNodes.length > position) current.lastChild.remove();
   }
 
+  let appliedVersion = -1;
   function layout() {
     layoutPending = false;
     const rects = {};
@@ -36,12 +37,14 @@
       const r = node.getBoundingClientRect(), c = getComputedStyle(node);
       rects[id(node)] = {x: r.x, y: r.y, width: r.width, height: r.height, display: c.display, visibility: c.visibility, opacity: c.opacity, pointerEvents: c.pointerEvents, fontSize: c.fontSize, color: c.color};
     }
-    send({type: 'host-layout', width: innerWidth, height: innerHeight, pixelRatio: devicePixelRatio, rects});
+    send({type: 'host-layout', version: appliedVersion, width: innerWidth, height: innerHeight, pixelRatio: devicePixelRatio, rects});
   }
   const scheduleLayout = () => { if (!layoutPending) { layoutPending = true; requestAnimationFrame(layout); } };
 
   window.JsGameUI = {
-    apply(html) {
+    apply(html, version) {
+      // The host's UI version this page now shows; layout reports carry it back, so scripts know what is on screen.
+      if (version !== undefined) appliedVersion = version;
       const parsed = new DOMParser().parseFromString('<!doctype html><html><head></head>' + html + '</html>', 'text/html');
       parsed.querySelectorAll('script').forEach(n => n.remove());
       for (const n of parsed.querySelectorAll('*')) for (const a of [...n.attributes]) if (/^on/i.test(a.name)) n.removeAttribute(a.name);

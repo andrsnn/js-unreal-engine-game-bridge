@@ -84,6 +84,7 @@ struct FJsgbEntity
 	GENERATED_BODY()
 	UPROPERTY() TObjectPtr<UPrimitiveComponent> Component;
 	UPROPERTY() TObjectPtr<UNiagaraComponent> Effect;
+	int32 Id = 0;
 	int32 Kind = 0;
 	int32 Geometry = 0;
 	int32 GeometryRevision = -1;
@@ -137,12 +138,23 @@ public:
 	FRotator CameraRotation = FRotator::ZeroRotator;
 	float CameraHFov = 90.f;
 	int32 DrawnEntities = 0;
+	/** -JsgbTraceMirror: log every object that stops being drawn while the game still draws it, and why. */
+	bool bTrace = false;
+	/** Objects the game drew this frame that the mirror could not draw (no built mesh). */
+	int32 SkippedEntities = 0;
+	/** Drawn objects whose generated material is still compiling (Unreal shows its default material). */
+	int32 CompilingEntities = 0;
+	/** Milliseconds spent building first-use meshes and compiling generated materials. The game
+	 *  clock leaves this time out, so the game sees uploads as instant, as in a browser frame. */
+	double StallMs = 0;
 	int32 EmptyBuilds = 0;
 	int32 PendingBuilds() const { return BuildQueue.Num(); }
 	FIntPoint ViewportSize = FIntPoint(1920, 1080);
 
 private:
 	UStaticMesh* BuildMesh(const FJsgbPendingGeometry& G, int32& OutSlots);
+	/** Builds a geometry the game draws for the first time, in this frame, as WebGL uploads it. */
+	UStaticMesh* FirstBuild(int32 GeometryId, struct FJsgbGeometry* G);
 	UStaticMesh* SpriteQuad();
 	UMaterialInterface* ParentFor(int32 Variant);
 	UMaterialInstanceDynamic* MaterialFor(int32 Id);
@@ -177,4 +189,9 @@ private:
 	TMap<int32, FString> KeyNames;
 	TArray<int32> BuildQueue;
 	uint32 Stamp = 0;
+	// Trace state per object id: 1 drawn, 2 skipped, 3 drawn with a compiling material.
+	TMap<int32, uint8> TraceState;
+	TMap<int32, int32> TraceSince;
+	void TraceRecord(int32 Id, uint8 State, const TCHAR* Why);
+	bool MaterialCompiling(int32 MaterialId) const;
 };

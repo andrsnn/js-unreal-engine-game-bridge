@@ -221,7 +221,12 @@ public:
 
 void UJsgbUIPort::SendInput(const FString& Json)
 {
-	if (Json.StartsWith(TEXT("{\"type\":\"host-layout\""))) { ++LayoutMessages; }
+	if (Json.StartsWith(TEXT("{\"type\":\"host-layout\"")))
+	{
+		++LayoutMessages;
+		const int32 At = Json.Find(TEXT("\"version\":"));
+		if (At >= 0) { AppliedUIVersion = FCString::Atoi(*Json.Mid(At + 10, 12)); }
+	}
 	if (Bridge && Bridge->OnUIInput.IsBound()) { Bridge->OnUIInput.Execute(Json); }
 }
 
@@ -319,11 +324,13 @@ void AJsgbHost::StartJs()
 	Bridge->Audio = Audio;
 	Mirror->Bridge = Bridge;
 	Audio->Bridge = Bridge;
-	if (UIPort) { UIPort->Bridge = Bridge; }
+	if (UIPort) { UIPort->Bridge = Bridge; UIPort->AppliedUIVersion = -1; }
 	Bridge->StartSeconds = FPlatformTime::Seconds();
 	double FixedFps = 0;
 	if (FParse::Value(FCommandLine::Get(), TEXT("JsgbFixedFps="), FixedFps) && FixedFps > 0) { Bridge->FixedStepMs = 1000.0 / FixedFps; }
 	Bridge->Search = Search;
+	Bridge->Trace = FParse::Param(FCommandLine::Get(), TEXT("JsgbTraceMirror"));
+	Mirror->bTrace = Bridge->Trace;
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbSeed="), Bridge->Seed);
 	Bridge->Registry = RegistryJson;
 	Bridge->BundlePath = BundlePath;
@@ -427,7 +434,7 @@ void AJsgbHost::PushUI()
 	PushedUIVersion = Bridge->UIVersion;
 	auto Packet = MakeShared<FJsonObject>();
 	Packet->SetStringField(TEXT("html"), Bridge->UIHtml);
-	Browser->ExecuteJavascript(TEXT("window.JsGameUI&&window.JsGameUI.apply((") + JsonString(Packet) + TEXT(").html)"));
+	Browser->ExecuteJavascript(TEXT("window.JsGameUI&&window.JsGameUI.apply((") + JsonString(Packet) + FString::Printf(TEXT(").html, %d)"), PushedUIVersion));
 }
 
 void AJsgbHost::StartServer()
@@ -604,8 +611,12 @@ void AJsgbHost::RunScript()
 		// "wait <text or selector>" holds the script until that element exists, "gone" until it no
 		// longer does (a loading screen closing). Later steps keep their spacing.
 		const double Now = GameSeconds();
-		const bool bFound = (Eval(FString::Printf(TEXT("__jsgb.find(%s)"), *ScriptArg(WaitFor))) == TEXT("true")) != bWaitGone;
-		if (!bFound && Now - WaitStart < 120.0) { return; }
+		const bool bFound = WaitUIVersion >= 0 || (Eval(FString::Printf(TEXT("__jsgb.find(%s)"), *ScriptArg(WaitFor))) == TEXT("true")) != bWaitGone;
+		// The game's DOM changed; the wait ends when the overlay shows that change on screen.
+		if (bFound && WaitUIVersion < 0 && UIPort && Browser.IsValid()) { Eval(TEXT("__jsgb.publish&&__jsgb.publish()")); WaitUIVersion = Bridge->UIVersion; }
+		const bool bShown = !bFound || WaitUIVersion < 0 || !UIPort || UIPort->AppliedUIVersion >= WaitUIVersion;
+		if ((!bFound || !bShown) && Now - WaitStart < 120.0) { return; }
+		WaitUIVersion = -1;
 		Bridge->Log(bFound ? TEXT("log") : TEXT("error"), FString::Printf(TEXT("script %s %s: %s after %.1fs"), bWaitGone ? TEXT("gone") : TEXT("wait"), *WaitFor, bFound ? TEXT("done") : TEXT("timed out"), Now - WaitStart));
 		ReadySeconds += Now - WaitStart;
 		WaitFor.Reset();
@@ -681,7 +692,9 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		{
 			const FString Name = FString::Printf(TEXT("frame_%05d.png"), CaptureIndex++);
 			Capture(CaptureDir / Name);
-			CaptureTimes += FString::Printf(TEXT("%s %.3f\n"), *Name, T);
+			// What the mirror drew in this frame: objects drawn, objects the game drew that are missing,
+			// and drawn objects still without their real material.
+			CaptureTimes += FString::Printf(TEXT("%s %.3f drawn=%d missing=%d untextured=%d\n"), *Name, T, Mirror->DrawnEntities, Mirror->SkippedEntities, Mirror->CompilingEntities);
 			NextCapture = FMath::Max(NextCapture + 1.0 / CaptureFps, T);
 			if (CaptureIndex % 20 == 0) { FFileHelper::SaveStringToFile(CaptureTimes, *(CaptureDir / TEXT("times.txt"))); }
 		}

@@ -19,6 +19,7 @@ const LIGHT_KIND: Record<string, number> = {DirectionalLight: 1, PointLight: 2, 
 
 let nextId = 1;
 const ids = new WeakMap<object, number>();
+const traced = new WeakSet<object>();
 const idOf = (o: object) => { let id = ids.get(o); if (!id) { id = nextId++; ids.set(o, id); } return id; };
 
 // Registry keys travel as small integers; the host learns each name once through events().
@@ -321,6 +322,11 @@ function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
   const replaced = skipKey !== null && o.userData?.assetContent === skipKey;
   let childSkip = skipKey;
   if (!replaced && visibleTo(o, cam)) {
+    if (host.trace && !traced.has(o) && ((o as THREE.Mesh).isMesh || (o as THREE.Points).isPoints || (o as THREE.Sprite).isSprite || (o as THREE.Line).isLine)) {
+      traced.add(o);
+      const g = (o as THREE.Mesh).geometry, m = materialsOf(o as THREE.Mesh)[0];
+      host.log('log', `TRACE id ${idOf(o)} ${o.type} "${o.name}" uuid ${o.uuid} parent "${o.parent?.name ?? ''}" geometry ${g ? idOf(g) : 0} ${g?.type ?? ''} material ${m ? idOf(m) : 0} ${m?.type ?? ''}`);
+    }
     const swap = registrySwap(o);
     if (swap?.kind === EFFECT) { push(EFFECT); push(idOf(o)); push(keyId(swap.key)); pushMatrix(o.matrixWorld); return; }
     if (swap?.kind === ASSET) {

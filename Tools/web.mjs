@@ -13,6 +13,7 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 
 const bridge = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const {loadGame} = await import(pathToFileURL(path.join(bridge, 'Tools/jsgb.mjs')).href);
+const {installVisibleObjects} = await import(pathToFileURL(path.join(bridge, 'Tools/visible-objects.mjs')).href);
 const [command, gameArg, ...rest] = process.argv.slice(2);
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 const game = loadGame(gameArg);
@@ -62,6 +63,8 @@ async function capture() {
     window.__jsgbSeed = seed => { let a = seed >>> 0; Math.random = () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return seed; };
     if (s0) window.__jsgbSeed(s0);
   }, seed);
+  // Each captured frame records how many objects the game drew, for the conformance check.
+  await page.addInitScript(installVisibleObjects);
   page.on('pageerror', e => errors.push(String(e)));
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
   const frames = flag('--frames'), fps = +flag('--fps', 10), shots = flag('--shots', path.join(game.out, 'web-shots'));
@@ -77,7 +80,13 @@ async function capture() {
   const grab = async () => {
     while (grabbing) {
       const t = (Date.now() - ready) / 1000;
-      if (t >= next) { await page.screenshot({path: path.join(frames, `frame_${String(index).padStart(5, '0')}.png`)}); times.push(`frame_${String(index++).padStart(5, '0')}.png ${t.toFixed(3)}`); next = Math.max(next + 1 / fps, t); }
+      if (t >= next) {
+        const name = `frame_${String(index++).padStart(5, '0')}.png`;
+        await page.screenshot({path: path.join(frames, name)});
+        const objects = await page.evaluate(() => window.__jsgbVisibleObjects?.() ?? -1).catch(() => -1);
+        times.push(`${name} ${t.toFixed(3)} objects=${objects}`);
+        next = Math.max(next + 1 / fps, t);
+      }
       else await new Promise(r => setTimeout(r, 5));
     }
   };

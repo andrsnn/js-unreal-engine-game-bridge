@@ -1,0 +1,10 @@
+# Hard Burn conformance. Both sides boot with ?conformance=1 (Games/hardburn.json conformanceSearch),
+# which starts a new campaign in fixed sector 2545 and skips the title menu.
+# The title flow (NEW GAME, faction) is covered by hardburn-newgame.txt.
+# Times are seconds after the game entry finished. "gone #startup" holds until the loading screen
+# closes, so both films start at the first campaign frame.
+0 gone #startup
+2 shot hb-campaign-start
+15 shot hb-campaign-15s
+30 shot hb-campaign-30s
+32 quit

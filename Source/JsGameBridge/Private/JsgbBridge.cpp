@@ -6,6 +6,7 @@
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
 #include "Misc/SecureHash.h"
+#include "Async/Async.h"
 THIRD_PARTY_INCLUDES_START
 #include "ft2build.h"
 #include FT_FREETYPE_H
@@ -30,7 +31,9 @@ FArrayBufferValue UJsgbBridge::ReadFile(const FString& Path)
 
 double UJsgbBridge::NowMs() const
 {
-	return FixedStepMs > 0 ? VirtualMs : (FPlatformTime::Seconds() - StartSeconds) * 1000.0;
+	// Time the mirror spent on first-use meshes and shaders is left out, so the game's timeline
+	// matches a browser, where those uploads finish inside the frame.
+	return FixedStepMs > 0 ? VirtualMs : (FPlatformTime::Seconds() - StartSeconds) * 1000.0 - (Mirror ? Mirror->StallMs : 0.0);
 }
 
 void UJsgbBridge::Log(const FString& Level, const FString& Text)
@@ -66,27 +69,56 @@ static TArray<FString> GJsgbCacheOrder;
 static int64 GJsgbCacheBytes = 0;
 static constexpr int64 GJsgbCacheLimit = int64(4) << 30;
 
+// The cache is also kept on disk (Saved/JsGameBridge/WorkerCache, up to 4 GB), so a fresh launch
+// gets worker results from earlier launches instead of running the jobs on the game thread again.
+// Keys hash the worker's source and the message, so a changed worker or message never matches.
+static int64 GJsgbDiskBytes = -1;
+static constexpr int64 GJsgbDiskLimit = int64(4) << 30;
+static FString CacheFile(const FString& Key) { return FPaths::ProjectSavedDir() / TEXT("JsGameBridge") / TEXT("WorkerCache") / (FMD5::HashAnsiString(*Key) + TEXT(".bin")); }
+
+static const TArray<uint8>& Remember(const FString& Key, TArray<uint8>&& Bytes)
+{
+	if (const TArray<uint8>* Old = GJsgbCache.Find(Key)) { GJsgbCacheBytes -= Old->Num(); GJsgbCache.Remove(Key); GJsgbCacheOrder.Remove(Key); }
+	int32 Evict = 0;
+	while (GJsgbCacheBytes + Bytes.Num() > GJsgbCacheLimit && Evict < GJsgbCacheOrder.Num())
+	{
+		if (const TArray<uint8>* Gone = GJsgbCache.Find(GJsgbCacheOrder[Evict])) { GJsgbCacheBytes -= Gone->Num(); GJsgbCache.Remove(GJsgbCacheOrder[Evict]); }
+		++Evict;
+	}
+	if (Evict) { GJsgbCacheOrder.RemoveAt(0, Evict); }
+	GJsgbCacheBytes += Bytes.Num();
+	GJsgbCacheOrder.Add(Key);
+	return GJsgbCache.Add(Key, MoveTemp(Bytes));
+}
+
 FArrayBufferValue UJsgbBridge::CacheGet(const FString& Key)
 {
 	FArrayBufferValue Out;
-	if (const TArray<uint8>* Found = GJsgbCache.Find(Key)) { Out.Data = *Found; }
+	if (const TArray<uint8>* Found = GJsgbCache.Find(Key)) { Out.Data = *Found; return Out; }
+	TArray<uint8> Disk;
+	if (FFileHelper::LoadFileToArray(Disk, *CacheFile(Key), FILEREAD_Silent) && Disk.Num() > 0) { Out.Data = Remember(Key, MoveTemp(Disk)); }
 	return Out;
 }
 
 void UJsgbBridge::CachePut(const FString& Key, FArrayBuffer Bytes)
 {
 	if (!Bytes.Data || Bytes.Length <= 0) { return; }
-	if (const TArray<uint8>* Old = GJsgbCache.Find(Key)) { GJsgbCacheBytes -= Old->Num(); GJsgbCache.Remove(Key); GJsgbCacheOrder.Remove(Key); }
-	int32 Evict = 0;
-	while (GJsgbCacheBytes + Bytes.Length > GJsgbCacheLimit && Evict < GJsgbCacheOrder.Num())
+	const TArray<uint8>& Kept = Remember(Key, TArray<uint8>(static_cast<const uint8*>(Bytes.Data), Bytes.Length));
+	if (GJsgbDiskBytes < 0)
 	{
-		if (const TArray<uint8>* Gone = GJsgbCache.Find(GJsgbCacheOrder[Evict])) { GJsgbCacheBytes -= Gone->Num(); GJsgbCache.Remove(GJsgbCacheOrder[Evict]); }
-		++Evict;
+		GJsgbDiskBytes = 0;
+		IFileManager::Get().IterateDirectoryStat(*FPaths::GetPath(CacheFile(TEXT("x"))), [](const TCHAR*, const FFileStatData& S) { if (!S.bIsDirectory) { GJsgbDiskBytes += S.FileSize; } return true; });
 	}
-	if (Evict) { GJsgbCacheOrder.RemoveAt(0, Evict); }
-	GJsgbCache.Add(Key, TArray<uint8>(static_cast<const uint8*>(Bytes.Data), Bytes.Length));
-	GJsgbCacheOrder.Add(Key);
-	GJsgbCacheBytes += Bytes.Length;
+	const FString File = CacheFile(Key);
+	if (GJsgbDiskBytes + Kept.Num() > GJsgbDiskLimit || FPaths::FileExists(File)) { return; }
+	GJsgbDiskBytes += Kept.Num();
+	// Written off the game thread under a temporary name, then renamed, so a crash never leaves a partial file.
+	Async(EAsyncExecution::ThreadPool, [File, Copy = TArray<uint8>(Kept)]()
+	{
+		IFileManager::Get().MakeDirectory(*FPaths::GetPath(File), true);
+		const FString Temp = File + TEXT(".tmp");
+		if (FFileHelper::SaveArrayToFile(Copy, *Temp)) { IFileManager::Get().Move(*File, *Temp, true, true); }
+	});
 }
 
 void UJsgbBridge::JsReady(const FString& Info)
