@@ -63,7 +63,7 @@ export async function smoke(game, {frames = 600, script, search = '', verbose = 
   // Remove built-ins newer than Puerts' V8 (9.4) so the runtime's own versions are what runs here.
   const removed = [[Array.prototype, ['toSorted', 'toReversed', 'toSpliced', 'with', 'findLast', 'findLastIndex']], [Object, ['hasOwn', 'groupBy']], [Map, ['groupBy']],
     [Promise, ['withResolvers']], [Array, ['fromAsync']], [String.prototype, ['isWellFormed', 'toWellFormed']],
-    [Set.prototype, ['union', 'intersection', 'difference', 'symmetricDifference', 'isSubsetOf', 'isSupersetOf', 'isDisjointFrom']]];
+    [Set.prototype, ['union', 'intersection', 'difference', 'symmetricDifference', 'isSubsetOf', 'isSupersetOf', 'isDisjointFrom']], [globalThis, ['Intl']]];
   const saved = removed.flatMap(([o, keys]) => keys.map(k => [o, k, Object.getOwnPropertyDescriptor(o, k)]));
   for (const [o, k] of saved) delete o[k];
   const onRejection = e => host.log('error', 'unhandled rejection: ' + (e?.stack ?? e));

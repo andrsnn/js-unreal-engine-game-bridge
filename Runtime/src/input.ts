@@ -85,7 +85,13 @@ export const input = {
     if (type === 'keydown') held.add(code); else held.delete(code);
     const e = new g.KeyboardEvent(type, {code, key: keyFor(code, shift), repeat, bubbles: true, cancelable: true,
       shiftKey: held.has('ShiftLeft') || held.has('ShiftRight'), ctrlKey: held.has('ControlLeft') || held.has('ControlRight'), altKey: held.has('AltLeft') || held.has('AltRight')});
-    return deliver(keyTarget(), e);
+    const target = keyTarget(), allowed = deliver(target, e);
+    // The browser's default action: Enter on a focused button or link clicks it, Space on release.
+    const tag = String((target as {tagName?: string}).tagName ?? '').toUpperCase();
+    const clickable = tag === 'BUTTON' || tag === 'A' || (tag === 'INPUT' && /^(submit|button|checkbox|radio)$/i.test((target as {type?: string}).type ?? ''));
+    if (allowed && clickable && !repeat && ((type === 'keydown' && code === 'Enter' && tag !== 'INPUT') || (type === 'keyup' && code === 'Space')))
+      (target as {click?: () => void}).click?.();
+    return allowed;
   },
   mouse(type: string, x: number, y: number, button = 0, buttons = 0, dx = 0, dy = 0) {
     pointer.x = x; pointer.y = y; pointer.buttons = buttons;

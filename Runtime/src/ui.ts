@@ -29,7 +29,9 @@ export function publishUI(intervalMs = 100) {
   dirty = false;
   const body = g.document.body; stamp(body);
   const html = body.outerHTML;
-  if (html !== last) { last = html; out.publish(html); }
+  // The game's own origin is http://localhost/; the overlay loads files from the host's origin, so
+  // absolute links to the game origin (new URL(path, document.baseURI)) become root-relative.
+  if (html !== last) { last = html; out.publish(html.replaceAll('http://localhost/', '/')); }
   dirty = false;
 }
 

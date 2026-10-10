@@ -52,7 +52,9 @@ if (!has('--skip-unreal')) {
     errors: +(/(\d+) JsGameBridge errors/.exec(out)?.[1] ?? -1)};
 }
 
-// Pair frames by time after each side's first "wait" finished, so both start at the same game moment.
+// Pair frames segment by segment. Each "wait"/"gone" step ends a segment on both sides; the side
+// that gets there first holds its last frame until the other side arrives, so a slower load shows
+// as a held frame and both sides enter the next segment together.
 function frames(dir) {
   const file = path.join(dir, 'times.txt');
   if (!fs.existsSync(file)) return {list: [], start: 0, anchors: []};
@@ -67,17 +69,18 @@ function frames(dir) {
 const web = frames(path.join(webDir, 'frames')), unreal = frames(unrealDir);
 fs.rmSync(pairDir, {recursive: true, force: true}); fs.mkdirSync(pairDir, {recursive: true});
 const nearest = (side, t) => side.list.reduce((best, f) => Math.abs(f.t - t) < Math.abs(best.t - t) ? f : best, side.list[0]);
-// Unreal time for a browser time: offset by the latest wait both sides have passed.
-const ueTime = tw => {
-  let k = 0;
-  for (let i = 0; i < Math.min(web.anchors.length, unreal.anchors.length); i++) if (web.anchors[i] <= tw) k = i;
-  return (unreal.anchors[k] ?? unreal.start) + tw - (web.anchors[k] ?? web.start);
-};
-const webEnd = web.list.length ? web.list[web.list.length - 1].t : 0, ueEnd = unreal.list.length ? unreal.list[unreal.list.length - 1].t : 0;
+const anchors = Math.min(web.anchors.length, unreal.anchors.length);
+const bounds = side => [0, ...side.anchors.slice(0, anchors), side.list.length ? side.list[side.list.length - 1].t : 0];
+const bw = bounds(web), bu = bounds(unreal);
 let pairs = 0;
-for (let tw = web.start; tw <= webEnd && ueTime(tw) <= ueEnd; tw += 1 / fps, pairs++) {
-  fs.copyFileSync(nearest(web, tw).file, path.join(pairDir, `web_${String(pairs).padStart(5, '0')}.png`));
-  fs.copyFileSync(nearest(unreal, ueTime(tw)).file, path.join(pairDir, `ue_${String(pairs).padStart(5, '0')}.png`));
+for (let i = 0; i + 1 < bw.length && web.list.length && unreal.list.length; i++) {
+  const dw = Math.max(0, bw[i + 1] - bw[i]), du = Math.max(0, bu[i + 1] - bu[i]);
+  // Between anchors the film runs as long as the slower side; after the last one, until either side ends.
+  const span = i + 2 < bw.length ? Math.max(dw, du) : Math.min(dw, du);
+  for (let u = 0; u < span; u += 1 / fps, pairs++) {
+    fs.copyFileSync(nearest(web, bw[i] + Math.min(u, dw)).file, path.join(pairDir, `web_${String(pairs).padStart(5, '0')}.png`));
+    fs.copyFileSync(nearest(unreal, bu[i] + Math.min(u, du)).file, path.join(pairDir, `ue_${String(pairs).padStart(5, '0')}.png`));
+  }
 }
 report.pairs = pairs;
 if (pairs > 1) {

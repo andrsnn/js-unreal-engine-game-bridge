@@ -48,7 +48,8 @@ The pieces:
 
 - **Browser APIs** (`Runtime/src`). A DOM from linkedom, `window`, timers and
   `requestAnimationFrame`, `fetch` for files in the build, `localStorage`, keyboard, mouse and
-  gamepad input, canvas 2D with real text, Web Workers, and Web Audio.
+  gamepad input, canvas 2D with real text, Web Workers, Web Audio, and an en-US `Intl` for number
+  and date formatting (Puerts' V8 has no `Intl`).
 - **Renderer stand-in.** The bundle swaps `THREE.WebGLRenderer` for a renderer that records the scene
   instead of drawing it. Each frame it sends the camera, lights, fog, meshes, instances, points,
   lines and sprites to Unreal as one float array. Geometry, textures and materials are sent once, then

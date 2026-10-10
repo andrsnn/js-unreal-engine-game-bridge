@@ -98,6 +98,9 @@ private:
 	int32 CaptureIndex = 0;
 	double CaptureStart = -1;
 	FString CaptureTimes;
+	/** Screenshots wait their turn: the engine keeps only one request, and a newer one replaces it. */
+	TArray<FString> CaptureQueue;
+	int32 ExitDelays = 0;
 	FIntPoint Viewport = FIntPoint::ZeroValue;
 	TArray<FJsgbScriptStep> Script;
 	int32 ScriptCursor = 0;

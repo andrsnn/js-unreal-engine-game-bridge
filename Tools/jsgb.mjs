@@ -268,7 +268,7 @@ else if (command === 'unreal' || command === 'watch') {
     if (running && path.dirname(path.resolve(running.bundle ?? '')) === game.out) await reload(game);
     else if (running) throw Error(`Unreal is running another game (${running.game}); close it first`);
     else {
-      const started = spawnSync(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), gameArg, '--res', flag('--res', '1600x900'), '--timeout', flag('--timeout', '14400'), '--detach', ...(flag('--search') ? ['--search', flag('--search')] : [])], {stdio: 'inherit'});
+      const started = spawnSync(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), gameArg, '--res', flag('--res', '1600x900'), '--timeout', flag('--timeout', '14400'), '--detach', ...(flag('--search') ? ['--search', flag('--search')] : []), ...['--offscreen', '--mute'].filter(has)], {stdio: 'inherit'});
       if (started.status !== 0) throw Error('Unreal did not start; see the log above');
     }
   }

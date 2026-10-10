@@ -562,7 +562,8 @@ void AJsgbHost::Capture(const FString& Path)
 {
 	// The viewport screenshot includes the CEF overlay, so it shows what a player sees.
 	IFileManager::Get().MakeDirectory(*FPaths::GetPath(Path), true);
-	FScreenshotRequest::RequestScreenshot(Path, true, false);
+	CaptureQueue.Add(Path);
+	if (!FScreenshotRequest::IsScreenshotRequested()) { FScreenshotRequest::RequestScreenshot(CaptureQueue[0], true, false); CaptureQueue.RemoveAt(0); }
 }
 
 void AJsgbHost::LoadScript(const FString& Path)
@@ -605,7 +606,7 @@ void AJsgbHost::RunScript()
 		const double Now = GameSeconds();
 		const bool bFound = (Eval(FString::Printf(TEXT("__jsgb.find(%s)"), *ScriptArg(WaitFor))) == TEXT("true")) != bWaitGone;
 		if (!bFound && Now - WaitStart < 120.0) { return; }
-		Bridge->Log(bFound ? TEXT("log") : TEXT("error"), FString::Printf(TEXT("script wait %s %s after %.1fs"), *WaitFor, bFound ? TEXT("found") : TEXT("timed out"), Now - WaitStart));
+		Bridge->Log(bFound ? TEXT("log") : TEXT("error"), FString::Printf(TEXT("script %s %s: %s after %.1fs"), bWaitGone ? TEXT("gone") : TEXT("wait"), *WaitFor, bFound ? TEXT("done") : TEXT("timed out"), Now - WaitStart));
 		ReadySeconds += Now - WaitStart;
 		WaitFor.Reset();
 		if (!CaptureDir.IsEmpty()) { CaptureTimes += FString::Printf(TEXT("wait-end %.3f\n"), Now - CaptureStart); }
@@ -615,7 +616,7 @@ void AJsgbHost::RunScript()
 	{
 		const FJsgbScriptStep& S = Script[ScriptCursor++];
 		FString Result;
-		if (S.Verb == TEXT("wait") || S.Verb == TEXT("gone")) { WaitFor = S.Args; bWaitGone = S.Verb == TEXT("gone"); WaitStart = GameSeconds(); Bridge->Log(TEXT("log"), TEXT("script waiting for ") + S.Verb + TEXT(" ") + S.Args); return; }
+		if (S.Verb == TEXT("wait") || S.Verb == TEXT("gone")) { WaitFor = S.Args; bWaitGone = S.Verb == TEXT("gone"); WaitStart = GameSeconds(); Bridge->Log(TEXT("log"), FString::Printf(TEXT("script %s %s: waiting"), *S.Verb, *S.Args)); return; }
 		if (S.Verb == TEXT("eval")) { Result = Eval(S.Args); }
 		else if (S.Verb == TEXT("click")) { Result = Eval(FString::Printf(TEXT("__jsgb.click(%s)"), *ScriptArg(S.Args))); }
 		else if (S.Verb == TEXT("seed")) { Result = Eval(FString::Printf(TEXT("__jsgb.seed(%s)"), *S.Args)); }
@@ -630,6 +631,7 @@ void AJsgbHost::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	++Frame;
+	if (CaptureQueue.Num() && !FScreenshotRequest::IsScreenshotRequested()) { FScreenshotRequest::RequestScreenshot(CaptureQueue[0], true, false); CaptureQueue.RemoveAt(0); }
 	if (bRestart || (Bridge && Bridge->bReloadRequested))
 	{
 		bRestart = false;
@@ -690,6 +692,8 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		Bridge->Log(TEXT("warn"), FString::Printf(TEXT("time limit of %.0f s reached; exiting"), MaxSeconds));
 		ExitFrame = Frame + 1;
 	}
+	// Quit once every queued screenshot is written.
+	if (ExitFrame > 0 && Frame >= ExitFrame && (CaptureQueue.Num() || FScreenshotRequest::IsScreenshotRequested()) && ++ExitDelays < 600) { ExitFrame = Frame + 1; }
 	if (ExitFrame > 0 && Frame >= ExitFrame)
 	{
 		Bridge->Log(TEXT("log"), TEXT("exit frame reached"));

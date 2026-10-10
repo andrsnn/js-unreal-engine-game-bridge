@@ -1,4 +1,5 @@
 import '../../JavaScript/LanguageBuiltins.mjs';
+import './intl';
 
 /** Standard web APIs that Puerts' V8 (9.4, no Node, no browser) lacks. Each install is guarded,
  *  so a newer host keeps its native version. */

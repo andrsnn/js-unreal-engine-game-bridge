@@ -1,4 +1,4 @@
-# Unlit Worlds conformance: title, New Game, Begin Journey, then the first 30 seconds on the planet.
+# Unlit Worlds conformance: title, New Game, Begin Journey, then the first minute on the planet.
 # The world seed defaults to 42 on both sides. Times are seconds after the game entry finished.
 0 wait 'New Game'
 1 shot uw-title
@@ -7,6 +7,6 @@
 4 click 'Begin Journey'
 5 wait #ground-control-hints
 7 shot uw-planet-start
-20 shot uw-planet-15s
 35 shot uw-planet-30s
-37 quit
+65 shot uw-planet-60s
+67 quit
