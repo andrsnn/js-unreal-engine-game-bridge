@@ -51,6 +51,9 @@
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
 #include "RHI.h"
+#include "Misc/Base64.h"
+#include "FrameGrabber.h"
+#include "Engine/GameEngine.h"
 THIRD_PARTY_INCLUDES_START
 #include <openssl/sha.h>
 THIRD_PARTY_INCLUDES_END
@@ -236,6 +239,12 @@ void UJsgbUIPort::SendInput(const FString& Json)
 		const int32 W = Json.Find(TEXT("\"width\":")), H = Json.Find(TEXT("\"height\":")), R = Json.Find(TEXT("\"pixelRatio\":"));
 		const FString Size = FString::Printf(TEXT("%s x %s, pixel ratio %s"), W >= 0 ? *Json.Mid(W + 8, 6) : TEXT("?"), H >= 0 ? *Json.Mid(H + 9, 6) : TEXT("?"), R >= 0 ? *Json.Mid(R + 13, 6) : TEXT("?"));
 		if (Size != LastLayoutSize) { LastLayoutSize = Size; UE_LOG(LogTemp, Display, TEXT("UI overlay page size %s"), *Size); }
+	}
+	// The overlay page's own errors and notes.
+	if (Json.StartsWith(TEXT("{\"type\":\"host-log\"")))
+	{
+		UE_LOG(LogJsgbHost, Warning, TEXT("UI overlay: %s"), *Json.Left(600));
+		return;
 	}
 	if (Json.StartsWith(TEXT("{\"type\":\"host-css\"")))
 	{
@@ -502,7 +511,7 @@ void AJsgbHost::CreateOverlay()
 	// The page's own stylesheets, with every full-screen background made transparent so the
 	// Unreal view shows through where the web canvas was.
 	const FString Html = TEXT("<!doctype html><html><head><meta charset='utf-8'><base href='") + Origin + TEXT("'><title>") + Title + TEXT("</title><style id='jsgb-page-css'>") + PageCss +
-		TEXT("</style><style>html,body{background:transparent!important;overflow:hidden!important}::-webkit-scrollbar{display:none}canvas{background:transparent!important;opacity:0!important}</style><script>") + Client + TEXT("</script></head><body></body></html>");
+		TEXT("</style><style>html,body{background:transparent!important;overflow:hidden!important}::-webkit-scrollbar{display:none}canvas:not([data-jsgb-pixels]){background:transparent!important;opacity:0!important}</style><script>") + Client + TEXT("</script></head><body></body></html>");
 	Browser->LoadString(Html, Origin + TEXT("index.html"));
 	if (APlayerController* Pc = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 	{
@@ -535,11 +544,19 @@ void AJsgbHost::ShowReloadBanner(const FString& Text)
 
 void AJsgbHost::PushUI()
 {
-	if (!Browser.IsValid() || !bDocumentReady || !Bridge || Bridge->UIVersion == PushedUIVersion) { return; }
-	PushedUIVersion = Bridge->UIVersion;
-	auto Packet = MakeShared<FJsonObject>();
-	Packet->SetStringField(TEXT("html"), Bridge->UIHtml);
-	Browser->ExecuteJavascript(TEXT("window.JsGameUI&&window.JsGameUI.apply((") + JsonString(Packet) + FString::Printf(TEXT(").html, %d)"), PushedUIVersion));
+	if (!Browser.IsValid() || !bDocumentReady || !Bridge) { return; }
+	if (Bridge->UIVersion != PushedUIVersion)
+	{
+		PushedUIVersion = Bridge->UIVersion;
+		auto Packet = MakeShared<FJsonObject>();
+		Packet->SetStringField(TEXT("html"), Bridge->UIHtml);
+		Browser->ExecuteJavascript(TEXT("window.JsGameUI&&window.JsGameUI.apply((") + JsonString(Packet) + FString::Printf(TEXT(").html, %d)"), PushedUIVersion));
+	}
+	for (const TPair<FString, UJsgbBridge::FUICanvas>& C : Bridge->UICanvases)
+	{
+		Browser->ExecuteJavascript(FString::Printf(TEXT("window.JsGameUI&&window.JsGameUI.canvas&&window.JsGameUI.canvas('%s',%d,%d,'%s')"), *C.Key, C.Value.Width, C.Value.Height, *FBase64::Encode(C.Value.Rgba)));
+	}
+	Bridge->UICanvases.Reset();
 }
 
 void AJsgbHost::StartServer()
@@ -608,7 +625,9 @@ void AJsgbHost::StartServer()
 		{
 			const FString Request = Body(R);
 			if (Request.StartsWith(TEXT("hide:"))) { H->Mirror->DebugHiddenKinds = FCString::Atoi(*Request.Mid(5)); }
-			TUniquePtr<FHttpServerResponse> Resp = FHttpServerResponse::Create(H->Mirror->Describe(Request.StartsWith(TEXT("hide:")) ? 0 : FCString::Atoi(*Request)), TEXT("application/json"));
+			FString Lo, Hi;
+			if (Request.StartsWith(TEXT("hideids:")) && Request.Mid(8).Split(TEXT("-"), &Lo, &Hi)) { H->Mirror->DebugHiddenIds = FIntPoint(FCString::Atoi(*Lo), FCString::Atoi(*Hi)); }
+			TUniquePtr<FHttpServerResponse> Resp = FHttpServerResponse::Create(H->Mirror->Describe(Request.StartsWith(TEXT("hide")) ? 0 : FCString::Atoi(*Request)), TEXT("application/json"));
 			Done(MoveTemp(Resp));
 			return true;
 		}
@@ -891,19 +910,49 @@ void AJsgbHost::StartRecording(const FString& Dir, double Fps)
 	NextRecord = FPlatformTime::Seconds();
 	RecordEncoding = MakeShared<FThreadSafeCounter>();
 	FModuleManager::LoadModuleChecked<IImageWrapperModule>(TEXT("ImageWrapper"));
+	// The frame grabber copies the finished window (game and overlay) to a ring of GPU buffers and reads each one
+	// a few frames later. A screenshot instead waits for the GPU to finish every recorded frame.
+	const UGameEngine* Game = Cast<UGameEngine>(GEngine);
+	if (Game && Game->SceneViewport.IsValid() && !FParse::Param(FCommandLine::Get(), TEXT("JsgbRecordScreenshots")))
+	{
+		Grabber = MakeShared<FFrameGrabber>(Game->SceneViewport.ToSharedRef(), Game->SceneViewport->GetSize(), PF_B8G8R8A8, 4);
+		Grabber->StartCapturingFrames();
+		return;
+	}
 	// With a listener bound, the engine hands over the window pixels instead of writing a PNG.
 	RecordHandle = UGameViewportClient::OnScreenshotCaptured().AddUObject(this, &AJsgbHost::OnRecordedFrame);
+}
+
+namespace
+{
+	/** When a grabbed frame was rendered. */
+	struct FRecordedAt : IFramePayload { int64 UnixMs = 0; };
+	int64 UnixMsNow() { return (FDateTime::UtcNow() - FDateTime(1970, 1, 1)).GetTicks() / ETimespan::TicksPerMillisecond; }
+}
+
+void AJsgbHost::TakeGrabbedFrames()
+{
+	if (!Grabber) { return; }
+	for (FCapturedFrameData& F : Grabber->GetCapturedFrames())
+	{
+		const FRecordedAt* At = static_cast<const FRecordedAt*>(F.Payload.Get());
+		SaveRecordedFrame(MoveTemp(F.ColorBuffer), F.BufferSize.X, F.BufferSize.Y, At ? At->UnixMs : UnixMsNow());
+	}
 }
 
 void AJsgbHost::OnRecordedFrame(int32 Width, int32 Height, const TArray<FColor>& Bitmap)
 {
 	if (RecordDir.IsEmpty()) { return; }
-	const int64 UnixMs = (FDateTime::UtcNow() - FDateTime(1970, 1, 1)).GetTicks() / ETimespan::TicksPerMillisecond;
+	SaveRecordedFrame(TArray<FColor>(Bitmap), Width, Height, UnixMsNow());
+}
+
+void AJsgbHost::SaveRecordedFrame(TArray<FColor>&& Bitmap, int32 Width, int32 Height, int64 UnixMs)
+{
 	const FString Name = FString::Printf(TEXT("frame_%05d.jpg"), RecordIndex++);
 	RecordTimes += FString::Printf(TEXT("%s %lld\n"), *Name, UnixMs);
 	TSharedPtr<FThreadSafeCounter> Pending = RecordEncoding;
 	Pending->Increment();
-	Async(EAsyncExecution::ThreadPool, [Pixels = Bitmap, Width, Height, Path = RecordDir / Name, Pending]()
+	Async(EAsyncExecution::ThreadPool, [Pixels = MoveTemp(Bitmap), Width, Height, Path = RecordDir / Name, Pending]()
 	{
 		IImageWrapperModule& Images = FModuleManager::GetModuleChecked<IImageWrapperModule>(TEXT("ImageWrapper"));
 		TSharedPtr<IImageWrapper> Jpeg = Images.CreateImageWrapper(EImageFormat::JPEG);
@@ -920,6 +969,15 @@ void AJsgbHost::StopRecording()
 {
 	if (RecordDir.IsEmpty()) { return; }
 	UGameViewportClient::OnScreenshotCaptured().Remove(RecordHandle);
+	if (Grabber)
+	{
+		// The last frames are still on the GPU: wait for them, then take them.
+		Grabber->StopCapturingFrames();
+		for (int32 I = 0; I < 8 && Grabber->HasOutstandingFrames(); ++I) { FlushRenderingCommands(); TakeGrabbedFrames(); }
+		TakeGrabbedFrames();
+		Grabber->Shutdown();
+		Grabber.Reset();
+	}
 	const double Until = FPlatformTime::Seconds() + 10;
 	while (RecordEncoding.IsValid() && RecordEncoding->GetValue() > 0 && FPlatformTime::Seconds() < Until) { FPlatformProcess::Sleep(0.005f); }
 	FFileHelper::SaveStringToFile(RecordTimes, *(RecordDir / TEXT("times.txt")));
@@ -1026,7 +1084,18 @@ void AJsgbHost::Tick(float DeltaSeconds)
 	UpdateHud(DeltaSeconds);
 	if (FrameTimesMs.Num() < 1000000) { FrameTimesMs.Add(DeltaSeconds * 1000.f); }
 	if (RecordDir.IsEmpty() && CaptureQueue.Num() && !FScreenshotRequest::IsScreenshotRequested()) { FScreenshotRequest::RequestScreenshot(CaptureQueue[0], true, false); CaptureQueue.RemoveAt(0); }
-	if (!RecordDir.IsEmpty() && !FScreenshotRequest::IsScreenshotRequested() && FPlatformTime::Seconds() >= NextRecord)
+	if (Grabber)
+	{
+		TakeGrabbedFrames();
+		if (FPlatformTime::Seconds() >= NextRecord)
+		{
+			NextRecord = FMath::Max(NextRecord + 1.0 / RecordFps, FPlatformTime::Seconds() - 0.5 / RecordFps);
+			TSharedRef<FRecordedAt, ESPMode::ThreadSafe> At = MakeShared<FRecordedAt, ESPMode::ThreadSafe>();
+			At->UnixMs = UnixMsNow();
+			Grabber->CaptureThisFrame(At);
+		}
+	}
+	else if (!RecordDir.IsEmpty() && !FScreenshotRequest::IsScreenshotRequested() && FPlatformTime::Seconds() >= NextRecord)
 	{
 		NextRecord = FMath::Max(NextRecord + 1.0 / RecordFps, FPlatformTime::Seconds() - 0.5 / RecordFps);
 		FScreenshotRequest::RequestScreenshot(RecordDir / TEXT("unused.png"), true, false);

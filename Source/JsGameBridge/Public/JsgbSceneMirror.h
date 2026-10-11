@@ -157,6 +157,8 @@ public:
 	void SetShader(const FString& Key, const FString& Json);
 	FString Describe(int32 Kind) const;
 	int32 DebugHiddenKinds = 0;
+	/** Debugging (/bridge/describe "hideids:<first>-<last>"): hide the objects with ids in this range. */
+	FIntPoint DebugHiddenIds = FIntPoint(1, 0);
 	bool SetAssetRegistry(const FString& Json);
 	FStreamableManager Streamable;
 	TSharedPtr<struct FStreamableHandle> RegistryLoad;

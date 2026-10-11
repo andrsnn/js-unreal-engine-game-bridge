@@ -99,6 +99,7 @@ public:
 
 	// DOM UI and audio.
 	UFUNCTION() void PublishUI(const FString& Html);
+	UFUNCTION() void UICanvas(const FString& Id, int32 Width, int32 Height, FArrayBuffer Rgba);
 	UFUNCTION() void AudioVoices(const FString& Json);
 	UFUNCTION() void AudioPreload(const FString& Path);
 	UFUNCTION() void AudioPcm(int32 Id, FArrayBuffer Samples, int32 SampleRate);
@@ -125,6 +126,9 @@ public:
 	int32 Generation = 0;
 	FString UIHtml;
 	int64 UIVersion = 0;
+	/** Pixels of the page's 2D canvases waiting for the overlay: id -> width, height, RGBA. */
+	struct FUICanvas { int32 Width = 0, Height = 0; TArray<uint8> Rgba; };
+	TMap<FString, FUICanvas> UICanvases;
 	int64 SceneFrames = 0;
 	UPROPERTY() TObjectPtr<UJsgbSceneMirror> Mirror;
 	UPROPERTY() TObjectPtr<UJsgbAudio> Audio;

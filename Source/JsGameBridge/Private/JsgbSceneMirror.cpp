@@ -1093,7 +1093,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	};
 	auto Show = [this, &Drawn](FJsgbEntity& Ent, UPrimitiveComponent* C, int32 Flags)
 	{
-		if (DebugHiddenKinds & (1 << Ent.Kind)) { if (C->IsVisible()) { C->SetVisibility(false); } Ent.Seen = Stamp; return; }
+		if ((DebugHiddenKinds & (1 << Ent.Kind)) || (Ent.Id >= DebugHiddenIds.X && Ent.Id <= DebugHiddenIds.Y)) { if (C->IsVisible()) { C->SetVisibility(false); } Ent.Seen = Stamp; return; }
 		const bool bShadow = (Flags & 1) != 0;
 		if (C->CastShadow != bShadow) { C->SetCastShadow(bShadow); }
 		// Surfaces three.js draws without fog mark themselves in the custom stencil for the scene post.

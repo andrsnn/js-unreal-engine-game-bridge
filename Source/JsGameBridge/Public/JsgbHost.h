@@ -95,6 +95,8 @@ private:
 	void StartRecording(const FString& Dir, double Fps);
 	void StopRecording();
 	void OnRecordedFrame(int32 Width, int32 Height, const TArray<FColor>& Bitmap);
+	void SaveRecordedFrame(TArray<FColor>&& Pixels, int32 Width, int32 Height, int64 UnixMs);
+	void TakeGrabbedFrames();
 	double GameSeconds() const;
 
 	TSharedPtr<PUERTS_NAMESPACE::FJsEnv> JsEnv;
@@ -155,6 +157,8 @@ private:
 	int32 RecordIndex = 0;
 	FDelegateHandle RecordHandle;
 	TSharedPtr<FThreadSafeCounter> RecordEncoding;
+	/** Reads recorded frames back from the GPU a few frames later, so recording doesn't make the CPU wait for the GPU. */
+	TSharedPtr<class FFrameGrabber> Grabber;
 	TSharedPtr<class SWidget> Banner;
 	TSharedPtr<class STextBlock> BannerText;
 	double BannerUntil = 0;

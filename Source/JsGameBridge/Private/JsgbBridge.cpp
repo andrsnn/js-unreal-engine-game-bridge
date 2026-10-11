@@ -305,6 +305,16 @@ void UJsgbBridge::PublishUI(const FString& Html)
 {
 	RunOnGame([this, Html] { UIHtml = Html; ++UIVersion; });
 }
+void UJsgbBridge::UICanvas(const FString& Id, int32 Width, int32 Height, FArrayBuffer Rgba)
+{
+	// No pixels means a clear canvas.
+	const bool bClear = !Rgba.Data || Rgba.Length == 0;
+	if (Width <= 0 || Height <= 0 || (!bClear && Rgba.Length < static_cast<size_t>(Width) * Height * 4)) { return; }
+	FUICanvas C;
+	C.Width = Width; C.Height = Height;
+	if (!bClear) { C.Rgba.Append(static_cast<const uint8*>(Rgba.Data), Width * Height * 4); }
+	RunOnGame([this, Id, C = MoveTemp(C)]() mutable { UICanvases.Add(Id, MoveTemp(C)); });
+}
 
 void UJsgbBridge::AudioPreload(const FString& Path) { if (Audio) { Audio->Preload(Path); } }
 void UJsgbBridge::AudioVoices(const FString& Json) { RunOnGame([this, Json] { if (Audio) { Audio->ApplyVoices(Json); } }); }

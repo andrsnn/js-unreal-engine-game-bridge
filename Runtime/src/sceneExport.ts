@@ -528,6 +528,14 @@ export function exportFrame(): number {
 }
 
 /** Debug summary of what the exporter sees: material kinds, shader materials, unsupported objects. */
+/** Debugging: the scene object the mirror knows by this id (/bridge/describe "hideids:" finds ids on screen). */
+export function objectById(id: number): unknown {
+  let top = lastFrame.scene as THREE.Object3D | null, found: THREE.Object3D | null = null;
+  while (top?.parent) top = top.parent;
+  top?.traverse(o => { if (ids.get(o) === id) found = o; });
+  return found;
+}
+
 export function describeScene(): unknown {
   const scene = lastFrame.scene as THREE.Object3D | null, cam = lastFrame.camera as THREE.Camera | null;
   if (!scene || !cam) return 'no scene';

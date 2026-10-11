@@ -38,7 +38,7 @@ export interface JsgbHost {
   cache?: {get(key: string): ArrayBuffer | null; put(key: string, bytes: ArrayBuffer): void};
   sink?: SceneSink;
   /** The game's DOM UI, serialized for the CEF overlay. */
-  ui?: {publish(html: string): void};
+  ui?: {publish(html: string): void; canvas?(id: string, width: number, height: number, rgba: ArrayBuffer): void};
   /** WebAudio voices as a JSON array of start/update/stop operations. */
   audio?: {voices(json: string): void; pcm?(id: number, samples: ArrayBuffer, sampleRate: number): void; preload?(path: string): void};
   /** Canvas text: alpha mask and metrics for a run (see JsgbBridge::Text). */

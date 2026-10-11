@@ -38,7 +38,7 @@ globalThis.__jsgbHost = {
     events: json => bridge.Events(json),
     shader: (key, json) => bridge.Shader(key, json),
   },
-  ui: {publish: html => bridge.PublishUI(html)},
+  ui: {publish: html => bridge.PublishUI(html), canvas: (id, w, h, rgba) => bridge.UICanvas(id, w, h, rgba)},
   audio: {voices: json => bridge.AudioVoices(json), pcm: (id, samples, rate) => bridge.AudioPcm(id, samples, rate), preload: path => bridge.AudioPreload(path)},
 };
 

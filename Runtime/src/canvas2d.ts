@@ -96,6 +96,9 @@ interface State {
   shadowBlur: number; shadowColor: string; shadowOffsetX: number; shadowOffsetY: number; filter: string; lineDashOffset: number; dash: number[];
 }
 
+/** Every 2D context made so far, for mirroring the ones that sit in the page (ui.ts). */
+export const contexts = new Set<WeakRef<Context2D>>();
+
 export class Context2D {
   private w = 0; private h = 0; private data = new Uint8ClampedArray(0);
   private s: State = Context2D.initial();
@@ -106,7 +109,7 @@ export class Context2D {
   private covered: Uint8Array | null = null;
   readonly canvas: any;
 
-  constructor(canvas: any) { this.canvas = canvas; this.resize(); }
+  constructor(canvas: any) { this.canvas = canvas; this.resize(); contexts.add(new WeakRef(this)); }
 
   static initial(): State {
     const black: Paint = {kind: 'color', c: [0, 0, 0, 1]};

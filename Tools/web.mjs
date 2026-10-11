@@ -2,7 +2,8 @@
 // The browser side of a conformance check, from the same source commit as the Unreal bundle.
 //   node Tools/web.mjs build   <game>                  the game's own Vite build into <out>/web
 //   node Tools/web.mjs dev     <game>                  the game's Vite dev server, opened in the browser
-//   node Tools/web.mjs capture <game> --script s.txt [--frames dir --fps 10] [--res 1280x720]
+//   node Tools/web.mjs capture <game> --script s.txt [--frames dir --fps 10] [--res 1280x720] [--live dir]
+// --live films the page in real time (Chrome's screencast) and records when every animation frame ran.
 // capture serves <out>/web plus the public folders, opens it in headless Chrome, and runs the same
 // script format as the Unreal host (seconds after load: wait/gone/click/key/eval/seed/shot/quit).
 import fs from 'node:fs';
@@ -115,6 +116,23 @@ async function capture() {
     }
   };
   const grabber = grab();
+  // --live: the frames Chrome actually shows, stamped with Unix milliseconds, and the time of every
+  // requestAnimationFrame, for a real-time film with a measured frame rate.
+  const live = flag('--live');
+  let cdp = null;
+  const liveFrames = [], anchors = [];
+  if (live) {
+    fs.rmSync(live, {recursive: true, force: true}); fs.mkdirSync(live, {recursive: true});
+    await page.evaluate(() => { const t = window.__jsgbRafTimes = []; const tick = () => { t.push(performance.timeOrigin + performance.now()); requestAnimationFrame(tick); }; requestAnimationFrame(tick); });
+    cdp = await page.context().newCDPSession(page);
+    cdp.on('Page.screencastFrame', f => {
+      cdp.send('Page.screencastFrameAck', {sessionId: f.sessionId}).catch(() => {});
+      const name = `frame_${String(liveFrames.length).padStart(5, '0')}.jpg`;
+      liveFrames.push(`${name} ${Math.round(f.metadata.timestamp * 1000)}`);
+      fs.writeFile(path.join(live, name), Buffer.from(f.data, 'base64'), () => {});
+    });
+    await cdp.send('Page.startScreencast', {format: 'jpeg', quality: 85, maxWidth: w, maxHeight: h, everyNthFrame: 1});
+  }
   const find = what => page.evaluate(w => {
     try { const el = document.querySelector(w); if (el) return true; } catch { /* text */ }
     return [...document.querySelectorAll('button,a,[role=button],li,div,span,label,option,summary')].some(el => el.textContent.trim() === w && el.getClientRects().length > 0)
@@ -134,6 +152,7 @@ async function capture() {
       const end = await clock();
       offset += end - start;
       times.push(`wait-end ${(end - ready).toFixed(3)}`);
+      anchors.push(`${s.verb} ${unquote(s.args)} ${Date.now()}`);
       console.log(`wait ${s.args} ${((Date.now() - wallStart) / 1000).toFixed(1)}s`);
     } else if (s.verb === 'click') {
       // A real mouse click at the element's centre, as a player would.
@@ -153,6 +172,13 @@ async function capture() {
     else if (s.verb === 'quit') break;
   }
   grabbing = false; await grabber;
+  if (live) {
+    await cdp.send('Page.stopScreencast');
+    const raf = await page.evaluate(() => window.__jsgbRafTimes.map(Math.round));
+    fs.writeFileSync(path.join(live, 'times.txt'), liveFrames.join('\n'));
+    fs.writeFileSync(path.join(live, 'raf.json'), JSON.stringify(raf));
+    fs.writeFileSync(path.join(live, 'anchors.txt'), anchors.join('\n'));
+  }
   if (frames) fs.writeFileSync(path.join(frames, 'times.txt'), times.join('\n'));
   await browser.close(); server.close();
   console.log(JSON.stringify({game: game.id, frames: index, errors: errors.slice(0, 20)}));
