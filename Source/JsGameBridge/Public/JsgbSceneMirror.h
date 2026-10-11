@@ -18,6 +18,8 @@ class ULightComponent;
 class ULineBatchComponent;
 class UNiagaraComponent;
 class UCameraComponent;
+class USceneCaptureComponent2D;
+class UTextureRenderTarget2D;
 class UJsgbBridge;
 
 /** A mesh's render buffers, built from the game's arrays on any thread; FinishMesh makes the Unreal mesh. */
@@ -127,6 +129,22 @@ struct FJsgbEntity
 	/** Where the game put the object last frame, and whether it had moved then (teleports start from rest). */
 	FVector LastTarget = FVector::ZeroVector;
 	bool bWasMoving = false;
+	/** The render target texture whose scene this object belongs to; 0 for the game's view. */
+	int32 Capture = 0;
+};
+
+/** A scene the game draws into a render target (a minimap, a screen in the world): a scene capture draws only
+ *  that scene's objects into a render target texture, which materials use like any other texture. */
+USTRUCT()
+struct FJsgbCapture
+{
+	GENERATED_BODY()
+	UPROPERTY() TObjectPtr<USceneCaptureComponent2D> Component;
+	UPROPERTY() TObjectPtr<UTextureRenderTarget2D> Target;
+	UPROPERTY() TObjectPtr<UMaterialInstanceDynamic> Post;
+	/** The objects drawn into it this frame. */
+	TArray<TWeakObjectPtr<UPrimitiveComponent>> Members;
+	uint32 Seen = 0;
 };
 
 USTRUCT()
@@ -136,6 +154,7 @@ struct FJsgbLight
 	UPROPERTY() TObjectPtr<ULightComponent> Component;
 	int32 Kind = 0;
 	uint32 Seen = 0;
+	int32 Capture = 0;
 };
 
 /** Draws the web game's Three.js scene with Unreal components. Geometry becomes runtime static
@@ -249,7 +268,9 @@ private:
 	void ApplyTextureParams(UMaterialInstanceDynamic* Mid, int32 TextureId);
 	UStaticMeshComponent* NewComponent(bool bInstanced);
 	FJsgbEntity& EntityOf(int32 Id, int32 Kind);
-	void ApplyLight(const float* S, uint32 Stamp, FLinearColor& Ambient, FLinearColor& HemiSky, FLinearColor& HemiGround);
+	void ApplyLight(const float* S, uint32 Stamp, FLinearColor& Ambient, FLinearColor& HemiSky, FLinearColor& HemiGround, int32 Capture = 0);
+	FJsgbCapture& CaptureFor(int32 TextureId, int32 Width, int32 Height);
+	void ApplyCapture(FJsgbCapture& Cap, const float* R);
 	void ApplyPost(const float* Header);
 	void SetScene(FName Name, const FLinearColor& Value);
 	void ApplySceneParams(UMaterialInstanceDynamic* Mid, int32 Variant);
@@ -263,6 +284,9 @@ private:
 	UPROPERTY() TMap<int32, FJsgbTexture> Textures;
 	UPROPERTY() TMap<int32, FJsgbEntity> Entities;
 	UPROPERTY() TMap<int32, FJsgbLight> Lights;
+	UPROPERTY() TMap<int32, FJsgbCapture> Captures;
+	/** While a frame is applied: the render target whose scene the records belong to (0 for the game's view). */
+	int32 CurrentCapture = 0;
 	UPROPERTY() TArray<TObjectPtr<UMaterialInterface>> Parents;
 	/** One-sided copies of the two-sided parents (transparent, masked and unlit), for FrontSide and BackSide materials. */
 	UPROPERTY() TArray<TObjectPtr<UMaterialInterface>> OneSidedParents;

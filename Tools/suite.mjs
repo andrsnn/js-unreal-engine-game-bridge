@@ -112,6 +112,10 @@ const passed = rows.filter(r => r.pass).length;
 fs.mkdirSync(docs, {recursive: true});
 fs.writeFileSync(path.join(docs, 'results.json'), JSON.stringify({commit, date: new Date().toISOString(), passed, total: rows.length, rows}, null, 1));
 const cell = v => v === null || v === undefined ? '' : String(v);
+// Differences that come from how the two renderers work, not from a bridge bug, with the cases they affect.
+const known = [
+  ['transparency', 'WebGL blends transparent surfaces using sRGB values, and Unreal blends them in linear light. Over a dark background a transparent colour comes out brighter in Unreal, and over a light one darker. No single change to opacity matches both.'],
+];
 const md = [
   '# Conformance results', '',
   `Bridge commit ${commit}, ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC. ${passed} of ${rows.length} passed.`, '',
@@ -122,6 +126,8 @@ const md = [
   '| Run | Result | SSIM (mean, lowest) | Pixels differing % (mean, worst) | PSNR dB | Coverage | Errors (browser, Unreal) | JS ms/frame in Unreal | Unreal memory MB | Chrome JS heap MB | Notes |',
   '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
   ...rows.map(r => `| ${r.label} | ${r.pass ? 'pass' : 'FAIL'} | ${cell(r.ssim)}, ${cell(r.ssimLow)} | ${cell(r.changedPct)}, ${cell(r.changedWorstPct)} | ${cell(r.psnr)} | ${r.coverage ? 'ok' : `${cell(r.coverageFailures)} frames`} | ${cell(r.webErrors)}, ${cell(r.unrealErrors)} | ${cell(r.jsMs)} | ${cell(r.memoryMB)} | ${cell(r.jsHeapMB)} | ${r.reasons.join('; ').replace(/\|/g, '/')} |`),
+  '', '## Known differences', '',
+  ...known.map(([c, text]) => `- **${c}**: ${text}`),
   '', '## Side by side (browser left, Unreal right)', '',
   ...rows.filter(r => r.thumb).flatMap(r => [`### ${r.label}`, '', `![${r.label}](${r.thumb})`, '']),
 ].join('\n');
@@ -145,6 +151,8 @@ p.muted { color: var(--muted); }
 <div class="wrap"><table><thead><tr><th>Run</th><th>Result</th><th>SSIM</th><th>Pixels differing %</th><th>PSNR dB</th><th>Coverage</th><th>Errors</th><th>JS ms/frame</th><th>Memory MB</th><th>Notes</th></tr></thead><tbody>
 ${rows.map(r => `<tr><td>${esc(r.label)}</td><td class="${r.pass ? 'pass' : 'fail'}">${r.pass ? 'pass' : 'fail'}</td><td>${esc(r.ssim)} (low ${esc(r.ssimLow)})</td><td>${esc(r.changedPct)} (worst ${esc(r.changedWorstPct)})</td><td>${esc(r.psnr)}</td><td>${r.coverage ? 'ok' : esc(r.coverageFailures) + ' frames'}</td><td>${esc(r.webErrors)}, ${esc(r.unrealErrors)}</td><td>${esc(r.jsMs)}</td><td>${esc(r.memoryMB)}</td><td>${esc(r.reasons.join('; '))}</td></tr>`).join('\n')}
 </tbody></table></div>
+<h2>Known differences</h2>
+<ul>${known.map(([c, text]) => `<li><strong>${esc(c)}</strong>: ${esc(text)}</li>`).join('')}</ul>
 <h2>Side by side (browser left, Unreal right)</h2>
 ${rows.filter(r => r.thumb).map(r => `<h3>${esc(r.label)}</h3><img src="${esc(r.thumb)}" alt="${esc(r.label)}: browser and Unreal side by side" loading="lazy">`).join('\n')}
 </main></body></html>`;

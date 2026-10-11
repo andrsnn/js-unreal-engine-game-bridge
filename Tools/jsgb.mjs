@@ -159,7 +159,10 @@ const workerUrl = (game, file) => '/jsgb/workers/' + path.relative(game.repo, fi
 /** Bundles each worker module as a classic script for a worker thread. */
 async function workerBundles(esbuild, game, page, options) {
   for (const [file, url] of workerEntries) {
-    await esbuild.build({...options, entryPoints: [file], format: 'iife', splitting: false, metafile: false, outfile: path.join(game.out, url.slice(1)), plugins: [bridgePlugin(game, page)]});
+    const outfile = path.join(game.out, url.slice(1));
+    await esbuild.build({...options, entryPoints: [file], format: 'iife', splitting: false, metafile: false, outfile, plugins: [bridgePlugin(game, page)]});
+    // A worker thread has no __jsgbHost: a runtime module that imports host.ts throws there before the worker starts.
+    if (fs.readFileSync(outfile, 'utf8').includes('__jsgbHost is missing')) throw Error(`worker bundle ${url} includes Runtime/src/host.ts; a module the worker imports (three.ts, renderer.ts) must not import the host`);
   }
 }
 

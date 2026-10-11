@@ -1,5 +1,7 @@
 #include "JsgbSceneMirror.h"
 #include "Rendering/MotionVectorSimulation.h"
+#include "Components/SceneCaptureComponent2D.h"
+#include "Engine/TextureRenderTarget2D.h"
 #include "JsgbBridge.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
@@ -71,7 +73,7 @@ namespace
 {
 	constexpr float Cm = 100.f;
 	constexpr int32 HeaderFloats = 88;
-	enum ERecord { RMesh = 1, RInstanced = 2, RLight = 3, RSprite = 4, RPoints = 5, RLines = 6, RAsset = 7, REffect = 8 };
+	enum ERecord { RMesh = 1, RInstanced = 2, RLight = 3, RSprite = 4, RPoints = 5, RLines = 6, RAsset = 7, REffect = 8, RCapture = 9, RCaptureEnd = 10 };
 	enum EVariant { VLit, VLit2S, VMasked, VTrans, VUnlit, VUnlitTrans, VAdditive, VUnlitMasked, VBillboard, VBillboardAdd, VCount };
 	const TCHAR* VariantPaths[VCount] = {
 		TEXT("/JsGameBridge/Mirror/M_JsgbLit.M_JsgbLit"), TEXT("/JsGameBridge/Mirror/M_JsgbLit2S.M_JsgbLit2S"), TEXT("/JsGameBridge/Mirror/M_JsgbMasked.M_JsgbMasked"),
@@ -189,6 +191,70 @@ UMaterialInterface* UJsgbSceneMirror::OneSidedParent(int32 Variant)
 #else
 	return Base;
 #endif
+}
+
+FJsgbCapture& UJsgbSceneMirror::CaptureFor(int32 TextureId, int32 Width, int32 Height)
+{
+	FJsgbCapture& Cap = Captures.FindOrAdd(TextureId);
+	Width = FMath::Clamp(Width, 1, 8192); Height = FMath::Clamp(Height, 1, 8192);
+	if (!Cap.Target)
+	{
+		// three keeps a render target's colours linear and encodes them once on screen; a half-float target keeps
+		// them linear here too.
+		Cap.Target = NewObject<UTextureRenderTarget2D>(this);
+		Cap.Target->ClearColor = FLinearColor::Black;
+		Cap.Target->InitCustomFormat(Width, Height, PF_FloatRGBA, true);
+		Cap.Target->UpdateResourceImmediate(true);
+	}
+	else if (Cap.Target->SizeX != Width || Cap.Target->SizeY != Height) { Cap.Target->ResizeTarget(Width, Height); }
+	if (!Cap.Component && GetOwner())
+	{
+		AActor* Owner = GetOwner();
+		USceneCaptureComponent2D* S = NewObject<USceneCaptureComponent2D>(Owner);
+		S->TextureTarget = Cap.Target;
+		S->CaptureSource = ESceneCaptureSource::SCS_FinalColorHDR;
+		S->PrimitiveRenderMode = ESceneCapturePrimitiveRenderMode::PRM_UseShowOnlyList;
+		S->bCaptureEveryFrame = true;
+		S->bCaptureOnMovement = false;
+		S->bAlwaysPersistRenderingState = true;
+		S->SetupAttachment(Owner->GetRootComponent());
+		S->RegisterComponent();
+		Cap.Component = S;
+	}
+	return Cap;
+}
+
+void UJsgbSceneMirror::ApplyCapture(FJsgbCapture& Cap, const float* R)
+{
+	// R: type, texture id, width, height, the camera's matrixWorld (16), vertical fov, near, far, background
+	// flag and colour (4), aspect (from the target's size).
+	USceneCaptureComponent2D* S = Cap.Component;
+	if (!S) { return; }
+	const float* E = &R[4];
+	const FVector Loc(E[12] * Cm, E[14] * Cm, E[13] * Cm);
+	const FVector Forward(-E[8], -E[10], -E[9]), Up(E[4], E[6], E[5]);
+	S->SetWorldLocationAndRotation(Loc, FRotationMatrix::MakeFromXZ(Forward, Up).Rotator());
+	const float VFov = R[20], Aspect = R[3] > 0 ? R[2] / R[3] : 1.f;
+	S->FOVAngle = VFov > 0 ? FMath::RadiansToDegrees(2.f * FMath::Atan(FMath::Tan(FMath::DegreesToRadians(VFov) * 0.5f) * Aspect)) : 90.f;
+	// The game view's post settings without its bloom (a composer's bloom is for the screen), and the scene post
+	// material with this scene's background and no fog.
+	if (Camera)
+	{
+		FPostProcessSettings P = Camera->PostProcessSettings;
+		P.WeightedBlendables.Array.Reset();
+		P.bOverride_BloomIntensity = true; P.BloomIntensity = 0.f;
+		if (PostMid && !Cap.Post) { Cap.Post = UMaterialInstanceDynamic::Create(PostMid->Parent, this); }
+		if (Cap.Post)
+		{
+			for (const TPair<FName, FLinearColor>& Param : SceneParams) { Cap.Post->SetVectorParameterValue(Param.Key, Param.Value); }
+			Cap.Post->SetVectorParameterValue(TEXT("Background"), FLinearColor(R[24], R[25], R[26], R[23]));
+			Cap.Post->SetVectorParameterValue(TEXT("FogColor"), FLinearColor(0, 0, 0, 0));
+			Cap.Post->SetVectorParameterValue(TEXT("FogParams"), FLinearColor(0, 0, 0, 0));
+			P.WeightedBlendables.Array.Add(FWeightedBlendable(1.f, Cap.Post));
+		}
+		S->PostProcessSettings = P;
+		S->PostProcessBlendWeight = 1.f;
+	}
 }
 
 bool UJsgbSceneMirror::SetAssetRegistry(const FString& Json)
@@ -767,6 +833,8 @@ void UJsgbSceneMirror::AcceptTexture(int32 Id, TSharedPtr<FJsgbPreparedTexture> 
 			Result = Tex;
 		}
 	}
+	// A render target: the scene capture that draws the game's render target scene into it.
+	if (!Result && Str(J, TEXT("kind")) == TEXT("capture")) { Result = CaptureFor(Id, static_cast<int32>(Num(J, TEXT("width"))), static_cast<int32>(Num(J, TEXT("height")))).Target; }
 	T.Texture = Result;
 	T.bFlipY = Flag(J, TEXT("flipY"));
 	const TArray<TSharedPtr<FJsonValue>>* Rep = nullptr; const TArray<TSharedPtr<FJsonValue>>* Off = nullptr;
@@ -933,7 +1001,7 @@ FJsgbEntity& UJsgbSceneMirror::EntityOf(int32 Id, int32 Kind)
 	return Ent;
 }
 
-void UJsgbSceneMirror::ApplyLight(const float* S, uint32 FrameStamp, FLinearColor& Ambient, FLinearColor& HemiSky, FLinearColor& HemiGround)
+void UJsgbSceneMirror::ApplyLight(const float* S, uint32 FrameStamp, FLinearColor& Ambient, FLinearColor& HemiSky, FLinearColor& HemiGround, int32 Capture)
 {
 	const int32 Id = static_cast<int32>(S[1]);
 	const int32 Kind = static_cast<int32>(S[2]);
@@ -956,9 +1024,11 @@ void UJsgbSceneMirror::ApplyLight(const float* S, uint32 FrameStamp, FLinearColo
 		C->RegisterComponent();
 		L.Component = C;
 		L.Kind = Kind;
+		L.Capture = 0;
 	}
 	ULightComponent* C = L.Component;
 	L.Seen = FrameStamp;
+	if (L.Capture != Capture) { L.Capture = Capture; C->SetLightingChannels(Capture == 0, Capture != 0, false); }
 	if (!C->IsVisible()) { C->SetVisibility(true); }
 	C->SetLightColor(Color, true);
 	C->SetIntensity(Intensity);
@@ -1031,9 +1101,36 @@ void UJsgbSceneMirror::ApplyPost(const float* H)
 	P.bOverride_ToneCurveAmount = true; P.ToneCurveAmount = ToneMapping <= 1 ? 0.f : 1.f;
 	P.bOverride_ExpandGamut = true; P.ExpandGamut = 0.f;
 	P.bOverride_BlueCorrection = true; P.BlueCorrection = 0.f;
-	// UnrealBloomPass strength is close to Unreal's bloom intensity; no pass means no bloom.
-	P.bOverride_BloomIntensity = true; P.BloomIntensity = H[37] > 0 ? H[37] : 0.f;
-	P.bOverride_BloomThreshold = true; P.BloomThreshold = H[37] > 0 ? H[39] : -1.f;
+	// UnrealBloomPass: the pixels above the threshold, blurred at 1/2 to 1/32 resolution with Gaussians of sigma 3, 5,
+	// 7, 9 and 11 texels, each level weighted mix(f, 1.2 - f, radius) for f = 1, 0.8 ... 0.2, all times the strength.
+	// Unreal's levels 1 to 5 use the same resolutions; a level's sigma is (view width x size%) / 1156 pixels, its
+	// weight is its tint times intensity / 6. Unreal keeps saturate((luminance - threshold) / 2) of a pixel where three
+	// keeps all of it, so the intensity makes up the difference for a white pixel. With all that, Unreal's glow still
+	// measured 2.8 to 3.1 times fainter than Chrome's across the conformance suite's postprocess case, hence the 2.9.
+	// No pass means no bloom.
+	const float Strength = H[37], Radius = H[38], Threshold = H[39];
+	P.bOverride_BloomIntensity = true; P.BloomIntensity = Strength > 0 ? 2.9f * 6.f * Strength * 2.f / FMath::Max(0.1f, 1.f - Threshold) : 0.f;
+	P.bOverride_BloomThreshold = true; P.BloomThreshold = Strength > 0 ? Threshold : -1.f;
+	if (Strength > 0)
+	{
+		const float Width = FMath::Max(1, ViewportSize.X);
+		const float Sigma[5] = {3.f, 5.f, 7.f, 9.f, 11.f}, Factor[5] = {1.f, 0.8f, 0.6f, 0.4f, 0.2f};
+		float* Sizes[5] = {&P.Bloom1Size, &P.Bloom2Size, &P.Bloom3Size, &P.Bloom4Size, &P.Bloom5Size};
+		FLinearColor* Tints[5] = {&P.Bloom1Tint, &P.Bloom2Tint, &P.Bloom3Tint, &P.Bloom4Tint, &P.Bloom5Tint};
+		for (int32 I = 0; I < 5; ++I)
+		{
+			*Sizes[I] = Sigma[I] * float(2 << I) * 1156.f / Width;
+			const float W = FMath::Lerp(Factor[I], 1.2f - Factor[I], Radius);
+			*Tints[I] = FLinearColor(W, W, W);
+		}
+		P.bOverride_Bloom1Size = P.bOverride_Bloom2Size = P.bOverride_Bloom3Size = P.bOverride_Bloom4Size = P.bOverride_Bloom5Size = P.bOverride_Bloom6Size = true;
+		P.bOverride_Bloom1Tint = P.bOverride_Bloom2Tint = P.bOverride_Bloom3Tint = P.bOverride_Bloom4Tint = P.bOverride_Bloom5Tint = P.bOverride_Bloom6Tint = true;
+		P.Bloom6Size = 0.f; P.Bloom6Tint = FLinearColor::Black;
+		P.bOverride_BloomSizeScale = true; P.BloomSizeScale = 1.f;
+		// The widest levels need up to 64 samples a side; Unreal's unrolled filters stop at 32.
+		static IConsoleVariable* LoopMode = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Filter.LoopMode"));
+		if (LoopMode && LoopMode->GetInt() == 0) { LoopMode->Set(1, ECVF_SetByCode); }
+	}
 }
 
 void UJsgbSceneMirror::Place(FJsgbEntity& Ent, USceneComponent* C, const FTransform& T, int32 Flags)
@@ -1106,6 +1203,8 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	++Stamp;
 	++FrameCounter;
 	Moving.Reset();
+	CurrentCapture = 0;
+	for (TPair<int32, FJsgbCapture>& Cap : Captures) { Cap.Value.Members.Reset(); }
 
 	// Build queued geometry within the budget.
 	// Deterministic captures (a fixed game clock) build everything this frame shows, as WebGL would upload it.
@@ -1184,6 +1283,15 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			const bool bBack = First && First->Side == 1;
 			if (Sm->bReverseCulling != bBack) { Sm->bReverseCulling = bBack; Sm->MarkRenderStateDirty(); }
 		}
+		// An object of a render target's scene is drawn only by that target's scene capture, and only that
+		// scene's lights reach it (lighting channel 1).
+		if (Ent.Capture != CurrentCapture)
+		{
+			Ent.Capture = CurrentCapture;
+			C->SetVisibleInSceneCaptureOnly(CurrentCapture != 0);
+			C->SetLightingChannels(CurrentCapture == 0, CurrentCapture != 0, false);
+		}
+		if (CurrentCapture) { if (FJsgbCapture* Cap = Captures.Find(CurrentCapture)) { Cap->Members.Add(C); } }
 		if (!C->IsVisible()) { C->SetVisibility(true); }
 		Ent.Seen = Stamp;
 		++Drawn;
@@ -1304,7 +1412,11 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 		else if (Type == RLight)
 		{
 			if (K + 21 > Count) { break; }
-			ApplyLight(&D[K], Stamp, Ambient, HemiSky, HemiGround);
+			// A render target's scene keeps its ambient and hemisphere light to itself: the shared parameters are
+			// the game view's.
+			FLinearColor CaptureAmbient, CaptureSky, CaptureGround;
+			if (CurrentCapture) { ApplyLight(&D[K], Stamp, CaptureAmbient, CaptureSky, CaptureGround, CurrentCapture); }
+			else { ApplyLight(&D[K], Stamp, Ambient, HemiSky, HemiGround); }
 			K += 21;
 		}
 		else if (Type == RSprite || Type == RPoints)
@@ -1363,7 +1475,8 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			const float* M = &D[K + 5];
 			K += 21;
 			FJsgbGeometry* G = Geometries.Find(Geo);
-			if (!G || G->LinePoints.Num() == 0) { continue; }
+			// Lines go through one shared line component that the game view draws, so a render target's lines are left out.
+			if (!G || G->LinePoints.Num() == 0 || CurrentCapture) { continue; }
 			FJsgbEntity& Ent = EntityOf(Id, RLines);
 			const FJsgbMaterial* MatInfo = Materials.Find(Mat);
 			const FLinearColor Base = MatInfo ? MatInfo->Color : FLinearColor::White;
@@ -1444,13 +1557,34 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 				++Drawn;
 			}
 		}
+		else if (Type == RCapture)
+		{
+			// The records up to RCaptureEnd are a scene the game draws into a render target.
+			if (K + 27 > Count) { break; }
+			const int32 TexId = static_cast<int32>(D[K + 1]);
+			FJsgbCapture& Cap = CaptureFor(TexId, static_cast<int32>(D[K + 2]), static_cast<int32>(D[K + 3]));
+			ApplyCapture(Cap, &D[K]);
+			Cap.Seen = Stamp;
+			CurrentCapture = TexId;
+			K += 27;
+		}
+		else if (Type == RCaptureEnd) { CurrentCapture = 0; K += 1; }
 		else
 		{
 			UE_LOG(LogJsgbMirror, Warning, TEXT("Unknown record %d at %d of %d"), Type, K, Count);
 			break;
 		}
 	}
+	CurrentCapture = 0;
 	DrawnEntities = Drawn;
+	// Each scene capture draws only its scene's objects, and stops when the game stops drawing into its target.
+	for (TPair<int32, FJsgbCapture>& It : Captures)
+	{
+		FJsgbCapture& Cap = It.Value;
+		if (!Cap.Component) { continue; }
+		Cap.Component->bCaptureEveryFrame = Cap.Seen == Stamp;
+		if (Cap.Component->ShowOnlyComponents != Cap.Members) { Cap.Component->ShowOnlyComponents = Cap.Members; }
+	}
 	// Lines in three.js's transparent order: farthest first, equal distances by object id.
 	const double LinesStart = FPlatformTime::Seconds();
 	FrameLines.Sort([](const TPair<double, int32>& A, const TPair<double, int32>& B) { return A.Key != B.Key ? A.Key > B.Key : A.Value < B.Value; });

@@ -1,5 +1,6 @@
 import {host} from './host';
 import {pollWorkers} from './worker';
+import {frameCount} from './frameCount';
 
 /** Timers and animation frames driven by the host's tick, so the game advances only when Unreal
  *  steps it. `pumpFrame` runs everything that is due, yielding to promise jobs between batches. */
@@ -70,7 +71,7 @@ export async function pumpFrame(budgetMs: number): Promise<void> {
   const rafStart = wallNow();
   pumpTiming.timersMs = rafStart - wallStart;
   const run = frameCallbacks; frameCallbacks = [];
-  animationFrames++;
+  frameCount.animation++;
   const ts = host.now();
   for (const [, fn] of run) { try { fn(ts); } catch (e) { report(e); } }
   await yieldJobs();
@@ -78,5 +79,4 @@ export async function pumpFrame(budgetMs: number): Promise<void> {
 }
 
 export const pendingTimers = () => timers.size;
-/** Animation frames run so far. */
-export let animationFrames = 0;
+

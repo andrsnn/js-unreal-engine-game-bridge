@@ -1,6 +1,6 @@
 /** Stand-in for THREE.WebGLRenderer on the Unreal target. Unreal draws the scene, so render calls
  *  only record what was drawn last; every other renderer API answers with plausible values. */
-import {animationFrames} from './timers';
+import {frameCount} from './frameCount';
 
 const g = globalThis as Record<string, any>;
 const COMPRESSED = new Set(['EXT_texture_compression_bptc', 'WEBGL_compressed_texture_s3tc', 'WEBGL_compressed_texture_s3tc_srgb']);
@@ -17,6 +17,8 @@ export const lastFrame: {scene: unknown; camera: unknown; frame: number; rendere
 /** Post-processing the game asked for, read from its renderer and full-screen passes. */
 export const post: Record<string, number> = {exposure: 1, toneMapping: 0, bloomStrength: 0, bloomRadius: 0, bloomThreshold: 1, bloomFrame: -1};
 const renderers: Record<string, any>[] = [];
+/** Scenes the game draws into render targets, by target: the latest scene and camera, and the animation frame. */
+export const captures = new Map<Record<string, any>, {scene: Record<string, any>; camera: Record<string, any>; frame: number}>();
 // The animation frame in which a perspective camera was last rendered.
 let perspectiveFrame = -1;
 function mainRenderer() {
@@ -89,11 +91,18 @@ export class UnrealRenderer {
         g.__jsgbCanvas = canvas;
         post.exposure = (self as Record<string, any>).toneMappingExposure ?? 1; post.toneMapping = (self as Record<string, any>).toneMapping ?? 0;
         if (!scene?.isScene) { notePost(scene); return; }
+        // A scene drawn into a render target that a material shows (a screen, a minimap) is a capture; Unreal
+        // draws it with a scene capture, and it never replaces the game's view.
+        const t = target as Record<string, any> | null;
+        if (t?.texture) {
+          captures.set(t, {scene, camera, frame: frameCount.animation});
+          if (t.texture.__jsgbMapped) return;
+        }
         const perspective = !!camera?.isPerspectiveCamera;
         // The scene Unreal mirrors: a perspective render, or an orthographic one in a frame without one. Within a
         // frame, an orthographic pass after the perspective scene is a HUD or overlay, not the view.
-        if (perspective || perspectiveFrame !== animationFrames) { lastFrame.scene = scene; lastFrame.camera = camera; lastFrame.renderer = self; lastFrame.frame++; }
-        if (perspective) perspectiveFrame = animationFrames;
+        if (perspective || perspectiveFrame !== frameCount.animation) { lastFrame.scene = scene; lastFrame.camera = camera; lastFrame.renderer = self; lastFrame.frame++; }
+        if (perspective) perspectiveFrame = frameCount.animation;
       },
       compile: () => new Set(), compileAsync: async () => {},
       setAnimationLoop: (fn: ((t: number) => void) | null) => { if (fn) { const loop = (t: number) => { fn(t); g.requestAnimationFrame(loop); }; g.requestAnimationFrame(loop); } },

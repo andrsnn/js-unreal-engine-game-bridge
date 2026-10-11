@@ -1,6 +1,7 @@
 import * as THREE from 'three-real';
 import {host, assetRegistry, registrySwaps, type SceneSink} from './host';
-import {lastFrame, post} from './renderer';
+import {lastFrame, post, captures} from './renderer';
+import {frameCount} from './frameCount';
 import {translateShaderMaterial, translateHookedMaterial, fillBuiltinUniforms, type HookedShader} from './shaders';
 import {channelFor, isExtraAttribute} from './attributes';
 
@@ -165,6 +166,12 @@ function textureSource(tex: THREE.Texture): {json: Record<string, unknown>; byte
   const img = tex.image as Record<string, any> | undefined;
   const base = {wrapS: tex.wrapS, wrapT: tex.wrapT, repeat: [tex.repeat.x, tex.repeat.y], offset: [tex.offset.x, tex.offset.y], rotation: tex.rotation, flipY: tex.flipY,
     srgb: tex.colorSpace === THREE.SRGBColorSpace, nearest: tex.magFilter === THREE.NearestFilter, name: tex.name, mapping: tex.mapping};
+  // A render target's texture: Unreal draws the scene the game renders into it. Its first row is the bottom of the
+  // view, as with an image three flips on upload.
+  if ((tex as THREE.Texture & {isRenderTargetTexture?: boolean}).isRenderTargetTexture) {
+    (tex as unknown as Record<string, unknown>).__jsgbMapped = true;
+    return {json: {...base, kind: 'capture', width: img?.width ?? 256, height: img?.height ?? 256, flipY: true}, bytes: null};
+  }
   const channelsOf = (format: number) => format === THREE.RedFormat ? 1 : format === THREE.RGFormat ? 2 : (format as number) === 1022 /* RGBFormat */ ? 3 : 4;
   // Compressed containers transcoded to plain RGBA (KTX2 with no GPU formats advertised).
   const mip = (tex as THREE.CompressedTexture).mipmaps?.[0] as Record<string, any> | undefined;
@@ -648,6 +655,19 @@ export function exportFrame(): number {
   if (n !== HEADER_FLOATS) throw Error('scene header layout changed');
   walk(top, cam, null);
   if (cam.parent === null && cam !== top) walk(cam, cam, null);
+  // Scenes drawn into render targets that a material shows, each between a capture record and its end.
+  for (const [target, c] of captures) {
+    const tex = target.texture as THREE.Texture & {__jsgbMapped?: boolean};
+    if (!tex?.__jsgbMapped || c.frame < frameCount.animation - 2 || c.scene === top) continue;
+    const scene = c.scene as unknown as THREE.Scene, ccam = c.camera as unknown as THREE.PerspectiveCamera;
+    scene.updateMatrixWorld(); ccam.updateMatrixWorld();
+    push(9); push(idOf(tex)); push(target.width ?? 256); push(target.height ?? 256);
+    pushMatrix(ccam.matrixWorld); push(ccam.isPerspectiveCamera ? ccam.fov : 0); push(ccam.near ?? 0.1); push(ccam.far ?? 1000);
+    const cbg = scene.background as THREE.Color | null;
+    push(cbg?.isColor ? 1 : 0); push(cbg?.isColor ? cbg.r : 0); push(cbg?.isColor ? cbg.g : 0); push(cbg?.isColor ? cbg.b : 0);
+    walk(scene, ccam, null);
+    push(10);
+  }
   if (pendingEvents.length && out.events) { const events = pendingEvents; pendingEvents = []; out.events(JSON.stringify(events)); }
   out.frame(floats.buffer, n, inst.buffer, ni);
   // Release geometry the game has dropped (checked every few seconds).
