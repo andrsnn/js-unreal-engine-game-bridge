@@ -331,6 +331,9 @@ void UJsgbSceneMirror::UseOverrideMaterials(UStaticMeshComponent* C, int32 KeyId
 		}
 	}
 	for (int32 S = 0; S < O.Slots.Num(); ++S) { if (O.Slots[S]) { C->SetMaterial(S, O.Slots[S]); } }
+	// Override models are solid hulls and planets: they cast and receive the sun's shadows.
+	C->SetCastShadow(true);
+	C->bCastDynamicShadow = true;
 }
 
 TSharedPtr<FJsonObject> UJsgbSceneMirror::Asset(int32 KeyId) const
@@ -976,6 +979,7 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 	Mid->SetScalarParameterValue(TEXT("VertexColorMix"), M.bVertexColors ? 1.f : 0.f);
 	M.bNoFog = J->HasField(TEXT("fog")) && !Flag(J, TEXT("fog"));
 	M.Side = Side;
+	M.bDrawFirst = Flag(J, TEXT("drawFirst"));
 	Mid->SetScalarParameterValue(TEXT("Fogged"), M.bNoFog ? 0.f : 1.f);
 	Mid->SetScalarParameterValue(TEXT("Specular"), Num(J, TEXT("specular"), 0.5));
 	if (bUniforms && bTrace && M.bCustom)
@@ -1104,7 +1108,7 @@ void UJsgbSceneMirror::ApplyLight(const float* S, uint32 FrameStamp, FLinearColo
 	const int32 Id = static_cast<int32>(S[1]);
 	const int32 Kind = static_cast<int32>(S[2]);
 	const FLinearColor Color(S[3], S[4], S[5]);
-	const float Intensity = S[6] * LightScale;
+	const float Intensity = S[6] * LightScale * (static_cast<int32>(S[2]) == 1 ? SunScale : 1.f);
 	if (Kind == 4) { Ambient += Color * Intensity; return; }
 	if (Kind == 5) { HemiSky += Color * Intensity; HemiGround += FLinearColor(S[18], S[19], S[20]) * Intensity; return; }
 	if (Kind == 6) { return; }
@@ -1211,7 +1215,7 @@ void UJsgbSceneMirror::ApplyPost(const float* H)
 	}
 	FPostProcessSettings& P = Camera->PostProcessSettings;
 	// Three.js exposure multiplies linear colour; Unreal's bias is in stops.
-	P.bOverride_AutoExposureBias = true; P.AutoExposureBias = FMath::Log2(FMath::Max(1e-3f, H[35]));
+	P.bOverride_AutoExposureBias = true; P.AutoExposureBias = FMath::Log2(FMath::Max(1e-3f, H[35])) + ExposureOffset;
 	// renderer.toneMapping: without a tone curve (NoToneMapping, LinearToneMapping) three.js only clamps and
 	// encodes to sRGB, so Unreal's filmic curve goes too; for the curves (ACES, AgX and the rest) Unreal's filmic
 	// curve is the nearest match. three.js never widens the gamut or corrects blues.
@@ -1227,7 +1231,7 @@ void UJsgbSceneMirror::ApplyPost(const float* H)
 	// measured 2.8 to 3.1 times fainter than Chrome's across the conformance suite's postprocess case, hence the 2.9.
 	// No pass means no bloom.
 	const float Strength = H[37], Radius = H[38], Threshold = H[39];
-	P.bOverride_BloomIntensity = true; P.BloomIntensity = Strength > 0 ? 2.9f * 6.f * Strength * 2.f / FMath::Max(0.1f, 1.f - Threshold) : 0.f;
+	P.bOverride_BloomIntensity = true; P.BloomIntensity = Strength > 0 ? BloomScale * 2.9f * 6.f * Strength * 2.f / FMath::Max(0.1f, 1.f - Threshold) : 0.f;
 	P.bOverride_BloomThreshold = true; P.BloomThreshold = Strength > 0 ? Threshold : -1.f;
 	if (Strength > 0)
 	{
@@ -1396,6 +1400,9 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 		const FJsgbMaterial* First = Ent.Materials.Num() ? Materials.Find(Ent.Materials[0]) : nullptr;
 		const bool bNoFog = First && First->bNoFog;
 		if (C->bRenderCustomDepth != bNoFog) { C->SetRenderCustomDepth(bNoFog); C->SetCustomDepthStencilValue(bNoFog ? 1 : 0); }
+		// A surface drawn first without depth (a sky dome) sorts behind every other translucent surface.
+		const int32 Priority = First && First->bDrawFirst ? -1000 : 0;
+		if (C->TranslucencySortPriority != Priority) { C->SetTranslucentSortPriority(Priority); }
 		if (UStaticMeshComponent* Sm = Cast<UStaticMeshComponent>(C))
 		{
 			const bool bBack = First && First->Side == 1;

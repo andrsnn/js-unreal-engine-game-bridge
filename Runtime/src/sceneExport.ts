@@ -373,6 +373,7 @@ function linearShader(t: TranslatedShader): TranslatedShader {
   return l;
 }
 
+const drawFirst = (mat: THREE.Material) => !mat.transparent && mat.depthWrite === false && mat.blending === THREE.NormalBlending;
 function syncMaterial(mat: THREE.Material): number {
   const id = idOf(mat);
   if (materialFrame.get(mat) === exportCount) return id;
@@ -415,7 +416,9 @@ function syncMaterial(mat: THREE.Material): number {
     color: shader ? uniformColor(m) ?? [0.7, 0.7, 0.7] : colorOf(m.color),
     emissive: m.emissive ? colorOf(m.emissive) : [0, 0, 0], emissiveIntensity: m.emissiveIntensity ?? 1,
     roughness: m.roughness ?? (mat.type === 'MeshBasicMaterial' ? 1 : 0.8), metalness: m.metalness ?? 0,
-    opacity: mat.opacity, transparent: mat.transparent, alphaTest: mat.alphaTest, side: mat.side,
+    // An opaque surface that writes no depth (a sky dome drawn first) never hides what three.js draws after it.
+    // Unreal's opaque surfaces always write depth, so it goes there as a translucent surface drawn first.
+    opacity: mat.opacity, transparent: mat.transparent || drawFirst(mat), drawFirst: drawFirst(mat) || undefined, alphaTest: mat.alphaTest, side: mat.side,
     vertexColors: !!mat.vertexColors, unlit: shader || ['MeshBasicMaterial', 'SpriteMaterial', 'PointsMaterial', 'LineBasicMaterial', 'LineDashedMaterial'].includes(mat.type),
     blending: mat.blending, depthWrite: mat.depthWrite, depthTest: mat.depthTest, colorWrite: mat.colorWrite, wireframe: !!m.wireframe,
     map: shader ? uniformTexture(m) : textureId(m.map), emissiveMap: textureId(m.emissiveMap), normalMap: textureId(m.normalMap), roughnessMap: textureId(m.roughnessMap),

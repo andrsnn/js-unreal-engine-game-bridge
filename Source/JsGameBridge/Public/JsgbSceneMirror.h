@@ -94,6 +94,8 @@ struct FJsgbMaterial
 	/** A fat line's width (Line2): in pixels, or in world units; 0 for an ordinary one-pixel line. */
 	float FatWidth = 0.f;
 	bool bFatWorld = false;
+	/** three.js draws it opaque without writing depth (a sky dome drawn first): Unreal draws it translucent, first. */
+	bool bDrawFirst = false;
 	/** Textures bound through uniforms (shader materials and hooks): parameter name and texture id. */
 	TArray<TPair<FName, int32>> UniformTextures;
 };
@@ -249,6 +251,8 @@ public:
 	 *  volumetric scattering; ambient and hemisphere light in the bridge's materials is scaled by LumenAmbientScale. */
 	bool bLumen = false;
 	float SunSourceAngle = 1.f;
+	/** Lumen mode: extra exposure in stops, bloom and directional light multipliers on top of the game's own. */
+	float ExposureOffset = 0.f, BloomScale = 1.f, SunScale = 1.f;
 	float LumenAmbientScale = 1.f;
 	int32 FrameCounter = 0;
 

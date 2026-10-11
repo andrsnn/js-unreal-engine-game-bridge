@@ -60,12 +60,12 @@ void AJsgbHost::SetupLumen()
 	P.bOverride_LumenSceneViewDistance = true; P.LumenSceneViewDistance = 2000000.f;
 	P.bOverride_LumenMaxTraceDistance = true; P.LumenMaxTraceDistance = 200000.f;
 
-	// The sky light captures whatever the game draws far away (stars, nebulae, planets) every frame, so the
-	// fill light on the ships takes the colour of the game's own sky.
+	// The sky light captures whatever the game draws far away (stars, nebulae, planets) every frame, so the faint
+	// fill light on the ships takes the colour of the game's own sky. It stays low so shadow sides stay dark.
 	LumenSky = NewObject<USkyLightComponent>(this);
 	LumenSky->SourceType = ESkyLightSourceType::SLS_CapturedScene;
 	LumenSky->bRealTimeCapture = true;
-	LumenSky->SetIntensity(bLight ? 2.f : 2.5f);
+	LumenSky->SetIntensity(0.6f);
 	LumenSky->bLowerHemisphereIsBlack = false;
 	LumenSky->SetMobility(EComponentMobility::Movable);
 	LumenSky->SetupAttachment(GetRootComponent());
@@ -90,6 +90,11 @@ void AJsgbHost::SetupLumen()
 	Mirror->SunSourceAngle = bLight ? 0.6f : 1.2f;
 	// Lumen's bounce light and the sky light replace most of three.js's flat ambient.
 	Mirror->LumenAmbientScale = 0.35f;
-	Mirror->OverrideAmbientScale = 0.25f;
+	Mirror->OverrideAmbientScale = 0.15f;
+	// The game's dark-space look: a strong key light and deep shadow sides. The sun is a little stronger than the
+	// game's, exposure stays the game's own, and drives and weapons get a little more bloom.
+	Mirror->ExposureOffset = 0.f;
+	Mirror->SunScale = 1.3f;
+	Mirror->BloomScale = 1.3f;
 	UE_LOG(LogJsgbFidelity, Display, TEXT("Lumen lighting on (preset %s): global illumination and reflections, sky light capture, soft sun shadows, volumetric fog"), *LumenPreset);
 }

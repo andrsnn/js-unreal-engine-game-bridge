@@ -1,0 +1,9 @@
+# Hard Burn fleet battle for the fidelity film: wide, then three wheel steps closer at 26 s. Same steps in Chrome and Unreal.
+0 gone #startup
+12 shot film-12s
+24 shot film-24s
+26 eval document.querySelector('canvas').dispatchEvent(new WheelEvent('wheel', {deltaY: -200, bubbles: true, cancelable: true}))
+26.3 eval document.querySelector('canvas').dispatchEvent(new WheelEvent('wheel', {deltaY: -200, bubbles: true, cancelable: true}))
+26.6 eval document.querySelector('canvas').dispatchEvent(new WheelEvent('wheel', {deltaY: -200, bubbles: true, cancelable: true}))
+34 shot film-34s
+40 quit
