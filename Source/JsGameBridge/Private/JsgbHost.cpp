@@ -714,8 +714,8 @@ void AJsgbHost::SendWheel(float DeltaY) { if (UJsgbBridge* B = Bridge) { B->RunO
 void AJsgbHost::SendGamepads(const FString& Json) { if (UJsgbBridge* B = Bridge) { B->RunOnJs([B, Json] { if (B->OnGamepads.IsBound()) { B->OnGamepads.Execute(Json); } }); } }
 FString AJsgbHost::Eval(const FString& Source)
 {
-	if (!Bridge || !Bridge->OnEval.IsBound()) { return TEXT("ERR no js"); }
-	if (!Bridge->bJsThread) { return Bridge->OnEval.Execute(Source); }
+	if (!Bridge) { return TEXT("ERR no js"); }
+	if (!Bridge->bJsThread) { return Bridge->OnEval.IsBound() ? Bridge->OnEval.Execute(Source) : FString(TEXT("ERR no js")); }
 	// On the JavaScript thread: wait for its next turn (up to 10 s) for the answer.
 	struct FAnswer { FString Text; FEvent* Done = FPlatformProcess::GetSynchEventFromPool(true); ~FAnswer() { FPlatformProcess::ReturnSynchEventToPool(Done); } };
 	TSharedRef<FAnswer, ESPMode::ThreadSafe> Answer = MakeShared<FAnswer, ESPMode::ThreadSafe>();
@@ -1049,7 +1049,8 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		if (!PendingBundle.IsEmpty()) { LoadPublication(GameDir, PendingBundle); PendingBundle.Reset(); }
 		StartJs();
 	}
-	if (!Bridge || !Bridge->OnFrame.IsBound()) { return; }
+	// The game's delegates belong to the JavaScript thread while it runs, so the game thread doesn't read them.
+	if (!Bridge || (!JsThread && !Bridge->OnFrame.IsBound())) { return; }
 	Audio->StartPending();
 	if (Bridge->FixedStepMs > 0) { Bridge->VirtualMs += Bridge->FixedStepMs; }
 

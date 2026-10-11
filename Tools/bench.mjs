@@ -18,6 +18,12 @@ for (const f of ['--frame-gen', '--hud', '--js-thread']) if (rest.includes(f)) p
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const status = () => fetch('http://127.0.0.1:5292/bridge/status', {signal: AbortSignal.timeout(3000)}).then(r => r.json()).catch(() => null);
 
+// Windows switches the display off on a locked or idle PC, and each switch stalls the GPU queue for 300 to
+// 400 ms (Kernel-Power event 566 at the same second). The display stays on while the benchmark runs, as it
+// does for a player at the screen.
+const awake = process.platform === 'win32' ? spawn('powershell', ['-NoProfile', '-Command',
+  "Add-Type -Namespace Jsgb -Name Power -MemberDefinition '[DllImport(\"kernel32.dll\")] public static extern uint SetThreadExecutionState(uint f);';" +
+  "[void][Jsgb.Power]::SetThreadExecutionState([Convert]::ToUInt32('80000003',16)); Start-Sleep -Seconds " + (to + 900)], {stdio: 'ignore'}) : null;
 const child = spawn(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), game, ...(rest.includes('--onscreen') ? [] : ['--offscreen']), '--mute', '--res', res, '--timeout', String(to + 600), ...pass], {stdio: ['ignore', 'pipe', 'pipe']});
 let out = '';
 child.stdout.on('data', d => { out += d; });
@@ -51,6 +57,7 @@ for (;;) {
 await fetch('http://127.0.0.1:5292/bridge/close', {method: 'POST', body: '', signal: AbortSignal.timeout(5000)}).catch(() => {});
 await Promise.race([exited, sleep(60000)]);
 if (child.exitCode === null) child.kill();
+awake?.kill();
 if (samples.length < 2) { console.log(JSON.stringify({game, res, upscaler, error: 'no samples', log: out.slice(-400)})); process.exit(1); }
 const a = samples[0], b = samples.at(-1);
 const fps = (b.frames - a.frames) / (b.t - a.t);
