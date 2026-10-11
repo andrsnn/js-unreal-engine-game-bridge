@@ -112,7 +112,8 @@ async function capture() {
   const stopAt = (who, ms) => fixedFps ? page.evaluate(([w, v]) => window.__jsgbStopAt?.(w, v), [who, ms]).catch(() => {}) : null;
   const clock = async () => fixedFps ? (await page.evaluate(() => window.__jsgbVirtualMs?.() ?? 0).catch(() => 0)) / 1000 : Date.now() / 1000;
   page.on('pageerror', e => errors.push(String(e)));
-  page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  // A failed load names its URL (Chrome's console message doesn't).
+  page.on('console', m => { if (m.type() === 'error') errors.push(m.text().startsWith('Failed to load resource') && m.location()?.url ? `${m.text()}: ${m.location().url}` : m.text()); });
   const frames = flag('--frames'), fps = +flag('--fps', 10), shots = flag('--shots', path.join(game.out, 'web-shots'));
   if (frames) fs.mkdirSync(frames, {recursive: true});
   fs.mkdirSync(shots, {recursive: true});

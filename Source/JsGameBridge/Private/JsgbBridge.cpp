@@ -312,7 +312,8 @@ void UJsgbBridge::Frame(FArrayBuffer Floats, int32 Count, FArrayBuffer Instances
 	};
 	if (!bJsThread || IsInGameThread()) { Apply(static_cast<const float*>(Floats.Data), N, static_cast<const float*>(Instances.Data), NI); return; }
 	TArray<float> D(static_cast<const float*>(Floats.Data), N), I(static_cast<const float*>(Instances.Data), NI);
-	RunOnGame([Apply, D = MoveTemp(D), I = MoveTemp(I)] { Apply(D.GetData(), D.Num(), I.GetData(), I.Num()); }, true);
+	const double Produced = FPlatformTime::Seconds();
+	RunOnGame([this, Apply, Produced, D = MoveTemp(D), I = MoveTemp(I)] { LastFrameProducedAt = Produced; Apply(D.GetData(), D.Num(), I.GetData(), I.Num()); }, true);
 }
 
 void UJsgbBridge::PublishUI(const FString& Html)

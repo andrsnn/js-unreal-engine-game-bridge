@@ -102,6 +102,7 @@ private:
 	/** Whether DLSS 5 Neural Rendering can run here; when it can't, why (for the log) and the short form (for the readout). */
 	bool NeuralRenderingCheck(FString& Why, FString& Short) const;
 	void UpdateHud(float DeltaSeconds);
+	TSharedRef<SWidget> MakeJitterGraph();
 	void StartRecording(const FString& Dir, double Fps);
 	void StopRecording();
 	void OnRecordedFrame(int32 Width, int32 Height, const TArray<FColor>& Bitmap);
@@ -112,6 +113,13 @@ private:
 	TSharedPtr<PUERTS_NAMESPACE::FJsEnv> JsEnv;
 	TSharedPtr<class FJsgbJsThread> JsThread;
 	double LastSnapshot = 0, SnapshotInterval = 1.0 / 60.0;
+	/** The glide between game updates: from the pose on screen when an update arrived (at SegmentStart) to the update's
+	 *  pose at SegmentEnd, which is the time the JavaScript thread made it plus one game interval and one Unreal frame. */
+	double SegmentStart = 0, SegmentEnd = 0, LastProduced = 0, DrawInterval = 1.0 / 60.0;
+	/** How evenly the camera moves: its speed each frame while it moves, summed for the frame log. */
+	FVector LastCameraAt = FVector::ZeroVector;
+	double CamSpeedSum = 0, CamSpeedSum2 = 0;
+	int32 CamSpeedFrames = 0;
 	TSharedPtr<SWebBrowser> Browser;
 	TSharedPtr<IHttpRouter> Router;
 	FDelegateHandle RouteHandle;
@@ -166,6 +174,11 @@ private:
 	/** -JsgbDlssKeys: F6 and F7 switch DLSS while the game runs, and the readout lists the keys. */
 	bool bShowKeys = false;
 	bool bShowHud = false;
+	/** The jitter readout under the frame rate (-JsgbJitter, F8 with -JsgbDlssKeys): the last 600 frame times in ms. */
+	bool bShowJitter = false;
+	TArray<float> JitterMs;
+	int32 JitterHead = 0;
+	FString JitterLine;
 	int32 HudFrames = 0;
 	double HudSeconds = 0, HudFps = 0, HudPresentedFps = -1;
 	TSharedPtr<class STextBlock> HudText;

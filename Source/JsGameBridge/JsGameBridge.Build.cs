@@ -6,6 +6,8 @@ public class JsGameBridge : ModuleRules {
   AddEngineThirdPartyPrivateStaticDependencies(Target,"FreeType2");
   AddEngineThirdPartyPrivateStaticDependencies(Target,"UElibPNG");
   AddEngineThirdPartyPrivateStaticDependencies(Target,"zlib");
+  // Ogg Opus files (Chrome plays them; Unreal's runtime decoder reads only Ogg Vorbis).
+  AddEngineThirdPartyPrivateStaticDependencies(Target,"libOpus");
   PCHUsage=PCHUsageMode.UseExplicitOrSharedPCHs;
   PublicDependencyModuleNames.AddRange(new[]{"Core","CoreUObject","Engine","Json","JsonUtilities","ProceduralMeshComponent","Niagara","RenderCore","RHI","JsEnv","HTTPServer","Slate","SlateCore","InputCore","ApplicationCore","WebBrowser",
    "MeshDescription","StaticMeshDescription","ImageWrapper","ImageCore","MovieSceneCapture","Projects","AudioMixer","VorbisAudioDecoder"});

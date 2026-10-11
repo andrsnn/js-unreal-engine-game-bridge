@@ -37,8 +37,37 @@ export function loadGame(name) {
   game.repo = path.resolve(bridge, game.repo);
   game.out = path.resolve(game.out ?? path.join(settings().builds, game.id));
   game.publicRoots = [...(game.public ?? ['public']).map(p => path.resolve(game.repo, p)), game.out, game.repo];
+  if (game.publicCommit) game.publicRoots.unshift(pinnedPublic(game));
   game.registry = (game.registry ?? []).map(p => path.resolve(bridge, p));
   return game;
+}
+
+// "publicCommit": a game copied at an older commit whose public folder links to the live repository (Tools/demo.mjs)
+// loads its files as they were at that commit. The files changed or deleted since then are taken from git into
+// <out>/public-pinned, which comes first among the public roots; the rest come from the live folder.
+function pinnedPublic(game) {
+  const live = fs.realpathSync(path.resolve(game.repo, (game.public ?? ['public'])[0]));
+  const top = execFileSync('git', ['--no-optional-locks', '-C', live, 'rev-parse', '--show-toplevel'], {encoding: 'utf8'}).trim();
+  const rel = path.relative(top, live).replaceAll('\\', '/');
+  const changed = execFileSync('git', ['--no-optional-locks', '-C', top, 'diff', '--name-only', '--no-renames', '--diff-filter=DM', game.publicCommit, '--', rel],
+    {encoding: 'utf8', maxBuffer: 64 << 20}).split('\n').filter(Boolean).sort();
+  const dir = path.join(game.out, 'public-pinned');
+  const stamp = path.join(dir, '.pinned');
+  const key = `${game.publicCommit}\n${changed.join('\n')}`;
+  if (!fs.existsSync(stamp) || fs.readFileSync(stamp, 'utf8') !== key) {
+    fs.rmSync(dir, {recursive: true, force: true});
+    fs.mkdirSync(dir, {recursive: true});
+    for (let i = 0; i < changed.length; i += 100) {
+      const tar = path.join(dir, '.part.tar');
+      execFileSync('git', ['--no-optional-locks', '-C', top, 'archive', '--format=tar', '-o', tar, game.publicCommit, '--', ...changed.slice(i, i + 100)]);
+      // Relative names, because GNU tar reads a drive letter as a remote host.
+      execFileSync('tar', ['-xf', '.part.tar'], {cwd: dir});
+      fs.rmSync(tar);
+    }
+    fs.writeFileSync(stamp, key);
+    if (changed.length) console.log(`${game.id}: ${changed.length} public files changed since ${game.publicCommit}; serving them as they were from ${dir}`);
+  }
+  return path.join(dir, rel);
 }
 
 /** The game's index.html: shell markup, inline classic scripts, module entry and stylesheets. */

@@ -130,6 +130,8 @@ public:
 	struct FUICanvas { int32 Width = 0, Height = 0; TArray<uint8> Rgba; };
 	TMap<FString, FUICanvas> UICanvases;
 	int64 SceneFrames = 0;
+	/** When the JavaScript thread made the newest scene frame the game thread applied (FPlatformTime seconds). */
+	double LastFrameProducedAt = 0;
 	UPROPERTY() TObjectPtr<UJsgbSceneMirror> Mirror;
 	UPROPERTY() TObjectPtr<UJsgbAudio> Audio;
 };

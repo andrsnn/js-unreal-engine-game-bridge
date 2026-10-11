@@ -14,5 +14,6 @@
     "game": "hardburn"
   },
   "conformanceSearch": "?conformance=1",
-  "suite": true
+  "suite": true,
+  "publicCommit": "b4d7238"
 }

@@ -5,6 +5,9 @@
 #include "Sound/SoundAttenuation.h"
 #include "Interfaces/IAudioFormat.h"
 #include "Decoders/VorbisAudioInfo.h"
+THIRD_PARTY_INCLUDES_START
+#include "opus.h"
+THIRD_PARTY_INCLUDES_END
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
@@ -54,7 +57,62 @@ UJsgbAudio::UJsgbAudio()
 
 namespace
 {
-	/** PCM from a WAV or Ogg Vorbis file, or null. Safe on any thread. */
+	/** PCM from the Opus stream of an Ogg file (the file may hold other streams too, such as a Theora video), or false.
+	 *  Opus always decodes at 48 kHz; the header's pre-skip samples at the start are encoder padding. */
+	bool DecodeOggOpus(const TArray<uint8>& File, UJsgbAudio::FPcm& Out)
+	{
+		const uint8* B = File.GetData();
+		const int64 N = File.Num();
+		uint32 Serial = 0;
+		bool bFound = false;
+		int32 Channels = 0, PreSkip = 0;
+		OpusDecoder* Decoder = nullptr;
+		TArray<uint8> Packet;
+		TArray<int16> Frame;
+		auto OnPacket = [&](const TArray<uint8>& P)
+		{
+			if (!Decoder)
+			{
+				if (P.Num() < 19 || FMemory::Memcmp(P.GetData(), "OpusHead", 8)) { return; }
+				Channels = FMath::Clamp<int32>(P[9], 1, 2);
+				PreSkip = P[10] | (P[11] << 8);
+				int Error = 0;
+				Decoder = opus_decoder_create(48000, Channels, &Error);
+				if (Error != OPUS_OK) { Decoder = nullptr; }
+				return;
+			}
+			if (P.Num() >= 8 && !FMemory::Memcmp(P.GetData(), "OpusTags", 8)) { return; }
+			Frame.SetNumUninitialized(5760 * Channels);
+			const int Samples = opus_decode(Decoder, P.GetData(), P.Num(), Frame.GetData(), 5760, 0);
+			if (Samples > 0) { Out.Samples.Append(Frame.GetData(), Samples * Channels); }
+		};
+		for (int64 At = 0; At + 27 <= N && !FMemory::Memcmp(B + At, "OggS", 4);)
+		{
+			const uint32 PageSerial = B[At + 14] | (B[At + 15] << 8) | (B[At + 16] << 16) | (uint32(B[At + 17]) << 24);
+			const int32 Segments = B[At + 26];
+			int64 Data = At + 27 + Segments;
+			if (Data > N) { break; }
+			// The first page of the Opus stream starts with OpusHead; pages of other streams are skipped.
+			if (!bFound && (B[At + 5] & 2) && Data + 8 <= N && !FMemory::Memcmp(B + Data, "OpusHead", 8)) { bFound = true; Serial = PageSerial; }
+			const bool bMine = bFound && PageSerial == Serial;
+			for (int32 S = 0; S < Segments; ++S)
+			{
+				const int32 Len = B[At + 27 + S];
+				if (Data + Len > N) { break; }
+				if (bMine) { Packet.Append(B + Data, Len); if (Len < 255) { OnPacket(Packet); Packet.Reset(); } }
+				Data += Len;
+			}
+			At = Data;
+		}
+		if (Decoder) { opus_decoder_destroy(Decoder); }
+		if (!Channels || Out.Samples.Num() <= PreSkip * Channels) { return false; }
+		Out.Samples.RemoveAt(0, PreSkip * Channels);
+		Out.Channels = Channels;
+		Out.SampleRate = 48000;
+		return true;
+	}
+
+	/** PCM from a WAV, Ogg Vorbis or Ogg Opus file, or null. Safe on any thread. */
 	TSharedPtr<UJsgbAudio::FPcm> DecodeFile(const TArray<uint8>& File)
 	{
 		if (File.Num() == 0) { return nullptr; }
@@ -62,6 +120,9 @@ namespace
 		if (DecodeWav(File, *P)) { return P; }
 		if (File.Num() > 4 && !FMemory::Memcmp(File.GetData(), "OggS", 4))
 		{
+			// An Opus stream announces itself in its first page; Unreal's Vorbis reader would log an error on it.
+			const int32 Head = FMath::Min(File.Num(), 65536);
+			for (int32 I = 0; I + 8 <= Head; ++I) { if (File[I] == 'O' && !FMemory::Memcmp(File.GetData() + I, "OpusHead", 8)) { return DecodeOggOpus(File, *P) ? P : nullptr; } }
 #if WITH_OGGVORBIS
 			LoadVorbisLibraries();
 			FVorbisAudioInfo Vorbis;
@@ -75,6 +136,7 @@ namespace
 				return P;
 			}
 #endif
+			if (DecodeOggOpus(File, *P)) { return P; }
 		}
 		return nullptr;
 	}
@@ -106,7 +168,7 @@ TSharedPtr<UJsgbAudio::FDecode> UJsgbAudio::DecodeOf(const FString& Path)
 	Async(EAsyncExecution::ThreadPool, [D, Path, File = MoveTemp(File)]
 	{
 		D->Pcm = DecodeFile(File);
-		if (!D->Pcm) { UE_LOG(LogJsgbAudio, Warning, TEXT("Cannot play %s (missing, or not Ogg Vorbis/WAV)"), *Path); }
+		if (!D->Pcm) { UE_LOG(LogJsgbAudio, Warning, TEXT("Cannot play %s (missing, or not WAV, Ogg Vorbis or Ogg Opus)"), *Path); }
 		D->bDone = true;
 	});
 	return D;

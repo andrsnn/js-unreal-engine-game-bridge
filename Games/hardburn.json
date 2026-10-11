@@ -14,5 +14,14 @@
     "file": "Registry/audio-cues-v5.json",
     "game": "hardburn"
   },
-  "conformanceSearch": "?conformance=1"
+  "conformanceSearch": "?conformance=1",
+  "captureScripts": [
+    {
+      "script": "Tests/scripts/hardburn.txt",
+      "search": "?conformance=1"
+    },
+    {
+      "script": "Tests/scripts/hardburn-newgame.txt"
+    }
+  ]
 }

@@ -1,13 +1,17 @@
 #!/usr/bin/env node
-// Builds the play package for another PC from the latest game sources, then copies what changed to that PC and puts
-// launchers on its desktop. One command refreshes everything:
-//   node Tools/laptop-package.mjs [--to zeph] [--host] [--games hardburn,unlit,saltblade] [--out C:/JsgbPackage/JsGameBridge]
-// --host packages the Unreal host again (after a change to the plugin's C++ or the engine plugins). It needs the
+// Builds the play package for another PC from the latest game sources, smoke-tests it on this PC, then copies what
+// changed to the other PC. Nothing runs on the other PC except the copy: it is someone's machine to play on.
+//   node Tools/laptop-package.mjs [--to zeph] [--host] [--no-capture] [--games hardburn,unlit,saltblade] [--no-smoke] [--shortcuts]
+//     [--out C:/JsgbPackage/JsGameBridge]
+// --host packages the Unreal host again (after a change to the plugin's C++ or the engine plugins). Before that, an
+// editor plays each three.js game through the "captureScripts" in its Games/<game>.json and saves every shader material
+// it generates, so the package cooks them (--no-capture skips this). It needs the
 // packaging project (--project, default F:/JsgbPackage/project) with the plugins linked into its Plugins folder.
 // --to <ssh host> copies the package to C:\JsgbPackage\JsGameBridge on that Windows PC, only the files that changed
-// since the last copy, and makes one desktop shortcut per game.
+// since the last copy; --shortcuts also makes one desktop shortcut per game there.
 import fs from 'node:fs';
 import path from 'node:path';
+import {createHash} from 'node:crypto';
 import {spawn, spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {build, loadGame, settings} from './jsgb.mjs';
@@ -42,6 +46,19 @@ const copy = (from, to) => { fs.mkdirSync(path.dirname(to), {recursive: true}); 
 fs.mkdirSync(out, {recursive: true});
 const hostExe = path.join(out, 'host/Windows/JsgbHost.exe');
 if (has('--host') || !fs.existsSync(hostExe)) {
+  // Generated shader materials captured in editor runs (-JsgbSaveMaterials) cook into the host, so a packaged game
+  // draws its own shaders without compiling anything.
+  // First the editor plays each three.js game through its "captureScripts" and saves every material it generates.
+  if (!has('--no-capture')) for (const id of games) {
+    const game = loadGame(id);
+    for (const run of game.captureScripts ?? []) {
+      log(`capturing ${id}'s materials with ${run.script}`);
+      spawnSync(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), id, '--offscreen', '--res', '1920x1080', '--js-thread', '--script', run.script,
+        '--timeout', String(run.timeout ?? 420), ...(run.search ? ['--search', run.search] : []), '--ue', '-JsgbSaveMaterials'], {stdio: 'inherit'});
+    }
+  }
+  const captured = path.join(path.dirname(settings().project), 'Content', 'JsgbGenerated');
+  if (fs.existsSync(captured)) { mirror(captured, path.join(project, 'Content', 'JsgbGenerated')); log(`${fs.readdirSync(captured).length} captured materials to cook`); }
   log(`packaging the Unreal host from ${project}`);
   const uat = path.resolve(path.dirname(settings().engine), '../../Build/BatchFiles/RunUAT.bat');
   // Puerts' build rules copy its scripts into the project's Content folder from more than one rules instance at once,
@@ -82,17 +99,36 @@ for (const id of games) {
     '@echo off',
     `rem ${name} in Unreal Engine through JsGameBridge. F6 switches the DLSS mode, F7 Frame Generation (off, 2x, 3x, 4x).`,
     'cd /d "%~dp0"',
-    `start "" "%~dp0host\\Windows\\JsgbHost.exe" "-JsgbGame=%~dp0games\\${id}" -windowed -ResX=1920 -ResY=1080 -JsgbHud -JsgbDlssKeys ${flags.join(' ')} -log=jsgb-${id}.log`,
+    `start "" "%~dp0host\\Windows\\JsgbHost.exe" "-JsgbGame=%~dp0games\\${id}" -windowed -ResX=1920 -ResY=1080 -JsgbHud -JsgbDlssKeys -JsgbJitter ${flags.join(' ')} -log=jsgb-${id}.log %*`,
     ''].join('\r\n'));
   log(`${id}: ${pub.sourceCommit.slice(0, 8)}${pub.sourceDirty ? ' (with uncommitted changes)' : ''}`);
 }
 copy(path.join(bridge, 'Tools/laptop-package-readme.txt'), path.join(out, 'README.txt'));
+copy(path.join(bridge, 'Tools/laptop-smoke.ps1'), path.join(out, 'smoke.ps1'));
 
+// The smoke test runs here, on the package as built, before anything is copied.
+if (!has('--no-smoke')) {
+  const smoke = spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(out, 'smoke.ps1'),
+    '-Games', games.map(id => `${id}=${GAMES[id]?.name ?? id}`).join(';')], {encoding: 'utf8'});
+  const lines = smoke.stdout.split('\n').map(l => l.trim()).filter(l => / (PASS|FAIL)/.test(l));
+  for (const l of lines) log(`smoke: ${l}`);
+  if (lines.length !== games.length || lines.some(l => / FAIL/.test(l))) throw Error(`smoke test failed, nothing copied:\n${smoke.stdout}${smoke.stderr}`);
+}
 if (remote) await sync(remote);
 log(`done: ${out}`);
 
-// Copies the files whose size or time changed since the last copy (tar over ssh), deletes the ones that are gone, and
-// makes the desktop shortcuts.
+// SHA-256 of a file of any size, read in 8 MB pieces.
+function sha256File(file) {
+  const hash = createHash('sha256'), buf = Buffer.alloc(8 << 20), fd = fs.openSync(file, 'r');
+  for (let n; (n = fs.readSync(fd, buf, 0, buf.length, null)) > 0;) hash.update(buf.subarray(0, n));
+  fs.closeSync(fd);
+  return hash.digest('hex').toUpperCase();
+}
+
+// Copies the package to the other PC. Game files go when their size or time changed. The host (executable, paks,
+// shader libraries) only works as a matching set, so when any host file changed the whole host goes to a staging
+// folder, every file is checked by SHA-256 there, and only then does it replace the old host. A game running there
+// is never closed: while one runs, the new host stays staged and the copy reports it.
 async function sync(host) {
   const manifestFile = path.join(out, `.synced-${host}.json`);
   const before = fs.existsSync(manifestFile) ? JSON.parse(fs.readFileSync(manifestFile, 'utf8')) : {};
@@ -100,40 +136,62 @@ async function sync(host) {
   const walk = dir => {
     for (const entry of fs.readdirSync(path.join(out, dir), {withFileTypes: true})) {
       const rel = dir ? `${dir}/${entry.name}` : entry.name;
-      if (entry.name.startsWith('.synced-') || rel === 'host/Windows/JsgbHost/Saved') continue;
+      if (entry.name.startsWith('.synced-') || rel === 'host/Windows/JsgbHost/Saved' || rel === 'smoke') continue;
       if (entry.isDirectory()) walk(rel);
       else { const s = fs.statSync(path.join(out, rel)); now[rel] = `${s.size}:${Math.round(s.mtimeMs)}`; }
     }
   };
   walk('');
-  const changed = Object.keys(now).filter(f => before[f] !== now[f]);
-  const gone = Object.keys(before).filter(f => !(f in now));
-  log(`copying ${changed.length} changed files to ${host} (${gone.length} to delete)`);
-  const ssh = (command, input) => spawnSync('ssh', ['-o', 'BatchMode=yes', host, command], {encoding: 'utf8', input});
-  ssh(`powershell -NoProfile -Command "New-Item -ItemType Directory -Force '${remoteDir}' | Out-Null"`);
-  if (changed.length) {
+  const isHost = f => f.startsWith('host/');
+  const hostFiles = Object.keys(now).filter(isHost);
+  const hostChanged = has('--host') || Object.keys(now).some(f => isHost(f) && before[f] !== now[f]) || Object.keys(before).some(f => isHost(f) && !(f in now));
+  const changed = Object.keys(now).filter(f => !isHost(f) && before[f] !== now[f]);
+  const gone = Object.keys(before).filter(f => !isHost(f) && !(f in now));
+  const ssh = (command, input) => spawnSync('ssh', ['-o', 'BatchMode=yes', host, command], {encoding: 'utf8', input, maxBuffer: 64 << 20});
+  const ps = script => ssh('powershell -NoProfile -Command -', script);
+  const tarTo = (files, dest) => new Promise((resolve, reject) => {
     const list = path.join(out, `.synced-${host}-list.txt`);
-    fs.writeFileSync(list, changed.join('\n') + '\n');
+    fs.writeFileSync(list, files.join('\n') + '\n');
     // Windows' own tar on both ends; the list holds paths relative to the package folder.
-    await new Promise((resolve, reject) => {
-      const tar = spawn('C:/Windows/System32/tar.exe', ['-cf', '-', '-C', out, '-T', list]);
-      const ssh = spawn('ssh', ['-o', 'BatchMode=yes', host, `tar -xf - -C "${remoteDir}"`], {stdio: ['pipe', 'inherit', 'inherit']});
-      tar.stdout.pipe(ssh.stdin);
-      tar.stderr.pipe(process.stderr);
-      ssh.on('close', code => code === 0 ? resolve() : reject(Error(`copy to ${host} failed (exit ${code})`)));
-    });
-    fs.rmSync(list);
+    const tar = spawn('C:/Windows/System32/tar.exe', ['-cf', '-', '-C', out, '-T', list]);
+    const pipe = spawn('ssh', ['-o', 'BatchMode=yes', host, `tar -xf - -C "${dest}"`], {stdio: ['pipe', 'inherit', 'inherit']});
+    tar.stdout.pipe(pipe.stdin);
+    tar.stderr.pipe(process.stderr);
+    pipe.on('close', code => { fs.rmSync(list, {force: true}); code === 0 ? resolve() : reject(Error(`copy to ${host} failed (exit ${code})`)); });
+  });
+  const stage = `${remoteDir}\\.stage`;
+  ps(`New-Item -ItemType Directory -Force '${remoteDir}' | Out-Null; Remove-Item -Recurse -Force '${stage}' -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force '${stage}' | Out-Null`);
+  if (hostChanged) {
+    log(`copying the whole host (${hostFiles.length} files) to ${host}:${stage}`);
+    await tarTo(hostFiles, stage);
+    // Every host file, checked by SHA-256 on the other PC.
+    const sums = {};
+    for (const f of hostFiles) sums[f.replaceAll('/', '\\')] = sha256File(path.join(out, f));
+    const check = ps(`$want = '${JSON.stringify(sums).replaceAll("'", "''")}' | ConvertFrom-Json; $bad = 0; ` +
+      `foreach ($p in $want.PSObject.Properties) { $f = Join-Path '${stage}' $p.Name; if (-not (Test-Path -LiteralPath $f) -or (Get-FileHash -Algorithm SHA256 -LiteralPath $f).Hash -ne $p.Value) { $bad++; if ($bad -le 5) { "mismatch: " + $p.Name } } }; "bad=$bad"`);
+    if (!/bad=0/.test(check.stdout)) throw Error(`the host copy on ${host} failed its checksum check: ${check.stdout.trim()} ${check.stderr.trim()}`);
+    log(`host checksums match on ${host} (${hostFiles.length} files)`);
   }
+  if (hostChanged) {
+    // A running game holds the host's files open, so the rename fails and the new host stays staged.
+    const swap = ps(`$h = '${remoteDir}\\host'; if (Test-Path $h) { Rename-Item $h 'host.old' -ErrorAction Stop }; Move-Item '${stage}\\host' $h -ErrorAction Stop; ` +
+      `Remove-Item -Recurse -Force '${remoteDir}\\host.old' -ErrorAction SilentlyContinue; 'swapped'`);
+    if (!/swapped/.test(swap.stdout)) throw Error(`the new host is staged in ${host}:${stage} but a game there is using the old one; copy again once it's closed (${swap.stderr.trim()})`);
+  }
+  log(`copying ${changed.length} changed game files to ${host} (${gone.length} to delete)`);
+  if (changed.length) await tarTo(changed, remoteDir);
   if (gone.length) {
-    const r = ssh('powershell -NoProfile -Command -', gone.map(f => `Remove-Item -LiteralPath '${remoteDir}\\${f.replaceAll('/', '\\').replaceAll("'", "''")}' -Force -ErrorAction SilentlyContinue`).join('\n'));
+    const r = ps(gone.map(f => `Remove-Item -LiteralPath '${remoteDir}\\${f.replaceAll('/', '\\').replaceAll("'", "''")}' -Force -ErrorAction SilentlyContinue`).join('\n'));
     if (r.status !== 0) log(`deleting old files on ${host} failed: ${r.stderr}`);
   }
+  ps(`Remove-Item -Recurse -Force '${stage}' -ErrorAction SilentlyContinue`);
   fs.writeFileSync(manifestFile, JSON.stringify(now));
+  if (!has('--shortcuts')) { log(`copied to ${host}:${remoteDir}`); return; }
   // One shortcut per game on the desktop, named after the game.
   const shortcuts = games.map(id => GAMES[id]?.name ?? id).map(name =>
     `$s = (New-Object -ComObject WScript.Shell).CreateShortcut([Environment]::GetFolderPath('Desktop') + '\\${name} (Unreal).lnk'); ` +
     `$s.TargetPath = '${remoteDir}\\Play ${name}.cmd'; $s.WorkingDirectory = '${remoteDir}'; $s.IconLocation = '${remoteDir}\\host\\Windows\\JsgbHost.exe,0'; $s.Save()`).join('\n');
-  const r = ssh('powershell -NoProfile -Command -', shortcuts);
+  const r = ps(shortcuts);
   if (r.status !== 0) throw Error(`making the desktop shortcuts on ${host} failed: ${r.stderr}`);
   log(`copied to ${host}:${remoteDir}; desktop shortcuts: ${games.map(id => `${GAMES[id]?.name ?? id} (Unreal)`).join(', ')}`);
 }

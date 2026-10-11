@@ -52,6 +52,8 @@ export const windowTarget = new WindowTarget();
 /** Delivers a host event to `target` through the full browser path. */
 export function deliver(target: Ev | null, e: Ev): boolean {
   track(e);
+  // A browser sets the target before any listener runs, window capture listeners included (games read e.target there).
+  if (target && e.target == null) { try { Object.defineProperty(e, 'target', {value: target, configurable: true}); } catch { /* read-only */ } }
   windowTarget.fire(e, 'capture');
   if (!e.__jsgbStopped && target) target.dispatchEvent(e);
   if (!e.__jsgbStopped && e.bubbles !== false) windowTarget.fire(e, 'bubble');

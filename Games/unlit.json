@@ -13,5 +13,16 @@
     "file": "Registry/audio-cues-v5.json",
     "game": "unlit"
   },
-  "suite": true
+  "suite": true,
+  "captureScripts": [
+    {
+      "script": "Tests/scripts/unlit.txt"
+    },
+    {
+      "script": "Tests/scripts/unlit-newgame.txt"
+    },
+    {
+      "script": "Tests/scripts/unlit-walk.txt"
+    }
+  ]
 }

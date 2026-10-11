@@ -140,6 +140,20 @@ def billboard_offset(g):
     MEL.connect_material_property(custom, '', unreal.MaterialProperty.MP_WORLD_POSITION_OFFSET)
 
 
+# S: the surface colour (linear), A: its opacity, D: the opaque scene behind it (linear). Translucent: the colour C with
+# A*C + (1-A)*D = decode(A*encode(S) + (1-A)*encode(D)). Additive (three.js: source times alpha, plus destination): the
+# colour to add, decode(A*encode(S) + encode(D)) - D. encode and decode are the exact sRGB curves three.js uses.
+SRGB_BLEND = '''
+float3 s = max(S, 0), d = max(D, 0);
+float3 es = lerp(1.055 * pow(s, 1.0 / 2.4) - 0.055, s * 12.92, step(s, 0.0031308));
+float3 ed = lerp(1.055 * pow(d, 1.0 / 2.4) - 0.055, d * 12.92, step(d, 0.0031308));
+float a = saturate(A);
+float3 o = ADDITIVE ? a * es + ed : a * es + (1 - a) * ed;
+float3 f = lerp(pow((o + 0.055) / 1.055, 2.4), o / 12.92, step(o, 0.04045));
+return ADDITIVE ? max(f - d, 0) : (a < 0.002 ? s : max((f - (1 - a) * d) / a, 0));
+'''
+
+
 def make_surface(name, mpc, shading='lit', blend='opaque', two_sided=False, billboard=False):
     mat = fresh(name, unreal.Material, unreal.MaterialFactoryNew())
     g = Graph(mat)
@@ -183,7 +197,24 @@ def make_surface(name, mpc, shading='lit', blend='opaque', two_sided=False, bill
     emissive = g.vector('Emissive', unreal.LinearColor(0, 0, 0, 1))
     alpha = g.mul(g.scalar('Opacity', 1), g.lerp(one, tex, g.scalar('MapMix', 0), bout='A'))
 
-    if shading == 'unlit':
+    if shading == 'unlit' and blend in ('translucent', 'additive'):
+        # WebGL blends a transparent surface with what's behind it in sRGB values (three.js encodes the output
+        # before blending); Unreal blends in linear light, so over a dark background the surface came out brighter.
+        # The node reads the opaque scene behind the pixel and outputs the colour that, blended linearly with the
+        # same opacity, gives WebGL's result. Two transparent layers over each other still blend linearly.
+        sws = g.node(unreal.MaterialExpressionCustom, output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+                     description='sRGB blend', code=SRGB_BLEND.replace('ADDITIVE', '1' if blend == 'additive' else '0'))
+        inputs = []
+        for n in ('S', 'A', 'D'):
+            ci = unreal.CustomInput()
+            ci.set_editor_property('input_name', n)
+            inputs.append(ci)
+        sws.set_editor_property('inputs', inputs)
+        g.link(g.add(base, emissive), '', sws, 'S')
+        g.link(alpha, '', sws, 'A')
+        g.link(g.node(unreal.MaterialExpressionSceneColor), '', sws, 'D')
+        MEL.connect_material_property(sws, '', unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    elif shading == 'unlit':
         MEL.connect_material_property(g.add(base, emissive), '', unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     else:
         # Three.js ambient and hemisphere light have no occlusion: add BaseColor * irradiance / pi.
@@ -201,7 +232,7 @@ def make_surface(name, mpc, shading='lit', blend='opaque', two_sided=False, bill
     elif blend == 'masked':
         clip = g.add(g.op(unreal.MaterialExpressionSubtract, alpha, g.scalar('AlphaTest', 0.5)), g.const(0.5))
         MEL.connect_material_property(clip, '', unreal.MaterialProperty.MP_OPACITY_MASK)
-    elif blend == 'additive':
+    elif blend == 'additive' and shading != 'unlit':
         MEL.connect_material_property(g.mul(g.add(base, emissive), alpha), '', unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     if billboard:
         billboard_offset(g)
