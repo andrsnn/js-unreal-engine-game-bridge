@@ -37,6 +37,8 @@
 #include "HAL/PlatformTime.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
+#include "Misc/FileHelper.h"
+#include "Misc/Paths.h"
 #if WITH_EDITOR
 #include "MaterialDomain.h"
 #include "Materials/MaterialExpressionCustom.h"
@@ -55,6 +57,10 @@
 #include "Materials/MaterialExpressionComponentMask.h"
 #include "Materials/MaterialExpressionMultiply.h"
 #include "Materials/MaterialExpressionAppendVector.h"
+#include "Materials/MaterialExpressionPower.h"
+#include "Materials/MaterialExpressionAdd.h"
+#include "Materials/MaterialExpressionLinearInterpolate.h"
+#include "Materials/MaterialExpressionConstant.h"
 #endif
 
 DEFINE_LOG_CATEGORY_STATIC(LogJsgbMirror, Log, All);
@@ -821,6 +827,12 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 	M.Side = Side;
 	Mid->SetScalarParameterValue(TEXT("Fogged"), M.bNoFog ? 0.f : 1.f);
 	Mid->SetScalarParameterValue(TEXT("Specular"), Num(J, TEXT("specular"), 0.5));
+	if (bUniforms && bTrace && M.bCustom)
+	{
+		FString Names;
+		for (const auto& U : (*Uniforms)->Values) { Names += FString(*U.Key) + TEXT(" "); }
+		UE_LOG(LogJsgbMirror, Display, TEXT("TRACE material %d (%s): uniforms %s"), Id, *CustomKey, *Names);
+	}
 	if (bUniforms)
 	{
 		// Uniforms (shader materials and onBeforeCompile hooks) drive same-named parameters without
@@ -1502,6 +1514,9 @@ void UJsgbSceneMirror::ApplyEvents(const FString& Json)
 void UJsgbSceneMirror::SetShader(const FString& Key, const FString& Json)
 {
 	if (TSharedPtr<FJsonObject> J = ParseJson(Json)) { Shaders.Add(Key, J); UE_LOG(LogJsgbMirror, Display, TEXT("Shader %s translated (%d chars of HLSL)"), *Key, Str(J, TEXT("hlsl")).Len()); }
+	// -JsgbDumpShaders: each translated shader as JSON in Saved/JsGameBridge/Shaders, for debugging.
+	static const bool bDump = FParse::Param(FCommandLine::Get(), TEXT("JsgbDumpShaders"));
+	if (bDump) { FFileHelper::SaveStringToFile(Json, *(FPaths::ProjectSavedDir() / TEXT("JsGameBridge/Shaders") / (Key + TEXT(".json")))); }
 }
 
 UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 Blend, bool bTwoSided)
@@ -1598,8 +1613,11 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 			int32 Output = Cast<UMaterialExpressionVectorParameter>(E) ? 5 : 0;
 			if (Source == TEXT("vertexColor"))
 			{
+				// The mesh stores colours sRGB-encoded; three.js shaders read them linear.
+				UMaterialExpressionPower* Linear = NewObject<UMaterialExpressionPower>(Mat);
+				Linear->Base.Connect(0, E); Linear->ConstExponent = 2.2f; Add(Linear);
 				UMaterialExpressionAppendVector* Rgba = NewObject<UMaterialExpressionAppendVector>(Mat);
-				Rgba->A.Connect(0, E); Rgba->B.Connect(4, E);
+				Rgba->A.Connect(0, Linear); Rgba->B.Connect(4, E);
 				E = Add(Rgba); Output = 0;
 			}
 			FCustomInput CI;
@@ -1618,7 +1636,49 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 		UMaterialExpressionComponentMask* Alpha = NewObject<UMaterialExpressionComponentMask>(Mat);
 		Alpha->A = true; Alpha->R = Alpha->G = Alpha->B = false; Alpha->Input.Connect(0, Custom); Add(Alpha);
 		UMaterialEditorOnlyData* Ed = Mat->GetEditorOnlyData();
-		if (Blend == 2)
+		// A lit built-in material patched in onBeforeCompile: the shader gives the surface colour and Unreal
+		// lights it, with three's ambient and hemisphere light added as the authored lit materials do.
+		const bool bLit = Flag(S, TEXT("lit")) && Blend != 2;
+		if (bLit)
+		{
+			Mat->SetShadingModel(MSM_DefaultLit);
+			if (Blend == 1) { Mat->TranslucencyLightingMode = TLM_Surface; }
+			Ed->BaseColor.Connect(0, Rgb);
+			auto Collection = [&](const TCHAR* Name) -> UMaterialExpression*
+			{
+				UMaterialExpressionCollectionParameter* P = NewObject<UMaterialExpressionCollectionParameter>(Mat);
+				P->Collection = Globals; P->ParameterName = Name; P->ParameterId = Globals ? Globals->GetParameterId(Name) : FGuid();
+				return Add(P);
+			};
+			auto Scalar = [&](const TCHAR* Name, float Default) -> UMaterialExpression*
+			{
+				UMaterialExpressionScalarParameter* P = NewObject<UMaterialExpressionScalarParameter>(Mat);
+				P->ParameterName = Name; P->DefaultValue = Default; return Add(P);
+			};
+			UMaterialExpressionComponentMask* Nz = NewObject<UMaterialExpressionComponentMask>(Mat);
+			Nz->B = true; Nz->R = Nz->G = Nz->A = false; Nz->Input.Connect(0, Add(NewObject<UMaterialExpressionVertexNormalWS>(Mat))); Add(Nz);
+			UMaterialExpressionMultiply* Half = NewObject<UMaterialExpressionMultiply>(Mat);
+			Half->A.Connect(0, Nz); Half->ConstB = 0.5f; Add(Half);
+			UMaterialExpressionAdd* Up = NewObject<UMaterialExpressionAdd>(Mat);
+			Up->A.Connect(0, Half); Up->ConstB = 0.5f; Add(Up);
+			UMaterialExpressionLinearInterpolate* Hemi = NewObject<UMaterialExpressionLinearInterpolate>(Mat);
+			Hemi->A.Connect(0, Collection(TEXT("HemiGround"))); Hemi->B.Connect(0, Collection(TEXT("HemiSky"))); Hemi->Alpha.Connect(0, Up); Add(Hemi);
+			UMaterialExpressionAdd* Irradiance = NewObject<UMaterialExpressionAdd>(Mat);
+			Irradiance->A.Connect(0, Collection(TEXT("Ambient"))); Irradiance->B.Connect(0, Hemi); Add(Irradiance);
+			UMaterialExpressionComponentMask* IrradianceRgb = NewObject<UMaterialExpressionComponentMask>(Mat);
+			IrradianceRgb->R = IrradianceRgb->G = IrradianceRgb->B = true; IrradianceRgb->A = false; IrradianceRgb->Input.Connect(0, Irradiance); Add(IrradianceRgb);
+			UMaterialExpressionMultiply* Ambient = NewObject<UMaterialExpressionMultiply>(Mat);
+			Ambient->A.Connect(0, Rgb); Ambient->B.Connect(0, IrradianceRgb); Add(Ambient);
+			UMaterialExpressionVectorParameter* EmissiveParam = NewObject<UMaterialExpressionVectorParameter>(Mat);
+			EmissiveParam->ParameterName = TEXT("Emissive"); EmissiveParam->DefaultValue = FLinearColor::Black; Add(EmissiveParam);
+			UMaterialExpressionAdd* Emissive = NewObject<UMaterialExpressionAdd>(Mat);
+			Emissive->A.Connect(0, Ambient); Emissive->B.Connect(0, EmissiveParam); Add(Emissive);
+			Ed->EmissiveColor.Connect(0, Emissive);
+			Ed->Roughness.Connect(0, Scalar(TEXT("Roughness"), 0.8f));
+			Ed->Metallic.Connect(0, Scalar(TEXT("Metallic"), 0.f));
+			Ed->Specular.Connect(0, Scalar(TEXT("Specular"), 0.5f));
+		}
+		else if (Blend == 2)
 		{
 			// Three.js additive blending scales the source by its alpha.
 			UMaterialExpressionMultiply* Mul = NewObject<UMaterialExpressionMultiply>(Mat);

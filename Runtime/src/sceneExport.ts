@@ -1,7 +1,7 @@
 import * as THREE from 'three-real';
 import {host, assetRegistry, registrySwaps, type SceneSink} from './host';
 import {lastFrame, post} from './renderer';
-import {translateShaderMaterial} from './shaders';
+import {translateShaderMaterial, translateHookedMaterial, fillBuiltinUniforms, type HookedShader} from './shaders';
 import {channelFor, isExtraAttribute} from './attributes';
 
 /** Mirrors the game's Three.js scene into Unreal each frame. Geometry, materials and textures are
@@ -260,20 +260,27 @@ function uniformValues(uniforms: Record<string, {value: unknown}> | undefined, o
  *  so Unreal materials can implement those features by name. */
 const SHADER_LIB: Record<string, string> = {MeshStandardMaterial: 'standard', MeshPhysicalMaterial: 'physical', MeshLambertMaterial: 'lambert', MeshPhongMaterial: 'phong',
   MeshBasicMaterial: 'basic', MeshToonMaterial: 'toon', MeshMatcapMaterial: 'matcap', MeshNormalMaterial: 'normal', MeshDepthMaterial: 'depth', PointsMaterial: 'points', SpriteMaterial: 'sprite', LineBasicMaterial: 'basic'};
-const hookCache = new WeakMap<THREE.Material, {key: string; uniforms: Record<string, {value: unknown}>}>();
+const hookCache = new WeakMap<THREE.Material, {key: string; shader: HookedShader}>();
 const defaultHook = THREE.Material.prototype.onBeforeCompile;
 const hookRenderer = {capabilities: {isWebGL2: true, maxTextures: 16, precision: 'highp'}, extensions: {has: () => false, get: () => null}, getRenderTarget: () => null};
-function hookUniforms(mat: THREE.Material): Record<string, {value: unknown}> | undefined {
+function hookShader(mat: THREE.Material): {key: string; shader: HookedShader} | undefined {
   if (mat.onBeforeCompile === defaultHook || (mat as THREE.ShaderMaterial).isShaderMaterial) return undefined;
   let key = '';
   try { key = `${mat.version}|${mat.customProgramCacheKey?.() ?? ''}`; } catch { key = String(mat.version); }
   const cached = hookCache.get(mat);
-  if (cached && cached.key === key) return cached.uniforms;
-  const lib = (THREE.ShaderLib as Record<string, {vertexShader: string; fragmentShader: string}>)[SHADER_LIB[mat.type] ?? 'standard'];
-  const shader = {uniforms: {} as Record<string, {value: unknown}>, vertexShader: lib?.vertexShader ?? '', fragmentShader: lib?.fragmentShader ?? '', defines: {}, shaderName: mat.type};
+  if (cached && cached.key === key) return cached;
+  const lib = (THREE.ShaderLib as Record<string, {vertexShader: string; fragmentShader: string; uniforms: Record<string, {value: unknown}>}>)[SHADER_LIB[mat.type] ?? 'standard'];
+  const shader = {uniforms: lib ? THREE.UniformsUtils.clone(lib.uniforms) : {}, vertexShader: lib?.vertexShader ?? '', fragmentShader: lib?.fragmentShader ?? '', defines: {}, shaderName: mat.type};
   try { mat.onBeforeCompile(shader as unknown as THREE.WebGLProgramParametersWithUniforms, hookRenderer as unknown as THREE.WebGLRenderer); } catch { /* hooks that need a real renderer keep their defaults */ }
-  hookCache.set(mat, {key, uniforms: shader.uniforms});
-  return shader.uniforms;
+  const entry = {key, shader: shader as HookedShader};
+  hookCache.set(mat, entry);
+  return entry;
+}
+function hookUniforms(mat: THREE.Material): Record<string, {value: unknown}> | undefined {
+  const hooked = hookShader(mat);
+  if (!hooked) return undefined;
+  fillBuiltinUniforms(mat, hooked.shader.uniforms as Record<string, {value: any}>);
+  return hooked.shader.uniforms;
 }
 
 /** A short stable name for a custom shader, so the registry can map it to an Unreal material. */
@@ -354,8 +361,9 @@ function syncMaterial(mat: THREE.Material): number {
   const registryMaterial = registryKey ? assetRegistry()[registryKey]?.material : undefined;
   // Custom shaders without a registry material become generated Unreal materials.
   let custom: string | undefined;
-  if (shader && !registryMaterial) {
-    const t = translateShaderMaterial(m);
+  const hooked = shader ? undefined : hookShader(mat);
+  if ((shader || hooked) && !registryMaterial) {
+    const t = shader ? translateShaderMaterial(m) : translateHookedMaterial(mat, hooked!.shader, hooked!.key);
     // Still compiling (the shader compiler loads in the background): send it again next frame, even
     // though its values haven't changed, so the generated material replaces the generic one.
     if (t === undefined) quick.delete(mat);

@@ -1,0 +1,10 @@
+{
+  "title": "Conformance suite",
+  "repo": "Tests/suite",
+  "index": "index.html",
+  "public": [
+    "public"
+  ],
+  "search": "?case=hooks",
+  "registry": []
+}
