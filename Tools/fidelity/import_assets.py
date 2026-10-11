@@ -151,14 +151,101 @@ def master_material(default_base, default_mr):
     return m
 
 
-def texture(file, dest, name, srgb):
+def planet_material(default_base, default_normal):
+    """M_JsgbFidelityPlanet: a planet's colour map (Tint) with an optional normal map, a rough surface lit by Unreal's
+    sun, the scene's ambient light (Ambient, from the host) and a faint night-side fill (NightFill), as the game's
+    planet shader keeps the dark side readable."""
+    path = root + '/M_JsgbFidelityPlanet'
+    if eal.does_asset_exist(path) and (not jobs.get('rebuildMaster') or path in built):
+        return eal.load_asset(path)
+    built.add(path)
+    if eal.does_asset_exist(path):
+        eal.delete_asset(path)
+    m = tools.create_asset('M_JsgbFidelityPlanet', root, unreal.Material, unreal.MaterialFactoryNew())
+    E = lambda cls, x, y: mel.create_material_expression(m, cls, x, y)
+    base = E(unreal.MaterialExpressionTextureSampleParameter2D, -900, -300)
+    base.set_editor_property('parameter_name', 'BaseColorMap')
+    base.set_editor_property('texture', default_base)
+    nrm = E(unreal.MaterialExpressionTextureSampleParameter2D, -900, 100)
+    nrm.set_editor_property('parameter_name', 'NormalMap')
+    nrm.set_editor_property('sampler_type', unreal.MaterialSamplerType.SAMPLERTYPE_NORMAL)
+    nrm.set_editor_property('texture', default_normal)
+    tint = E(unreal.MaterialExpressionVectorParameter, -900, -500)
+    tint.set_editor_property('parameter_name', 'Tint')
+    tint.set_editor_property('default_value', unreal.LinearColor(1, 1, 1, 1))
+    color = E(unreal.MaterialExpressionMultiply, -600, -350)
+    mel.connect_material_expressions(base, 'RGB', color, 'A')
+    mel.connect_material_expressions(tint, 'RGB', color, 'B')
+    mel.connect_material_property(color, '', unreal.MaterialProperty.MP_BASE_COLOR)
+    mel.connect_material_property(nrm, 'RGB', unreal.MaterialProperty.MP_NORMAL)
+
+    def scalar(name, value, y):
+        e = E(unreal.MaterialExpressionScalarParameter, -600, y)
+        e.set_editor_property('parameter_name', name)
+        e.set_editor_property('default_value', value)
+        return e
+
+    mel.connect_material_property(scalar('Roughness', 0.92, 300), '', unreal.MaterialProperty.MP_ROUGHNESS)
+    mel.connect_material_property(scalar('Specular', 0.25, 400), '', unreal.MaterialProperty.MP_SPECULAR)
+    amb = E(unreal.MaterialExpressionVectorParameter, -900, -700)
+    amb.set_editor_property('parameter_name', 'Ambient')
+    amb.set_editor_property('default_value', unreal.LinearColor(0, 0, 0, 0))
+    fill = E(unreal.MaterialExpressionAdd, -450, -650)
+    mel.connect_material_expressions(amb, 'RGB', fill, 'A')
+    mel.connect_material_expressions(scalar('NightFill', 0.0, -800), '', fill, 'B')
+    em = E(unreal.MaterialExpressionMultiply, -250, -500)
+    mel.connect_material_expressions(color, '', em, 'A')
+    mel.connect_material_expressions(fill, '', em, 'B')
+    mel.connect_material_property(em, '', unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    m.set_editor_property('used_with_nanite', True)
+    m.set_editor_property('used_with_instanced_static_meshes', True)
+    mel.recompile_material(m)
+    eal.save_loaded_asset(m)
+    return m
+
+
+def import_planet(a):
+    name, dest = a['name'], root + '/' + a['name']
+    tx = a.get('textures', {})
+    mi_path = dest + '/MI_' + name
+    mi = eal.load_asset(mi_path) if eal.does_asset_exist(mi_path) else tools.create_asset('MI_' + name, dest, unreal.MaterialInstanceConstant, unreal.MaterialInstanceConstantFactoryNew())
+    base = texture(tx['baseColor']['file'], dest, 'T_' + name + '_BaseColor', True)
+    normal = texture(tx['normal']['file'], dest, 'T_' + name + '_Normal', False, normal=True)
+    mi.set_editor_property('parent', planet_material(base, normal))
+    mel.set_material_instance_texture_parameter_value(mi, 'BaseColorMap', base)
+    mel.set_material_instance_texture_parameter_value(mi, 'NormalMap', normal)
+    mel.update_material_instance(mi)
+    eal.save_loaded_asset(mi)
+    return {'name': name, 'material': mi.get_path_name()}
+
+
+def import_mesh_only(a):
+    name, dest = a['name'], root + '/' + a['name']
+    mesh = find_mesh(dest, name) if materials_only else None
+    if not mesh:
+        mesh = [o for o in import_file(a['glb'], dest, 'SM_' + name) if isinstance(o, unreal.StaticMesh)][0]
+        nanite = mesh.get_editor_property('nanite_settings')
+        nanite.set_editor_property('enabled', True)
+        mesh.set_editor_property('nanite_settings', nanite)
+        eal.save_loaded_asset(mesh)
+    for p in eal.list_assets(dest, recursive=True):
+        obj = eal.load_asset(p)
+        if obj is not mesh and isinstance(obj, (unreal.MaterialInterface, unreal.Texture)):
+            eal.delete_asset(p)
+    box = mesh.get_bounding_box()
+    return {'name': name, 'mesh': mesh.get_path_name(), 'unrealBounds': [[box.min.x, box.min.y, box.min.z], [box.max.x, box.max.y, box.max.z]]}
+
+
+def texture(file, dest, name, srgb, normal=False):
     path = dest + '/' + name
     if materials_only and eal.does_asset_exist(path):
         return eal.load_asset(path)
     tex = import_file(file, dest, name)
     tex = [t for t in tex if isinstance(t, unreal.Texture2D)][0]
     tex.set_editor_property('srgb', srgb)
-    if not srgb:
+    if normal:
+        tex.set_editor_property('compression_settings', unreal.TextureCompressionSettings.TC_NORMALMAP)
+    elif not srgb:
         tex.set_editor_property('compression_settings', unreal.TextureCompressionSettings.TC_MASKS)
     tex.set_editor_property('max_texture_size', jobs.get('maxTexture', 0))
     eal.save_loaded_asset(tex)
@@ -175,8 +262,13 @@ def find_mesh(dest, name):
 
 results = []
 master = None
+built = set()
 for a in jobs['assets']:
     name, dest = a['name'], root + '/' + a['name']
+    if a.get('kind') == 'planet':
+        results.append(import_planet(a)); log('done', name, results[-1]); continue
+    if a.get('kind') == 'mesh':
+        results.append(import_mesh_only(a)); log('done', name, results[-1]); continue
     tx = a.get('textures', {})
     base_tex = texture(tx['baseColor']['file'], dest, 'T_' + name + '_BaseColor', True) if 'baseColor' in tx else None
     mr_tex = texture(tx['metallicRoughness']['file'], dest, 'T_' + name + '_MetalRough', False) if 'metallicRoughness' in tx else None

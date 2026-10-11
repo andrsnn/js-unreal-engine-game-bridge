@@ -71,7 +71,12 @@
    "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-frigate/ec7ab1b88b06/lod0.glb",
    "params": {
-    "EnvIntensity": 1
+    "EnvIntensity": 1,
+    "Tint": [
+     1,
+     0.62,
+     0.56
+    ]
    }
   },
   {
@@ -83,7 +88,12 @@
    "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-destroyer/c189555ac7b7/lod0.glb",
    "params": {
-    "EnvIntensity": 1
+    "EnvIntensity": 1,
+    "Tint": [
+     1,
+     0.62,
+     0.56
+    ]
    }
   },
   {
@@ -95,7 +105,12 @@
    "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-cruiser/e2d677368923/lod0.glb",
    "params": {
-    "EnvIntensity": 1
+    "EnvIntensity": 1,
+    "Tint": [
+     1,
+     0.62,
+     0.56
+    ]
    }
   },
   {
@@ -107,7 +122,12 @@
    "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-corvette/b0994902e559/lod0.glb",
    "params": {
-    "EnvIntensity": 1
+    "EnvIntensity": 1,
+    "Tint": [
+     1,
+     0.62,
+     0.56
+    ]
    }
   },
   {
@@ -119,7 +139,78 @@
    "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-carrier/0e17c7f0fbc1/lod0.glb",
    "params": {
-    "EnvIntensity": 1
+    "EnvIntensity": 1,
+    "Tint": [
+     1,
+     0.62,
+     0.56
+    ]
+   }
+  },
+  {
+   "name": "planet_sphere",
+   "kind": "mesh",
+   "generate": "sphere",
+   "segments": 512
+  },
+  {
+   "name": "planet_moon",
+   "kind": "planet",
+   "mesh": "planet_sphere",
+   "source": "C:/Users/Aidan Anderson/falling-frontier-clone/public/textures/pole-safe/moon.png",
+   "relief": 6,
+   "scale": 2,
+   "match": {
+    "texture": "*pole-safe/moon.png"
+   },
+   "fit": "bounds",
+   "params": {
+    "NightFill": 0.04
+   }
+  },
+  {
+   "name": "planet_mars",
+   "kind": "planet",
+   "mesh": "planet_sphere",
+   "source": "C:/Users/Aidan Anderson/falling-frontier-clone/public/textures/pole-safe/mars.png",
+   "relief": 3,
+   "scale": 2,
+   "match": {
+    "texture": "*pole-safe/mars.png"
+   },
+   "fit": "bounds",
+   "params": {
+    "NightFill": 0.06
+   }
+  },
+  {
+   "name": "planet_saturn",
+   "kind": "planet",
+   "mesh": "planet_sphere",
+   "source": "C:/Users/Aidan Anderson/falling-frontier-clone/public/textures/pole-safe/saturn.png",
+   "relief": 0,
+   "scale": 1,
+   "match": {
+    "texture": "*pole-safe/saturn.png"
+   },
+   "fit": "bounds",
+   "params": {
+    "NightFill": 0.06
+   }
+  },
+  {
+   "name": "planet_jupiter",
+   "kind": "planet",
+   "mesh": "planet_sphere",
+   "source": "C:/Users/Aidan Anderson/falling-frontier-clone/public/textures/pole-safe/jupiter.png",
+   "relief": 0,
+   "scale": 1,
+   "match": {
+    "texture": "*pole-safe/jupiter.png"
+   },
+   "fit": "bounds",
+   "params": {
+    "NightFill": 0.06
    }
   }
  ]

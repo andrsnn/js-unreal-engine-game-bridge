@@ -39,6 +39,21 @@ const extent = b => b[1].map((v, i) => v - b[0][i]);
 const prepared = [];
 for (const s of sources) {
   const dir = path.join(work, 'prep', s.name), info = path.join(dir, s.name + '.json');
+  // A generated mesh ("generate": "sphere"), shared by rules that name it in "mesh".
+  if (s.kind === 'mesh') {
+    const glb = path.join(dir, s.name + '.glb');
+    if (!fs.existsSync(glb)) { fs.mkdirSync(dir, {recursive: true}); execFileSync(process.execPath, [path.join(bridge, 'Tools/fidelity/make-sphere.mjs'), glb, '--modules', list.modules, '--segments', String(s.segments ?? 512)], {stdio: 'ignore'}); }
+    prepared.push({name: s.name, kind: 'mesh', glb, bounds: [[-1, -1, -1], [1, 1, 1]], source: glb, textures: {}, rule: s});
+    continue;
+  }
+  // A planet: its colour map, and a normal map from it for rocky bodies (Tools/fidelity/planet_maps.py).
+  if (s.kind === 'planet') {
+    if (!fs.existsSync(info) || fs.statSync(info).mtimeMs < fs.statSync(s.source).mtimeMs) {
+      execFileSync('python', [path.join(bridge, 'Tools/fidelity/planet_maps.py'), s.source, dir, s.name, '--relief', String(s.relief ?? 0), '--scale', String(s.scale ?? 1)], {stdio: 'ignore'});
+    }
+    prepared.push({...JSON.parse(fs.readFileSync(info, 'utf8')), rule: s});
+    continue;
+  }
   if (!fs.existsSync(info) || fs.statSync(info).mtimeMs < fs.statSync(s.source).mtimeMs) {
     execFileSync(process.execPath, [path.join(bridge, 'Tools/fidelity/prepare-glb.mjs'), s.source, dir, s.name, '--modules', list.modules], {stdio: ['ignore', 'ignore', 'inherit']});
   }
@@ -78,11 +93,15 @@ const results = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
 const old = fs.existsSync(outFile) ? JSON.parse(fs.readFileSync(outFile, 'utf8')).overrides ?? [] : [];
 const rules = new Map(old.map(r => [r.name, r]));
 for (const p of prepared) {
+  if (p.kind === 'mesh') continue;
   const res = results.find(x => x.name === p.name);
-  if (!res?.mesh) { console.log(`${p.name}: not imported (${res?.error ?? 'no result'})`); continue; }
+  // A planet draws the shared mesh it names with its own material.
+  const meshSource = p.kind === 'planet' ? prepared.find(x => x.name === p.rule.mesh) : p;
+  const meshPath = p.kind === 'planet' ? results.find(x => x.name === p.rule.mesh)?.mesh : res?.mesh;
+  if (!meshPath || !res) { console.log(`${p.name}: not imported (${res?.error ?? 'no result'})`); continue; }
   const {name, match, fit = 'bounds', params, others} = p.rule;
-  rules.set(name, {name, match, mesh: res.mesh, fit, bounds: p.bounds, ...(params ? {params} : {}), ...(others ? {others} : {}),
-    source: p.source.replaceAll('\\', '/'), triangles: Math.round(p.triangles), textures: Object.fromEntries(Object.entries(p.textures).map(([k, t]) => [k, `${t.width}x${t.height}`]))});
+  rules.set(name, {name, match, mesh: meshPath, ...(p.kind === 'planet' ? {material: res.material} : {}), fit, bounds: meshSource.bounds, ...(params ? {params} : {}), ...(others ? {others} : {}),
+    source: p.source.replaceAll('\\', '/'), ...(p.triangles ? {triangles: Math.round(p.triangles)} : {}), textures: Object.fromEntries(Object.entries(p.textures).map(([k, t]) => [k, `${t.width}x${t.height}`]))});
 }
 fs.writeFileSync(outFile, JSON.stringify({version: 1, overrides: [...rules.values()]}, null, 1) + '\n');
 console.log(`wrote ${rules.size} rules to ${outFile}`);

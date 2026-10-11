@@ -20,14 +20,14 @@
      0.3367098569869995
     ]
    ],
+   "params": {
+    "EnvIntensity": 1
+   },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-frigate/pixal3d_textured.glb",
    "triangles": 960318,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "params": {
-    "EnvIntensity": 1
    }
   },
   {
@@ -49,14 +49,14 @@
      0.3289194703102112
     ]
    ],
+   "params": {
+    "EnvIntensity": 1
+   },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-destroyer/pixal3d_textured.glb",
    "triangles": 952102,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "params": {
-    "EnvIntensity": 1
    }
   },
   {
@@ -78,14 +78,14 @@
      0.47227323055267334
     ]
    ],
+   "params": {
+    "EnvIntensity": 1
+   },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-cruiser/pixal3d_textured.glb",
    "triangles": 973437,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "params": {
-    "EnvIntensity": 1
    }
   },
   {
@@ -107,14 +107,14 @@
      0.44570913910865784
     ]
    ],
+   "params": {
+    "EnvIntensity": 1
+   },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-corvette/pixal3d_textured.glb",
    "triangles": 997729,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "params": {
-    "EnvIntensity": 1
    }
   },
   {
@@ -136,14 +136,14 @@
      0.31507256627082825
     ]
    ],
+   "params": {
+    "EnvIntensity": 1
+   },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-carrier/pixal3d_textured.glb",
    "triangles": 998796,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "params": {
-    "EnvIntensity": 1
    }
   },
   {
@@ -165,14 +165,19 @@
      0.34645673632621765
     ]
    ],
+   "params": {
+    "EnvIntensity": 1,
+    "Tint": [
+     1,
+     0.62,
+     0.56
+    ]
+   },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-frigate/pixal3d_textured.glb",
    "triangles": 933975,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "params": {
-    "EnvIntensity": 1
    }
   },
   {
@@ -194,14 +199,19 @@
      0.30366742610931396
     ]
    ],
+   "params": {
+    "EnvIntensity": 1,
+    "Tint": [
+     1,
+     0.62,
+     0.56
+    ]
+   },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-destroyer/pixal3d_textured.glb",
    "triangles": 971485,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "params": {
-    "EnvIntensity": 1
    }
   },
   {
@@ -223,14 +233,19 @@
      0.3683592677116394
     ]
    ],
+   "params": {
+    "EnvIntensity": 1,
+    "Tint": [
+     1,
+     0.62,
+     0.56
+    ]
+   },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-cruiser/pixal3d_textured.glb",
    "triangles": 952006,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "params": {
-    "EnvIntensity": 1
    }
   },
   {
@@ -252,14 +267,19 @@
      0.44464272260665894
     ]
    ],
+   "params": {
+    "EnvIntensity": 1,
+    "Tint": [
+     1,
+     0.62,
+     0.56
+    ]
+   },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-corvette/pixal3d_textured.glb",
    "triangles": 939833,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "params": {
-    "EnvIntensity": 1
    }
   },
   {
@@ -281,14 +301,135 @@
      0.33617573976516724
     ]
    ],
+   "params": {
+    "EnvIntensity": 1,
+    "Tint": [
+     1,
+     0.62,
+     0.56
+    ]
+   },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-carrier/pixal3d_textured.glb",
    "triangles": 979846,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "planet_moon",
+   "match": {
+    "texture": "*pole-safe/moon.png"
    },
+   "mesh": "/Game/Fidelity/HardBurn/planet_sphere/planet_sphere/StaticMeshes/SM_planet_sphere.SM_planet_sphere",
+   "material": "/Game/Fidelity/HardBurn/planet_moon/MI_planet_moon.MI_planet_moon",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -1,
+     -1,
+     -1
+    ],
+    [
+     1,
+     1,
+     1
+    ]
+   ],
    "params": {
-    "EnvIntensity": 1
+    "NightFill": 0.04
+   },
+   "source": "C:/Users/Aidan Anderson/falling-frontier-clone/public/textures/pole-safe/moon.png",
+   "textures": {
+    "baseColor": "4096x2048",
+    "normal": "4096x2048"
+   }
+  },
+  {
+   "name": "planet_mars",
+   "match": {
+    "texture": "*pole-safe/mars.png"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/planet_sphere/planet_sphere/StaticMeshes/SM_planet_sphere.SM_planet_sphere",
+   "material": "/Game/Fidelity/HardBurn/planet_mars/MI_planet_mars.MI_planet_mars",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -1,
+     -1,
+     -1
+    ],
+    [
+     1,
+     1,
+     1
+    ]
+   ],
+   "params": {
+    "NightFill": 0.06
+   },
+   "source": "C:/Users/Aidan Anderson/falling-frontier-clone/public/textures/pole-safe/mars.png",
+   "textures": {
+    "baseColor": "4096x2048",
+    "normal": "4096x2048"
+   }
+  },
+  {
+   "name": "planet_saturn",
+   "match": {
+    "texture": "*pole-safe/saturn.png"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/planet_sphere/planet_sphere/StaticMeshes/SM_planet_sphere.SM_planet_sphere",
+   "material": "/Game/Fidelity/HardBurn/planet_saturn/MI_planet_saturn.MI_planet_saturn",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -1,
+     -1,
+     -1
+    ],
+    [
+     1,
+     1,
+     1
+    ]
+   ],
+   "params": {
+    "NightFill": 0.06
+   },
+   "source": "C:/Users/Aidan Anderson/falling-frontier-clone/public/textures/pole-safe/saturn.png",
+   "textures": {
+    "baseColor": "2048x1024",
+    "normal": "64x32"
+   }
+  },
+  {
+   "name": "planet_jupiter",
+   "match": {
+    "texture": "*pole-safe/jupiter.png"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/planet_sphere/planet_sphere/StaticMeshes/SM_planet_sphere.SM_planet_sphere",
+   "material": "/Game/Fidelity/HardBurn/planet_jupiter/MI_planet_jupiter.MI_planet_jupiter",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -1,
+     -1,
+     -1
+    ],
+    [
+     1,
+     1,
+     1
+    ]
+   ],
+   "params": {
+    "NightFill": 0.06
+   },
+   "source": "C:/Users/Aidan Anderson/falling-frontier-clone/public/textures/pole-safe/jupiter.png",
+   "textures": {
+    "baseColor": "2048x1024",
+    "normal": "64x32"
    }
   }
  ]

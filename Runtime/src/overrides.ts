@@ -9,7 +9,9 @@ import * as THREE from 'three-real';
 export type OverrideRule = {
   name: string;
   /** Glob patterns (* and ?, case-insensitive). Every field given must match. */
-  match: {url?: string | string[]; object?: string | string[]; mesh?: string | string[]; geometry?: string | string[]; material?: string | string[]; userData?: Record<string, string>};
+  match: {url?: string | string[]; object?: string | string[]; mesh?: string | string[]; geometry?: string | string[]; material?: string | string[];
+    /** The URL of an image any of the object's textures shows (map, or a shader's sampler uniforms). */
+    texture?: string | string[]; userData?: Record<string, string>};
   /** Unreal static mesh path. */
   mesh?: string;
   /** How the Unreal mesh lines up with the three.js mesh: "bounds" fits the source bounds onto the
@@ -59,6 +61,20 @@ const glob = (patterns: string | string[]) => {
   return (s: string | undefined) => s !== undefined && list.some(r => r.test(s));
 };
 const materialNames = (o: THREE.Object3D) => { const m = (o as THREE.Mesh).material; return (Array.isArray(m) ? m : m ? [m] : []).map(x => x.name); };
+/** Image URLs of an object's textures: the built-in maps and a shader material's sampler uniforms. */
+function textureUrls(o: THREE.Object3D): string[] {
+  const urls: string[] = [];
+  const m = (o as THREE.Mesh).material;
+  for (const mat of (Array.isArray(m) ? m : m ? [m] : []) as (THREE.Material & Record<string, any>)[]) {
+    const textures = [mat.map, mat.emissiveMap, mat.normalMap, ...Object.values(mat.uniforms ?? {}).map(u => (u as {value: unknown})?.value)];
+    for (const t of textures as THREE.Texture[]) {
+      const img = t?.isTexture ? t.image as {src?: string; currentSrc?: string} | undefined : undefined;
+      const src = img?.currentSrc || img?.src;
+      if (typeof src === 'string' && src) urls.push(src.replaceAll('\\', '/'));
+    }
+  }
+  return urls;
+}
 
 /** The rules from the registry the host loaded ("overrides" array); empty without an overrides file. */
 export function overrideRules(registryJson: string | undefined): Compiled[] {
@@ -74,6 +90,7 @@ export function overrideRules(registryJson: string | undefined): Compiled[] {
       if (m.mesh) { const t = glob(m.mesh); tests.push(o => t(o.name)); }
       if (m.geometry) { const t = glob(m.geometry); tests.push(o => t((o as THREE.Mesh).geometry?.name)); }
       if (m.material) { const t = glob(m.material); tests.push(o => materialNames(o).some(t)); }
+      if (m.texture) { const t = glob(m.texture); tests.push(o => textureUrls(o).some(u => t(u))); }
       if (m.object) { const t = glob(m.object); tests.push(o => { for (let p: THREE.Object3D | null = o; p; p = p.parent) if (t(p.name)) return true; return false; }); }
       if (m.userData) for (const [k, v] of Object.entries(m.userData)) {
         const t = glob(v);
@@ -99,7 +116,8 @@ function sourceOf(o: THREE.Object3D): SourceInfo | undefined {
 }
 
 // Each object's answer, kept while its geometry stays the same.
-const cache = new WeakMap<THREE.Object3D, {geometry: unknown; hit: OverrideHit | null}>();
+const cache = new WeakMap<THREE.Object3D, {geometry: unknown; hit: OverrideHit | null; until: number}>();
+let calls = 0;
 const loggedRules = new Set<string>();
 const fits = new WeakMap<object, Map<string, THREE.Matrix4 | null>>();
 
@@ -107,7 +125,8 @@ const fits = new WeakMap<object, Map<string, THREE.Matrix4 | null>>();
 export function overrideFor(o: THREE.Object3D, list: Compiled[]): OverrideHit | null {
   const g = (o as THREE.Mesh).geometry;
   const seen = cache.get(o);
-  if (seen && seen.geometry === g) return seen.hit;
+  calls++;
+  if (seen && seen.geometry === g && calls < seen.until) return seen.hit;
   let hit: OverrideHit | null = null;
   const src = sourceOf(o);
   for (const r of list) {
@@ -117,7 +136,8 @@ export function overrideFor(o: THREE.Object3D, list: Compiled[]): OverrideHit | 
     if (!loggedRules.has(r.key)) { loggedRules.add(r.key); log(`overrides: ${r.name} draws ${r.mesh} for ${(o as THREE.InstancedMesh).isInstancedMesh ? 'instanced ' : ''}"${o.name}" from ${src?.url ?? 'its name'}`); }
     break;
   }
-  cache.set(o, {geometry: g, hit});
+  // A miss is checked again now and then while texture rules exist: a texture's image (and its URL) can arrive later.
+  cache.set(o, {geometry: g, hit, until: hit || !list.some(r => r.match.texture) ? Infinity : calls + 20000});
   return hit;
 }
 
