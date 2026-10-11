@@ -1,0 +1,7 @@
+# Unlit Worlds benchmark: New Game, Begin Journey, then stand on the planet with no input.
+0 wait 'New Game'
+2 click 'New Game'
+3 wait 'Begin Journey'
+4 click 'Begin Journey'
+5 objects 500
+600 quit

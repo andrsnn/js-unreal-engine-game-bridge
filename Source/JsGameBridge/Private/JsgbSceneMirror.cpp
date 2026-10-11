@@ -1061,14 +1061,30 @@ void UJsgbSceneMirror::SetScene(FName Name, const FLinearColor& V)
 	if (Globals && GetWorld()) { UKismetMaterialLibrary::SetVectorParameterValue(GetWorld(), Globals, Name, V); }
 	if (const FLinearColor* Old = SceneParams.Find(Name)) { if (Old->Equals(V, 1e-6f)) { return; } }
 	SceneParams.Add(Name, V);
-	const bool bBillboardOnly = Name == TEXT("CamRight") || Name == TEXT("CamUp") || Name == TEXT("ViewParams");
+	// Every parameter set on an instance is a render command that waits for frames still using it, and the camera
+	// values change every frame, so only the instances whose material has the parameter get it.
 	for (TPair<int32, FJsgbMaterial>& M : Materials)
 	{
 		if (!M.Value.Instance || M.Value.bCustom || M.Value.Variant >= 1000) { continue; }
-		if (bBillboardOnly && M.Value.Variant != VBillboard && M.Value.Variant != VBillboardAdd) { continue; }
-		M.Value.Instance->SetVectorParameterValue(Name, V);
+		if (HasVectorParam(M.Value.Instance, Name)) { M.Value.Instance->SetVectorParameterValue(Name, V); }
 	}
-	if (PostMid) { PostMid->SetVectorParameterValue(Name, V); }
+	if (PostMid && HasVectorParam(PostMid, Name)) { PostMid->SetVectorParameterValue(Name, V); }
+}
+
+bool UJsgbSceneMirror::HasVectorParam(UMaterialInstanceDynamic* Mid, FName Name)
+{
+	UMaterialInterface* Parent = Mid ? Mid->Parent.Get() : nullptr;
+	if (!Parent) { return false; }
+	TSet<FName>* Names = ParentVectorParams.Find(Parent);
+	if (!Names)
+	{
+		TArray<FMaterialParameterInfo> Infos;
+		TArray<FGuid> Ids;
+		Parent->GetAllVectorParameterInfo(Infos, Ids);
+		Names = &ParentVectorParams.Add(Parent);
+		for (const FMaterialParameterInfo& Info : Infos) { Names->Add(Info.Name); }
+	}
+	return Names->Contains(Name);
 }
 
 void UJsgbSceneMirror::ApplySceneParams(UMaterialInstanceDynamic* Mid, int32 Variant)
@@ -1076,8 +1092,7 @@ void UJsgbSceneMirror::ApplySceneParams(UMaterialInstanceDynamic* Mid, int32 Var
 	if (Variant >= 1000) { return; }
 	for (const TPair<FName, FLinearColor>& P : SceneParams)
 	{
-		const bool bBillboardOnly = P.Key == TEXT("CamRight") || P.Key == TEXT("CamUp") || P.Key == TEXT("ViewParams");
-		if (!bBillboardOnly || Variant == VBillboard || Variant == VBillboardAdd) { Mid->SetVectorParameterValue(P.Key, P.Value); }
+		if (HasVectorParam(Mid, P.Key)) { Mid->SetVectorParameterValue(P.Key, P.Value); }
 	}
 }
 

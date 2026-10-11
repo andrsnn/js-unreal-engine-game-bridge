@@ -1,5 +1,41 @@
 # Why Hard Burn was slow in Unreal
 
+## 2026-10-11 10:00 PDT: three engine stalls outside the bridge, up to 400 ms
+
+**What was slow.** With the bridge's own work under control, Hard Burn still had single frames of 290 to 400 ms
+(minimum 2.5 FPS) and a 1% low of 45 to 54 FPS at 1440p. The bridge's frame log said the time went outside the
+bridge, so I recorded Unreal Insights traces and broke every frame over 34 ms down by engine timer.
+
+1. **Material parameter updates.** Every frame the camera moves, about 17 camera values change. The mirror sent
+   each one to every authored material instance, even though only generated shader materials use them (they read
+   them from the material parameter collection). Each update is a render command, and in 100 seconds the render
+   thread ran 422,303 of them, which spent 12.2 seconds waiting for frames still in flight. The game thread then
+   waited for the render thread: 20 to 50 ms frames.
+2. **Niagara's focus check.** In editor builds, Niagara asks whether the game window has focus on every tick, and
+   on Windows that asks for the foreground window. On this PC's locked desktop that call blocked one frame for
+   236 ms.
+3. **Unreal's Python plugin.** The editor build loads it in game runs too. Its start-up scripts ran 15 ms during
+   play, and its own garbage collection added 21 ms to each engine garbage collection (39 ms in all).
+
+**The framework fixes (no per-game code).**
+
+1. The mirror asks each material instance's parent which vector parameters it has (cached per parent) and only
+   sets those. Parameter sets went from 422,303 to 125,183 in the same 100 seconds.
+2. The host answers the engine's focus question from Slate's record of window activation, stored on the game
+   thread each tick, so no thread calls into Windows for it.
+3. Game runs start with `-DisablePython`.
+
+**Numbers (Unreal 5.8 editor build, `-game`, 2560x1440, RTX 4090, DLSS off, JavaScript on its own thread).**
+
+| Run | Before | After |
+| --- | --- | --- |
+| Hard Burn, starting view (25 to 65 s) | 148 FPS average, 1% low 54, slowest 2.5 FPS | 157 average, 1% low 64, slowest 45 FPS |
+| Hard Burn, fixed campaign sector | 144 average, 1% low 45, slowest 2.8 FPS | 187 average, 1% low 107, slowest 80 FPS |
+| Unlit Worlds on the planet (45 to 85 s) | not measured (old script) | 215 average, 1% low 115, slowest 74 FPS |
+
+**What's left.** One 22 ms frame (45 FPS) remains on Hard Burn's starting view. The traces also show CEF (the UI
+overlay) taking 56 to 100 ms in single frames right after the game loads, when the page first lays out.
+
 ## 2026-10-11 00:05 PDT: loading new content stopped single frames for 60 to 650 ms
 
 **What was slow.** With images and sounds fixed, I timed every command the JavaScript thread sends to Unreal's

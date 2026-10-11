@@ -280,6 +280,9 @@ private:
 	void ApplyPost(const float* Header);
 	void SetScene(FName Name, const FLinearColor& Value);
 	void ApplySceneParams(UMaterialInstanceDynamic* Mid, int32 Variant);
+	/** Whether a material instance's parent has this vector parameter. Setting one it lacks still costs a render command. */
+	bool HasVectorParam(UMaterialInstanceDynamic* Mid, FName Name);
+	TMap<TObjectKey<UMaterialInterface>, TSet<FName>> ParentVectorParams;
 	TSharedPtr<class FJsonObject> Asset(int32 KeyId) const;
 	UMaterialInterface* GeneratedParent(const FString& Key, int32 Blend, bool bTwoSided);
 	void SetModelData(FJsgbEntity& Ent, UPrimitiveComponent* C, const float* M, const float* Mats, int32 NumMats);

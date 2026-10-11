@@ -43,6 +43,9 @@ for (let running = unrealProcesses(); running.length; running = unrealProcesses(
 const log = `jsgb-${game.id}.log`;
 const args = [project, '/Engine/Maps/Entry?game=/Script/JsGameBridge.JsgbGameMode', '-game', '-windowed', `-ResX=${resX}`, `-ResY=${resY}`,
   `-JsgbGame=${game.out}`, `-JsgbPort=${port}`, '-JsgbAllowRemote', '-nosplash', '-unattended', `-log=${log}`, `-JsgbMaxSeconds=${timeout / 1000}`];
+// A game run never uses Unreal's Python plugin (an editor plugin), whose start-up scripts and garbage collection
+// cost 15 to 20 ms frames during play.
+args.push('-DisablePython');
 // Off screen, the window may be larger than the desktop.
 if (has('--offscreen')) args.push('-RenderOffScreen', '-ForceRes');
 if (has('--no-ui')) args.push('-JsgbNoUI');

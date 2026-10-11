@@ -36,6 +36,8 @@
 #include "HAL/IConsoleManager.h"
 #include "HAL/PlatformTime.h"
 #include "Misc/CommandLine.h"
+#include "Misc/App.h"
+#include <atomic>
 #include "Misc/FileHelper.h"
 #include "Misc/Parse.h"
 #include "Misc/Paths.h"
@@ -353,9 +355,17 @@ bool AJsgbHost::LoadPublication(const FString& Dir, const FString& OverrideBundl
 	return true;
 }
 
+// Whether the game window is the active one, from Slate's record of Windows' activation messages, read on the game
+// thread each tick. The engine's own check asks Windows for the foreground window each frame (Niagara does in editor
+// builds), and that call blocked a frame for 236 ms on a locked desktop. Other threads ask too (Streamline's render
+// pass), so they read the stored answer.
+static std::atomic<bool> GJsgbWindowFocus{true};
+static bool JsgbWindowHasFocus() { return GJsgbWindowFocus.load(std::memory_order_relaxed); }
+
 void AJsgbHost::BeginPlay()
 {
 	Super::BeginPlay();
+	FApp::SetHasFocusFunction(&JsgbWindowHasFocus);
 	UWorld* World = GetWorld();
 	// Custom depth with stencil: the scene post reads it to leave fog-free surfaces unfogged.
 	if (IConsoleVariable* CustomDepth = IConsoleManager::Get().FindConsoleVariable(TEXT("r.CustomDepth"))) { CustomDepth->Set(3, ECVF_SetByCode); }
@@ -1171,6 +1181,7 @@ void AJsgbHost::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	++Frame;
+	GJsgbWindowFocus.store(FSlateApplication::IsInitialized() && FSlateApplication::Get().IsActive(), std::memory_order_relaxed);
 	UpdateHud(DeltaSeconds);
 	if (FrameTimesMs.Num() < 1000000) { FrameTimesMs.Add(DeltaSeconds * 1000.f); }
 	if (RecordDir.IsEmpty() && CaptureQueue.Num() && !FScreenshotRequest::IsScreenshotRequested()) { FScreenshotRequest::RequestScreenshot(CaptureQueue[0], true, false); CaptureQueue.RemoveAt(0); }
