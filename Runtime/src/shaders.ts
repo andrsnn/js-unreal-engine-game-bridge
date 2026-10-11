@@ -9,7 +9,7 @@ import {channelFor, isExtraAttribute} from './attributes';
  *  attributes, so its varyings reach the fragment stage unchanged for the usual transforms;
  *  uniforms arrive as material parameters of the same name. */
 
-export type ShaderInput = {name: string; source: 'localPosition' | 'localAxis' | 'localOrigin' | 'localNormal' | 'uv' | 'vertexColor' | 'primitiveData' | 'collection' | 'scalar' | 'vector' | 'texture' | 'cube' | 'volume' | 'worldPosition';
+export type ShaderInput = {name: string; source: 'localPosition' | 'instanceColor' | 'localAxis' | 'localOrigin' | 'localNormal' | 'uv' | 'vertexColor' | 'primitiveData' | 'collection' | 'scalar' | 'vector' | 'texture' | 'cube' | 'volume' | 'worldPosition';
   param?: string; index?: number};
 export type TranslatedShader = {key: string; hlsl: string; inputs: ShaderInput[]; vertexHlsl: string; vertexInputs: ShaderInput[]; lit?: boolean};
 
@@ -142,6 +142,10 @@ function prepare(material: THREE.ShaderMaterial, stage: 'vertex' | 'fragment') {
     const attrs: Decl[] = raw ? [] : [{qualifier: 'in', type: 'vec3', name: 'position', array: ''}, {qualifier: 'in', type: 'vec3', name: 'normal', array: ''}, {qualifier: 'in', type: 'vec2', name: 'uv', array: ''}];
     if (!raw && /\bUSE_COLOR\b|\bvertexColors\b/.test(JSON.stringify(material.defines ?? {})) || material.vertexColors) attrs.push({qualifier: 'in', type: material.defines?.USE_COLOR_ALPHA ? 'vec4' : 'vec3', name: 'color', array: ''});
     for (const d of a.decls) if (!attrs.some(x => x.name === d.name)) attrs.push(d);
+    // Per-instance colours come from Unreal's per-instance custom data when the mesh has them.
+    if (/\binstanceColor\b/.test(src) && !attrs.some(x => x.name === 'instanceColor')) {
+      if (material.defines?.USE_INSTANCING_COLOR !== undefined) attrs.push({qualifier: 'in', type: 'vec3', name: 'instanceColor', array: ''}); else lines.push('vec3 instanceColor = vec3(1.0);');
+    }
     for (const d of attrs) lines.push(`layout(location = ${loc++}) in ${d.type} ${d.name}${d.array};`);
     loc = 0;
     for (const d of v.decls) lines.push(`layout(location = ${loc++}) out ${d.type} ${d.name}${d.array};`);
@@ -149,7 +153,6 @@ function prepare(material: THREE.ShaderMaterial, stage: 'vertex' | 'fragment') {
     lines.push('float jsgb_PointSize;', '#define gl_PointSize jsgb_PointSize');
     // Instancing attributes the per-instance mirror does not feed: identity transform, white colour.
     if (/\binstanceMatrix\b/.test(src) && !attrs.some(x => x.name === 'instanceMatrix')) lines.push('mat4 instanceMatrix = mat4(1.0);');
-    if (/\binstanceColor\b/.test(src) && !attrs.some(x => x.name === 'instanceColor')) lines.push('vec3 instanceColor = vec3(1.0);');
     lines.push(src, 'void main() { modelViewMatrix = viewMatrix * modelMatrix; normalMatrix = transpose(inverse(mat3(modelViewMatrix))); jsgb_main(); }');
     return {glsl: lines.join('\n'), uniforms, attributes: attrs, varyings: v.decls};
   }
@@ -317,6 +320,7 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial): Transla
     if (has(V, 'normal')) glue.push('vs.normal = normalize(float3(JsgbN.x, JsgbN.z, JsgbN.y) + 1e-6);');
     if (has(V, 'uv')) glue.push('vs.uv = JsgbUV;');
     if (has(V, 'color')) glue.push(`vs.color = JsgbC${V.members.find(m => m.name === 'color')?.type === 'float4' ? '' : '.xyz'};`);
+    if (vs.attributes.some(d => d.name === 'instanceColor') && has(V, 'instanceColor')) { inputs.push({name: 'JsgbIC', source: 'instanceColor'}); glue.push('vs.instanceColor = JsgbIC.xyz;'); }
     // The shader's own attributes come from the UV channels the geometry export put them in.
     for (const d of vs.attributes) {
       if (!isExtraAttribute(d.name) || !has(V, d.name)) continue;
@@ -398,7 +402,7 @@ export function fillBuiltinUniforms(material: THREE.Material, u: Record<string, 
 }
 
 /** The generated-material description for a built-in material patched in onBeforeCompile, or null/undefined as translateShaderMaterial. */
-export function translateHookedMaterial(material: THREE.Material, hooked: HookedShader, hookKey: string): TranslatedShader | null | undefined {
+export function translateHookedMaterial(material: THREE.Material, hooked: HookedShader, hookKey: string, instancing?: {color: boolean}): TranslatedShader | null | undefined {
   if (!HOOKABLE.has(material.type)) return null;
   const m = material as Record<string, any>;
   const defines: Record<string, unknown> = {...hooked.defines, ...(m.defines ?? {})};
@@ -408,6 +412,9 @@ export function translateHookedMaterial(material: THREE.Material, hooked: Hooked
   if (m.alphaTest > 0) defines.USE_ALPHATEST = '';
   if (m.flatShading) defines.FLAT_SHADED = '';
   if (m.side === THREE.DoubleSide) defines.DOUBLE_SIDED = '';
+  // On an InstancedMesh: Unreal's model matrix already holds each instance's transform, so instanceMatrix is
+  // the identity, and instance colours arrive per instance.
+  if (instancing) { defines.USE_INSTANCING = ''; if (instancing.color) { defines.USE_INSTANCING_COLOR = ''; defines.USE_COLOR = ''; } }
   const key = `${hookKey}|${material.type}|${JSON.stringify(defines)}`;
   let cached = hookedSource.get(material);
   if (!cached || cached.key !== key) {

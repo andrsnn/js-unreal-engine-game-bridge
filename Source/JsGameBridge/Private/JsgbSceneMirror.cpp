@@ -58,6 +58,7 @@
 #include "Materials/MaterialExpressionMultiply.h"
 #include "Materials/MaterialExpressionAppendVector.h"
 #include "Materials/MaterialExpressionPower.h"
+#include "Materials/MaterialExpressionPerInstanceCustomData.h"
 #include "Materials/MaterialExpressionAdd.h"
 #include "Materials/MaterialExpressionLinearInterpolate.h"
 #include "Materials/MaterialExpressionConstant.h"
@@ -830,7 +831,14 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 	if (bUniforms && bTrace && M.bCustom)
 	{
 		FString Names;
-		for (const auto& U : (*Uniforms)->Values) { Names += FString(*U.Key) + TEXT(" "); }
+		for (const auto& U : (*Uniforms)->Values)
+		{
+			FString V;
+			if (U.Value->Type == EJson::Number) { V = FString::SanitizeFloat(U.Value->AsNumber()); }
+			else if (U.Value->Type == EJson::Array) { for (const TSharedPtr<FJsonValue>& X : U.Value->AsArray()) { V += FString::Printf(TEXT("%s%.3g"), V.IsEmpty() ? TEXT("") : TEXT(","), X->AsNumber()); } }
+			else if (U.Value->Type == EJson::Object) { V = FString::Printf(TEXT("tex%d"), static_cast<int32>(Num(U.Value->AsObject(), TEXT("tex")))); }
+			Names += FString::Printf(TEXT("%s=%s "), *FString(*U.Key), *V);
+		}
 		UE_LOG(LogJsgbMirror, Display, TEXT("TRACE material %d (%s): uniforms %s"), Id, *CustomKey, *Names);
 	}
 	if (bUniforms)
@@ -1582,6 +1590,13 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 			}
 			else if (Source == TEXT("uv")) { UMaterialExpressionTextureCoordinate* T = NewObject<UMaterialExpressionTextureCoordinate>(Mat); T->CoordinateIndex = Index; E = T; }
 			else if (Source == TEXT("vertexColor")) { E = NewObject<UMaterialExpressionVertexColor>(Mat); }
+			else if (Source == TEXT("instanceColor"))
+			{
+				// Instance colours ride in the first three per-instance custom data floats (white without them).
+				UMaterialExpressionPerInstanceCustomData3Vector* P = NewObject<UMaterialExpressionPerInstanceCustomData3Vector>(Mat);
+				P->DataIndex = 0; P->ConstDefaultValue = FLinearColor::White;
+				E = P;
+			}
 			else if (Source == TEXT("primitiveData"))
 			{
 				UMaterialExpressionVectorParameter* P = NewObject<UMaterialExpressionVectorParameter>(Mat);

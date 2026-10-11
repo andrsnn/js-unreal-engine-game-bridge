@@ -293,6 +293,9 @@ function shaderKey(m: THREE.ShaderMaterial): string {
 
 // A material shared by many meshes is described once per frame.
 const materialFrame = new WeakMap<THREE.Material, number>();
+// Materials drawn on an InstancedMesh, and whether its instances have colours (for patched built-in shaders).
+const instancedUse = new WeakMap<THREE.Material, {color: boolean}>();
+const noteInstanced = (mat: THREE.Material | undefined, im: THREE.InstancedMesh) => { if (mat) instancedUse.set(mat, {color: !!im.instanceColor}); return mat; };
 
 // Every value a material sends, as numbers (with its uniforms for shader materials): when they all match the last frame's,
 // the material is unchanged and its description is not built again.
@@ -363,7 +366,7 @@ function syncMaterial(mat: THREE.Material): number {
   let custom: string | undefined;
   const hooked = shader ? undefined : hookShader(mat);
   if ((shader || hooked) && !registryMaterial) {
-    const t = shader ? translateShaderMaterial(m) : translateHookedMaterial(mat, hooked!.shader, hooked!.key);
+    const t = shader ? translateShaderMaterial(m) : translateHookedMaterial(mat, hooked!.shader, hooked!.key, instancedUse.get(mat));
     // Still compiling (the shader compiler loads in the background): send it again next frame, even
     // though its values haven't changed, so the generated material replaces the generic one.
     if (t === undefined) quick.delete(mat);
@@ -419,7 +422,7 @@ function emitMesh(o: THREE.Mesh) {
   const mats = materialsOf(o);
   if (!mats.length || mats.every(m => !m || !m.visible || m.colorWrite === false)) return;
   const gid = syncGeometry(geo); if (!gid) return;
-  if ((o as THREE.InstancedMesh).isInstancedMesh) { emitInstances(o as THREE.InstancedMesh, gid, syncMaterial(mats[0])); return; }
+  if ((o as THREE.InstancedMesh).isInstancedMesh) { emitInstances(o as THREE.InstancedMesh, gid, syncMaterial(noteInstanced(mats[0], o as THREE.InstancedMesh)!)); return; }
   push(MESH); push(idOf(o)); push(gid); push(flagsOf(o)); push(mats.length);
   for (const m of mats) push(m ? syncMaterial(m) : 0);
   pushMatrix(o.matrixWorld);
@@ -485,7 +488,7 @@ function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
     if (swap?.kind === EFFECT) { push(EFFECT); push(idOf(o)); push(keyId(swap.key)); pushMatrix(o.matrixWorld); return; }
     if (swap?.kind === ASSET) {
       const mats = (o as THREE.Mesh).material ? materialsOf(o as THREE.Mesh) : [];
-      if ((o as THREE.InstancedMesh).isInstancedMesh) { emitInstances(o as THREE.InstancedMesh, -keyId(swap.key), mats[0] ? syncMaterial(mats[0]) : 0); return; }
+      if ((o as THREE.InstancedMesh).isInstancedMesh) { emitInstances(o as THREE.InstancedMesh, -keyId(swap.key), mats[0] ? syncMaterial(noteInstanced(mats[0], o as THREE.InstancedMesh)!) : 0); return; }
       push(ASSET); push(idOf(o)); push(keyId(swap.key)); push(mats[0] ? syncMaterial(mats[0]) : 0); pushMatrix(o.matrixWorld);
       // Untagged models are replaced whole; tagged ones keep their untagged attachments.
       if (!hasContentTag(o, swap.key)) return;

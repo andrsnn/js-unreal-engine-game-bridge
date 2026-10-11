@@ -87,7 +87,11 @@ export default function hooks({THREE, scene}) {
   };
   const grass = new THREE.InstancedMesh(new THREE.PlaneGeometry(0.4, 1), grassMat, 24);
   const m4 = new THREE.Matrix4();
-  for (let i = 0; i < 24; i++) grass.setMatrixAt(i, m4.makeTranslation(-5.5 + i * 0.48, -3.6, 1));
+  const tint = new THREE.Color();
+  for (let i = 0; i < 24; i++) {
+    grass.setMatrixAt(i, m4.makeTranslation(-5.5 + i * 0.48, -3.6, 1));
+    grass.setColorAt(i, tint.setHSL(i / 24, 0.7, 0.6));
+  }
   scene.add(grass);
 
   return (dt, time) => {
