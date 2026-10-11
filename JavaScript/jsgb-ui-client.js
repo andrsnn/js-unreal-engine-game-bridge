@@ -45,13 +45,25 @@
     apply(html, version) {
       // The host's UI version this page now shows; layout reports carry it back, so scripts know what is on screen.
       if (version !== undefined) appliedVersion = version;
-      const parsed = new DOMParser().parseFromString('<!doctype html><html><head></head>' + html + '</html>', 'text/html');
+      const full = html.startsWith('<html');
+      const parsed = new DOMParser().parseFromString(full ? '<!doctype html>' + html : '<!doctype html><html><head></head>' + html + '</html>', 'text/html');
+      if (full) {
+        // The game's <html> attributes, such as CSS variables in its style attribute.
+        const root = document.documentElement, next = parsed.documentElement;
+        for (const a of [...root.attributes]) if (!next.hasAttribute(a.name)) root.removeAttribute(a.name);
+        for (const a of next.attributes) if (!/^on/i.test(a.name) && root.getAttribute(a.name) !== a.value) root.setAttribute(a.name, a.value);
+      }
       parsed.querySelectorAll('script').forEach(n => n.remove());
       for (const n of parsed.querySelectorAll('*')) for (const a of [...n.attributes]) if (/^on/i.test(a.name)) n.removeAttribute(a.name);
       patching = true; sync(document.body, parsed.body); patching = false;
       scheduleLayout();
     },
     reset() { document.body.replaceChildren(); },
+    // A stylesheet-only edit: swap the page CSS in place and report once it is painted.
+    css(text, version) {
+      document.getElementById('jsgb-page-css').textContent = text;
+      requestAnimationFrame(() => requestAnimationFrame(() => { send({type: 'host-css', version}); scheduleLayout(); }));
+    },
   };
 
   const pointer = ['click', 'dblclick', 'auxclick', 'contextmenu', 'pointerdown', 'pointerup', 'pointermove', 'pointercancel', 'pointerover', 'pointerout', 'pointerenter', 'pointerleave',

@@ -254,6 +254,26 @@ export async function reload(game) {
   }
 }
 
+/** Sends a stylesheet-only change: the Unreal overlay swaps the page CSS while the game keeps running. */
+export async function swapCss(game) {
+  const publication = JSON.parse(fs.readFileSync(path.join(game.out, 'publication.json'), 'utf8'));
+  const host = `http://127.0.0.1:${game.reloadPort ?? 5292}/bridge`;
+  const status = async () => (await fetch(`${host}/status`, {signal: AbortSignal.timeout(30000)})).json();
+  const response = await fetch(`${host}/css`, {method: 'POST', headers: {'Content-Type': 'application/json'}, signal: AbortSignal.timeout(5000),
+    body: JSON.stringify({buildMs: publication.buildMilliseconds})}).catch(error => { throw Error(`Built, but no JsGameBridge host answers at ${host}. (${error.message})`); });
+  const {cssVersion} = await response.json();
+  const deadline = performance.now() + 30000;
+  for (;;) {
+    const s = await status();
+    if (s.cssAppliedVersion >= cssVersion && s.lastCssMs >= 0) {
+      console.log(`hot reload (CSS) of ${game.id}: build ${(publication.buildMilliseconds / 1000).toFixed(2)} s + Unreal ${(s.lastCssMs / 1000).toFixed(2)} s = ${((publication.buildMilliseconds + s.lastCssMs) / 1000).toFixed(2)} s`);
+      return s;
+    }
+    if (performance.now() > deadline) throw Error('the overlay did not apply the new stylesheet within 30 s');
+    await new Promise(r => setTimeout(r, 50));
+  }
+}
+
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
 if (!isMain) { /* imported as a library */ }
 else if (command === 'build') await build(loadGame(gameArg));
@@ -268,25 +288,27 @@ else if (command === 'unreal' || command === 'watch') {
     if (running && path.dirname(path.resolve(running.bundle ?? '')) === game.out) await reload(game);
     else if (running) throw Error(`Unreal is running another game (${running.game}); close it first`);
     else {
-      const started = spawnSync(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), gameArg, '--res', flag('--res', '1600x900'), '--timeout', flag('--timeout', '14400'), '--detach', ...(flag('--search') ? ['--search', flag('--search')] : []), ...['--offscreen', '--mute'].filter(has)], {stdio: 'inherit'});
+      const started = spawnSync(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), gameArg, '--res', flag('--res', '1600x900'), '--timeout', flag('--timeout', '14400'), '--detach', ...(flag('--search') ? ['--search', flag('--search')] : []), ...['--offscreen', '--mute', '--frame-gen', '--hud'].filter(has), ...['--dlss', '--tsr', '--vibrance'].flatMap(f => flag(f) ? [f, flag(f)] : [])], {stdio: 'inherit'});
       if (started.status !== 0) throw Error('Unreal did not start; see the log above');
     }
   }
   // Every save in the game's folder (outside node_modules, builds and dot folders) rebuilds the
   // bundle and reloads it into the running Unreal host.
   const skip = /(^|[\\/])(node_modules|dist[^\\/]*|output|\.[^\\/]+)([\\/]|$)/;
-  let timer = null, busy = false, again = false;
-  const run = async file => {
+  let timer = null, busy = false, again = false, changed = new Set();
+  const run = async () => {
     if (busy) { again = true; return; }
     busy = true;
-    console.log(`\nchanged ${file}`);
-    try { await build(game); await reload(game); } catch (error) { console.log('reload failed: ' + error.message); }
+    const files = [...changed]; changed = new Set();
+    console.log(`\nchanged ${files.join(', ')}`);
+    try { await build(game); files.every(f => /\.css$/.test(f)) ? await swapCss(game) : await reload(game); } catch (error) { console.log('reload failed: ' + error.message); }
     busy = false;
-    if (again) { again = false; run('(more changes)'); }
+    if (again) { again = false; run(); }
   };
   fs.watch(game.repo, {recursive: true}, (event, file) => {
     if (!file || skip.test(file) || !/\.(m?[jt]sx?|css|html|json|glsl|vert|frag|wgsl)$/.test(file)) return;
-    clearTimeout(timer); timer = setTimeout(() => run(file), 120);
+    changed.add(file);
+    clearTimeout(timer); timer = setTimeout(run, 120);
   });
   console.log(`watching ${game.repo} for ${game.id}; save a file to reload it into Unreal`);
 }

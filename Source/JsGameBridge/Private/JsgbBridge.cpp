@@ -133,8 +133,8 @@ void UJsgbBridge::Geometry(int32 Id, FArrayBuffer Positions, FArrayBuffer Normal
 }
 
 void UJsgbBridge::ReleaseGeometry(int32 Id) { if (Mirror) { Mirror->ReleaseGeometry(Id); } }
-void UJsgbBridge::Material(int32 Id, const FString& Json) { if (Mirror) { Mirror->SetMaterial(Id, Json); } }
-void UJsgbBridge::Texture(int32 Id, const FString& Json, FArrayBuffer Bytes) { if (Mirror) { Mirror->SetTexture(Id, Json, Bytes); } }
+void UJsgbBridge::Material(int32 Id, const FString& Json) { const double T0 = FPlatformTime::Seconds(); if (Mirror) { Mirror->SetMaterial(Id, Json); } const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0; MirrorMs += Ms; MaterialMs += Ms; ++MaterialCalls; }
+void UJsgbBridge::Texture(int32 Id, const FString& Json, FArrayBuffer Bytes) { const double T0 = FPlatformTime::Seconds(); if (Mirror) { Mirror->SetTexture(Id, Json, Bytes); } const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0; MirrorMs += Ms; TextureMs += Ms; ++TextureCalls; }
 void UJsgbBridge::Events(const FString& Json) { if (Mirror) { Mirror->ApplyEvents(Json); } }
 void UJsgbBridge::Shader(const FString& Key, const FString& Json) { if (Mirror) { Mirror->SetShader(Key, Json); } }
 
@@ -144,8 +144,10 @@ void UJsgbBridge::Frame(FArrayBuffer Floats, int32 Count, FArrayBuffer Instances
 	++SceneFrames;
 	const int32 Available = static_cast<int32>(Floats.Length / sizeof(float));
 	const int32 InstAvailable = static_cast<int32>(Instances.Length / sizeof(float));
+	const double T0 = FPlatformTime::Seconds();
 	Mirror->ApplyFrame(static_cast<const float*>(Floats.Data), FMath::Clamp(Count, 0, Available),
 		static_cast<const float*>(Instances.Data), FMath::Clamp(InstanceFloats, 0, InstAvailable));
+	MirrorMs += (FPlatformTime::Seconds() - T0) * 1000.0;
 }
 
 void UJsgbBridge::PublishUI(const FString& Html)

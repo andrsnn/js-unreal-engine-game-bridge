@@ -28,7 +28,10 @@ export function publishUI(intervalMs = 100) {
   if (!dirty && last) return;
   dirty = false;
   const body = g.document.body; stamp(body);
-  const html = body.outerHTML;
+  // The <html> element's attributes go too: games set CSS variables there (a HUD zoom, a theme).
+  const root = g.document.documentElement as {attributes: {name: string; value: string}[]};
+  const attrs = [...root.attributes].map(a => ` ${a.name}="${a.value.replaceAll('&', '&amp;').replaceAll('"', '&quot;')}"`).join('');
+  const html = `<html${attrs}><head></head>${body.outerHTML}</html>`;
   // The game's own origin is http://localhost/; the overlay loads files from the host's origin, so
   // absolute links to the game origin (new URL(path, document.baseURI)) become root-relative.
   if (html !== last) { last = html; out.publish(html.replaceAll('http://localhost/', '/')); }

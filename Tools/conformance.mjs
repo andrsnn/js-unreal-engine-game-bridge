@@ -42,12 +42,12 @@ if (!has('--skip-web')) {
   fs.rmSync(webDir, {recursive: true, force: true});
   run(['Tools/web.mjs', 'build', game.id], 'web build');
   if (git('rev-parse', 'HEAD') !== commit) throw Error('source moved during the web build');
-  const out = run(['Tools/web.mjs', 'capture', game.id, '--script', script, '--frames', path.join(webDir, 'frames'), '--shots', webDir, '--fps', String(fps), '--res', '1280x720', '--seed', seed, ...(search ? ['--search', search] : [])], 'browser run');
+  const out = run(['Tools/web.mjs', 'capture', game.id, '--script', script, '--frames', path.join(webDir, 'frames'), '--shots', webDir, '--fps', String(fps), '--res', '1280x720', '--seed', seed, '--fixed-fps', flag('--fixed-fps', '60'), ...(search ? ['--search', search] : [])], 'browser run');
   report.web = JSON.parse(out.trim().split(/\r?\n/).filter(l => l.startsWith('{')).pop() ?? '{}');
 }
 if (!has('--skip-unreal')) {
   fs.rmSync(unrealDir, {recursive: true, force: true});
-  const out = run(['Tools/run-unreal.mjs', game.id, '--offscreen', '--fresh', '--res', '1280x720', '--script', script, '--capture', unrealDir, '--capture-fps', String(fps), '--timeout', '900', '--seed', seed, ...(search ? ['--search', search] : [])], 'Unreal run');
+  const out = run(['Tools/run-unreal.mjs', game.id, '--offscreen', '--fresh', '--res', '1280x720', '--script', script, '--capture', unrealDir, '--capture-fps', String(fps), '--fixed-fps', flag('--fixed-fps', '60'), '--timeout', '900', '--seed', seed, ...(search ? ['--search', search] : [])], 'Unreal run');
   report.unreal = {ready: /\nready /.test('\n' + out), status: JSON.parse(/ready (\{.*\})/.exec(out)?.[1] ?? '{}'), exited: /Unreal exited with 0/.test(out),
     errors: +(/(\d+) JsGameBridge errors/.exec(out)?.[1] ?? -1)};
 }
@@ -89,6 +89,9 @@ const check = (pair, w, ue, held) => {
   if (!held && w.objects >= 0 && w.objects !== undefined) { compared++; if (ue.drawn < w.objects) problems.push(`Unreal drew ${ue.drawn} objects, the browser ${w.objects}`); }
   // Line coverage: every segment of every visible line (rings, grids, routes) must be drawn.
   if (!held && w.lines >= 0 && ue.lines !== undefined && ue.lines < w.lines) problems.push(`Unreal drew ${ue.lines} line segments, the browser ${w.lines}`);
+  // Billboards: sprites and points objects (markers, stars, particles).
+  if (!held && w.sprites >= 0 && ue.sprites !== undefined && ue.sprites < w.sprites) problems.push(`Unreal drew ${ue.sprites} sprites, the browser ${w.sprites}`);
+  if (!held && w.points >= 0 && ue.points !== undefined && ue.points < w.points) problems.push(`Unreal drew ${ue.points} points objects, the browser ${w.points}`);
   if (problems.length) violations.push({pair, film: +(pair / fps).toFixed(1), web: w.file && path.basename(w.file), unreal: path.basename(ue.file), problems});
 };
 for (let i = 0; i + 1 < bw.length && web.list.length && unreal.list.length; i++) {

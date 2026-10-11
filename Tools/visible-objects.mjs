@@ -41,11 +41,11 @@ export function installVisibleObjects() {
     return o.isLineSegments ? Math.floor(count / 2) : o.isLineLoop ? (count > 2 ? count : Math.max(0, count - 1)) : Math.max(0, count - 1);
   };
   const census = () => {
-    const out = {objects: 0, lines: 0};
+    const out = {objects: 0, lines: 0, sprites: 0, points: 0};
     if (!last) return out;
     const walk = o => {
       if (!o.visible) return;
-      if ((!last.camera || o.layers.test(last.camera.layers)) && (o.isMesh || o.isPoints || o.isLine || o.isSprite) && drawable(o)) { out.objects++; if (o.isLine) out.lines += segments(o); }
+      if ((!last.camera || o.layers.test(last.camera.layers)) && (o.isMesh || o.isPoints || o.isLine || o.isSprite) && drawable(o)) { out.objects++; if (o.isLine) out.lines += segments(o); if (o.isSprite) out.sprites++; if (o.isPoints) out.points++; }
       for (const c of o.children) walk(c);
     };
     walk(last.scene);
@@ -53,4 +53,5 @@ export function installVisibleObjects() {
   };
   window.__jsgbVisibleObjects = () => census().objects;
   window.__jsgbCensus = census;
+  window.__jsgbLastScene = () => last;
 }

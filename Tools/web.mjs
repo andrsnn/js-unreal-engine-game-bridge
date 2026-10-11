@@ -65,6 +65,30 @@ async function capture() {
   }, seed);
   // Each captured frame records how many objects the game drew, for the conformance check.
   await page.addInitScript(installVisibleObjects);
+  // --fixed-fps N: game time advances exactly 1/N s per frame, as the Unreal host does with
+  // -JsgbFixedFps, so a slow or busy machine changes how long a run takes, not what the game does.
+  // requestAnimationFrame, performance.now and Date.now all follow the virtual clock.
+  const fixedFps = +flag('--fixed-fps', 0);
+  await page.addInitScript(fps => {
+    if (!fps) return;
+    const step = 1000 / fps, realRaf = window.requestAnimationFrame.bind(window), realDateNow = Date.now, start = realDateNow();
+    let vnow = 0, nextId = 1;
+    const callbacks = new Map();
+    const loop = () => {
+      vnow += step;
+      const list = [...callbacks.values()]; callbacks.clear();
+      for (const cb of list) { try { cb(vnow); } catch (e) { setTimeout(() => { throw e; }); } }
+      realRaf(loop);
+    };
+    realRaf(loop);
+    window.requestAnimationFrame = cb => { const id = nextId++; callbacks.set(id, cb); return id; };
+    window.cancelAnimationFrame = id => { callbacks.delete(id); };
+    performance.now = () => vnow;
+    Date.now = () => start + vnow;
+    window.__jsgbVirtualMs = () => vnow;
+  }, fixedFps);
+  // Seconds on the run's clock: virtual game time with --fixed-fps, else wall time.
+  const clock = async () => fixedFps ? (await page.evaluate(() => window.__jsgbVirtualMs?.() ?? 0).catch(() => 0)) / 1000 : Date.now() / 1000;
   page.on('pageerror', e => errors.push(String(e)));
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
   const frames = flag('--frames'), fps = +flag('--fps', 10), shots = flag('--shots', path.join(game.out, 'web-shots'));
@@ -72,19 +96,19 @@ async function capture() {
   fs.mkdirSync(shots, {recursive: true});
   const t0 = Date.now();
   await page.goto(`http://127.0.0.1:${port}/${flag('--search', game.search ?? '')}`, {waitUntil: 'load', timeout: 120000});
-  const ready = Date.now();
-  console.log(`web ${game.id} loaded in ${ready - t0} ms`);
+  const readyWall = Date.now(), ready = await clock();
+  console.log(`web ${game.id} loaded in ${readyWall - t0} ms${fixedFps ? ` (game clock ${fixedFps} fps)` : ''}`);
   // Frame grabber: one screenshot per 1/fps seconds after load, for the side-by-side film.
   let grabbing = !!frames, index = 0, next = 0;
   const times = [];
   const grab = async () => {
     while (grabbing) {
-      const t = (Date.now() - ready) / 1000;
+      const t = (await clock()) - ready;
       if (t >= next) {
         const name = `frame_${String(index++).padStart(5, '0')}.png`;
         await page.screenshot({path: path.join(frames, name)});
-        const c = await page.evaluate(() => window.__jsgbCensus?.() ?? {objects: -1, lines: -1}).catch(() => ({objects: -1, lines: -1}));
-        times.push(`${name} ${t.toFixed(3)} objects=${c.objects} lines=${c.lines}`);
+        const c = await page.evaluate(() => window.__jsgbCensus?.() ?? {objects: -1, lines: -1, sprites: -1, points: -1}).catch(() => ({objects: -1, lines: -1, sprites: -1, points: -1}));
+        times.push(`${name} ${t.toFixed(3)} objects=${c.objects} lines=${c.lines} sprites=${c.sprites} points=${c.points}`);
         next = Math.max(next + 1 / fps, t);
       }
       else await new Promise(r => setTimeout(r, 5));
@@ -101,15 +125,16 @@ async function capture() {
   let offset = 0;
   const unquote = s => s.replace(/^(['"`])(.*)\1$/, '$2');
   for (const s of steps) {
-    const due = ready + (s.time + offset) * 1000;
-    while (Date.now() < due) await new Promise(r => setTimeout(r, 10));
+    const due = ready + s.time + offset;
+    while ((await clock()) < due) await new Promise(r => setTimeout(r, 10));
     if (s.verb === 'wait' || s.verb === 'gone') {
       // wait: until the element exists. gone: until it no longer exists (a loading screen closing).
-      const start = Date.now(), present = s.verb === 'wait';
-      while ((await find(unquote(s.args))) !== present && Date.now() - start < 120000) await new Promise(r => setTimeout(r, 100));
-      offset += (Date.now() - start) / 1000;
-      times.push(`wait-end ${((Date.now() - ready) / 1000).toFixed(3)}`);
-      console.log(`wait ${s.args} ${((Date.now() - start) / 1000).toFixed(1)}s`);
+      const start = await clock(), wallStart = Date.now(), present = s.verb === 'wait';
+      while ((await find(unquote(s.args))) !== present && Date.now() - wallStart < 120000) await new Promise(r => setTimeout(r, 100));
+      const end = await clock();
+      offset += end - start;
+      times.push(`wait-end ${(end - ready).toFixed(3)}`);
+      console.log(`wait ${s.args} ${((Date.now() - wallStart) / 1000).toFixed(1)}s`);
     } else if (s.verb === 'click') {
       // A real mouse click at the element's centre, as a player would.
       const box = await page.evaluate(w => {
@@ -142,7 +167,23 @@ const loadBanner = {
   el.style.cssText = 'position:fixed;left:16px;bottom:72px;z-index:2147483647;padding:8px 14px;background:rgba(0,0,0,.72);color:#ffd159;font:700 18px sans-serif;pointer-events:none';
   document.body.append(el); setTimeout(() => el.remove(), 8000);
   console.log('[jsgb] first frame after', Math.round(ms), 'ms');
-})));`}],
+})));`}, {tag: 'script', attrs: {type: 'module'}, injectTo: 'head', children: `import {createHotContext} from '/@vite/client';
+const hot = createHotContext('/@jsgb-banner');
+let savedAt = 0;
+hot.on('jsgb:saved', d => { savedAt = d.savedAt; });
+hot.on('vite:afterUpdate', u => {
+  if (!savedAt || !u.updates.some(x => x.type === 'css-update')) return;
+  const saved = savedAt; savedAt = 0;
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    const ms = Math.round(Date.now() - saved), el = document.createElement('div');
+    el.textContent = 'Hot update (CSS): shown ' + (ms / 1000).toFixed(2) + ' s after save';
+    el.style.cssText = 'position:fixed;left:16px;bottom:72px;z-index:2147483647;padding:8px 14px;background:rgba(0,0,0,.72);color:#ffd159;font:700 18px sans-serif;pointer-events:none';
+    document.body.append(el); setTimeout(() => el.remove(), 8000);
+    console.log('[jsgb] css update shown after', ms, 'ms');
+  }));
+});`}],
+  // The save time comes from the file itself, so the banner counts from the save, not from when Vite noticed it.
+  handleHotUpdate(ctx) { ctx.server.ws.send({type: 'custom', event: 'jsgb:saved', data: {file: ctx.file, savedAt: fs.statSync(ctx.file).mtimeMs}}); },
 };
 
 async function dev() {

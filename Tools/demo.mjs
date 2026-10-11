@@ -14,17 +14,14 @@ const [command, arg] = process.argv.slice(2);
 const demo = loadGame('hardburn-demo');
 const git = (cwd, ...a) => execFileSync('git', ['--no-optional-locks', '-C', cwd, ...a], {encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe']}).trim();
 
-// The demo change: a fleet status label under the top bar, ticking once a second.
-const MARK = '// jsgb-demo-feature';
+// The demo change: a HUD label under the top bar, added in the game's stylesheet. A CSS edit
+// updates the browser without a page reload and the Unreal overlay without restarting the game.
+const MARK = '/* jsgb-demo-feature */', END = '/* jsgb-demo-feature end */';
 const FEATURE = `
 ${MARK}
-const fleetLabel = document.createElement('div');
-fleetLabel.textContent = 'LIVE EDIT';
-Object.assign(fleetLabel.style, {position: 'fixed', top: '58px', left: '50%', transform: 'translateX(-50%)', zIndex: 60, padding: '6px 16px',
-  font: '700 15px sans-serif', letterSpacing: '2px', color: '#ffd27a', background: 'rgba(40, 24, 6, 0.85)', border: '1px solid #ffb43c'});
-document.body.append(fleetLabel);
-setInterval(() => { fleetLabel.textContent = 'LIVE EDIT · ' + new Date().toLocaleTimeString(); }, 1000);
-${MARK}-end
+body::after{content:'LIVE EDIT';position:fixed;top:58px;left:50%;transform:translateX(-50%);z-index:2147483000;padding:8px 22px;
+  font:700 20px sans-serif;letter-spacing:3px;color:#1a0f02;background:#ffb43c;border:2px solid #fff1c9;pointer-events:none}
+${END}
 `;
 
 if (command === 'prepare') {
@@ -44,13 +41,13 @@ if (command === 'prepare') {
   git(demo.repo, '-c', 'user.name=demo', '-c', 'user.email=demo@localhost', 'commit', '-q', '-m', `Copy of ${source.id} at ${git(source.repo, 'rev-parse', '--short', 'HEAD')}`);
   console.log(`prepared ${demo.repo} from ${source.repo}`);
 } else if (command === 'feature') {
-  const main = path.join(demo.repo, 'src/main.js');
-  let text = fs.readFileSync(main, 'utf8');
+  const sheet = path.join(demo.repo, 'src/ui/style.css');
+  let text = fs.readFileSync(sheet, 'utf8');
   const start = text.indexOf('\n' + MARK + '\n');
-  if (start >= 0) text = text.slice(0, start) + text.slice(text.indexOf(MARK + '-end\n', start) + MARK.length + 5);
+  if (start >= 0) text = text.slice(0, start) + text.slice(text.indexOf(END + '\n', start) + END.length + 1);
   if (arg !== 'off') text += FEATURE;
-  fs.writeFileSync(main, text);
-  console.log(`demo feature ${arg === 'off' ? 'removed from' : 'added to'} ${main}`);
+  fs.writeFileSync(sheet, text);
+  console.log(`demo feature ${arg === 'off' ? 'removed from' : 'added to'} ${sheet}`);
 } else {
   console.log('usage: node Tools/demo.mjs prepare [game] | feature on|off');
   process.exit(1);

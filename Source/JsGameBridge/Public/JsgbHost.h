@@ -25,6 +25,8 @@ public:
 	int32 LayoutMessages = 0;
 	/** The UI version the overlay last reported as applied (from its layout reports). */
 	int32 AppliedUIVersion = -1;
+	/** The page CSS version the overlay last painted (POST /bridge/css). */
+	int32 AppliedCssVersion = -1;
 	FString LastLayoutSize;
 };
 
@@ -59,6 +61,7 @@ public:
 	void SendGamepads(const FString& Json);
 	FString Eval(const FString& Source);
 	bool HasOverlay() const { return Browser.IsValid(); }
+	bool IsRecording() const { return !RecordDir.IsEmpty(); }
 
 	UPROPERTY() TObjectPtr<UJsgbBridge> Bridge;
 	UPROPERTY() TObjectPtr<UJsgbSceneMirror> Mirror;
@@ -80,6 +83,12 @@ private:
 	void LoadScript(const FString& Path);
 	void RunScript();
 	void ShowReloadBanner(const FString& Text);
+	void SwapCss(double BuildMs);
+	void SetupUpscaler();
+	void UpdateHud(float DeltaSeconds);
+	void StartRecording(const FString& Dir, double Fps);
+	void StopRecording();
+	void OnRecordedFrame(int32 Width, int32 Height, const TArray<FColor>& Bitmap);
 	double GameSeconds() const;
 
 	TSharedPtr<PUERTS_NAMESPACE::FJsEnv> JsEnv;
@@ -116,6 +125,22 @@ private:
 	int32 TimedFrames = 0;
 	// Hot reload timing: from the moment a new bundle arrives to the first frame it draws.
 	double ReloadStart = -1, ReloadBuildMs = -1, LastReloadMs = -1, LastBuildMs = -1;
+	// Upscaling and the optional FPS readout (-JsgbHud).
+	FString Upscaler;
+	bool bShowHud = false;
+	int32 HudFrames = 0;
+	double HudSeconds = 0, HudFps = 0, HudPresentedFps = -1;
+	TSharedPtr<class STextBlock> HudText;
+	// CSS hot swap timing: from the request to the overlay painting the new stylesheet.
+	int32 CssVersion = 0;
+	double CssStart = -1, CssBuildMs = -1, LastCssMs = -1;
+	// Live recording (POST /bridge/record): the window with its overlay as JPEG frames, each stamped
+	// with wall-clock Unix milliseconds so another recorder on the same machine can line up with it.
+	FString RecordDir, RecordTimes;
+	double RecordFps = 30, NextRecord = 0;
+	int32 RecordIndex = 0;
+	FDelegateHandle RecordHandle;
+	TSharedPtr<FThreadSafeCounter> RecordEncoding;
 	TSharedPtr<class SWidget> Banner;
 	TSharedPtr<class STextBlock> BannerText;
 	double BannerUntil = 0;

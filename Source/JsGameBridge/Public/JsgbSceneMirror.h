@@ -92,7 +92,8 @@ struct FJsgbEntity
 	TArray<int32, TInlineAllocator<2>> Materials;
 	uint32 Seen = 0;
 	int32 InstanceCount = 0;
-	FString LineSignature;
+	/** Hash of what a line object's segments depend on (geometry, material, transform); 0 before the first draw. */
+	uint32 LineSignature = 0;
 	/** A line object's segments in world space, drawn through the mirror's one shared line component. */
 	TArray<FBatchedLine> Lines;
 	FVector LineCenter = FVector::ZeroVector;
@@ -139,6 +140,16 @@ public:
 	FString SharedLinesOrder;
 	/** Line segments the shared line component draws this frame. */
 	int32 LineSegmentsDrawn = 0;
+	/** Time spent ordering and rebuilding the shared lines, summed until the host reads and clears it. */
+	double LinesMs = 0;
+	/** Time per record type (index = record type) and in the build queue, and builds done, until the host reads and clears them. */
+	double RecordMs[16] = {};
+	double QueueMs = 0;
+	int32 QueueBuilds = 0;
+	void ClearTimers() { LinesMs = 0; QueueMs = 0; QueueBuilds = 0; for (double& T : RecordMs) { T = 0; } }
+	/** Sprites and points objects (camera-facing billboards) drawn this frame. */
+	int32 SpritesDrawn = 0;
+	int32 PointsDrawn = 0;
 	UPROPERTY() TObjectPtr<UJsgbBridge> Bridge;
 	float BuildBudgetMs = 6.f;
 	float LightScale = 1.f;

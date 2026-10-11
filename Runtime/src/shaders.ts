@@ -61,6 +61,24 @@ const sourceKey = (m: THREE.ShaderMaterial) => {
 };
 
 /** GLSL 4.50 for glslang, plus what the HLSL glue needs to know. */
+/** True when the vertex shader places vertices with the plain model, view and projection matrices.
+ *  The Unreal mesh is already drawn there, so such shaders need no world position offset. */
+export function standardVertexTransform(source: string): boolean {
+  const src = stripComments(expandIncludes(source)).replace(/\s+/g, '');
+  if (/(^|[^.\w])position=/.test(src) || /transformed/.test(src)) return false;
+  const assigns = [...src.matchAll(/gl_Position=([^;]+);/g)];
+  if (assigns.length !== 1) return false;
+  let expr = assigns[0][1];
+  // Inline local vec4 values the expression uses (vec4 wp = modelMatrix * vec4(position, 1.0); ...).
+  // A value that is changed after it is declared (mv.xy += ...) is not a plain transform.
+  for (const m of src.matchAll(/vec4(\w+)=([^;]+);/g)) if (new RegExp(`[^\\w]${m[1]}(\\.\\w+)?[-+*/]?=`).test(src.replace(m[0], ''))) return false;
+  for (let i = 0; i < 4; i++) {
+    for (const m of src.matchAll(/vec4(\w+)=([^;]+);/g)) expr = expr.replace(new RegExp(`\\b${m[1]}\\b`, 'g'), `(${m[2]})`);
+  }
+  expr = expr.replace(/[()]/g, '').replace(/vec4position,1\.0?/g, 'P').replace(/vec4position\.xyz,1\.0?/g, 'P');
+  return ['projectionMatrix*viewMatrix*modelMatrix*P', 'projectionMatrix*modelViewMatrix*P'].includes(expr);
+}
+
 function prepare(material: THREE.ShaderMaterial, stage: 'vertex' | 'fragment') {
   const raw = !!material.isRawShaderMaterial;
   let src = stripComments(expandIncludes(stage === 'vertex' ? material.vertexShader : material.fragmentShader));
@@ -281,14 +299,18 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial): Transla
     if (has(F, 'gl_FrontFacing')) glue.push('fs.gl_FrontFacing = Parameters.TwoSidedSign > 0;');
     glue.push(`fs.${F.entry}();`, 'return fs.jsgb_FragColor;');
     const hlsl = [V.types + F.types, V.struct, F.struct, ...vsGlue, ...glue].filter(Boolean).join('\n');
-    // Vertex stage: the shader's own gl_Position, taken back to a world position through the
-    // inverse camera, becomes Unreal's world position offset (billboards, view-space quads).
+    // Vertex stage: the shader's own gl_Position, taken back to a world position, becomes Unreal's
+    // world position offset (billboards, view-space quads). The view-space point is solved from the
+    // projection's columns (JsgbPr0-3): for a perspective camera clip.w is exactly -z. Multiplying by
+    // the inverse projection instead loses most of the depth in floats (clip z is close to clip w far
+    // away), which pushed surfaces tens of units back, so lines behind them showed through.
     const vertexInputs: ShaderInput[] = [...vsInputs.filter(i => !i.name.startsWith('T_')),
-      ...[0, 1, 2, 3].map(i => ({name: `JsgbW${i}`, source: 'collection' as const, param: `CamCol${i}`})),
-      ...[0, 1, 2, 3].map(i => ({name: `JsgbPI${i}`, source: 'collection' as const, param: `ProjInvCol${i}`})), {name: 'JsgbWorld', source: 'worldPosition'}];
-    const vertexHlsl = vsInputs.some(i => i.name.startsWith('T_')) ? '' : [V.types, V.struct, ...vsGlue,
-      'float4 jsgbW = mul(vs.gl_Position, mul(float4x4(JsgbPI0, JsgbPI1, JsgbPI2, JsgbPI3), float4x4(JsgbW0, JsgbW1, JsgbW2, JsgbW3)));',
-      'float3 jsgbT = jsgbW.xyz / (abs(jsgbW.w) > 1e-8 ? jsgbW.w : 1e-8);',
+      ...[0, 1, 2, 3].map(i => ({name: `JsgbW${i}`, source: 'collection' as const, param: `CamCol${i}`})), {name: 'JsgbWorld', source: 'worldPosition'}];
+    const vertexHlsl = vsInputs.some(i => i.name.startsWith('T_')) || standardVertexTransform(material.vertexShader) ? '' : [V.types, V.struct, ...vsGlue,
+      'float4 jsgbC = vs.gl_Position; float3 jsgbV;',
+      'if (abs(JsgbPr2.w) > 0.5) { jsgbV.z = jsgbC.w / JsgbPr2.w; jsgbV.x = (jsgbC.x - JsgbPr2.x * jsgbV.z) / JsgbPr0.x; jsgbV.y = (jsgbC.y - JsgbPr2.y * jsgbV.z) / JsgbPr1.y; }',
+      'else { float jsgbInvW = 1.0 / (abs(jsgbC.w) > 1e-8 ? jsgbC.w : 1e-8); jsgbV.z = (jsgbC.z * jsgbInvW - JsgbPr3.z) / JsgbPr2.z; jsgbV.x = (jsgbC.x * jsgbInvW - JsgbPr3.x) / JsgbPr0.x; jsgbV.y = (jsgbC.y * jsgbInvW - JsgbPr3.y) / JsgbPr1.y; }',
+      'float3 jsgbT = (jsgbV.x * JsgbW0 + jsgbV.y * JsgbW1 + jsgbV.z * JsgbW2 + JsgbW3).xyz;',
       'float3 jsgbOffset = float3(jsgbT.x, jsgbT.z, jsgbT.y) * 100.0 - JsgbWorld;',
       'return any(isnan(jsgbOffset)) || dot(jsgbOffset, jsgbOffset) < 1e-4 ? float3(0, 0, 0) : jsgbOffset;'].filter(Boolean).join('\n');
     result = {key, hlsl, inputs, vertexHlsl, vertexInputs};

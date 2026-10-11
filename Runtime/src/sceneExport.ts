@@ -20,6 +20,7 @@ const LIGHT_KIND: Record<string, number> = {DirectionalLight: 1, PointLight: 2, 
 let nextId = 1;
 const ids = new WeakMap<object, number>();
 const traced = new WeakSet<object>();
+let exportCount = 0;
 const idOf = (o: object) => { let id = ids.get(o); if (!id) { id = nextId++; ids.set(o, id); } return id; };
 
 // Registry keys travel as small integers; the host learns each name once through events().
@@ -60,7 +61,18 @@ function attributeArray(attr: THREE.BufferAttribute | THREE.InterleavedBufferAtt
 }
 
 /** primitive: 0 triangles, 1 points, 2 line segments, 3 line strip, 4 line loop. */
+// A geometry shared by many meshes is checked once per frame (per primitive kind).
+const geometryFrame = new WeakMap<THREE.BufferGeometry, {frame: number; primitive: number; id: number}>();
+
 function syncGeometry(geo: THREE.BufferGeometry, primitive = 0): number {
+  const seen = geometryFrame.get(geo);
+  if (seen && seen.frame === exportCount && seen.primitive === primitive) return seen.id;
+  const id = syncGeometryNow(geo, primitive);
+  if (seen) { seen.frame = exportCount; seen.primitive = primitive; seen.id = id; } else geometryFrame.set(geo, {frame: exportCount, primitive, id});
+  return id;
+}
+
+function syncGeometryNow(geo: THREE.BufferGeometry, primitive: number): number {
   const id = idOf(geo);
   const a = geo.attributes, idx = geo.index;
   const extras = Object.entries(a).filter(([name, attr]) => isExtraAttribute(name) && attr.itemSize <= 4);
@@ -90,7 +102,7 @@ function syncGeometry(geo: THREE.BufferGeometry, primitive = 0): number {
   const colorSize = a.color ? Math.min(4, a.color.itemSize) : 0;
   const col = a.color ? attributeArray(a.color, colorSize) : null;
   let indices: Uint32Array | null = null;
-  if (idx) { indices = new Uint32Array(idx.count); for (let i = 0; i < idx.count; i++) indices[i] = idx.getX(i); }
+  if (idx) { indices = new Uint32Array(idx.count); indices.set((idx.array as Uint16Array | Uint32Array).subarray(0, idx.count)); }
   const start = geo.drawRange.start, count = geo.drawRange.count;
   const groups = JSON.stringify({groups: geo.groups.map(gr => [gr.start, gr.count, gr.materialIndex ?? 0]), drawStart: start, drawCount: Number.isFinite(count) ? count : -1, primitive, uvChannels});
   out.geometry(id, pos.buffer, nrm?.buffer ?? null, uv?.buffer ?? null, col?.buffer ?? null, colorSize, indices?.buffer ?? null, groups);
@@ -204,10 +216,44 @@ function shaderKey(m: THREE.ShaderMaterial): string {
   return 'shader_' + (h >>> 0).toString(16);
 }
 
+// A material shared by many meshes is described once per frame.
+const materialFrame = new WeakMap<THREE.Material, number>();
+
+// Every value a plain (non-shader) material sends, as numbers: when they all match the last frame's,
+// the material is unchanged and its description is not built again.
+const quick = new WeakMap<THREE.Material, {values: Float64Array; name: string; key: unknown}>();
+const scratch = new Float64Array(64);
+function quickValues(m: THREE.MeshStandardMaterial & THREE.MeshPhysicalMaterial & THREE.PointsMaterial & THREE.LineBasicMaterial): number {
+  const s = scratch; let i = 0;
+  const c = m.color, e = m.emissive;
+  s[i++] = m.version; s[i++] = c ? c.r : -1; s[i++] = c ? c.g : -1; s[i++] = c ? c.b : -1;
+  s[i++] = e ? e.r : -1; s[i++] = e ? e.g : -1; s[i++] = e ? e.b : -1; s[i++] = m.emissiveIntensity ?? -1;
+  s[i++] = m.roughness ?? -1; s[i++] = m.metalness ?? -1; s[i++] = m.opacity; s[i++] = +m.transparent; s[i++] = m.alphaTest; s[i++] = m.side;
+  s[i++] = +!!m.vertexColors; s[i++] = m.blending; s[i++] = +m.depthWrite; s[i++] = +m.depthTest; s[i++] = +m.colorWrite; s[i++] = +!!m.wireframe;
+  for (const t of [m.map, m.emissiveMap, m.normalMap, m.roughnessMap, m.metalnessMap, m.aoMap, m.alphaMap]) { s[i++] = t ? idOf(t) : 0; s[i++] = t ? t.version : -1; }
+  s[i++] = +!!m.flatShading; s[i++] = +m.toneMapped; s[i++] = +(m.fog !== false); s[i++] = m.envMapIntensity ?? -1; s[i++] = +!!m.alphaHash;
+  s[i++] = m.size ?? -1; s[i++] = +!!m.sizeAttenuation; s[i++] = m.linewidth ?? -1; s[i++] = m.clearcoat ?? -1; s[i++] = m.transmission ?? -1; s[i++] = m.ior ?? -1;
+  return i;
+}
+
 function syncMaterial(mat: THREE.Material): number {
   const id = idOf(mat);
+  if (materialFrame.get(mat) === exportCount) return id;
+  materialFrame.set(mat, exportCount);
   const m = mat as THREE.MeshStandardMaterial & THREE.MeshPhysicalMaterial & THREE.ShaderMaterial & THREE.MeshBasicMaterial & THREE.PointsMaterial;
   const shader = !!m.isShaderMaterial;
+  const plain = !shader && !hookUniforms(mat);
+  let count = 0;
+  if (plain) {
+    count = quickValues(m as never);
+    const last = quick.get(mat), key = mat.userData?.materialKey ?? mat.userData?.assetMaterialKey;
+    if (last && last.values.length === count && last.name === mat.name && last.key === key) {
+      let same = true;
+      for (let i = 0; i < count; i++) if (last.values[i] !== scratch[i] && !(last.values[i] !== last.values[i] && scratch[i] !== scratch[i])) { same = false; break; }
+      if (same) return id;
+    }
+    quick.set(mat, {values: scratch.slice(0, count), name: mat.name, key});
+  }
   const registryKey = mat.userData?.materialKey ?? mat.userData?.assetMaterialKey ?? (shader ? shaderKey(m) : undefined);
   const registryMaterial = registryKey ? assetRegistry()[registryKey]?.material : undefined;
   // Custom shaders without a registry material become generated Unreal materials.
@@ -355,7 +401,7 @@ export function exportFrame(): number {
   let top: THREE.Object3D = scene; while (top.parent) top = top.parent;
   top.updateMatrixWorld();
   cam.updateMatrixWorld();
-  n = 0; ni = 0;
+  n = 0; ni = 0; exportCount++;
   // Header (HEADER_FLOATS): camera, background, fog, environment, post-processing.
   pushMatrix(cam.matrixWorld);
   push(cam.isPerspectiveCamera ? cam.fov : 0); push(cam.isPerspectiveCamera ? cam.aspect : (cam.right - cam.left) / Math.max(1e-6, cam.top - cam.bottom));

@@ -81,6 +81,11 @@ public:
 	/** When > 0, the game clock advances this many ms per host tick (deterministic captures). */
 	double FixedStepMs = 0;
 	double VirtualMs = 0;
+	/** Time spent in the mirror (frames, materials, textures) since the host last read it. */
+	double MirrorMs = 0;
+	/** The material and texture parts of MirrorMs, and how many updates arrived, until the host reads and clears them. */
+	double MaterialMs = 0, TextureMs = 0;
+	int32 MaterialCalls = 0, TextureCalls = 0;
 	bool bReloadRequested = false;
 	bool bReady = false;
 	int32 ErrorCount = 0;

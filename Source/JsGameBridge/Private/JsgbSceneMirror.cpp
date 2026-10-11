@@ -587,7 +587,7 @@ FJsgbEntity& UJsgbSceneMirror::EntityOf(int32 Id, int32 Kind)
 	{
 		if (Ent.Component) { Ent.Component->DestroyComponent(); Ent.Component = nullptr; }
 		if (Ent.Effect) { Ent.Effect->DestroyComponent(); Ent.Effect = nullptr; }
-		Ent.Kind = Kind; Ent.GeometryRevision = -1; Ent.Geometry = 0; Ent.Materials.Reset(); Ent.InstanceCount = -1; Ent.LineSignature.Reset();
+		Ent.Kind = Kind; Ent.GeometryRevision = -1; Ent.Geometry = 0; Ent.Materials.Reset(); Ent.InstanceCount = -1; Ent.LineSignature = 0;
 	}
 	return Ent;
 }
@@ -693,7 +693,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	if (Count < HeaderFloats) { return; }
 	ParentFor(VLit);
 	const double T0 = FPlatformTime::Seconds();
-	SkippedEntities = 0; CompilingEntities = 0;
+	SkippedEntities = 0; CompilingEntities = 0; SpritesDrawn = 0; PointsDrawn = 0;
 	FrameLines.Reset();
 	const double StallAtStart = StallMs;
 	++Stamp;
@@ -712,7 +712,9 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 		G->Slots = Slots;
 		G->BuiltRevision = G->Revision;
 		G->Pending.Reset();
+		++QueueBuilds;
 	}
+	QueueMs += (FPlatformTime::Seconds() - T0) * 1000.0;
 
 	// Camera.
 	const float* E = D;
@@ -767,9 +769,12 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 		if (bCompiling) { ++CompilingEntities; }
 		TraceRecord(Ent.Id, bCompiling ? 3 : 1, bCompiling ? TEXT("generated material still compiling") : TEXT(""));
 	};
+	// Adds the time of one record to its type's total, however the record's branch ends.
+	struct FRecordTimer { double& Total; double Start; ~FRecordTimer() { Total += (FPlatformTime::Seconds() - Start) * 1000.0; } };
 	while (K < Count)
 	{
 		const int32 Type = static_cast<int32>(D[K]);
+		FRecordTimer RecordTimer{RecordMs[FMath::Clamp(Type, 0, 15)], FPlatformTime::Seconds()};
 		if (Type == RMesh)
 		{
 			if (K + 5 > Count) { break; }
@@ -890,6 +895,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			C->SetCustomPrimitiveDataFloat(2, Rotation);
 			C->SetCustomPrimitiveDataFloat(3, Mode);
 			Show(Ent, C, Flags);
+			if (C->IsVisible()) { ++(bSprite ? SpritesDrawn : PointsDrawn); }
 		}
 		else if (Type == RLines)
 		{
@@ -904,8 +910,9 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			const FLinearColor Base = MatInfo ? MatInfo->Color : FLinearColor::White;
 			const float Alpha = MatInfo ? MatInfo->Opacity : 1.f;
 			// Redraw only when the geometry, material or transform changed.
-			FString Sig = FString::Printf(TEXT("%d:%d:%d:%s"), Geo, G->BuiltRevision, Mat, MatInfo ? *MatInfo->Json.Left(64) : TEXT(""));
-			for (int32 I = 0; I < 16; ++I) { Sig += FString::Printf(TEXT(",%.4g"), M[I]); }
+			const int32 Keys[3] = {Geo, G->BuiltRevision, Mat};
+			uint32 Sig = FCrc::MemCrc32(M, 16 * sizeof(float), FCrc::MemCrc32(Keys, sizeof(Keys), MatInfo ? GetTypeHash(MatInfo->Json) : 0u));
+			if (Sig == 0) { Sig = 1; }
 			if (Sig != Ent.LineSignature)
 			{
 				Ent.LineSignature = Sig;
@@ -992,10 +999,19 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	}
 	DrawnEntities = Drawn;
 	// Lines in three.js's transparent order: farthest first, equal distances by object id.
+	const double LinesStart = FPlatformTime::Seconds();
 	FrameLines.Sort([](const TPair<double, int32>& A, const TPair<double, int32>& B) { return A.Key != B.Key ? A.Key > B.Key : A.Value < B.Value; });
 	{
-		FString Order;
-		for (const TPair<double, int32>& P : FrameLines) { const FJsgbEntity* LineEnt = Entities.Find(P.Value); Order += FString::Printf(TEXT("%d:%u,"), P.Value, LineEnt ? GetTypeHash(LineEnt->LineSignature) : 0u); }
+		// Unreal's translucent lines still depth-test each other, so a line drawn on top of an equal one
+		// loses wherever the depths tie. Each later line moves toward the camera along its own view
+		// rays by a tiny step: its pixels stay put, and it wins ties as it would in three.js.
+		// Unreal draws zero-width batched lines opaque, ignoring alpha; lines with a width are
+		// alpha-blended quads. Each line gets the world width of one screen pixel at its distance,
+		// so it looks like a WebGL line and blends with its material opacity.
+		const bool bOrtho = D[20] > 0.5f;
+		const double PixelPerCm = bOrtho ? 2.0 * D[21] * Cm / FMath::Max(1, ViewportSize.Y) : 2.0 * TanHalf / FMath::Max(1, ViewportSize.Y);
+		FString Order = FString::Printf(TEXT("%.1f,%.1f,%.1f,%d|"), CameraLocation.X, CameraLocation.Y, CameraLocation.Z, ViewportSize.Y);
+		for (const TPair<double, int32>& P : FrameLines) { const FJsgbEntity* LineEnt = Entities.Find(P.Value); Order += FString::Printf(TEXT("%d:%u,"), P.Value, LineEnt ? LineEnt->LineSignature : 0u); }
 		if (Order != SharedLinesOrder)
 		{
 			SharedLinesOrder = Order;
@@ -1007,12 +1023,26 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			}
 			SharedLines->Flush();
 			TArray<FBatchedLine> All;
-			for (const TPair<double, int32>& P : FrameLines) { if (const FJsgbEntity* LineEnt = Entities.Find(P.Value)) { All.Append(LineEnt->Lines); } }
+			int32 Rank = 0;
+			for (const TPair<double, int32>& P : FrameLines)
+			{
+				const FJsgbEntity* LineEnt = Entities.Find(P.Value);
+				if (!LineEnt) { continue; }
+				const double Step = 2e-5 * ++Rank;
+				for (FBatchedLine L : LineEnt->Lines)
+				{
+					L.Start += (CameraLocation - L.Start) * Step;
+					L.End += (CameraLocation - L.End) * Step;
+					L.Thickness = bOrtho ? PixelPerCm : PixelPerCm * FVector::Dist(CameraLocation, (L.Start + L.End) * 0.5);
+					All.Add(L);
+				}
+			}
 			if (All.Num()) { SharedLines->DrawLines(All); }
 			LineSegmentsDrawn = All.Num();
 		}
 	}
 	FrameLines.Reset();
+	LinesMs += (FPlatformTime::Seconds() - LinesStart) * 1000.0;
 	CheckGenerated();
 	if (StallMs - StallAtStart > 50.0) { UE_LOG(LogJsgbMirror, Display, TEXT("Frame %d built new meshes for %.0f ms before drawing; the game clock leaves this out"), FrameCounter, StallMs - StallAtStart); }
 
