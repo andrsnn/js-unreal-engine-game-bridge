@@ -4,6 +4,8 @@
   "type": "module",
   "description": "Run unchanged Three.js browser games inside Unreal Engine through Puerts.",
   "scripts": {
+    "lint": "node Tools/lint.mjs",
+    "test": "node Tools/unit.mjs",
     "build": "node Tools/jsgb.mjs build",
     "smoke": "node Tools/jsgb.mjs smoke",
     "unreal": "node Tools/jsgb.mjs unreal",

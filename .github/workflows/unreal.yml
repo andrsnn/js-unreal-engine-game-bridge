@@ -1,0 +1,60 @@
+# The Unreal half of the conformance suite, on a self-hosted Windows runner with Unreal Engine 5.8 and an RTX GPU
+# (label: unreal). It builds the plugin in a new host project, runs every suite case and game off screen, and uploads
+# the report and the films. A full run takes about an hour, so it runs nightly and on demand, not on every push.
+# Docs/ci-runner.md explains how to set up the runner and the environment variables it reads.
+name: Unreal
+
+on:
+  workflow_dispatch:
+    inputs:
+      suite_args:
+        description: Extra arguments for Tools/suite.mjs, for example --only-cases or --games orbit-demo
+        required: false
+        default: ''
+  schedule:
+    - cron: '0 9 * * *'
+
+concurrency:
+  group: unreal
+  cancel-in-progress: false
+
+jobs:
+  unreal:
+    runs-on: [self-hosted, windows, unreal]
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install
+        shell: powershell
+        run: |
+          foreach ($dir in 'Runtime', 'Examples/orbit-demo', 'Examples/threejs-examples', 'Tests/suite') {
+            Push-Location $dir; npm ci --no-audit --no-fund; if ($LASTEXITCODE) { exit $LASTEXITCODE }; Pop-Location
+          }
+          Push-Location Tests/suite; npx playwright install chromium; Pop-Location
+
+      - name: Build the plugin in a new host project and run the suite
+        shell: powershell
+        env:
+          SUITE_ARGS: ${{ github.event.inputs.suite_args }}
+        run: |
+          $env:JSGB_BUILDS = "$env:RUNNER_TEMP/jsgb-builds"
+          $extra = @(($env:SUITE_ARGS -split ' ') | Where-Object { $_ })
+          node Tools/ci.mjs --clean-host "$env:RUNNER_TEMP/jsgb-host" --films @extra
+
+      - name: Upload the report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: conformance-report
+          path: Docs/conformance
+          if-no-files-found: warn
+
+      - name: Upload the films
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: conformance-films
+          path: ${{ runner.temp }}/jsgb-builds/conformance-suite/*/*-side-by-side.mp4
+          if-no-files-found: warn
+          retention-days: 14

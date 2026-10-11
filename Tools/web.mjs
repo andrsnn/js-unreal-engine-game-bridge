@@ -60,7 +60,7 @@ async function capture() {
   const port = +flag('--port', 5391);
   const server = await serve(port);
   const [w, h] = flag('--res', '1280x720').split('x').map(Number);
-  const browser = await chromium.launch({headless: true, args: ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist', '--autoplay-policy=no-user-gesture-required']});
+  const browser = await chromium.launch({headless: true, args: [...(process.platform === 'win32' ? ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist'] : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader']), '--autoplay-policy=no-user-gesture-required']});
   const page = await browser.newPage({viewport: {width: w, height: h}});
   const errors = [];
   // The same seeded Math.random as the runtime (entry.ts), so both runs build the same world.

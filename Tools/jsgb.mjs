@@ -370,5 +370,5 @@ else if (command === 'smoke') {
   if (!has('--no-build')) await build(game);
   const {smoke} = await import(pathToFileURL(path.join(bridge, 'Tools/smoke.mjs')).href);
   const report = await smoke(game, {frames: +flag('--frames', 600), script: flag('--script'), search: flag('--search', game.search ?? ''), verbose: has('--verbose')});
-  process.exit(report.errors ? 1 : 0);
+  process.exit(report.errors || !report.booted ? 1 : 0);
 } else if (command) { console.error('unknown command: ' + command); process.exit(2); }

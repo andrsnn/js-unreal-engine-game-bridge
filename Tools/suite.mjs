@@ -6,7 +6,9 @@
 //   - errors: JavaScript errors in the browser and in Unreal
 //   - cost: the game's JavaScript time per frame and memory in Unreal, and the JavaScript heap in Chrome
 // It writes Docs/conformance/README.md, index.html, results.json and thumbnails, and exits with 1 if anything fails.
-//   node Tools/suite.mjs [--cases a,b] [--games fixture,orbit-demo] [--only-cases] [--only-games] [--report-only]
+//   node Tools/suite.mjs [--cases a,b] [--games fixture,orbit-demo] [--only-cases] [--only-games] [--report-only] [--web-only] [--films]
+// --web-only runs only the browser half (no Unreal, as on a CI machine without it): a run passes when Chrome captured
+// its frames without a JavaScript error. Its report goes to the work folder, not Docs/conformance.
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
@@ -18,7 +20,8 @@ const rest = process.argv.slice(2);
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 const has = name => rest.includes(name);
 const work = path.join(settings().builds, 'conformance-suite');
-const docs = path.join(bridge, 'Docs', 'conformance');
+const webOnly = has('--web-only');
+const docs = webOnly ? path.join(work, 'web-report') : path.join(bridge, 'Docs', 'conformance');
 const log = t => console.log(`[suite ${new Date().toISOString().slice(11, 19)}] ${t}`);
 
 // The cases: Tests/suite/src/cases/index.js lists them by name.
@@ -29,7 +32,10 @@ const cases = has('--only-games') ? [] : flag('--cases') ? flag('--cases').split
 // Games/<game>.json with "suite": true.
 const suiteGames = () => fs.readdirSync(path.join(bridge, 'Games')).filter(f => f.endsWith('.json'))
   .filter(f => { try { return JSON.parse(fs.readFileSync(path.join(bridge, 'Games', f), 'utf8')).suite === true; } catch { return false; } }).map(f => f.slice(0, -5)).sort();
-const games = has('--only-cases') ? [] : (flag('--games')?.split(',') ?? suiteGames()).filter(Boolean);
+// A game whose source is not on this machine (a private game on a CI runner) is skipped, and the log says so.
+const gameRepo = game => { try { return path.resolve(bridge, JSON.parse(fs.readFileSync(path.join(bridge, 'Games', `${game}.json`), 'utf8')).repo); } catch { return ''; } };
+const games = (has('--only-cases') ? [] : (flag('--games')?.split(',') ?? suiteGames()).filter(Boolean))
+  .filter(game => fs.existsSync(gameRepo(game)) || (console.log(`[suite] skipping ${game}: its source is not on this machine`), false));
 const entries = [
   // A case with its own steps (input) has Tests/scripts/suite-<case>.txt; the rest share Tests/scripts/suite.txt.
   ...cases.map(name => ({id: `case-${name}`, label: name, kind: 'case', game: 'suite', search: `?case=${name}`,
@@ -79,6 +85,14 @@ function evaluate(entry) {
     jsHeapMB: report?.web?.jsHeapMB ?? null, seconds: entry.seconds ?? null,
   };
   const reasons = [];
+  if (webOnly) {
+    if (!report?.web) reasons.push('no browser run');
+    else if (!(report.web.frames > 0)) reasons.push('the browser captured no frames');
+    if (webErrors) reasons.push(`${webErrors} browser errors: ${row.firstWebError.slice(0, 120)}`);
+    row.pass = reasons.length === 0;
+    row.reasons = reasons;
+    return row;
+  }
   if (!report) reasons.push('no run');
   if (row.ssim === null) reasons.push('no frames to compare');
   else if (row.ssim < entry.ssimMin) reasons.push(`picture SSIM ${row.ssim} < ${entry.ssimMin}`);
@@ -102,7 +116,7 @@ if (!has('--report-only')) {
   for (const entry of entries) {
     log(`${entry.id}: running`);
     const t0 = Date.now();
-    const args = [path.join(bridge, 'Tools/conformance.mjs'), entry.game, '--script', path.join(bridge, entry.script), '--out', path.join(work, entry.id), '--no-film', ...(entry.search ? ['--search', entry.search] : [])];
+    const args = [path.join(bridge, 'Tools/conformance.mjs'), entry.game, '--script', path.join(bridge, entry.script), '--out', path.join(work, entry.id), ...(has('--films') ? [] : ['--no-film']), ...(entry.search ? ['--search', entry.search] : []), ...(webOnly ? ['--skip-unreal'] : [])];
     const r = spawnSync(process.execPath, args, {cwd: bridge, encoding: 'utf8', timeout: 1800000, maxBuffer: 1 << 26});
     entry.seconds = Math.round((Date.now() - t0) / 1000);
     const line = (r.stdout ?? '').split('\n').find(l => /object check|OBJECT CHECK/.test(l)) ?? (r.stderr ?? '').trim().split('\n').slice(-1)[0];
