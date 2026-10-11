@@ -42,7 +42,10 @@ const hostExe = path.join(out, 'host/Windows/JsgbHost.exe');
 if (has('--host') || !fs.existsSync(hostExe)) {
   log(`packaging the Unreal host from ${project}`);
   const uat = path.resolve(path.dirname(settings().engine), '../../Build/BatchFiles/RunUAT.bat');
-  const r = spawnSync('cmd', ['/c', uat, 'BuildCookRun', `-project=${path.join(project, 'JsgbHost.uproject')}`, '-platform=Win64', '-clientconfig=Development',
+  // Puerts' build rules copy its scripts into the project's Content folder from more than one rules instance at once,
+  // which sometimes fails with "being used by another process". A second attempt finds the files already copied.
+  let r;
+  for (let attempt = 1; attempt <= 2 && !(r?.status === 0); attempt++) r = spawnSync('cmd', ['/c', uat, 'BuildCookRun', `-project=${path.join(project, 'JsgbHost.uproject')}`, '-platform=Win64', '-clientconfig=Development',
     '-build', '-cook', '-stage', '-pak', '-iostore', '-archive', `-archivedirectory=${path.join(out, 'host')}`, '-map=/Engine/Maps/Entry', '-noP4', '-utf8output', '-unattended'],
     {stdio: 'inherit'});
   if (r.status !== 0 || !fs.existsSync(hostExe)) throw Error(`packaging the host failed (exit ${r.status})`);
