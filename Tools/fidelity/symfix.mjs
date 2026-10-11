@@ -27,9 +27,20 @@ const regions = r.preserved_regions ?? r.preservedRegions ?? [];
 const offset = r.preserved_detail_offset ?? r.detailOffset ?? [0, 0, 0];
 const length = r.frame?.length ?? r.length ?? 1;
 const {R, center, scale, B, origin} = frame;
+// A recorded spine curve (sol-xhigh axis_curve_normalized: [lateral, along] points in length-normalized canonical
+// coordinates): the hull's centre line bends sideways, so it is straightened before the reflection.
+const curve = (r.axis_curve_normalized ?? []).slice().sort((a, b) => a[1] - b[1]);
+const alongAxis = +(process.env.JSGB_CURVE_AXIS ?? 1);  // the second value runs along canonical Y (checked against the game's repaired hulls)
+const spine = along => {
+  if (!curve.length) return 0;
+  if (along <= curve[0][1]) return curve[0][0];
+  for (let i = 1; i < curve.length; i++) if (along <= curve[i][1]) { const [x0, z0] = curve[i - 1], [x1, z1] = curve[i]; return x0 + (x1 - x0) * (along - z0) / (z1 - z0); }
+  return curve[curve.length - 1][0];
+};
 const mv = (M, x, y, z) => [M[0][0] * x + M[0][1] * y + M[0][2] * z, M[1][0] * x + M[1][1] * y + M[1][2] * z, M[2][0] * x + M[2][1] * y + M[2][2] * z];
 const mtv = (M, x, y, z) => [M[0][0] * x + M[1][0] * y + M[2][0] * z, M[0][1] * x + M[1][1] * y + M[2][1] * z, M[0][2] * x + M[1][2] * y + M[2][2] * z];
-const to = (x, y, z) => { const a = mv(R, x, y, z); return mv(B, (a[0] - center[0]) / scale - origin[0], (a[1] - center[1]) / scale - origin[1], (a[2] - center[2]) / scale - origin[2]); };
+const toRaw = (x, y, z) => { const a = mv(R, x, y, z); return mv(B, (a[0] - center[0]) / scale - origin[0], (a[1] - center[1]) / scale - origin[1], (a[2] - center[2]) / scale - origin[2]); };
+const to = (x, y, z) => { const q = toRaw(x, y, z); if (curve.length) q[0] -= spine(q[alongAxis] / length) * length; return q; };
 const from = q => { const b = mtv(B, q[0], q[1], q[2]); return mtv(R, (b[0] + origin[0]) * scale + center[0], (b[1] + origin[1]) * scale + center[1], (b[2] + origin[2]) * scale + center[2]); };
 const mirrorDir = (x, y, z) => { const q = mv(B, ...mv(R, x, y, z)); q[0] = -q[0]; return mtv(R, ...mtv(B, q[0], q[1], q[2])); };
 const preserved = q => regions.some(g => ['x', 'y', 'z'].every((axis, i) => (g[axis + '_min'] == null || q[i] / length >= g[axis + '_min']) && (g[axis + '_max'] == null || q[i] / length <= g[axis + '_max'])));

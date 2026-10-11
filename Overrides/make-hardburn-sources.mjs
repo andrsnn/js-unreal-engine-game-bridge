@@ -10,7 +10,9 @@ import {fileURLToPath} from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const game = 'C:/Users/Aidan Anderson/falling-frontier-clone/public';
-const originals = ['C:/AI/spark-mesh-backup/outputs/falling-frontier', 'G:/pixal-work/outputs/falling-frontier'];
+// The exact Pixal3D output each game model was built from: AssetVault keeps originals by the SHA-256 that the
+// manifest records (vaultSource.rawSHA256). Later regenerations elsewhere can differ in shape.
+const vault = 'F:/AssetVault/hard-burn/assets';
 const symfix = 'G:/hb-sol3d/symfix';
 const manifest = JSON.parse(fs.readFileSync(game + '/models/pixal3d/manifest.json', 'utf8')).models;
 const file = path.join(here, 'hardburn.sources.json');
@@ -22,37 +24,32 @@ for (const [key, e] of Object.entries(manifest)) {
   if (!e.lods?.[0]) continue;
   const [, , , dir, hash] = e.lods[0].split('/');
   const id = dir + '/' + hash;
-  if (!models.has(id)) models.set(id, {dir, hash, keys: [], fix: e.symmetryFix, lod0: game + e.lods[0], station: e.normalize === 'max'});
+  if (!models.has(id)) models.set(id, {dir, hash, keys: [], fix: e.symmetryFix, lod0: game + e.lods[0], station: e.normalize === 'max', raw: e.vaultSource?.rawSHA256});
   models.get(id).keys.push(key);
 }
-// The game's hull livery (scene/hull-livery.js): each faction's paint over the source texture's relief.
-const palettes = {tdf: 0x9eafb5, mrn: 0x63332f, cartel: 0x42464c, helion: 0xb7a17a, ueg: 0x6f7957, corsair: 0x3a4852, veil: 0x343150};
-const linear = hex => [16, 8, 0].map(s => { const c = ((hex >> s) & 255) / 255; return +(c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4).toFixed(4); });
-function liveryParams(dir, station) {
-  const faction = /^concept-([a-z]+)-/.exec(dir)?.[1];
-  const paint = linear(palettes[faction] ?? palettes.tdf);
-  // A light coat of the faction paint, and the paint's hue multiplied into the texture so its dark seams and
-  // machinery stay dark; stations keep their own weathered texture.
-  const peak = Math.max(...paint), luma = 0.2126 * paint[0] + 0.7152 * paint[1] + 0.0722 * paint[2];
-  const shade = Math.min(1, Math.max(0.45, luma / 0.3)), hue = paint.map(c => +((0.35 + 0.65 * c / peak) * shade).toFixed(3));
-  return {EnvIntensity: 0.3, LiveryWeight: station ? 0 : 0.25, LiveryPaint: paint, ...(station ? {MetalScale: 0.35, Tint: [0.78, 0.84, 0.9]} : {Tint: hue})};
-}
+// Each model shows its own Pixal3D textures, as in its preview: no faction tint, livery or repaint (a check on the
+// TDF frigate showed those were what made the hulls look worse than the originals).
+const liveryParams = () => ({EnvIntensity: 0.5, PaintedHull: 0, LiveryWeight: 0});
+// Hulls whose repair includes hand edits the receipt only describes in words (a rolled cargo row, a bow correction,
+// cleanup regions). Tools/fidelity/check-hulls.mjs found the replayed repair off from the game's model by more than a
+// few percent, so these use the game's own repaired geometry with the original's 4096 textures.
+const gameGeometry = new Set(['concept-corsair-ore-hauler', 'concept-helion-scout', 'concept-tdf-capital-titan', 'concept-tdf-colony-ship']);
 const hulls = [];
 for (const m of models.values()) {
-  const source = originals.map(o => `${o}/${m.dir}/pixal3d_textured.glb`).find(f => fs.existsSync(f));
+  const source = m.raw && [`${vault}/${m.dir}/originals/${m.raw}/pixal3d_textured.glb`].find(f => fs.existsSync(f));
   if (!source) { console.log(`no original for ${m.dir} (${m.keys.join(', ')})`); continue; }
   let receipt;
   if (m.fix?.provider === 'sol-xhigh') receipt = `${symfix}/${m.dir}/${m.hash}/symfix-sol-xhigh.json`;
   else if (m.fix?.provider === 'receipts-high') receipt = `${symfix}/receipts-high/${m.fix.canonical ?? m.fix.key}.json`;
   if (receipt && !fs.existsSync(receipt)) { console.log(`missing receipt ${receipt}`); receipt = undefined; }
   const name = m.dir.replaceAll('-', '_');
-  hulls.push({name, source, match: {url: `*/${m.dir}/${m.hash}/*`}, fit: 'bounds', check: m.lod0, ...(receipt ? {receipt} : {}),
+  // The game's models keep the source's own frame, so the original lines up with no fitting (Tools/fidelity/check-hulls.mjs).
+  hulls.push({name, source, match: {url: `*/${m.dir}/${m.hash}/*`}, fit: 'none', check: m.lod0, ...(receipt ? {receipt} : {}), ...(gameGeometry.has(m.dir) ? {geometryFrom: m.lod0} : {}),
     keys: m.keys, params: liveryParams(m.dir, m.station)});
 }
 const rank = h => { const i = h.keys.findIndex(k => battle.includes(k)); return i >= 0 ? battle.indexOf(h.keys[i]) : 1000; };
 hulls.sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
-// The battle-view models keep their 4096 maps; the rest import at 2048 to fit the disk budget (Nanite keeps every triangle).
-for (const h of hulls) if (rank(h) >= 1000) h.maxTexture = 2048;
+
 list.sources = [...hulls, ...list.sources.filter(s => s.kind)];
 fs.writeFileSync(file, JSON.stringify(list, null, 1) + '\n');
 console.log(`${hulls.length} hulls (${hulls.filter(h => h.receipt).length} with symmetry repairs), ${list.sources.length - hulls.length} planet sources`);

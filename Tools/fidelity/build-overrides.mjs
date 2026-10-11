@@ -56,7 +56,11 @@ for (const s of sources) {
   }
   // "receipt": the symmetry repair the game adopted for its own copy, applied to the full original first.
   let input = s.source;
-  if (s.receipt) {
+  // "geometryFrom": the game's own repaired model, with the original's textures (Tools/fidelity/retexture.mjs).
+  if (s.geometryFrom) {
+    input = path.join(path.dirname(work), 'hulls', s.name + '.glb');
+    if (!fs.existsSync(input)) console.log(`${s.name}: game geometry ${execFileSync(process.execPath, [path.join(bridge, 'Tools/fidelity/retexture.mjs'), s.geometryFrom, s.source, input, '--modules', list.modules], {encoding: 'utf8'}).trim()}`);
+  } else if (s.receipt) {
     input = path.join(path.dirname(work), 'hulls', s.name + '.glb');
     if (!fs.existsSync(input)) {
       const r = execFileSync(process.execPath, [path.join(bridge, 'Tools/fidelity/symfix.mjs'), s.source, input, '--receipt', s.receipt, '--modules', list.modules, ...(s.check ? ['--check', s.check] : [])], {encoding: 'utf8'});
@@ -119,6 +123,6 @@ fs.writeFileSync(outFile, JSON.stringify({version: 1, overrides: [...rules.value
 if (rest.includes('--clean')) for (const p of prepared) {
   if (!results.find(x => x.name === p.name && !x.error)) continue;
   fs.rmSync(path.join(work, 'prep', p.name), {recursive: true, force: true});
-  if (p.rule.receipt) fs.rmSync(path.join(path.dirname(work), 'hulls', p.name + '.glb'), {force: true});
+  if (p.rule.receipt || p.rule.geometryFrom) fs.rmSync(path.join(path.dirname(work), 'hulls', p.name + '.glb'), {force: true});
 }
 console.log(`wrote ${rules.size} rules to ${outFile}`);

@@ -1,0 +1,12 @@
+{
+  "title": "Model studio",
+  "repo": "Tests/suite",
+  "index": "index.html",
+  "public": [
+    "public"
+  ],
+  "search": "?case=studio&model=/diag/raw.glb",
+  "registry": [],
+  "conformanceSearch": "?case=studio&model=/diag/raw.glb",
+  "overrides": "Overrides/diag.json"
+}

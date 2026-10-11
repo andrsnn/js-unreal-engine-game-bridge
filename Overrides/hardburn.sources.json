@@ -4,38 +4,29 @@
  "sources": [
   {
    "name": "concept_tdf_frigate",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-frigate/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-frigate/originals/67dadcf78ae669ba810738e1b0c0cf9b1b03ba9c93472e2fb88e8b2fa3356fb1/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-frigate/67dadcf78ae6/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-frigate/67dadcf78ae6/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-frigate/67dadcf78ae6/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
    }
   },
   {
    "name": "concept_helion_destroyer",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-destroyer/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-destroyer/originals/11407e3075f6b65d62d62036c14096b3fa56155bc753140287dab44404b13a67/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-destroyer/11407e3075f6/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-destroyer/11407e3075f6/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_tdf_destroyer.json",
    "keys": [
@@ -43,1164 +34,749 @@
     "concept_helion_destroyer"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
    }
   },
   {
    "name": "concept_tdf_corvette",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-corvette/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-corvette/originals/1bcf3e1f4b0a67987d1704ad1edeeb68fe491d981bb7cc886f2f482e25ce64fc/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-corvette/1bcf3e1f4b0a/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-corvette/1bcf3e1f4b0a/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-corvette/1bcf3e1f4b0a/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_corvette"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
    }
   },
   {
    "name": "concept_tdf_carrier",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-carrier/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-carrier/originals/2ecf7491216e122b730b845d61a6cc04ac95826ba6f7b9853b5a868addab1a87/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-carrier/2ecf7491216e/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-carrier/2ecf7491216e/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-carrier/2ecf7491216e/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
    }
   },
   {
    "name": "concept_tdf_cruiser",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-cruiser/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-cruiser/originals/a84b2758cc3f4e2d1094b441c6948b29a13df6441efbab8e04d43de9fab8f1e4/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-cruiser/a84b2758cc3f/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-cruiser/a84b2758cc3f/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_tdf_cruiser.json",
    "keys": [
     "concept_tdf_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
    }
   },
   {
    "name": "concept_mrn_frigate",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-frigate/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-frigate/originals/ec7ab1b88b063906d6b114391ffb210135a489002bd60831a6050b759c9a0cec/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-frigate/ec7ab1b88b06/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-frigate/ec7ab1b88b06/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-mrn-frigate/ec7ab1b88b06/symfix-sol-xhigh.json",
    "keys": [
     "concept_mrn_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
    }
   },
   {
    "name": "concept_mrn_destroyer",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-destroyer/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-destroyer/originals/c189555ac7b7dbae6f8146f95901413ef28fd48a8d575885ec5a4311ea213d10/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-destroyer/c189555ac7b7/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-destroyer/c189555ac7b7/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_destroyer.json",
    "keys": [
     "concept_mrn_destroyer"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
    }
   },
   {
    "name": "concept_mrn_corvette",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-corvette/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-corvette/originals/b0994902e5595985c4626d01d6c63e4f1e30b0b5c170f4d2653bb5cabd11361b/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-corvette/b0994902e559/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-corvette/b0994902e559/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_corvette.json",
    "keys": [
     "concept_mrn_corvette"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
    }
   },
   {
    "name": "concept_mrn_carrier",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-carrier/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-carrier/originals/0e17c7f0fbc10dc664c69a1ccc147010d4e356922973670ee8daea4c56095c3c/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-carrier/0e17c7f0fbc1/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-carrier/0e17c7f0fbc1/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_carrier.json",
    "keys": [
     "concept_mrn_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
    }
   },
   {
    "name": "concept_mrn_cruiser",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-cruiser/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-cruiser/originals/e2d677368923fc511c6c1635848523614692a644425eefe2eaae9f4f5e4e4e8a/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-cruiser/e2d677368923/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-cruiser/e2d677368923/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_cruiser.json",
    "keys": [
     "concept_mrn_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
    }
   },
   {
    "name": "concept_tdf_starbase",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-starbase/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-starbase/originals/53e5db19bf8d3676436bcb63f7916bc768c34d26015d6c0725d0bfa08b4770c2/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-starbase/53e5db19bf8d/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-starbase/53e5db19bf8d/lod0.glb",
    "keys": [
     "concept_tdf_starbase"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
    }
   },
   {
    "name": "concept_mrn_starbase",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-starbase/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-starbase/originals/5c2092c15d320fc07bd566e153bfe505d48bca145f8c8c3f013c82372987645f/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-starbase/5c2092c15d32/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-starbase/5c2092c15d32/lod0.glb",
    "keys": [
     "concept_mrn_starbase"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
    }
   },
   {
    "name": "concept_asteroid_shipyard",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-asteroid-shipyard/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-asteroid-shipyard/originals/9b4cf59e27b660a589cead6e46a94ec656681e22e1e48c5028ddf2201e3bda99/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-asteroid-shipyard/9b4cf59e27b6/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-asteroid-shipyard/9b4cf59e27b6/lod0.glb",
    "keys": [
     "concept_asteroid_shipyard"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_battleship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-battleship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-battleship/originals/34e9270e785a733c9536604607b36472c9a3497f5ae575c066c0296b0d3de8ca/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-battleship/34e9270e785a/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-battleship/34e9270e785a/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_battleship.json",
    "keys": [
     "concept_cartel_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "Tint": [
-     0.378,
-     0.405,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_boarding_craft",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-boarding-craft/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-boarding-craft/originals/bf218db9458405868fb268b392bc059d8d8de8f696e36240de0c55b134fd0711/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-boarding-craft/bf218db94584/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-boarding-craft/bf218db94584/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_boarding_craft.json",
    "keys": [
     "concept_cartel_boarding_craft"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "Tint": [
-     0.378,
-     0.405,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_carrier",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-carrier/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-carrier/originals/0e33c07ed99f26b303a1eca25fe0c2ee59094f93512c4237b9c4507e5873d53a/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-carrier/0e33c07ed99f/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-carrier/0e33c07ed99f/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_carrier.json",
    "keys": [
     "concept_cartel_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "Tint": [
-     0.378,
-     0.405,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_corvette",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-corvette/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-corvette/originals/bc1edde9037700b0e6dc47190fd6191dba6b9527f36f5f6799c2a06cdb3a1970/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-corvette/bc1edde90377/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-corvette/bc1edde90377/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_corvette.json",
    "keys": [
     "concept_cartel_corvette"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "Tint": [
-     0.378,
-     0.405,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_cruiser",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-cruiser/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-cruiser/originals/ba5a14eda4ad1fc55e0c8a3286bb5a913b657ac286705fe0f626e5b612297a2e/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-cruiser/ba5a14eda4ad/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-cruiser/ba5a14eda4ad/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_cruiser.json",
    "keys": [
     "concept_cartel_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "Tint": [
-     0.378,
-     0.405,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_destroyer",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-destroyer/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-destroyer/originals/ba53d361d0a4e7ed0005b3808bee780c354f5f12e2b2fa6c9683a4e1eadb5bf4/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-destroyer/ba53d361d0a4/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-destroyer/ba53d361d0a4/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_destroyer.json",
    "keys": [
     "concept_cartel_destroyer"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "Tint": [
-     0.378,
-     0.405,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_fighter_bomber",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-fighter-bomber/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-fighter-bomber/originals/9a30faa8031e364942d25b2cbf5d1c8b5916acc4b200ea314ed871036fc9299d/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-fighter-bomber/9a30faa8031e/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-fighter-bomber/9a30faa8031e/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_fighter_bomber.json",
    "keys": [
     "concept_cartel_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "Tint": [
-     0.378,
-     0.405,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_flagship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-flagship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-flagship/originals/2a4a2bcbaf222c9d8186f929ed47aee4c019ed785897ddf0469b0a33ffd4fccf/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-flagship/2a4a2bcbaf22/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-flagship/2a4a2bcbaf22/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_flagship.json",
    "keys": [
     "concept_cartel_flagship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "Tint": [
-     0.378,
-     0.405,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_frigate",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-frigate/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-frigate/originals/cd15b2c883eb0fa32000c61eb6a09f0cda573950f4705850ec2a4b705791d2a0/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-frigate/cd15b2c883eb/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-frigate/cd15b2c883eb/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_frigate.json",
    "keys": [
     "concept_cartel_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "Tint": [
-     0.378,
-     0.405,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_kinetic_harpoon",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-kinetic-harpoon/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-kinetic-harpoon/originals/2eceb0c035b238ffaa0cfba559abef4639f0af5734d5d51f70ee82a9f44df678/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-kinetic-harpoon/2eceb0c035b2/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-kinetic-harpoon/2eceb0c035b2/lod0.glb",
    "keys": [
     "concept_cartel_kinetic_harpoon"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_missile_barge",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-missile-barge/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-missile-barge/originals/aef13c9289928b00af042551f86ff5f102c473f1e9105722c197fd753e415d0d/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-missile-barge/aef13c928992/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-missile-barge/aef13c928992/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_missile_barge.json",
    "keys": [
     "concept_cartel_missile_barge"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "Tint": [
-     0.378,
-     0.405,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_ransom_freighter",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-ransom-freighter/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-ransom-freighter/originals/b318d3e3d4ba1ad2d14d075636bf2d686bcdfdb4d09026845a7f17ed2260eacd/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-ransom-freighter/b318d3e3d4ba/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-ransom-freighter/b318d3e3d4ba/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_ransom_freighter.json",
    "keys": [
     "concept_cartel_ransom_freighter"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "Tint": [
-     0.378,
-     0.405,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_scout",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-scout/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-scout/originals/ecd18c434181f7ffd01e77ba7d45e1702611e7054faa79f63aa1f29b8d743227/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-scout/ecd18c434181/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-scout/ecd18c434181/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_scout.json",
    "keys": [
     "concept_cartel_scout"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "Tint": [
-     0.378,
-     0.405,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_signature_unit",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-signature-unit/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-signature-unit/originals/040dea99eb6116f9c28a568d242376f59532bd69a11ff707378e9cd9e56a5b0c/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-signature-unit/040dea99eb61/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-signature-unit/040dea99eb61/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_signature_unit.json",
    "keys": [
     "concept_cartel_signature_unit"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "Tint": [
-     0.378,
-     0.405,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_cartel_station",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-station/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-cartel-station/originals/39b9fd96e500c6b436c0135a1c3ad5d653195e58582071267b9700fa12d5ba6c/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-cartel-station/39b9fd96e500/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-cartel-station/39b9fd96e500/lod0.glb",
    "keys": [
     "concept_cartel_station"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.0545,
-     0.0612,
-     0.0723
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_battleship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-battleship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-battleship/originals/d0c14f3900ae992c07999182ef2d9f0126fca3501bc6dd84563143f4528fb45c/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-battleship/d0c14f3900ae/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-battleship/d0c14f3900ae/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_battleship.json",
    "keys": [
     "concept_corsair_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_boarding_craft",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-boarding-craft/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-boarding-craft/originals/9f0a56cc0d8f339de49711fcbe25d6931de82c439a6656126e596524bb9134ca/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-boarding-craft/9f0a56cc0d8f/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-boarding-craft/9f0a56cc0d8f/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_boarding_craft.json",
    "keys": [
     "concept_corsair_boarding_craft"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_boarding_pod",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-boarding-pod/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-boarding-pod/originals/cd0863f450a4832361718800ba3a0cbda2a8c7bd32f1c1ef6ded20ab4af95c39/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-boarding-pod/cd0863f450a4/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-boarding-pod/cd0863f450a4/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_boarding_pod.json",
    "keys": [
     "concept_corsair_boarding_pod"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_boarding_tender",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-boarding-tender/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-boarding-tender/originals/7bb07d651d2ed2c244b31b67a66a5cb2df9e9024ff2a71c2369831ae705e69dc/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-boarding-tender/7bb07d651d2e/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-boarding-tender/7bb07d651d2e/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_boarding_tender.json",
    "keys": [
     "concept_corsair_boarding_tender"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_carrier",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-carrier/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-carrier/originals/ec3f621a637058bd9ec8fd97cf8d2750ca0396efad551236c9dddfc608312226/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-carrier/ec3f621a6370/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-carrier/ec3f621a6370/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_carrier.json",
    "keys": [
     "concept_corsair_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_cruiser",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-cruiser/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-cruiser/originals/7abc74bae2fcd65ace9060ebe61f4ccdf858b680123efa511d05778d7a41f6f6/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-cruiser/7abc74bae2fc/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-cruiser/7abc74bae2fc/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_cruiser.json",
    "keys": [
     "concept_corsair_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_decoy_drone",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-decoy-drone/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-decoy-drone/originals/f5922b69069b7e460673761f9373bbd4e71dc2c9f38146ff5304bece09a2c1f7/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-decoy-drone/f5922b69069b/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-decoy-drone/f5922b69069b/lod0.glb",
    "keys": [
     "concept_corsair_decoy_drone"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_destroyer",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-destroyer/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-destroyer/originals/c1343f2bfd86a95119e1d8b9d780a4999f8040446a119fefca83d2dc3da60254/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-destroyer/c1343f2bfd86/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-destroyer/c1343f2bfd86/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_destroyer.json",
    "keys": [
     "concept_corsair_destroyer"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_ew_ship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-ew-ship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-ew-ship/originals/ce2afd1e01aee2165d8b61c73252836a4cf3ed5d78755910f396b35e78852201/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-ew-ship/ce2afd1e01ae/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-ew-ship/ce2afd1e01ae/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_ew_ship.json",
    "keys": [
     "concept_corsair_ew_ship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_frigate",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-frigate/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-frigate/originals/540bed39bd7e5885e289624888ad5a081b43786d816a0d2f6d89e33e137c3882/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-frigate/540bed39bd7e/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-frigate/540bed39bd7e/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_frigate.json",
    "keys": [
     "concept_corsair_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_heavy_ambusher",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-heavy-ambusher/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-heavy-ambusher/originals/035ffd954cbae5c35d0129ba50d311b41aafcaa07cd82f113b12bb588598aa85/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-heavy-ambusher/035ffd954cba/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-heavy-ambusher/035ffd954cba/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_heavy_ambusher.json",
    "keys": [
     "concept_corsair_heavy_ambusher"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_hidden_base",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-hidden-base/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-hidden-base/originals/bb4130f9d31a4f612f106bdfb17f01e522dd51996c3f09a41914d6683919664c/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-hidden-base/bb4130f9d31a/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-hidden-base/bb4130f9d31a/lod0.glb",
    "keys": [
     "concept_corsair_hidden_base"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_jammer_array",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-jammer-array/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-jammer-array/originals/e029774a8dd795af9f073cfd9ebcde4944812178e79b2322a2de4d8343b89e1c/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-jammer-array/e029774a8dd7/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-jammer-array/e029774a8dd7/lod0.glb",
    "keys": [
     "concept_corsair_jammer_array"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_ore_hauler",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-ore-hauler/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-ore-hauler/originals/c4836594892ec7128decac388dce6bfcd4e52cdb8ec8870dc7cd82562b0746d9/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-ore-hauler/c4836594892e/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-ore-hauler/c4836594892e/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_ore_hauler.json",
+   "geometryFrom": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-ore-hauler/c4836594892e/lod0.glb",
    "keys": [
     "concept_corsair_ore_hauler"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_raider",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-raider/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-raider/originals/8d2a145d71985a4d5a9ab742405a64f916b7b4c4d7d4fc32a17bc83010c9df37/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-raider/8d2a145d7198/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-raider/8d2a145d7198/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_raider.json",
    "keys": [
     "concept_corsair_raider"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_corsair_scout",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-scout/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-corsair-scout/originals/f039c3c16af87bcfac0cea5afaba390d56fba92cb5f5bfe6dc74eea623e86b41/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-corsair-scout/f039c3c16af8/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-corsair-scout/f039c3c16af8/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_scout.json",
    "keys": [
@@ -1208,3409 +784,2130 @@
     "concept_corsair_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0423,
-     0.0648,
-     0.0844
-    ],
-    "Tint": [
-     0.304,
-     0.382,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_derelict_battleship_hulk",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-derelict-battleship-hulk/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-derelict-battleship-hulk/originals/6a94fc80090b66d4177614c3d8ee45032e229d184ef4c00e50b65c265e432435/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-derelict-battleship-hulk/6a94fc80090b/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-derelict-battleship-hulk/6a94fc80090b/lod0.glb",
    "keys": [
     "concept_derelict_battleship_hulk"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_derelict_wreck",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-derelict-wreck/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-derelict-wreck/originals/42ed61731d655f07252a8cf1179822f2594311925f8769c9268063ed1ab7ec8a/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-derelict-wreck/42ed61731d65/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-derelict-wreck/42ed61731d65/lod0.glb",
    "keys": [
     "concept_derelict_wreck"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_armed_mining_drone",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-armed-mining-drone/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-armed-mining-drone/originals/100296e1f79b82fd7a863f8eac93d2627cb5ae794c5791f9832dd6577e285258/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-armed-mining-drone/100296e1f79b/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-armed-mining-drone/100296e1f79b/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_helion_armed_mining_drone.json",
    "keys": [
     "concept_helion_armed_mining_drone"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_battleship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-battleship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-battleship/originals/89fc76d7919c0d537ad915bdcae4f8a4877d20e664f07d9eed9a7e6fa622860a/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-battleship/89fc76d7919c/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-battleship/89fc76d7919c/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_helion_battleship.json",
    "keys": [
     "concept_helion_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_carrier",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-carrier/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-carrier/originals/11a4b6fecefea7946749f1612c578a6c3afac6fdb34e3757cf72b01ab9dc4bf0/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-carrier/11a4b6fecefe/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-carrier/11a4b6fecefe/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_helion_carrier.json",
    "keys": [
     "concept_helion_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_colony_ship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-colony-ship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-colony-ship/originals/e37f421da4cd44d49b92b8e436e5c65a9acbc733b87da7a891992eb6e014f4a8/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-colony-ship/e37f421da4cd/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-colony-ship/e37f421da4cd/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_helion_colony_ship.json",
    "keys": [
     "concept_helion_colony_ship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_constructor",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-constructor/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-constructor/originals/f76f9b98f188d9f65167ae9a30f50b556fa8a168b905c2fc77652b54e41c1dec/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-constructor/f76f9b98f188/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-constructor/f76f9b98f188/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_helion_constructor.json",
    "keys": [
     "concept_helion_constructor"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_cruiser",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-cruiser/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-cruiser/originals/685b8d459fb8d168bbddf49174cc475763c3e17017a99a99f0cebfacafbe4a92/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-cruiser/685b8d459fb8/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-cruiser/685b8d459fb8/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_helion_cruiser.json",
    "keys": [
     "concept_helion_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_fighter_bomber",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-fighter-bomber/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-fighter-bomber/originals/05bfc609007802aaff0a0d8cae038f9f5c544c1f872b009dda60f2fe2c7cf65d/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-fighter-bomber/05bfc6090078/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-fighter-bomber/05bfc6090078/lod0.glb",
    "keys": [
     "concept_helion_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_flagship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-flagship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-flagship/originals/4e3646627b3ac79ec594634bfca51d213078261dd68b7be9b07adb097f9a14b3/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-flagship/4e3646627b3a/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-flagship/4e3646627b3a/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_helion_flagship.json",
    "keys": [
     "concept_helion_flagship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_frigate",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-frigate/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-frigate/originals/12116322173b99aca82dfd3156ffcfe076de4cd02d1db0cb9d21544d0c50158f/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-frigate/12116322173b/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-frigate/12116322173b/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_helion_frigate.json",
    "keys": [
     "concept_helion_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_marine_shuttle",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-marine-shuttle/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-marine-shuttle/originals/a7be5c5f445deaae49900f76d988cbc4f9299fd0497b392ab05114c097bf1210/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-marine-shuttle/a7be5c5f445d/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-marine-shuttle/a7be5c5f445d/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_helion_marine_shuttle.json",
    "keys": [
     "concept_helion_marine_shuttle"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_mining_laser",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-mining-laser/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-mining-laser/originals/f192a5d3259a541625141888be027e1435041f8cff870cba8de017918ecd02cd/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-mining-laser/f192a5d3259a/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-mining-laser/f192a5d3259a/lod0.glb",
    "keys": [
     "concept_helion_mining_laser"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_mining_ship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-mining-ship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-mining-ship/originals/215b4c93c0e2109293a135aa76e475f0517407cf5f6576b0643071d79ba600f6/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-mining-ship/215b4c93c0e2/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-mining-ship/215b4c93c0e2/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_helion_mining_ship.json",
    "keys": [
     "concept_helion_mining_ship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_ore_hauler",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-ore-hauler/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-ore-hauler/originals/d387a6c030aa937e95c8c4c29558d63d1231206cfaed1598c309cdbdd3776869/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-ore-hauler/d387a6c030aa/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-ore-hauler/d387a6c030aa/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_helion_ore_hauler.json",
    "keys": [
     "concept_helion_ore_hauler"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_scout",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-scout/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-scout/originals/65c1acb05ee3c0c6cb5f6208890e876fba8f37ec7ba15e3bc871882d9e5e2a26/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-scout/65c1acb05ee3/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-scout/65c1acb05ee3/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_helion_scout.json",
+   "geometryFrom": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-scout/65c1acb05ee3/lod0.glb",
    "keys": [
     "concept_helion_scout"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_shipyard",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-shipyard/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-shipyard/originals/ee497f6d3b82606ed1aa4f5ead43f3533419693de44a37e4db1474e666e7987e/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-shipyard/ee497f6d3b82/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-shipyard/ee497f6d3b82/lod0.glb",
    "keys": [
     "concept_helion_shipyard"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_signature_unit",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-signature-unit/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-signature-unit/originals/8aad5a03e630fcc8db85577f643b3f83be00c6582edfdde50f90c071f30c351c/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-signature-unit/8aad5a03e630/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-signature-unit/8aad5a03e630/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_helion_signature_unit.json",
    "keys": [
     "concept_helion_signature_unit"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "Tint": [
-     1,
-     0.839,
-     0.617
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_helion_station",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-station/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-station/originals/80c3637e7900db11ce0d638e80efd8f3750295d17b549256078ef717a31dcf6a/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-helion-station/80c3637e7900/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-station/80c3637e7900/lod0.glb",
    "keys": [
     "concept_helion_station"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.4735,
-     0.3564,
-     0.1946
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_hero_asteroid_fortress",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-hero-asteroid-fortress/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-hero-asteroid-fortress/originals/02dea49d8ff0bf051ccdb34feeab3bb532cdd9ffe29a7d15a1b7c5e14261c49a/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-hero-asteroid-fortress/02dea49d8ff0/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-hero-asteroid-fortress/02dea49d8ff0/lod0.glb",
    "keys": [
     "concept_hero_asteroid_fortress"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_hero_moon_observatory",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-hero-moon-observatory/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-hero-moon-observatory/originals/ce083c6c5d72066b22c00525eae42047cf1da4466ab1f9a9b2ee04e0371d8d63/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-hero-moon-observatory/ce083c6c5d72/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-hero-moon-observatory/ce083c6c5d72/lod0.glb",
    "keys": [
     "concept_hero_moon_observatory"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_armour_plate_set",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-armour-plate-set/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-armour-plate-set/originals/827494aa5bbbd7bd4a4265210688e03c869687372eb2e53dece5b7de2c928399/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-armour-plate-set/827494aa5bbb/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-armour-plate-set/827494aa5bbb/lod0.glb",
    "keys": [
     "concept_module_armour_plate_set"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_beam_lance",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-beam-lance/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-beam-lance/originals/a3d2ddfafa84931b242be81f83bc3184f730c4e816fef95eb2eaf944a960f157/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-beam-lance/a3d2ddfafa84/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-beam-lance/a3d2ddfafa84/lod0.glb",
    "keys": [
     "concept_module_beam_lance"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_cargo_pod",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-cargo-pod/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-cargo-pod/originals/a84a1b8973a78231813727e4354def4cc10852c4d1f3b263fb9a8c0aa27063f2/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-cargo-pod/a84a1b8973a7/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-cargo-pod/a84a1b8973a7/lod0.glb",
    "keys": [
     "concept_module_cargo_pod"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_comms_mast",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-comms-mast/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-comms-mast/originals/0dc0004e4fbe69d20ab99e03bb63912edbd2846bd6ba217bbb2067c42085fcec/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-comms-mast/0dc0004e4fbe/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-comms-mast/0dc0004e4fbe/lod0.glb",
    "keys": [
     "concept_module_comms_mast"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_docking_arm",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-docking-arm/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-docking-arm/originals/e9f4952cd9b3976d8e29e6974ab0133a9c15eaf325db58ba158a6e0bd9635986/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-docking-arm/e9f4952cd9b3/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-docking-arm/e9f4952cd9b3/lod0.glb",
    "keys": [
     "concept_module_docking_arm"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_engine_large",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-engine-large/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-engine-large/originals/b7245bfd7768e0f88e2cbee27b56963917e7b55f24934fb9e6cd90ad412e4c17/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-engine-large/b7245bfd7768/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-engine-large/b7245bfd7768/lod0.glb",
    "keys": [
     "concept_module_engine_large"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_engine_medium",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-engine-medium/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-engine-medium/originals/db125cc017a686bc5b2b61ed7067c5bda3d653ea1f241e43c29d0aa7198b88a4/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-engine-medium/db125cc017a6/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-engine-medium/db125cc017a6/lod0.glb",
    "keys": [
     "concept_module_engine_medium"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_engine_small",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-engine-small/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-engine-small/originals/f65255b56f36f7c74083fbadde66170fb2a613720401579bfedeb239b1bbefca/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-engine-small/f65255b56f36/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-engine-small/f65255b56f36/lod0.glb",
    "keys": [
     "concept_module_engine_small"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_fabrication_bay",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-fabrication-bay/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-fabrication-bay/originals/383bf5660cad28817df7920e829204735d5402952c9883cb35ed95e9e01e40f2/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-fabrication-bay/383bf5660cad/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-fabrication-bay/383bf5660cad/lod0.glb",
    "keys": [
     "concept_module_fabrication_bay"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_flak_battery",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-flak-battery/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-flak-battery/originals/dfd6b5e840c1843ba48a098d58a155666dad8a196ed623f199c68aecc158ad96/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-flak-battery/dfd6b5e840c1/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-flak-battery/dfd6b5e840c1/lod0.glb",
    "keys": [
     "concept_module_flak_battery"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_habitat_ring",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-habitat-ring/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-habitat-ring/originals/d7ed0321143d8873e0f6575a0240df27f328d76fe6b651ef0ec5f1d921ae123c/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-habitat-ring/d7ed0321143d/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-habitat-ring/d7ed0321143d/lod0.glb",
    "keys": [
     "concept_module_habitat_ring"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_hangar_launch_tube",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-hangar-launch-tube/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-hangar-launch-tube/originals/8f1a511e1d18726edfabb9cb390d93b63a3cbaf4199f371e3e16256d7304737b/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-hangar-launch-tube/8f1a511e1d18/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-hangar-launch-tube/8f1a511e1d18/lod0.glb",
    "keys": [
     "concept_module_hangar_launch_tube"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_heavy_kinetic_turret",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-heavy-kinetic-turret/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-heavy-kinetic-turret/originals/6bb3c0af4ce505c2bc1b9d1c2add93fdfa273e40c013643444fc61415a6a8763/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-heavy-kinetic-turret/6bb3c0af4ce5/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-heavy-kinetic-turret/6bb3c0af4ce5/lod0.glb",
    "keys": [
     "concept_module_heavy_kinetic_turret"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_heavy_railgun",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-heavy-railgun/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-heavy-railgun/originals/2190980d4d7791917ac37228f21a8869ddcd8e58bacc7f25e11183d315c7e067/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-heavy-railgun/2190980d4d77/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-heavy-railgun/2190980d4d77/lod0.glb",
    "keys": [
     "concept_module_heavy_railgun"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_light_railgun",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-light-railgun/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-light-railgun/originals/1ea849af93ccefa7389f1f1b2907496aa1f7b02662defcc55c88faefc2481405/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-light-railgun/1ea849af93cc/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-light-railgun/1ea849af93cc/lod0.glb",
    "keys": [
     "concept_module_light_railgun"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_missile_pod",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-missile-pod/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-missile-pod/originals/deb21b67a50f4e08d33290a901225e637b80373dce3c27643268e37b1c9ff1eb/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-missile-pod/deb21b67a50f/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-missile-pod/deb21b67a50f/lod0.glb",
    "keys": [
     "concept_module_missile_pod"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_point_defence",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-point-defence/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-point-defence/originals/bd6d1156cf5293ddcf95a2f2de058d647203af5c9e2b288be45701e84cb69f3f/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-point-defence/bd6d1156cf52/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-point-defence/bd6d1156cf52/lod0.glb",
    "keys": [
     "concept_module_point_defence"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_reactor",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-reactor/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-reactor/originals/99544c93bb4b79d24a44e5b8358eee08c528a61314eac8efb6c0fcf6ee917c66/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-reactor/99544c93bb4b/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-reactor/99544c93bb4b/lod0.glb",
    "keys": [
     "concept_module_reactor"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_refinery",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-refinery/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-refinery/originals/953ac7d2c748bc8169c1458a54bbe6170f284ab47cf44e7db7a4ecaaddbf5004/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-refinery/953ac7d2c748/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-refinery/953ac7d2c748/lod0.glb",
    "keys": [
     "concept_module_refinery"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_sensor_array",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-sensor-array/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-sensor-array/originals/e1778f06d1ff9b1e853b887708b6e67e4a05a035a243d71fb311198bf592a3f2/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-sensor-array/e1778f06d1ff/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-sensor-array/e1778f06d1ff/lod0.glb",
    "keys": [
     "concept_module_sensor_array"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_shield_generator",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-shield-generator/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-shield-generator/originals/08e230fc3150b82e5e7312525aaddc76bec5d31b1bc84449c29f0c5e89940369/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-shield-generator/08e230fc3150/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-shield-generator/08e230fc3150/lod0.glb",
    "keys": [
     "concept_module_shield_generator"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_spinal_mount",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-spinal-mount/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-spinal-mount/originals/c01946e7bdb67b61425d5b24834a4ab3608fd1b857363a0c22468cd3fb6540a8/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-spinal-mount/c01946e7bdb6/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-spinal-mount/c01946e7bdb6/lod0.glb",
    "keys": [
     "concept_module_spinal_mount"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_torpedo_tubes",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-torpedo-tubes/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-torpedo-tubes/originals/2f55393af64b2879a628c56112c73937a3f76d54142490b89c4bb340f601eaf0/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-torpedo-tubes/2f55393af64b/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-torpedo-tubes/2f55393af64b/lod0.glb",
    "keys": [
     "concept_module_torpedo_tubes"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_module_vls_bank",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-vls-bank/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-vls-bank/originals/d2d1e19b5efdba5302b548249dea06eecbb882c8108bf1f11b1ba723e83cf723/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-module-vls-bank/d2d1e19b5efd/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-module-vls-bank/d2d1e19b5efd/lod0.glb",
    "keys": [
     "concept_module_vls_bank"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_battleship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-battleship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-battleship/originals/2841cadd5449f04240427d8b7e9e1276ac4b3a56cd0846c081508cc5414181ca/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-battleship/2841cadd5449/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-battleship/2841cadd5449/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_battleship.json",
    "keys": [
     "concept_mrn_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_capital_titan",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-capital-titan/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-capital-titan/originals/e9e4ea100f7929d3b50726156fe7de1751b2977ff447d6c43ed1947910fc6c73/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-capital-titan/e9e4ea100f79/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-capital-titan/e9e4ea100f79/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_capital_titan.json",
    "keys": [
     "concept_mrn_capital_titan"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_colony_ship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-colony-ship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-colony-ship/originals/1989e4ae0d2f4b6aa1dfad54d375062a3aed93fc7ac4c8d8d817dcecd7429925/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-colony-ship/1989e4ae0d2f/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-colony-ship/1989e4ae0d2f/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_colony_ship.json",
    "keys": [
     "concept_mrn_colony_ship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_constructor",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-constructor/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-constructor/originals/ba8bdbf68f7c2cc29671ba2a011224695cdfaeaf2626ba51f274d5bd4a156b82/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-constructor/ba8bdbf68f7c/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-constructor/ba8bdbf68f7c/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_constructor.json",
    "keys": [
     "concept_mrn_constructor"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_defence_platform",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-defence-platform/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-defence-platform/originals/b7916300f13322a9ddbebf2d455c5551f4b0743ce40312c937305f42ff02aa57/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-defence-platform/b7916300f133/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-defence-platform/b7916300f133/lod0.glb",
    "keys": [
     "concept_mrn_defence_platform"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_fighter_bomber",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-fighter-bomber/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-fighter-bomber/originals/3f62c42b56193e7b49f1342ec2726d459d9dc7d9441f29c30ccaed2d173100cf/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-fighter-bomber/3f62c42b5619/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-fighter-bomber/3f62c42b5619/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-mrn-fighter-bomber/3f62c42b5619/symfix-sol-xhigh.json",
    "keys": [
     "concept_mrn_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_gun_turret",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-gun-turret/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-gun-turret/originals/4674b6d7aad02224acc24e1575271448c0bf5486a74ef19b1f5f834fbd8835d7/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-gun-turret/4674b6d7aad0/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-gun-turret/4674b6d7aad0/lod0.glb",
    "keys": [
     "concept_mrn_gun_turret"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_heavy_vls_bank",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-heavy-vls-bank/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-heavy-vls-bank/originals/0066db8e72cfe81e3ce84b6e37c9d072aaad6e6d0636ca89c4f241d5ddf53d2d/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-heavy-vls-bank/0066db8e72cf/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-heavy-vls-bank/0066db8e72cf/lod0.glb",
    "keys": [
     "concept_mrn_heavy_vls_bank"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_marine_shuttle",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-marine-shuttle/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-marine-shuttle/originals/8f3e2ea7364353930f34f8da8d78c51d247916e2e96a133866b39ab9ab6bfd00/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-marine-shuttle/8f3e2ea73643/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-marine-shuttle/8f3e2ea73643/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-mrn-marine-shuttle/8f3e2ea73643/symfix-sol-xhigh.json",
    "keys": [
     "concept_mrn_marine_shuttle"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_mining_outpost",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-mining-outpost/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-mining-outpost/originals/9e29223cdd381c56d34d6e6b920b47dcad02305c43ae5d1e1a337038cc25b5f1/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-mining-outpost/9e29223cdd38/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-mining-outpost/9e29223cdd38/lod0.glb",
    "keys": [
     "concept_mrn_mining_outpost"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_mining_ship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-mining-ship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-mining-ship/originals/6b4921edd0c99ae4aa6c4f55dfcbe9f67b342e1dd9ee17ba52a642f4bda119f2/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-mining-ship/6b4921edd0c9/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-mining-ship/6b4921edd0c9/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-mrn-mining-ship/6b4921edd0c9/symfix-sol-xhigh.json",
    "keys": [
     "concept_mrn_mining_ship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_missile_battery",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-missile-battery/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-missile-battery/originals/e78b52715c8973963ee2752220a7749a18684fedd52d1827ebb2b451590ec2b0/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-missile-battery/e78b52715c89/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-missile-battery/e78b52715c89/lod0.glb",
    "keys": [
     "concept_mrn_missile_battery"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_orbital_habitat",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-orbital-habitat/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-orbital-habitat/originals/d279a883e531683cb1cbab13fbff90d96ee97d0eb1979c515a1c1fe9fe835359/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-orbital-habitat/d279a883e531/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-orbital-habitat/d279a883e531/lod0.glb",
    "keys": [
     "concept_mrn_orbital_habitat"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_ore_hauler",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-ore-hauler/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-ore-hauler/originals/d55a09f1bc2c3019d3fc638e2200636d32c83e9a7a2074abcdabb841a3ee2f78/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-ore-hauler/d55a09f1bc2c/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-ore-hauler/d55a09f1bc2c/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-mrn-ore-hauler/d55a09f1bc2c/symfix-sol-xhigh.json",
    "keys": [
     "concept_mrn_ore_hauler"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_research_station",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-research-station/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-research-station/originals/29ced9be3826e24440a0fe9b83c024b03d06a0009e3c249c62c0d7033a19dd65/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-research-station/29ced9be3826/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-research-station/29ced9be3826/lod0.glb",
    "keys": [
     "concept_mrn_research_station"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_scout",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-scout/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-scout/originals/13027a7b30ba2796c160b06c704c56aac89a7c7c6fcfa9ff8440218ba62817bf/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-scout/13027a7b30ba/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-scout/13027a7b30ba/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-mrn-scout/13027a7b30ba/symfix-sol-xhigh.json",
    "keys": [
     "concept_mrn_scout"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_shield_generator",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-shield-generator/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-shield-generator/originals/a74ea79a20985de961ed33ae3c0159786948c92f8aa9b38bd7a0b406dd3a3e74/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-shield-generator/a74ea79a2098/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-shield-generator/a74ea79a2098/lod0.glb",
    "keys": [
     "concept_mrn_shield_generator"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_shipyard",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-shipyard/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-shipyard/originals/f93c3945f7de08b2d4fd465b909802fb2d94bac620cb6b2d147eecf46700e0a9/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-shipyard/f93c3945f7de/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-shipyard/f93c3945f7de/lod0.glb",
    "keys": [
     "concept_mrn_shipyard"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_surface_colony",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-surface-colony/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-surface-colony/originals/4d8a458ef4ea48ae172ecc9dd8b6c421bbc5355b606d6be27786c45e7739abc1/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-surface-colony/4d8a458ef4ea/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-surface-colony/4d8a458ef4ea/lod0.glb",
    "keys": [
     "concept_mrn_surface_colony"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_torpedo_bomber",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-torpedo-bomber/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-torpedo-bomber/originals/afbe44f784b9ce2c5ccb988f6190e4f1f7b3f8018808bbea4263d44f9ea1b00c/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-torpedo-bomber/afbe44f784b9/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-torpedo-bomber/afbe44f784b9/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-mrn-torpedo-bomber/afbe44f784b9/symfix-sol-xhigh.json",
    "keys": [
     "concept_mrn_torpedo_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_torpedo_launcher",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-torpedo-launcher/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-torpedo-launcher/originals/d1d37bea56e9b727ab2e3de77c953667ea26a5f972c91cc6ba0b2bc6de5d58ac/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-torpedo-launcher/d1d37bea56e9/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-torpedo-launcher/d1d37bea56e9/lod0.glb",
    "keys": [
     "concept_mrn_torpedo_launcher"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_trade_refinery",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-trade-refinery/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-trade-refinery/originals/42f673c653df39214d7981bf2ce32606cef3cb18fd0dd84dc68defcef717accd/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-trade-refinery/42f673c653df/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-trade-refinery/42f673c653df/lod0.glb",
    "keys": [
     "concept_mrn_trade_refinery"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_mrn_troop_transport",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-troop-transport/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-troop-transport/originals/a01a9c23bd257427a9075ddbbcba23fb8e6daf288fbe6fbab304a563c99052f3/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-mrn-troop-transport/a01a9c23bd25/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-troop-transport/a01a9c23bd25/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-mrn-troop-transport/a01a9c23bd25/symfix-sol-xhigh.json",
    "keys": [
     "concept_mrn_troop_transport"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.1248,
-     0.0331,
-     0.0284
-    ],
-    "Tint": [
-     0.45,
-     0.235,
-     0.224
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_pirate_base",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-pirate-base/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-pirate-base/originals/51405557e93ff4e30ec3c93546872b1103880d24cc1acf79d4d764ae59f890c9/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-pirate-base/51405557e93f/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-pirate-base/51405557e93f/lod0.glb",
    "keys": [
     "concept_pirate_base"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_assault_transport",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-assault-transport/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-assault-transport/originals/e4dc31618f9c198680794ea47d135a1cf861b210cbdf9f80bf6d8eec73bb2adc/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-assault-transport/e4dc31618f9c/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-assault-transport/e4dc31618f9c/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-assault-transport/e4dc31618f9c/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_assault_transport"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_battleship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-battleship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-battleship/originals/72fe85214afa47c17b92ffcf911384267cfe3ac551b5fa3753e4a0d03056921e/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-battleship/72fe85214afa/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-battleship/72fe85214afa/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-battleship/72fe85214afa/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_boarding_pod",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-boarding-pod/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-boarding-pod/originals/c927ad9cfa9cb960b385f2fcb58828eba0803b63cdcfb8634e9e18bba1b87846/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-boarding-pod/c927ad9cfa9c/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-boarding-pod/c927ad9cfa9c/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-boarding-pod/c927ad9cfa9c/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_boarding_pod"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_capital_titan",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-capital-titan/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-capital-titan/originals/1759afaa5e563bd70ea3f0f4732c70a593b502a4cf52818e5d86273e6ba525bb/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-capital-titan/1759afaa5e56/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-capital-titan/1759afaa5e56/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-capital-titan/1759afaa5e56/symfix-sol-xhigh.json",
+   "geometryFrom": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-capital-titan/1759afaa5e56/lod0.glb",
    "keys": [
     "concept_tdf_capital_titan"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_coilgun_pdc_grid",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-coilgun-pdc-grid/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-coilgun-pdc-grid/originals/b1e442fb9b6ffbd188ecac29d8278ad6aeed9142c7af5ccaadbc1c8e18eedbbd/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-coilgun-pdc-grid/b1e442fb9b6f/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-coilgun-pdc-grid/b1e442fb9b6f/lod0.glb",
    "keys": [
     "concept_tdf_coilgun_pdc_grid"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_colony_ship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-colony-ship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-colony-ship/originals/d2333322d3e2b2e87a69400c1b541b4c2d44b4c6193600c71f80c6901da0cd9f/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-colony-ship/d2333322d3e2/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-colony-ship/d2333322d3e2/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-colony-ship/d2333322d3e2/symfix-sol-xhigh.json",
+   "geometryFrom": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-colony-ship/d2333322d3e2/lod0.glb",
    "keys": [
     "concept_tdf_colony_ship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_constructor",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-constructor/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-constructor/originals/977ea570b7aa0a632892cfae36afbcf5e5edbaf6e067b3077cb9383ea82b343e/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-constructor/977ea570b7aa/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-constructor/977ea570b7aa/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-constructor/977ea570b7aa/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_constructor"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_defence_platform",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-defence-platform/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-defence-platform/originals/cfe029ae6439cd6a3aa11afdba738855e139ba0d45db810dc2e2c237045dea4a/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-defence-platform/cfe029ae6439/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-defence-platform/cfe029ae6439/lod0.glb",
    "keys": [
     "concept_tdf_defence_platform"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_fighter_bomber",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-fighter-bomber/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-fighter-bomber/originals/a79aee13e8a9e1973239b225de5fab5450a151f884dddb09a1b2b0fe484947cb/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-fighter-bomber/a79aee13e8a9/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-fighter-bomber/a79aee13e8a9/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-fighter-bomber/a79aee13e8a9/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_gun_turret",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-gun-turret/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-gun-turret/originals/823c7dec14c3ba036600beb217f14394986542cca662abe09edf073022bf0d91/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-gun-turret/823c7dec14c3/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-gun-turret/823c7dec14c3/lod0.glb",
    "keys": [
     "concept_tdf_gun_turret"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_marine_shuttle",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-marine-shuttle/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-marine-shuttle/originals/5b9abf59256bee183efae24f7aa431bd1e1557dbcb0743a30ba350a5e0e951b5/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-marine-shuttle/5b9abf59256b/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-marine-shuttle/5b9abf59256b/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-marine-shuttle/5b9abf59256b/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_marine_shuttle"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_mining_outpost",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-mining-outpost/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-mining-outpost/originals/5ebab19654987629bb1235a89ccc9533bd572fbc5276e77cb210a6b2465d1edf/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-mining-outpost/5ebab1965498/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-mining-outpost/5ebab1965498/lod0.glb",
    "keys": [
     "concept_tdf_mining_outpost"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_mining_ship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-mining-ship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-mining-ship/originals/43c8815a9a18f9e35126467dcef2152c6d73c9e6d526afd6869be4bb59994521/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-mining-ship/43c8815a9a18/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-mining-ship/43c8815a9a18/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-mining-ship/43c8815a9a18/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_mining_ship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_missile_battery",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-missile-battery/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-missile-battery/originals/cd33e32ee3b7f3e74d7016fdc32bb4bb962b13dac2ae610b2a0b61808023c91e/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-missile-battery/cd33e32ee3b7/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-missile-battery/cd33e32ee3b7/lod0.glb",
    "keys": [
     "concept_tdf_missile_battery"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_orbital_habitat",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-orbital-habitat/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-orbital-habitat/originals/1360b01f98aeafb6fecac222761542115433bbddbc0094bb27023c865b8d3116/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-orbital-habitat/1360b01f98ae/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-orbital-habitat/1360b01f98ae/lod0.glb",
    "keys": [
     "concept_tdf_orbital_habitat"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_ore_hauler",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-ore-hauler/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-ore-hauler/originals/a5e16c5bba502f378c3772f8932527ce5453346a03e3201d7f222815d223a4a7/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-ore-hauler/a5e16c5bba50/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-ore-hauler/a5e16c5bba50/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-ore-hauler/a5e16c5bba50/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_ore_hauler"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_repair_tender",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-repair-tender/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-repair-tender/originals/c340b44628f31a7b28ba0e897db6dd99b8358ca644ea3400107dc9d52a4890d2/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-repair-tender/c340b44628f3/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-repair-tender/c340b44628f3/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-repair-tender/c340b44628f3/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_repair_tender"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_research_station",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-research-station/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-research-station/originals/35f26489e647336998957139d00b037fe2af43d522fcbf9088dc438c029de90f/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-research-station/35f26489e647/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-research-station/35f26489e647/lod0.glb",
    "keys": [
     "concept_tdf_research_station"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_scout",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-scout/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-scout/originals/ee1e8559233f24fc1b39fa3828cb855bf9229363fb7326b5a88d6d7e2a9cb908/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-scout/ee1e8559233f/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-scout/ee1e8559233f/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-scout/ee1e8559233f/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_scout"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_sensor_frigate",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-sensor-frigate/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-sensor-frigate/originals/c422a99f2128d2d3c7c84aba5833422bb91e990336b1024523ffe0a2cc2489b9/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-sensor-frigate/c422a99f2128/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-sensor-frigate/c422a99f2128/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-sensor-frigate/c422a99f2128/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_sensor_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_shield_generator",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-shield-generator/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-shield-generator/originals/a6be5b3eb0500f1454217cd86b223c0ed2e90cbbc30181ed9abe50c2fadabd8d/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-shield-generator/a6be5b3eb050/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-shield-generator/a6be5b3eb050/lod0.glb",
    "keys": [
     "concept_tdf_shield_generator"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_shipyard",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-shipyard/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-shipyard/originals/1dabe04136ec449bf7e61fb16d7b2392f8738ebdd18a14e89bd57d0cc42298fe/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-shipyard/1dabe04136ec/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-shipyard/1dabe04136ec/lod0.glb",
    "keys": [
     "concept_tdf_shipyard"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_surface_colony",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-surface-colony/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-surface-colony/originals/cc45fa455186099e222919317c1691d891743793599e04d80e68be6dbcf6988c/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-surface-colony/cc45fa455186/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-surface-colony/cc45fa455186/lod0.glb",
    "keys": [
     "concept_tdf_surface_colony"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_trade_refinery",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-trade-refinery/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-trade-refinery/originals/5055755693cac66bd1dd28b5c6dea3c1481ea714b18ec8075ba1dbff843b7a8f/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-trade-refinery/5055755693ca/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-trade-refinery/5055755693ca/lod0.glb",
    "keys": [
     "concept_tdf_trade_refinery"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_tdf_troop_transport",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-troop-transport/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-troop-transport/originals/b03d1ca07e070ca5a0760af0156e133af506cc5ee6a5ee06d383e266eb25a064/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-tdf-troop-transport/b03d1ca07e07/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-troop-transport/b03d1ca07e07/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-tdf-troop-transport/b03d1ca07e07/symfix-sol-xhigh.json",
    "keys": [
     "concept_tdf_troop_transport"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.3419,
-     0.4287,
-     0.4621
-    ],
-    "Tint": [
-     0.831,
-     0.953,
-     1
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_battleship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-battleship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-battleship/originals/837cd6b5981f722a724c7313d5f808d2d0e3fce5bb75b9db90022d8cefd89e66/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-battleship/837cd6b5981f/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-battleship/837cd6b5981f/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-ueg-battleship/837cd6b5981f/symfix-sol-xhigh.json",
    "keys": [
     "concept_ueg_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "Tint": [
-     0.527,
-     0.591,
-     0.399
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_carrier",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-carrier/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-carrier/originals/a54a59782aced585837c4fa217e7dbc6166e2215f1a4f494ac6cf9b65024e7df/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-carrier/a54a59782ace/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-carrier/a54a59782ace/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-ueg-carrier/a54a59782ace/symfix-sol-xhigh.json",
    "keys": [
     "concept_ueg_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "Tint": [
-     0.527,
-     0.591,
-     0.399
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_cruiser",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-cruiser/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-cruiser/originals/c079c7029a25d5e07330925d638723e0271bd268e9ee33543243632bc7ecf193/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-cruiser/c079c7029a25/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-cruiser/c079c7029a25/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-ueg-cruiser/c079c7029a25/symfix-sol-xhigh.json",
    "keys": [
     "concept_ueg_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "Tint": [
-     0.527,
-     0.591,
-     0.399
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_destroyer",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-destroyer/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-destroyer/originals/375b319618a71792a6588f3953411b4cce6242e2efb8afb6f0d30ecc4a8a463d/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-destroyer/375b319618a7/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-destroyer/375b319618a7/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-ueg-destroyer/375b319618a7/symfix-sol-xhigh.json",
    "keys": [
     "concept_ueg_destroyer"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "Tint": [
-     0.527,
-     0.591,
-     0.399
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_fighter_bomber",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-fighter-bomber/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-fighter-bomber/originals/4c593470329f31408f51357f25def436b3e75026e3771ca86c24f4b56341ce31/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-fighter-bomber/4c593470329f/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-fighter-bomber/4c593470329f/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-ueg-fighter-bomber/4c593470329f/symfix-sol-xhigh.json",
    "keys": [
     "concept_ueg_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "Tint": [
-     0.527,
-     0.591,
-     0.399
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_flagship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-flagship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-flagship/originals/95aa65dad283d15e69ecad69363e35d32c74d5d67cf8c4a2c080d8ec97e237fa/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-flagship/95aa65dad283/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-flagship/95aa65dad283/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-ueg-flagship/95aa65dad283/symfix-sol-xhigh.json",
    "keys": [
     "concept_ueg_flagship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "Tint": [
-     0.527,
-     0.591,
-     0.399
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_frigate",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-frigate/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-frigate/originals/0be74cd0c7c964409700b1d42f37f32546cd0f35710a30b918cd5b9b26a47c6b/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-frigate/0be74cd0c7c9/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-frigate/0be74cd0c7c9/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-ueg-frigate/0be74cd0c7c9/symfix-sol-xhigh.json",
    "keys": [
     "concept_ueg_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "Tint": [
-     0.527,
-     0.591,
-     0.399
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_gun_monitor",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-gun-monitor/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-gun-monitor/originals/042fdc22ed2a167bf7f735825cf5d54c13465370b41f6a82dee903e49e3528c1/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-gun-monitor/042fdc22ed2a/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-gun-monitor/042fdc22ed2a/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-ueg-gun-monitor/042fdc22ed2a/symfix-sol-xhigh.json",
    "keys": [
     "concept_ueg_gun_monitor"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "Tint": [
-     0.527,
-     0.591,
-     0.399
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_marine_shuttle",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-marine-shuttle/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-marine-shuttle/originals/163889eddb64cc44892b3439228b08e0267b15329f640b6ad5cfa773d5f6fb3d/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-marine-shuttle/163889eddb64/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-marine-shuttle/163889eddb64/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-ueg-marine-shuttle/163889eddb64/symfix-sol-xhigh.json",
    "keys": [
     "concept_ueg_marine_shuttle"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "Tint": [
-     0.527,
-     0.591,
-     0.399
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_scout",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-scout/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-scout/originals/34af1a353eecea2b8f44f056143942d6dbfac28a5808e04e2123b84eaad74106/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-scout/34af1a353eec/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-scout/34af1a353eec/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-ueg-scout/34af1a353eec/symfix-sol-xhigh.json",
    "keys": [
     "concept_ueg_scout"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "Tint": [
-     0.527,
-     0.591,
-     0.399
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_signature_unit",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-signature-unit/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-signature-unit/originals/e3f136312c2ebdf0ef4e69d28737a591626e743e3c7baec39d5acfbf9d5866a9/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-signature-unit/e3f136312c2e/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-signature-unit/e3f136312c2e/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-ueg-signature-unit/e3f136312c2e/symfix-sol-xhigh.json",
    "keys": [
     "concept_ueg_signature_unit"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "Tint": [
-     0.527,
-     0.591,
-     0.399
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_spinal_flak_battery",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-spinal-flak-battery/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-spinal-flak-battery/originals/39d6cf13ce3017460452ad3256f6ed652717c99a8d7615d48c506c74014d7f5c/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-spinal-flak-battery/39d6cf13ce30/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-spinal-flak-battery/39d6cf13ce30/lod0.glb",
    "keys": [
     "concept_ueg_spinal_flak_battery"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_starbase",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-starbase/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-starbase/originals/b31b549a298c5cc8db12e87f25f5ab8943afb77fcd686b4eeabf585873b9ecf5/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-starbase/b31b549a298c/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-starbase/b31b549a298c/lod0.glb",
    "keys": [
     "concept_ueg_starbase"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_station",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-station/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-station/originals/8d8650e5ba548d90f50bec557b8b73a59f331284a68b23d43ffa34a83b670fe9/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-station/8d8650e5ba54/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-station/8d8650e5ba54/lod0.glb",
    "keys": [
     "concept_ueg_station"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_ueg_troop_transport",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-ueg-troop-transport/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-troop-transport/originals/68b766cf6e63c1b51df0d108db354438c91e2cf98e0cb07408b0fbe365bfb0cb/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-ueg-troop-transport/68b766cf6e63/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-ueg-troop-transport/68b766cf6e63/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-ueg-troop-transport/68b766cf6e63/symfix-sol-xhigh.json",
    "keys": [
     "concept_ueg_troop_transport"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.159,
-     0.1912,
-     0.0953
-    ],
-    "Tint": [
-     0.527,
-     0.591,
-     0.399
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_veil_battleship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-veil-battleship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-battleship/originals/f4deae9b559bb972babb0c56e4433f07c0d2e14d4e6e3dcf16d437cac3541b36/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-veil-battleship/f4deae9b559b/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-veil-battleship/f4deae9b559b/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-veil-battleship/f4deae9b559b/symfix-sol-xhigh.json",
    "keys": [
     "concept_veil_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0343,
-     0.0307,
-     0.0802
-    ],
-    "Tint": [
-     0.283,
-     0.269,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_veil_carrier",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-veil-carrier/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-carrier/originals/8083488865586b9758df4feaf593bff38a69796eb8eccbeb9a2f495c82dade69/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-veil-carrier/808348886558/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-veil-carrier/808348886558/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-veil-carrier/808348886558/symfix-sol-xhigh.json",
    "keys": [
     "concept_veil_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0343,
-     0.0307,
-     0.0802
-    ],
-    "Tint": [
-     0.283,
-     0.269,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_veil_crisis_mothership",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-veil-crisis-mothership/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-crisis-mothership/originals/cc99040a0e99fb0420511b240867dfad78f35f3522f3b2076f1bb2e312b41651/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-veil-crisis-mothership/cc99040a0e99/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-veil-crisis-mothership/cc99040a0e99/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-veil-crisis-mothership/cc99040a0e99/symfix-sol-xhigh.json",
    "keys": [
     "concept_veil_crisis_mothership"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0343,
-     0.0307,
-     0.0802
-    ],
-    "Tint": [
-     0.283,
-     0.269,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_veil_cruiser",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-veil-cruiser/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-cruiser/originals/d567e7e1024a7231572a1e8f916ae0c5ec8b240a1e502357d7ac4e0a6c0ec34a/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-veil-cruiser/d567e7e1024a/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-veil-cruiser/d567e7e1024a/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-veil-cruiser/d567e7e1024a/symfix-sol-xhigh.json",
    "keys": [
     "concept_veil_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0343,
-     0.0307,
-     0.0802
-    ],
-    "Tint": [
-     0.283,
-     0.269,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_veil_destroyer",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-veil-destroyer/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-destroyer/originals/64a0b97eb4e3f7cc2dfe4c3385ff1a96030b781d17f82af5fd0178220d867eac/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-veil-destroyer/64a0b97eb4e3/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-veil-destroyer/64a0b97eb4e3/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-veil-destroyer/64a0b97eb4e3/symfix-sol-xhigh.json",
    "keys": [
     "concept_veil_destroyer"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0343,
-     0.0307,
-     0.0802
-    ],
-    "Tint": [
-     0.283,
-     0.269,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_veil_fighter_bomber",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-veil-fighter-bomber/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-fighter-bomber/originals/f0cdcd2c0598b08f495448c4721dae33a9bb8181554220fd7b71a016c1a1f408/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-veil-fighter-bomber/f0cdcd2c0598/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-veil-fighter-bomber/f0cdcd2c0598/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-veil-fighter-bomber/f0cdcd2c0598/symfix-sol-xhigh.json",
    "keys": [
     "concept_veil_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0343,
-     0.0307,
-     0.0802
-    ],
-    "Tint": [
-     0.283,
-     0.269,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_veil_flagship",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-veil-flagship/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-flagship/originals/ffdc41f5981bdc6ebc077e7d0f7cc35b838c2f09bebf1f13cc8ad26f3e70db76/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-veil-flagship/ffdc41f5981b/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-veil-flagship/ffdc41f5981b/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-veil-flagship/ffdc41f5981b/symfix-sol-xhigh.json",
    "keys": [
     "concept_veil_flagship"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0343,
-     0.0307,
-     0.0802
-    ],
-    "Tint": [
-     0.283,
-     0.269,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_veil_frigate",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-veil-frigate/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-frigate/originals/523757ade948266e9761821c587ab5431f413dba49cfe94d9771b4a29fd5baa1/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-veil-frigate/523757ade948/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-veil-frigate/523757ade948/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-veil-frigate/523757ade948/symfix-sol-xhigh.json",
    "keys": [
     "concept_veil_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0343,
-     0.0307,
-     0.0802
-    ],
-    "Tint": [
-     0.283,
-     0.269,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_veil_plasma_arc_emitter",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-veil-plasma-arc-emitter/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-plasma-arc-emitter/originals/55c52c6eafb31611cc94ac4d25d961d5553865d27f642885be13be38c309d14d/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-veil-plasma-arc-emitter/55c52c6eafb3/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-veil-plasma-arc-emitter/55c52c6eafb3/lod0.glb",
    "keys": [
     "concept_veil_plasma_arc_emitter"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.0343,
-     0.0307,
-     0.0802
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_veil_scout",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-veil-scout/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-scout/originals/bf7ce236077a44665e442f3f647b2816132f86d323a49c7ac7af45caa5146e43/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-veil-scout/bf7ce236077a/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-veil-scout/bf7ce236077a/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-veil-scout/bf7ce236077a/symfix-sol-xhigh.json",
    "keys": [
     "concept_veil_scout"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0343,
-     0.0307,
-     0.0802
-    ],
-    "Tint": [
-     0.283,
-     0.269,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_veil_signature_unit",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-veil-signature-unit/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-signature-unit/originals/55c3e99d4ecc3ab4e71507e082d6fe72cb3727f57cb22c0f59533d3f56858f86/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-veil-signature-unit/55c3e99d4ecc/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-veil-signature-unit/55c3e99d4ecc/lod0.glb",
    "receipt": "G:/hb-sol3d/symfix/concept-veil-signature-unit/55c3e99d4ecc/symfix-sol-xhigh.json",
    "keys": [
     "concept_veil_signature_unit"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0.25,
-    "LiveryPaint": [
-     0.0343,
-     0.0307,
-     0.0802
-    ],
-    "Tint": [
-     0.283,
-     0.269,
-     0.45
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "concept_veil_station",
-   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-veil-station/pixal3d_textured.glb",
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-station/originals/67e218e080a4e36cc6607ce0b32baea44f4abd46e333534f2c504050f3d8e4c8/pixal3d_textured.glb",
    "match": {
     "url": "*/concept-veil-station/67e218e080a4/*"
    },
-   "fit": "bounds",
+   "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-veil-station/67e218e080a4/lod0.glb",
    "keys": [
     "concept_veil_station"
    ],
    "params": {
-    "EnvIntensity": 0.3,
-    "LiveryWeight": 0,
-    "LiveryPaint": [
-     0.0343,
-     0.0307,
-     0.0802
-    ],
-    "MetalScale": 0.35,
-    "Tint": [
-     0.78,
-     0.84,
-     0.9
-    ]
-   },
-   "maxTexture": 2048
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   }
   },
   {
    "name": "planet_sphere",

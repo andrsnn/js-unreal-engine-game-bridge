@@ -1,0 +1,35 @@
+{
+ "version": 1,
+ "overrides": [
+  {
+   "name": "diag_frigate",
+   "match": {
+    "url": "*/diag/*.glb"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_frigate/concept_tdf_frigate/StaticMeshes/SM_concept_tdf_frigate.SM_concept_tdf_frigate",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.5004448890686035,
+     -0.21373292803764343,
+     -0.3631925582885742
+    ],
+    [
+     0.3982596695423126,
+     0.3003746271133423,
+     0.3343135118484497
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0,
+    "Tint": [
+     1,
+     1,
+     1
+    ]
+   }
+  }
+ ]
+}

@@ -1,9 +1,19 @@
-# Hard Burn fleet battle for the fidelity film: wide, then three wheel steps closer at 26 s. Same steps in Chrome and Unreal.
+# Hard Burn fleet battle for the fidelity film: wide, then closer at 26 s, then a pan to the enemy line and a close
+# view from 33 s. Same steps in Chrome and Unreal (seeded, fixed 60 fps).
 0 gone #startup
 12 shot film-12s
 24 shot film-24s
 26 eval document.querySelector('canvas').dispatchEvent(new WheelEvent('wheel', {deltaY: -200, bubbles: true, cancelable: true}))
 26.3 eval document.querySelector('canvas').dispatchEvent(new WheelEvent('wheel', {deltaY: -200, bubbles: true, cancelable: true}))
 26.6 eval document.querySelector('canvas').dispatchEvent(new WheelEvent('wheel', {deltaY: -200, bubbles: true, cancelable: true}))
-34 shot film-34s
-40 quit
+30 shot film-30s
+31 eval dispatchEvent(new KeyboardEvent('keydown', {key: 'd'}))
+31.2 eval dispatchEvent(new KeyboardEvent('keydown', {key: 'w'}))
+31.9 eval dispatchEvent(new KeyboardEvent('keyup', {key: 'w'}))
+32.7 eval dispatchEvent(new KeyboardEvent('keyup', {key: 'd'}))
+32.9 eval document.querySelector('canvas').dispatchEvent(new WheelEvent('wheel', {deltaY: -200, bubbles: true, cancelable: true}))
+33.2 eval document.querySelector('canvas').dispatchEvent(new WheelEvent('wheel', {deltaY: -200, bubbles: true, cancelable: true}))
+33.5 eval document.querySelector('canvas').dispatchEvent(new WheelEvent('wheel', {deltaY: -200, bubbles: true, cancelable: true}))
+33.8 eval document.querySelector('canvas').dispatchEvent(new WheelEvent('wheel', {deltaY: -200, bubbles: true, cancelable: true}))
+38 shot film-38s
+42 quit
