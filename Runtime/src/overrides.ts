@@ -21,6 +21,8 @@ export type OverrideRule = {
   bounds?: [number[], number[]];
   /** Other meshes from the same glTF file as the matched one: hidden (default) or drawn as before. */
   others?: 'hide' | 'keep';
+  /** Draw nothing for what the rule matches (the game's object stays in the game). */
+  hide?: boolean;
 };
 
 type SourceInfo = {url: string; primary: boolean};
@@ -83,7 +85,7 @@ export function overrideRules(registryJson: string | undefined): Compiled[] {
   try {
     const list = (JSON.parse(registryJson || '{}').overrides ?? []) as OverrideRule[];
     for (const r of list) {
-      if (!r?.name || !r.match || !r.mesh) continue;
+      if (!r?.name || !r.match || (!r.mesh && !r.hide)) continue;
       const tests: Compiled['tests'] = [];
       const m = r.match;
       if (m.url) { const t = glob(m.url); tests.push((_o, src) => t(src?.url.replaceAll('\\', '/'))); }
@@ -131,6 +133,7 @@ export function overrideFor(o: THREE.Object3D, list: Compiled[]): OverrideHit | 
   const src = sourceOf(o);
   for (const r of list) {
     if (!r.tests.every(t => t(o, src))) continue;
+    if (r.hide) { hit = {key: r.key, hide: true, fit: null}; break; }
     if (src && !src.primary) { if (r.others !== 'keep') hit = {key: r.key, hide: true, fit: null}; break; }
     hit = {key: r.key, hide: false, fit: fitFor(r, g)};
     if (!loggedRules.has(r.key)) { loggedRules.add(r.key); log(`overrides: ${r.name} draws ${r.mesh} for ${(o as THREE.InstancedMesh).isInstancedMesh ? 'instanced ' : ''}"${o.name}" from ${src?.url ?? 'its name'}`); }

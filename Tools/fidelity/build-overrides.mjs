@@ -92,6 +92,8 @@ if (!rest.includes('--skip-import')) {
 const results = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
 const old = fs.existsSync(outFile) ? JSON.parse(fs.readFileSync(outFile, 'utf8')).overrides ?? [] : [];
 const rules = new Map(old.map(r => [r.name, r]));
+// Rules written by hand (a hide rule, a material swap) go in as they are.
+for (const r of list.extraRules ?? []) rules.set(r.name, r);
 for (const p of prepared) {
   if (p.kind === 'mesh') continue;
   const res = results.find(x => x.name === p.name);

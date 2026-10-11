@@ -431,6 +431,14 @@
     "baseColor": "2048x1024",
     "normal": "64x32"
    }
+  },
+  {
+   "name": "nebula-backdrop",
+   "match": {
+    "object": "nebula-backdrop"
+   },
+   "hide": true,
+   "why": "The ray-marched backdrop adds nothing visible in the browser (its cache draws it behind the dust volumes) and draws broken black triangles in Unreal."
   }
  ]
 }
