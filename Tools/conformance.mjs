@@ -122,6 +122,7 @@ for (let i = 0; i + 1 < bw.length && web.list.length && unreal.list.length; i++)
 report.pairs = pairs;
 report.objectCheck = {pass: violations.length === 0 && checked > 0, unrealFramesChecked: checked, pairsCompared: compared, failures: violations.length, first: violations.slice(0, 20)};
 console.log(report.objectCheck.pass ? `object check passed: ${checked} Unreal frames, ${compared} compared with the browser`
+  : checked === 0 ? `OBJECT CHECK FAILED: no frames to check (the browser captured ${report.web?.frames ?? 0} and Unreal ${report.unreal?.frames ?? 0}; see the errors above)`
   : `OBJECT CHECK FAILED on ${violations.length} of ${checked} frames; first: ${JSON.stringify(violations.slice(0, 3))}`);
 if (pairs > 1 && !has('--no-film')) {
   const font = 'C\\:/Windows/Fonts/arial.ttf';
