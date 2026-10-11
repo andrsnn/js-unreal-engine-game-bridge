@@ -114,6 +114,30 @@ Two bugs found while checking these changes against the conformance films:
   plain white in deterministic captures. A shader material is now re-sent every frame until its translation is
   done.
 
+## Motion vectors for DLSS
+
+DLSS and TSR need to know how far each pixel moved since the last frame. I checked this with Unreal's velocity
+buffer view (`r.BufferVisualizationTarget Velocity`) on the suite's `motion` case. It has a box sweeping across
+the view, a row of instances moving up and down, and a sphere that teleports every half second.
+
+- **Moving objects** had motion vectors already. Unreal works them out from each object's old and new transform.
+- **Instances** had none. Every transform update rebuilt the instanced mesh's render proxy, and a new proxy draws
+  no velocity. Updates now go to the existing proxy along with each instance's previous transform. This also
+  saves a proxy rebuild per moving instanced mesh per frame.
+- **Teleports** drew a streak across the jump. `ResetSceneVelocity` runs before Unreal applies the move, so it had
+  no effect. A teleport now sets its previous transform to its new one through Unreal's motion vector
+  simulation. three.js has no teleport flag, so a move that starts from rest and covers more than twice the
+  object's size in one frame counts as one. New objects start with no motion, and a camera jump over 50 m is a
+  camera cut.
+
+Not covered yet:
+
+- Skinned and morph-target meshes are deformed on the CPU. The mesh as a whole has motion vectors, but the
+  movement of its vertices inside the mesh doesn't.
+- With JavaScript on its own thread, the game can update less often than Unreal draws. Instances then keep the
+  same motion vectors on the frames in between, which overstates how far they moved.
+- Transparent objects don't write motion vectors, which is also Unreal's default.
+
 ## Setup for the JavaScript thread
 
 1. Apply `Patches/puerts-thread-safe.patch` to Puerts. It sets `ThreadSafe = true` in `JsEnv.Build.cs` and
@@ -126,11 +150,8 @@ Deterministic captures (`--fixed-fps`, used by the conformance films) keep JavaS
 ## What's left
 
 - **A clean measurement on an idle GPU** of every game, with min and 1% low, after the fixes above.
-- **Materials patched with `onBeforeCompile`** draw with the plain material in Unreal. Unlit's voxel ships use one,
-  so a cockpit glow shows as a flat orange shape.
 - **Measuring DLSS and Frame Generation** with these changes, at 1440p and 4K. That needs an unlocked desktop for
   Frame Generation.
-- **Depth and motion vectors for DLSS.** Mirrored objects need correct per-pixel motion vectors, including
-  instanced meshes, skinned meshes and the interpolated transforms. That keeps DLSS 4.5 quality and Frame
-  Generation correct, and it's what DLSS Neural Rendering will need when NVIDIA ships its Unreal plugin.
+- **Motion vectors for vertex animation** (skinned and morph-target meshes), and for instances when JavaScript runs
+  on its own thread. See "Motion vectors for DLSS" above.
 - **Automatic instancing** of repeated geometry and material pairs, and sending only changed objects each frame.
