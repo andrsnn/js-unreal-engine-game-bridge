@@ -115,6 +115,24 @@ A port may still need:
   material can replace it.
 - A query string or seed so both targets build the same world for the conformance test.
 
+## Display settings
+
+A game's options menu can change the Unreal window through `window.jsgb.display`. In a browser the object doesn't
+exist, so check for it first.
+
+```js
+if (window.jsgb?.display?.supported) {
+  const modes = jsgb.display.modes();        // [{width: 2560, height: 1440, refresh: 165}, ...] the monitor supports
+  const now = jsgb.display.get();            // {width, height, mode: 'windowed' | 'borderless' | 'fullscreen', vsync, maxFps}
+  await jsgb.display.set({width: 1920, height: 1080, mode: 'windowed', vsync: false, maxFps: 0});  // 0: no frame cap
+}
+```
+
+Each field of `set` is optional. A change resizes the window, so the game gets a `resize` event and new
+`innerWidth` and `innerHeight`, as in a browser. The standard Fullscreen API works too: `element.requestFullscreen()`
+switches to borderless fullscreen, `document.exitFullscreen()` returns to the window, and `document.fullscreenElement`
+and the `fullscreenchange` event behave as in a browser. Unreal saves the settings, so the next launch starts with them.
+
 ## Conformance test
 
 `npm run conformance -- <name>` builds the browser and Unreal targets from the same commit, runs the

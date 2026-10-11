@@ -514,6 +514,7 @@ void AJsgbHost::StartJs()
 	Audio->Bridge = Bridge;
 	if (UIPort) { UIPort->Bridge = Bridge; UIPort->AppliedUIVersion = -1; }
 	Bridge->StartSeconds = FPlatformTime::Seconds();
+	Bridge->UpdateDisplayInfo();
 	double FixedFps = 0;
 	if (FParse::Value(FCommandLine::Get(), TEXT("JsgbFixedFps="), FixedFps) && FixedFps > 0) { Bridge->FixedStepMs = 1000.0 / FixedFps; }
 	Bridge->Search = Search;
