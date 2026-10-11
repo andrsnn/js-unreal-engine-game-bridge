@@ -1102,10 +1102,16 @@ void AJsgbHost::RunScript()
 	if (!WaitFor.IsEmpty())
 	{
 		// "wait <text or selector>" holds the script until that element exists, "gone" until it no
-		// longer does (a loading screen closing). Later steps keep their spacing.
+		// longer does (a loading screen closing), "objects <n>" until the scene draws at least n objects (a world
+		// finished loading). Later steps keep their spacing.
 		const double Now = GameSeconds();
 		bool bFound = WaitUIVersion >= 0;
-		if (!bFound)
+		if (WaitObjects >= 0)
+		{
+			bFound = Mirror && Mirror->DrawnEntities >= WaitObjects;
+			if (bFound) { WaitSeen = Now; }
+		}
+		else if (!bFound)
 		{
 			// Asked without waiting, so a busy JavaScript thread never holds up Unreal's frame.
 			// The answer carries the game time the JavaScript thread saw the element (or saw it go).
@@ -1117,7 +1123,7 @@ void AJsgbHost::RunScript()
 			WaitQuery.Reset();
 		}
 		// The game's DOM changed; the wait ends when the overlay shows that change on screen.
-		if (bFound && WaitUIVersion < 0 && UIPort && Browser.IsValid()) { Ask(TEXT("__jsgb.publish&&__jsgb.publish()")); WaitUIVersion = Bridge->UIVersion; }
+		if (bFound && WaitObjects < 0 && WaitUIVersion < 0 && UIPort && Browser.IsValid()) { Ask(TEXT("__jsgb.publish&&__jsgb.publish()")); WaitUIVersion = Bridge->UIVersion; }
 		const bool bShown = !bFound || WaitUIVersion < 0 || !UIPort || UIPort->AppliedUIVersion >= WaitUIVersion;
 		// A browser shows a DOM change in the frame that made it. With a fixed game clock the game waits
 		// for the overlay too (no time passes and no game frame runs), so the game's time and the script's
@@ -1126,7 +1132,8 @@ void AJsgbHost::RunScript()
 		if ((!bFound || !bShown) && Now - WaitStart < 120.0) { return; }
 		bHoldClock = false;
 		WaitUIVersion = -1;
-		Bridge->Log(bFound ? TEXT("log") : TEXT("error"), FString::Printf(TEXT("script %s %s: %s after %.1fs"), bWaitGone ? TEXT("gone") : TEXT("wait"), *WaitFor, bFound ? TEXT("done") : TEXT("timed out"), Now - WaitStart));
+		Bridge->Log(bFound ? TEXT("log") : TEXT("error"), FString::Printf(TEXT("script %s %s: %s after %.1fs"), WaitObjects >= 0 ? TEXT("objects") : bWaitGone ? TEXT("gone") : TEXT("wait"), *WaitFor, bFound ? TEXT("done") : TEXT("timed out"), Now - WaitStart));
+		WaitObjects = -1;
 		// The wait ends when the game reached that state, as in a browser. The time Unreal took to learn
 		// of it (the question's round trip, the overlay update) belongs to the next step, so the game's own
 		// clock and the script's stay together.
@@ -1141,6 +1148,7 @@ void AJsgbHost::RunScript()
 	{
 		const FJsgbScriptStep& S = Script[ScriptCursor++];
 		FString Result;
+		if (S.Verb == TEXT("objects")) { WaitFor = S.Args; WaitObjects = FCString::Atoi(*S.Args); WaitStart = GameSeconds(); Bridge->Log(TEXT("log"), FString::Printf(TEXT("script objects %s: waiting"), *S.Args)); return; }
 		if (S.Verb == TEXT("wait") || S.Verb == TEXT("gone")) { WaitFor = S.Args; bWaitGone = S.Verb == TEXT("gone"); WaitStart = GameSeconds(); Bridge->Log(TEXT("log"), FString::Printf(TEXT("script %s %s: waiting"), *S.Verb, *S.Args)); return; }
 		const FString Code = S.Verb == TEXT("eval") ? S.Args : S.Verb == TEXT("click") ? FString::Printf(TEXT("__jsgb.click(%s)"), *ScriptArg(S.Args))
 			: S.Verb == TEXT("seed") ? FString::Printf(TEXT("__jsgb.seed(%s)"), *S.Args) : S.Verb == TEXT("key") ? FString::Printf(TEXT("__jsgb.key(%s)"), *S.Args) : FString();

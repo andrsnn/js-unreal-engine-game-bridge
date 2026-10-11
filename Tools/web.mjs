@@ -166,7 +166,18 @@ async function capture() {
     const due = ready + s.time + offset;
     await stopAt('script', due * 1000);
     while ((await clock()) < due - 1e-6) await new Promise(r => setTimeout(r, 10));
-    if (s.verb === 'wait' || s.verb === 'gone') {
+    if (s.verb === 'objects') {
+      // objects <n>: until the scene draws at least n objects (a world finished loading).
+      await stopAt('script', null);
+      const wallStart = Date.now();
+      const hit = await page.waitForFunction(n => { const c = window.__jsgbCensus?.(); return c && c.objects >= n ? {t: window.__jsgbVirtualMs ? window.__jsgbVirtualMs() : null} : false; },
+        +s.args, {polling: 'raf', timeout: 120000}).then(h => h.jsonValue()).catch(() => null);
+      const start = due, end = fixedFps && typeof hit?.t === 'number' ? hit.t / 1000 : await clock();
+      offset += end - start;
+      times.push(`wait-end ${(end - ready).toFixed(3)}`);
+      anchors.push(`objects ${s.args} ${Date.now()}`);
+      console.log(`objects ${s.args} ${((Date.now() - wallStart) / 1000).toFixed(1)}s${hit ? '' : ' (timed out)'}`);
+    } else if (s.verb === 'wait' || s.verb === 'gone') {
       // wait: until the element exists. gone: until it no longer exists (a loading screen closing).
       const start = await clock(), wallStart = Date.now(), present = s.verb === 'wait';
       await stopAt('script', null);

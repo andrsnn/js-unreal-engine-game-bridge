@@ -1330,6 +1330,15 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			K += 5 + NumMats + 16;
 			FJsgbGeometry* G = Geometries.Find(Geo);
 			if (G && !G->Mesh) { FirstBuild(Geo, G); }
+			// Geometry with fewer than three vertices: WebGL draws nothing for it, and neither does Unreal. The object
+			// is still drawn as far as the game is concerned, so it isn't missing.
+			if (G && !G->Mesh && !G->Pending)
+			{
+				if (FJsgbEntity* Empty = Entities.Find(Id)) { if (Empty->Component && Empty->Component->IsVisible()) { Empty->Component->SetVisibility(false); } Empty->Seen = Stamp; }
+				++Drawn;
+				TraceRecord(Id, 1, TEXT("empty geometry"));
+				continue;
+			}
 			if (!G || !G->Mesh) { ++SkippedEntities; TraceRecord(Id, 2, G ? TEXT("mesh could not be built") : TEXT("geometry released")); continue; }
 			if (Defer(Id)) { continue; }
 			FJsgbEntity& Ent = EntityOf(Id, RMesh);

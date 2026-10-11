@@ -135,6 +135,8 @@ private:
 	int32 ScriptCursor = 0;
 	FString WaitFor;
 	bool bWaitGone = false;
+	/** "objects <n>": the wait holds until Unreal draws at least n objects; -1 for an element wait. */
+	int32 WaitObjects = -1;
 	/** A wait that came true in the game ends once the overlay shows this UI version. */
 	int32 WaitUIVersion = -1;
 	TSharedPtr<FAnswer> WaitQuery;

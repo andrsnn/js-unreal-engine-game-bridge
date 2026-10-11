@@ -204,9 +204,13 @@ uint32 FJsgbWorker::Run()
 				while (!bStop && Inbox.Dequeue(Bytes))
 				{
 					v8::HandleScope Inner(I);
+					const double DispatchStart = FPlatformTime::Seconds();
 					v8::Local<v8::Value> Arg = ArrayBufferOf(I, Bytes);
 					if (!CallGlobal(I, Ctx, "__dispatch", 1, &Arg, nullptr, Error) && !bStop) { UE_LOG(LogJsgbWorker, Warning, TEXT("worker %s: %s"), *Name, *Error.Left(2000)); }
 					I->PerformMicrotaskCheckpoint();
+					// A long job on a worker holds up whatever the game waits for (terrain, decoding), so it goes in the log.
+					const double DispatchMs = (FPlatformTime::Seconds() - DispatchStart) * 1000.0;
+					if (DispatchMs > 250.0) { UE_LOG(LogJsgbWorker, Display, TEXT("worker %s: a %d-byte message took %.0f ms"), *Name, Bytes.Num(), DispatchMs); }
 				}
 				double WaitMs = 50;
 				{

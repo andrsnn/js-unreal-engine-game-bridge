@@ -138,6 +138,24 @@ Not covered yet:
   same motion vectors on the frames in between, which overstates how far they moved.
 - Transparent objects don't write motion vectors, which is also Unreal's default.
 
+## Web Workers load slower than in Chrome
+
+Unlit Worlds builds its planet in Web Workers. In Unreal the planet appears several seconds later than in Chrome,
+with the same game code and the same seed. Each worker now logs any message that takes over 250 ms, split into
+copying the message in, the worker's own code, and copying the replies out.
+
+| Worker | Chrome | Unreal (worker code) |
+| --- | --- | --- |
+| planet-terrain | 607 ms, 2008 ms | 698 ms, 2481 ms |
+| character-pose-meshing | 629 ms | 421 ms |
+| cliff-ground-support | 1327 ms | 10254 ms |
+
+Copying the messages costs little (36 ms in, 34 ms out for the 5.3 MB cliff message). The worker's own code is what's
+slow, and only in some workers: the cliff worker runs about 8 times slower, while the terrain worker runs about 1.2
+times slower. Raising the worker threads to normal priority didn't change it. Puerts runs JavaScript on V8 9.4, from
+2021, and Chrome uses a much newer V8. The next step is a V8 profile of the cliff worker, to find the code that's slow
+on V8 9.4, and then deciding between a workaround in the runtime and moving Puerts to V8 11.8, which Puerts supports.
+
 ## Setup for the JavaScript thread
 
 1. Apply `Patches/puerts-thread-safe.patch` to Puerts. It sets `ThreadSafe = true` in `JsEnv.Build.cs` and

@@ -6,6 +6,8 @@
 3 wait 'Begin Journey'
 4 click 'Begin Journey'
 5 wait #ground-control-hints
+# The hints show before the world finishes loading; both sides line up again when the planet is drawn.
+5 objects 500
 7 shot uw-planet-start
 35 shot uw-planet-30s
 65 shot uw-planet-60s

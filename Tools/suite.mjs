@@ -122,7 +122,7 @@ const md = [
   'Each run plays the same script in Chrome and in Unreal from the same commit, with a fixed game clock, and compares',
   'the paired frames. A case passes when the pictures match (SSIM at least 0.9 and at most 2.5% of pixels clearly different for test',
   'cases; SSIM 0.7 and 20% for games), every',
-  'Unreal frame draws at least what the browser drew, and neither side reports a JavaScript error.', '',
+  'Unreal frame after the game finishes loading draws at least what the browser drew, and neither side reports a JavaScript error.', '',
   '| Run | Result | SSIM (mean, lowest) | Pixels differing % (mean, worst) | PSNR dB | Coverage | Errors (browser, Unreal) | JS ms/frame in Unreal | Unreal memory MB | Chrome JS heap MB | Notes |',
   '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
   ...rows.map(r => `| ${r.label} | ${r.pass ? 'pass' : 'FAIL'} | ${cell(r.ssim)}, ${cell(r.ssimLow)} | ${cell(r.changedPct)}, ${cell(r.changedWorstPct)} | ${cell(r.psnr)} | ${r.coverage ? 'ok' : `${cell(r.coverageFailures)} frames`} | ${cell(r.webErrors)}, ${cell(r.unrealErrors)} | ${cell(r.jsMs)} | ${cell(r.memoryMB)} | ${cell(r.jsHeapMB)} | ${r.reasons.join('; ').replace(/\|/g, '/')} |`),
@@ -147,7 +147,7 @@ p.muted { color: var(--muted); }
 </style></head><body><main>
 <h1>Conformance results</h1>
 <p>Bridge commit ${esc(commit)}, ${esc(new Date().toISOString().slice(0, 16).replace('T', ' '))} UTC. <strong>${passed} of ${rows.length} passed.</strong></p>
-<p class="muted">Each run plays the same script in Chrome and in Unreal from the same commit, with a fixed game clock, and compares the paired frames. A case passes when the pictures match (SSIM at least 0.9 and at most 2.5% of pixels clearly different for test cases; SSIM 0.7 and 20% for games), every Unreal frame draws at least what the browser drew, and neither side reports a JavaScript error.</p>
+<p class="muted">Each run plays the same script in Chrome and in Unreal from the same commit, with a fixed game clock, and compares the paired frames. A case passes when the pictures match (SSIM at least 0.9 and at most 2.5% of pixels clearly different for test cases; SSIM 0.7 and 20% for games), every Unreal frame after the game finishes loading draws at least what the browser drew, and neither side reports a JavaScript error.</p>
 <div class="wrap"><table><thead><tr><th>Run</th><th>Result</th><th>SSIM</th><th>Pixels differing %</th><th>PSNR dB</th><th>Coverage</th><th>Errors</th><th>JS ms/frame</th><th>Memory MB</th><th>Notes</th></tr></thead><tbody>
 ${rows.map(r => `<tr><td>${esc(r.label)}</td><td class="${r.pass ? 'pass' : 'fail'}">${r.pass ? 'pass' : 'fail'}</td><td>${esc(r.ssim)} (low ${esc(r.ssimLow)})</td><td>${esc(r.changedPct)} (worst ${esc(r.changedWorstPct)})</td><td>${esc(r.psnr)}</td><td>${r.coverage ? 'ok' : esc(r.coverageFailures) + ' frames'}</td><td>${esc(r.webErrors)}, ${esc(r.unrealErrors)}</td><td>${esc(r.jsMs)}</td><td>${esc(r.memoryMB)}</td><td>${esc(r.reasons.join('; '))}</td></tr>`).join('\n')}
 </tbody></table></div>

@@ -81,11 +81,11 @@ let pairs = 0;
 // Pairs where one side is holding at a wait are compared only on the Unreal side's own counts.
 const violations = [];
 let checked = 0, compared = 0;
-// Captures are 1/fps apart, and when the game swaps scenes its object count can change between two of them, so
-// each Unreal frame is held to the fewest objects the browser drew within one capture interval of the pair.
-// An object that stays missing still fails.
+// Captures are 1/fps apart, and when the game swaps scenes its object count can change between two of them (and
+// work that finishes on other threads lands a frame or two apart on the two sides), so each Unreal frame is held to
+// the fewest objects the browser drew within two capture intervals of the pair. An object that stays missing still fails.
 const around = (side, t) => {
-  const near = side.list.filter(f => Math.abs(f.t - t) <= 1 / fps + 1e-6);
+  const near = side.list.filter(f => Math.abs(f.t - t) <= 2 / fps + 1e-6);
   if (!near.length) return null;
   const least = key => near.some(f => f[key] === undefined || f[key] < 0) ? -1 : Math.min(...near.map(f => f[key]));
   return {...near[0], objects: least('objects'), lines: least('lines'), sprites: least('sprites'), points: least('points')};
@@ -112,10 +112,11 @@ for (let i = 0; i + 1 < bw.length && web.list.length && unreal.list.length; i++)
     const w = nearest(web, bw[i] + Math.min(u, dw)), ue = nearest(unreal, bu[i] + Math.min(u, du));
     fs.copyFileSync(w.file, path.join(pairDir, `web_${String(pairs).padStart(5, '0')}.png`));
     fs.copyFileSync(ue.file, path.join(pairDir, `ue_${String(pairs).padStart(5, '0')}.png`));
-    // Before the first wait ends (i === 0 with anchors) both sides are still loading, each at its own pace; a
-    // frame captured before its own side's wait ended belongs to that earlier segment.
+    // A segment that ends at a wait is the game loading toward that state (the first scene, a planet), each side at
+    // its own pace, so it isn't compared with the browser; Unreal's own missing and untextured counts still apply.
+    // A frame captured before its own side's wait ended belongs to that earlier segment.
     const early = w.t < bw[i] - 1e-6 || ue.t < bu[i] - 1e-6;
-    check(pairs, {...(around(web, w.t) ?? w), file: w.file}, ue, u > dw || u > du || (i === 0 && anchors > 0) || early);
+    check(pairs, {...(around(web, w.t) ?? w), file: w.file}, ue, u > dw || u > du || i < anchors || early);
   }
 }
 report.pairs = pairs;

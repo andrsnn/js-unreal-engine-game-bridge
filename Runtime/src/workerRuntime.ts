@@ -29,7 +29,9 @@ Object.defineProperty(g, 'onmessage', {get: () => onmessage, set: (f: Listener |
 g.addEventListener = (type: string, fn: Listener) => { (listeners[type] ??= []).push(fn); };
 g.removeEventListener = (type: string, fn: Listener) => { listeners[type] = (listeners[type] ?? []).filter(f => f !== fn); };
 g.postMessage = (data: unknown) => {
+  const t0 = native.now();
   const bytes = encode(data);
+  encodeMs += native.now() - t0;
   if (!bytes) throw Error('postMessage: this value cannot be copied between threads');
   native.post(bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
 };
@@ -67,10 +69,16 @@ g.__tick = () => {
   for (const t of timers.values()) wait = Math.min(wait, Math.max(0, t.due - native.now()));
   return wait;
 };
+let encodeMs = 0;
 g.__dispatch = (bytes: ArrayBuffer) => {
+  const t0 = native.now();
   const e = {data: decode(bytes)};
+  const t1 = native.now(); encodeMs = 0;
   try { onmessage?.(e); } catch (err) { report(err); }
   for (const l of listeners.message ?? []) { try { l(e); } catch (err) { report(err); } }
+  // A long message shows where its time went: copying it in, the worker's own code, copying the reply out.
+  const total = native.now() - t0;
+  if (total > 250) native.log('log', `message of ${bytes.byteLength} bytes: decode ${Math.round(t1 - t0)} ms, worker code ${Math.round(total - (t1 - t0) - encodeMs)} ms, encode replies ${Math.round(encodeMs)} ms`);
 };
 
 // Files the worker loads: importScripts, and fetch for its own assets (a transcoder, a wasm file).
