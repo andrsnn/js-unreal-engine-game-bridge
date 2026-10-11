@@ -40,7 +40,7 @@ export interface JsgbHost {
   /** The game's DOM UI, serialized for the CEF overlay. */
   ui?: {publish(html: string): void};
   /** WebAudio voices as a JSON array of start/update/stop operations. */
-  audio?: {voices(json: string): void; pcm?(id: number, samples: ArrayBuffer, sampleRate: number): void};
+  audio?: {voices(json: string): void; pcm?(id: number, samples: ArrayBuffer, sampleRate: number): void; preload?(path: string): void};
   /** Canvas text: alpha mask and metrics for a run (see JsgbBridge::Text). */
   text?(fontPath: string, sizePx: number, run: string): ArrayBuffer | null;
   /** Seed for Math.random (deterministic captures); 0 or absent keeps it random. */

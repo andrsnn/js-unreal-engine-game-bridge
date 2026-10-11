@@ -356,6 +356,9 @@ function syncMaterial(mat: THREE.Material): number {
   let custom: string | undefined;
   if (shader && !registryMaterial) {
     const t = translateShaderMaterial(m);
+    // Still compiling (the shader compiler loads in the background): send it again next frame, even
+    // though its values haven't changed, so the generated material replaces the generic one.
+    if (t === undefined) quick.delete(mat);
     if (t) { if (!sentShaders.has(t.key)) { sentShaders.add(t.key); sink()?.shader?.(t.key, JSON.stringify(t)); } custom = t.key; }
   }
   const desc = {

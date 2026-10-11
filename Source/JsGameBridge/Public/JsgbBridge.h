@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include <source_location>
 #include "UObject/Object.h"
 #include "ArrayBuffer.h"
 #include "JsgbBridge.generated.h"
@@ -64,13 +65,13 @@ public:
 	 *  queued and run on the game thread by DrainGameCommands, in order; of several frame snapshots
 	 *  waiting at once, only the newest is applied. Input and eval travel the other way through RunOnJs. */
 	bool bJsThread = false;
-	void RunOnGame(TFunction<void()>&& Fn, bool bFrame = false);
+	void RunOnGame(TFunction<void()>&& Fn, bool bFrame = false, std::source_location From = std::source_location::current());
 	/** Runs the queued state changes; returns how many frame snapshots it applied (0 or 1). */
 	int32 DrainGameCommands();
 	void RunOnJs(TFunction<void()>&& Fn);
 	/** Runs the queued input and eval calls on the JavaScript thread. */
 	void DrainJsCommands();
-	struct FGameCommand { TFunction<void()> Fn; bool bFrame = false; };
+	struct FGameCommand { TFunction<void()> Fn; bool bFrame = false; std::source_location From; };
 	TQueue<FGameCommand, EQueueMode::Mpsc> GameCommands;
 	TQueue<TFunction<void()>, EQueueMode::Mpsc> JsCommands;
 	FCriticalSection LogLock;
@@ -99,6 +100,7 @@ public:
 	// DOM UI and audio.
 	UFUNCTION() void PublishUI(const FString& Html);
 	UFUNCTION() void AudioVoices(const FString& Json);
+	UFUNCTION() void AudioPreload(const FString& Path);
 	UFUNCTION() void AudioPcm(int32 Id, FArrayBuffer Samples, int32 SampleRate);
 
 	TArray<FString> PublicRoots;

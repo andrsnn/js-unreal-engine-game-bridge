@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include <atomic>
 #include "GameFramework/Actor.h"
 #include "GameFramework/GameModeBase.h"
 #include "PuertsNamespaceDef.h"
@@ -60,6 +61,10 @@ public:
 	void SendWheel(float DeltaY);
 	void SendGamepads(const FString& Json);
 	FString Eval(const FString& Source);
+	/** An answer from the game's JavaScript that arrives later; Text is set before bDone. */
+	struct FAnswer { FString Text; std::atomic<bool> bDone{false}; };
+	/** Runs Source in the game's JavaScript without waiting for it. */
+	TSharedRef<FAnswer> Ask(const FString& Source);
 	bool HasOverlay() const { return Browser.IsValid(); }
 	bool IsRecording() const { return !RecordDir.IsEmpty(); }
 
@@ -123,6 +128,8 @@ private:
 	bool bWaitGone = false;
 	/** A wait that came true in the game ends once the overlay shows this UI version. */
 	int32 WaitUIVersion = -1;
+	TSharedPtr<FAnswer> WaitQuery;
+	TArray<TPair<FString, TSharedRef<FAnswer>>> ScriptAnswers;
 	double WaitStart = 0;
 	double JsMs = 0;
 	int32 TimedFrames = 0;

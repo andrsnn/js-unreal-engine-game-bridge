@@ -251,6 +251,7 @@ class Ctx {
     const b = new AudioBufferImpl(2, Math.max(1, Math.round(encodedDuration(bytes) * this.sampleRate)), this.sampleRate);
     const origin = bufferOrigin.get(data); b.__src = origin ? decodeURIComponent(new g.URL(origin, 'http://localhost/').pathname) : undefined;
     if (!b.__src) host.log('warn', 'decodeAudioData: buffer has no source file; it will play silent');
+    else host.audio?.preload?.(b.__src);
     ok?.(b); return Promise.resolve(b);
   }
   addEventListener() {} removeEventListener() {}
@@ -265,7 +266,7 @@ class MediaElement {
   src = ''; volume = 1; loop = false; muted = false; playbackRate = 1; currentTime = 0; paused = true; preload = 'auto'; readyState = 4; duration = NaN;
   node: Node | null = null; private id = 0; private last = ''; private listeners: Record<string, ((e: unknown) => void)[]> = {};
   onended: null | ((e: unknown) => void) = null;
-  constructor(src?: string) { if (src) this.src = src; }
+  constructor(src?: string) { if (src) { this.src = src; host.audio?.preload?.(new g.URL(src, 'http://localhost/').pathname); } }
   play() { if (!this.id) { this.id = ++voiceSerial; this.last = ''; mediaElements.add(this); } this.paused = false; return Promise.resolve(); }
   pause() { this.paused = true; if (this.id) ops.push({op: 'stop', id: this.id}); this.id = 0; mediaElements.delete(this); }
   load() {} canPlayType() { return 'probably'; }

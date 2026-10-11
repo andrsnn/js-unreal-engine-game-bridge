@@ -20,7 +20,6 @@ class UNiagaraComponent;
 class UCameraComponent;
 class UJsgbBridge;
 
-/** Geometry waiting to become a UStaticMesh (Three.js space, unconverted). */
 /** A mesh's render buffers, built from the game's arrays on any thread; FinishMesh makes the Unreal mesh. */
 struct FJsgbPreparedMesh
 {
@@ -30,6 +29,16 @@ struct FJsgbPreparedMesh
 	bool bOffGameThread = false;
 };
 
+/** A texture's pixels, decoded and laid out on any thread; AcceptTexture makes the Unreal texture. */
+struct FJsgbPreparedTexture
+{
+	TSharedPtr<class FJsonObject> Json;
+	TUniquePtr<struct FTexturePlatformData> PlatformData;
+	bool bVolume = false;
+	double Ms = 0;
+};
+
+/** Geometry waiting to become a UStaticMesh (Three.js space, unconverted). */
 struct FJsgbPendingGeometry
 {
 	TArray<float> Positions, Normals, UVs, Colors;
@@ -140,6 +149,9 @@ public:
 	void ReleaseGeometry(int32 Id);
 	void SetMaterial(int32 Id, const FString& Json);
 	void SetTexture(int32 Id, const FString& Json, const FArrayBuffer& Bytes);
+	/** Decodes and lays out a texture's pixels; safe on any thread. FileData holds the bytes of a "file" texture. */
+	static TSharedPtr<FJsgbPreparedTexture> PrepareTexture(const FString& Json, const FArrayBuffer& Bytes, const TArray<uint8>& FileData);
+	void AcceptTexture(int32 Id, TSharedPtr<FJsgbPreparedTexture> P);
 	void ApplyFrame(const float* Data, int32 Count, const float* Inst, int32 InstCount);
 	void ApplyEvents(const FString& Json);
 	void SetShader(const FString& Key, const FString& Json);
@@ -177,6 +189,10 @@ public:
 	int32 PointsDrawn = 0;
 	UPROPERTY() TObjectPtr<UJsgbBridge> Bridge;
 	float BuildBudgetMs = 6.f;
+	/** With the JavaScript thread, new objects past this many milliseconds of one update wait for the next snapshot. */
+	float CreateBudgetMs = 8.f;
+	/** New objects left for the next snapshot this frame. */
+	int32 DeferredEntities = 0;
 	float LightScale = 1.f;
 	int32 FrameCounter = 0;
 
@@ -211,6 +227,16 @@ private:
 	UStaticMesh* FirstBuild(int32 GeometryId, struct FJsgbGeometry* G);
 	UStaticMesh* SpriteQuad();
 	UMaterialInterface* ParentFor(int32 Variant);
+	/** An asset by path: from memory when it's there, otherwise loaded now. A load waits for every background
+	 *  load in flight, so the bridge's own assets load once at start and game assets load in the background. */
+	template <typename T> T* Resolve(const FString& Path)
+	{
+		if (Path.IsEmpty()) { return nullptr; }
+		TObjectPtr<UObject>& Cached = LoadedAssets.FindOrAdd(Path);
+		if (!Cached) { Cached = FSoftObjectPath(Path).ResolveObject(); }
+		if (!Cached) { Cached = LoadObject<T>(nullptr, *Path, nullptr, LOAD_NoWarn | LOAD_Quiet); }
+		return Cast<T>(Cached);
+	}
 	UMaterialInstanceDynamic* MaterialFor(int32 Id);
 	void ApplyTextureParams(UMaterialInstanceDynamic* Mid, int32 TextureId);
 	UStaticMeshComponent* NewComponent(bool bInstanced);
@@ -231,6 +257,9 @@ private:
 	UPROPERTY() TMap<int32, FJsgbLight> Lights;
 	UPROPERTY() TArray<TObjectPtr<UMaterialInterface>> Parents;
 	UPROPERTY() TObjectPtr<UMaterialInterface> Fallback;
+	UPROPERTY() TObjectPtr<UTexture> DefaultTexture2D;
+	UPROPERTY() TObjectPtr<UTexture> DefaultCube;
+	UPROPERTY() TObjectPtr<UTexture> DefaultVolume;
 	UPROPERTY() TObjectPtr<UMaterialParameterCollection> Globals;
 	UPROPERTY() TObjectPtr<UStaticMesh> Quad;
 	UPROPERTY() TObjectPtr<UMaterialInstanceDynamic> PostMid;

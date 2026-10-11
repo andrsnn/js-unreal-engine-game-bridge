@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "Engine/StreamableManager.h"
+#include <atomic>
 #include "JsgbAudio.generated.h"
 
 class UAudioComponent;
@@ -21,7 +23,11 @@ public:
 	void ApplyVoices(const FString& Json);
 	void SetPcm(int32 Id, const float* Samples, int32 Count, int32 SampleRate);
 	/** Registry "files" map: site path ("/audio/x.ogg") -> Unreal sound asset path. */
-	void SetFileAssets(const TMap<FString, FString>& Files) { FileAssets = Files; }
+	void SetFileAssets(const TMap<FString, FString>& Files);
+	/** Starts decoding a sound file in the background. Safe on any thread. */
+	void Preload(const FString& Path);
+	/** Starts the voices that were waiting for their file to decode or load. */
+	void StartPending();
 	void StopAll();
 
 	UPROPERTY() TObjectPtr<UJsgbBridge> Bridge;
@@ -32,11 +38,18 @@ public:
 	struct FPcm { TArray<int16> Samples; int32 Channels = 1; int32 SampleRate = 48000; };
 
 private:
-	TSharedPtr<FPcm> Decode(const FString& Path);
-	UAudioComponent* Start(int32 Id, const TSharedPtr<class FJsonObject>& Op);
+	/** A file's decode, run on the thread pool. Pcm is set before bDone. */
+	struct FDecode { TSharedPtr<FPcm> Pcm; std::atomic<bool> bDone{false}; };
+	TSharedPtr<FDecode> DecodeOf(const FString& Path);
+	/** Starts a voice. Returns false while its file is still decoding or loading. */
+	bool Start(int32 Id, const TSharedPtr<class FJsonObject>& Op);
 	void Update(UAudioComponent* C, const TSharedPtr<class FJsonObject>& Op);
 
-	TMap<FString, TSharedPtr<FPcm>> Decoded;
+	FCriticalSection DecodeLock;
+	TMap<FString, TSharedPtr<FDecode>> Decodes;
+	TMap<int32, TSharedPtr<class FJsonObject>> Pending;
+	FStreamableManager Streamable;
+	TSharedPtr<struct FStreamableHandle> AssetLoad;
 	TMap<int32, TSharedPtr<FPcm>> Synthesized;
 	TMap<FString, FString> FileAssets;
 	UPROPERTY() TMap<int32, TObjectPtr<UAudioComponent>> Voices;

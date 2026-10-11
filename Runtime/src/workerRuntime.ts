@@ -4,7 +4,7 @@
  *  bytes in the structured-clone subset of clone.ts. */
 import {blobStore} from './polyfills';
 import {encode, decode} from './clone';
-import {Context2D, Path2DImpl, setImageReader} from './canvas2d';
+import {Context2D, Path2DImpl, OffscreenCanvasImpl, ImageDataImpl, ImageBitmapImpl} from './canvas2d';
 import {Headers, Response, Request, MIME} from './fetchCore';
 
 type Native = {
@@ -97,6 +97,13 @@ g.fetch = async (input: string | {url: string}, init?: {method?: string}) => {
   const b = bytesOf(url), ext = url.split(/[?#]/)[0].split('.').pop()?.toLowerCase() ?? '';
   return new Response(b, b ? 200 : 404, url, MIME[ext] ?? '');
 };
+
+// Workers draw with OffscreenCanvas (procedural textures, text atlases) and read the pixels back.
+g.OffscreenCanvas = OffscreenCanvasImpl;
+g.OffscreenCanvasRenderingContext2D = Context2D;
+g.Path2D = Path2DImpl;
+g.ImageData = ImageDataImpl;
+g.ImageBitmap = ImageBitmapImpl;
 
 /** Starts the worker's script in the global scope, as a classic worker. */
 g.__start = (source: string, url: string) => {

@@ -548,3 +548,29 @@ export class Path2DImpl {
     return out;
   }
 }
+
+/** ImageBitmap: a file reference (the host loads the texture by path), encoded bytes, or pixels. */
+export class ImageBitmapImpl {
+  constructor(public width: number, public height: number, public __jsgbAsset?: string, public __bytes?: Uint8Array, public __pixels?: {width: number; height: number; data: Uint8ClampedArray}) {}
+  close() {}
+}
+
+export class ImageDataImpl {
+  data: Uint8ClampedArray; width: number; height: number; colorSpace = 'srgb';
+  constructor(a: Uint8ClampedArray | number, b: number, c?: number) {
+    if (typeof a === 'number') { this.width = a; this.height = b; this.data = new Uint8ClampedArray(a * b * 4); }
+    else { this.data = a; this.width = b; this.height = c ?? a.length / 4 / b; }
+  }
+}
+
+/** OffscreenCanvas with a 2D context, for the page and for Web Workers (which have no DOM). */
+export class OffscreenCanvasImpl {
+  private dims = {width: 0, height: 0}; __ctx?: Context2D;
+  constructor(w: number, h: number) { this.dims = {width: Math.max(0, w | 0), height: Math.max(0, h | 0)}; }
+  get width() { return this.dims.width; } set width(v: number) { this.dims.width = Math.max(0, v | 0); this.__ctx?.resize(); }
+  get height() { return this.dims.height; } set height(v: number) { this.dims.height = Math.max(0, v | 0); this.__ctx?.resize(); }
+  getContext(kind: string) { return kind === '2d' ? (this.__ctx ??= new Context2D(this)) : null; }
+  convertToBlob() { const B = (globalThis as {Blob?: new (parts: unknown[], o: {type: string}) => unknown}).Blob; return Promise.resolve(B ? new B([], {type: 'image/png'}) : null); }
+  transferToImageBitmap() { const b = this.__ctx?.bitmap(); return new ImageBitmapImpl(this.width, this.height, undefined, undefined, b ? {width: b.width, height: b.height, data: b.data.slice()} : undefined); }
+  addEventListener() {} removeEventListener() {}
+}

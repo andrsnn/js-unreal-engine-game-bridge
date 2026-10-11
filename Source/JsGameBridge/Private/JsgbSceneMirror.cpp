@@ -25,6 +25,8 @@
 #include "Engine/Texture2D.h"
 #include "Engine/VolumeTexture.h"
 #include "ImageUtils.h"
+#include "ImageCore.h"
+#include "ImageCoreUtils.h"
 #include "MeshDescription.h"
 #include "StaticMeshAttributes.h"
 #include "StaticMeshResources.h"
@@ -143,6 +145,9 @@ UMaterialInterface* UJsgbSceneMirror::ParentFor(int32 Variant)
 		for (int32 I = 0; I < VCount; ++I) { Parents[I] = LoadObject<UMaterialInterface>(nullptr, VariantPaths[I], nullptr, LOAD_NoWarn | LOAD_Quiet); }
 		Fallback = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
 		Globals = LoadObject<UMaterialParameterCollection>(nullptr, GlobalsPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+		DefaultTexture2D = LoadObject<UTexture>(nullptr, TEXT("/Engine/EngineResources/WhiteSquareTexture.WhiteSquareTexture"));
+		DefaultCube = LoadObject<UTexture>(nullptr, TEXT("/Engine/EngineResources/DefaultTextureCube.DefaultTextureCube"));
+		DefaultVolume = LoadObject<UTexture>(nullptr, TEXT("/Engine/EngineResources/DefaultVolumeTexture.DefaultVolumeTexture"));
 		if (!Parents[VLit]) { UE_LOG(LogJsgbMirror, Warning, TEXT("JsGameBridge mirror materials missing; drawing with BasicShapeMaterial. Run Tools/materials/make_materials.py.")); }
 		UWorld* World = GetWorld();
 		const ERHIFeatureLevel::Type Level = World ? World->GetFeatureLevel() : GMaxRHIFeatureLevel;
@@ -161,6 +166,7 @@ UMaterialInterface* UJsgbSceneMirror::ParentFor(int32 Variant)
 
 bool UJsgbSceneMirror::SetAssetRegistry(const FString& Json)
 {
+	ParentFor(VLit);
 	TSharedPtr<FJsonObject> Root = ParseJson(Json);
 	const TSharedPtr<FJsonObject>* Map = nullptr;
 	if (!Root || !Root->TryGetObjectField(TEXT("assets"), Map)) { return false; }
@@ -604,33 +610,66 @@ UStaticMesh* UJsgbSceneMirror::SpriteQuad()
 
 void UJsgbSceneMirror::SetTexture(int32 Id, const FString& Json, const FArrayBuffer& Bytes)
 {
+	TArray<uint8> FileData;
 	TSharedPtr<FJsonObject> J = ParseJson(Json);
-	if (!J) { return; }
-	FJsgbTexture& T = Textures.FindOrAdd(Id);
+	if (Bridge && J && Str(J, TEXT("kind")) == TEXT("file")) { FileData = Bridge->ReadFile(Str(J, TEXT("path"))).Data; }
+	AcceptTexture(Id, PrepareTexture(Json, Bytes, FileData));
+}
+
+TSharedPtr<FJsgbPreparedTexture> UJsgbSceneMirror::PrepareTexture(const FString& Json, const FArrayBuffer& Bytes, const TArray<uint8>& FileData)
+{
+	const double Start = FPlatformTime::Seconds();
+	TSharedPtr<FJsgbPreparedTexture> P = MakeShared<FJsgbPreparedTexture>();
+	P->Json = ParseJson(Json);
+	const TSharedPtr<FJsonObject>& J = P->Json;
+	if (!J) { return P; }
 	const FString Kind = Str(J, TEXT("kind"));
-	UTexture2D* Tex = nullptr;
-	if (Kind == TEXT("file"))
+	// One mip of raw pixels, laid out as UTexture2D::CreateTransient does it. The caller fills it and unlocks it.
+	auto SingleMip = [&P](int32 W, int32 H, int32 Depth, EPixelFormat Format, int64 Size) -> void*
 	{
-		FArrayBufferValue Data;
-		if (Bridge) { Data = Bridge->ReadFile(Str(J, TEXT("path"))); }
-		if (Data.Data.Num() > 0) { Tex = FImageUtils::ImportBufferAsTexture2D(Data.Data); }
-	}
-	else if (Kind == TEXT("encoded") && Bytes.Data && Bytes.Length > 0)
+		P->PlatformData = MakeUnique<FTexturePlatformData>();
+		P->PlatformData->SizeX = W; P->PlatformData->SizeY = H; P->PlatformData->SetNumSlices(Depth); P->PlatformData->PixelFormat = Format;
+		FTexture2DMipMap* Mip = new FTexture2DMipMap(W, H, Depth);
+		P->PlatformData->Mips.Add(Mip);
+		Mip->BulkData.Lock(LOCK_READ_WRITE);
+		return Mip->BulkData.Realloc(Size);
+	};
+	auto Unlock = [&P] { P->PlatformData->Mips[0].BulkData.Unlock(); };
+	if (Kind == TEXT("file") || Kind == TEXT("encoded"))
 	{
-		Tex = FImageUtils::ImportBufferAsTexture2D(TArrayView64<const uint8>(static_cast<const uint8*>(Bytes.Data), Bytes.Length));
+		// PNG, JPEG and the other web image formats, decoded on the calling thread.
+		const bool bFile = Kind == TEXT("file");
+		const void* Data = bFile ? static_cast<const void*>(FileData.GetData()) : Bytes.Data;
+		const int64 Size = bFile ? FileData.Num() : (Bytes.Data ? static_cast<int64>(Bytes.Length) : 0);
+		FImage Image;
+		if (Size > 0 && FImageUtils::DecompressImage(Data, Size, Image))
+		{
+			ERawImageFormat::Type Raw;
+			const EPixelFormat Format = FImageCoreUtils::GetPixelFormatForRawImageFormat(Image.Format, &Raw);
+			FImageView Dest(nullptr, Image.SizeX, Image.SizeY, 1, Raw, Image.GammaSpace);
+			Dest.RawData = SingleMip(Image.SizeX, Image.SizeY, 1, Format, Dest.GetImageSizeBytes());
+			FImageCore::CopyImage(Image, Dest);
+			Unlock();
+		}
 	}
 	else if (Kind == TEXT("rgba8") && Bytes.Data)
 	{
 		const int32 W = static_cast<int32>(Num(J, TEXT("width"))), H = static_cast<int32>(Num(J, TEXT("height")));
 		if (W > 0 && H > 0 && Bytes.Length >= static_cast<size_t>(W) * H * 4)
 		{
-			Tex = UTexture2D::CreateTransient(W, H, PF_R8G8B8A8);
-			if (Tex)
-			{
-				void* Mip = Tex->GetPlatformData()->Mips[0].BulkData.Lock(LOCK_READ_WRITE);
-				FMemory::Memcpy(Mip, Bytes.Data, static_cast<SIZE_T>(W) * H * 4);
-				Tex->GetPlatformData()->Mips[0].BulkData.Unlock();
-			}
+			FMemory::Memcpy(SingleMip(W, H, 1, PF_R8G8B8A8, static_cast<int64>(W) * H * 4), Bytes.Data, static_cast<SIZE_T>(W) * H * 4);
+			Unlock();
+		}
+	}
+	else if (Kind == TEXT("rgba8_3d") && Bytes.Data)
+	{
+		// Data3DTexture (noise volumes for custom shaders): a transient volume texture.
+		const int32 W = static_cast<int32>(Num(J, TEXT("width"))), H = static_cast<int32>(Num(J, TEXT("height"))), D3 = static_cast<int32>(Num(J, TEXT("depth")));
+		if (W > 0 && H > 0 && D3 > 0 && Bytes.Length >= static_cast<size_t>(W) * H * D3 * 4)
+		{
+			FMemory::Memcpy(SingleMip(W, H, D3, PF_R8G8B8A8, static_cast<int64>(W) * H * D3 * 4), Bytes.Data, static_cast<SIZE_T>(W) * H * D3 * 4);
+			Unlock();
+			P->bVolume = true;
 		}
 	}
 	else if (Kind == TEXT("compressed") && Bytes.Data)
@@ -642,7 +681,7 @@ void UJsgbSceneMirror::SetTexture(int32 Id, const FString& Json, const FArrayBuf
 		const int32 W = static_cast<int32>(Num(J, TEXT("width"))), H = static_cast<int32>(Num(J, TEXT("height")));
 		if (W > 0 && H > 0 && J->TryGetArrayField(TEXT("mips"), Levels) && Levels->Num() > 0)
 		{
-			FTexturePlatformData* PD = new FTexturePlatformData();
+			TUniquePtr<FTexturePlatformData> PD = MakeUnique<FTexturePlatformData>();
 			PD->SizeX = W; PD->SizeY = H; PD->PixelFormat = Pf; PD->SetNumSlices(1);
 			const uint8* Src = static_cast<const uint8*>(Bytes.Data);
 			int64 At = 0;
@@ -659,47 +698,46 @@ void UJsgbSceneMirror::SetTexture(int32 Id, const FString& Json, const FArrayBuf
 				PD->Mips.Add(Mip);
 				At += Len;
 			}
-			UE_LOG(LogJsgbMirror, Display, TEXT("Compressed texture %d: %s %dx%d, %d of %d mips, %lld bytes"), Id, *Format, W, H, PD->Mips.Num(), Levels->Num(), static_cast<int64>(Bytes.Length));
-			if (PD->Mips.Num() > 0)
-			{
-				Tex = NewObject<UTexture2D>(GetTransientPackage(), NAME_None, RF_Transient);
-				Tex->NeverStream = true;
-				Tex->SetPlatformData(PD);
-			}
-			else { delete PD; }
+			UE_LOG(LogJsgbMirror, Display, TEXT("Compressed texture: %s %dx%d, %d of %d mips, %lld bytes"), *Format, W, H, PD->Mips.Num(), Levels->Num(), static_cast<int64>(Bytes.Length));
+			if (PD->Mips.Num() > 0) { P->PlatformData = MoveTemp(PD); }
 		}
 	}
-	if (Tex)
+	P->Ms = (FPlatformTime::Seconds() - Start) * 1000.0;
+	return P;
+}
+
+void UJsgbSceneMirror::AcceptTexture(int32 Id, TSharedPtr<FJsgbPreparedTexture> P)
+{
+	if (!P.IsValid() || !P->Json) { return; }
+	const TSharedPtr<FJsonObject>& J = P->Json;
+	FJsgbTexture& T = Textures.FindOrAdd(Id);
+	UTexture* Result = nullptr;
+	if (P->PlatformData.IsValid())
 	{
-		Tex->SRGB = Flag(J, TEXT("srgb"));
-		Tex->Filter = Flag(J, TEXT("nearest")) ? TF_Nearest : TF_Bilinear;
+		// The pixels are ready, so the game thread only wraps them and starts one upload.
+		const bool bSRGB = Flag(J, TEXT("srgb"));
+		const TextureFilter Filter = Flag(J, TEXT("nearest")) ? TF_Nearest : TF_Bilinear;
 		const double WrapS = Num(J, TEXT("wrapS")), WrapT = Num(J, TEXT("wrapT"));
-		Tex->AddressX = WrapS == 1001 ? TA_Clamp : WrapS == 1002 ? TA_Mirror : TA_Wrap;
-		Tex->AddressY = WrapT == 1001 ? TA_Clamp : WrapT == 1002 ? TA_Mirror : TA_Wrap;
-		Tex->UpdateResource();
-	}
-	UTexture* Result = Tex;
-	if (Kind == TEXT("rgba8_3d") && Bytes.Data)
-	{
-		// Data3DTexture (noise volumes for custom shaders): a transient volume texture.
-		const int32 W = static_cast<int32>(Num(J, TEXT("width"))), H = static_cast<int32>(Num(J, TEXT("height"))), D3 = static_cast<int32>(Num(J, TEXT("depth")));
-		if (W > 0 && H > 0 && D3 > 0 && Bytes.Length >= static_cast<size_t>(W) * H * D3 * 4)
+		auto Address = [](double Wrap) { return Wrap == 1001 ? TA_Clamp : Wrap == 1002 ? TA_Mirror : TA_Wrap; };
+		if (P->bVolume)
 		{
 			UVolumeTexture* V = NewObject<UVolumeTexture>(GetTransientPackage(), NAME_None, RF_Transient);
-			FTexturePlatformData* PD = new FTexturePlatformData();
-			PD->SizeX = W; PD->SizeY = H; PD->SetNumSlices(D3); PD->PixelFormat = PF_R8G8B8A8;
-			FTexture2DMipMap* Mip = new FTexture2DMipMap(W, H, D3);
-			Mip->BulkData.Lock(LOCK_READ_WRITE);
-			void* Dest = Mip->BulkData.Realloc(static_cast<int64>(W) * H * D3 * 4);
-			FMemory::Memcpy(Dest, Bytes.Data, static_cast<SIZE_T>(W) * H * D3 * 4);
-			Mip->BulkData.Unlock();
-			PD->Mips.Add(Mip);
-			V->SetPlatformData(PD);
-			V->SRGB = Flag(J, TEXT("srgb"));
-			V->Filter = Flag(J, TEXT("nearest")) ? TF_Nearest : TF_Bilinear;
-			V->AddressMode = Num(J, TEXT("wrapS")) == 1001 ? TA_Clamp : TA_Wrap;
+			V->SetPlatformData(P->PlatformData.Release());
+			V->SRGB = bSRGB; V->Filter = Filter;
+			V->AddressMode = WrapS == 1001 ? TA_Clamp : TA_Wrap;
 			V->UpdateResource();
 			Result = V;
+		}
+		else
+		{
+			UTexture2D* Tex = NewObject<UTexture2D>(GetTransientPackage(), NAME_None, RF_Transient);
+			Tex->NeverStream = true;
+			Tex->bNotOfflineProcessed = true;
+			Tex->SetPlatformData(P->PlatformData.Release());
+			Tex->SRGB = bSRGB; Tex->Filter = Filter;
+			Tex->AddressX = Address(WrapS); Tex->AddressY = Address(WrapT);
+			Tex->UpdateResource();
+			Result = Tex;
 		}
 	}
 	T.Texture = Result;
@@ -749,9 +787,7 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 	UMaterialInterface* Parent = nullptr;
 	if (!RegistryPath.IsEmpty())
 	{
-		TObjectPtr<UObject>& Cached = LoadedAssets.FindOrAdd(RegistryPath);
-		if (!Cached) { Cached = LoadObject<UMaterialInterface>(nullptr, *RegistryPath, nullptr, LOAD_NoWarn | LOAD_Quiet); }
-		Parent = Cast<UMaterialInterface>(Cached);
+		Parent = Resolve<UMaterialInterface>(RegistryPath);
 	}
 	// A game shader translated to HLSL (Runtime/src/shaders.ts) draws with its generated material.
 	const FString CustomKey = Str(J, TEXT("custom"));
@@ -989,7 +1025,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	if (Count < HeaderFloats) { return; }
 	ParentFor(VLit);
 	const double T0 = FPlatformTime::Seconds();
-	SkippedEntities = 0; CompilingEntities = 0; SpritesDrawn = 0; PointsDrawn = 0;
+	SkippedEntities = 0; CompilingEntities = 0; SpritesDrawn = 0; PointsDrawn = 0; DeferredEntities = 0;
 	FrameLines.Reset();
 	const double StallAtStart = StallMs;
 	++Stamp;
@@ -1076,6 +1112,18 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 		if (bCompiling) { ++CompilingEntities; }
 		TraceRecord(Ent.Id, bCompiling ? 3 : 1, bCompiling ? TEXT("generated material still compiling") : TEXT(""));
 	};
+	// A game can add a thousand objects in one update (a new level or terrain), and creating them all in one
+	// frame would stall it. With the JavaScript thread, objects past the budget wait for the next snapshot,
+	// which arrives a few milliseconds later. Fixed-step captures keep JavaScript on the game thread, so they
+	// stay frame-exact.
+	auto Defer = [this, T0](int32 Id)
+	{
+		if (!bInterpolate || (FPlatformTime::Seconds() - T0) * 1000.0 < CreateBudgetMs) { return false; }
+		const FJsgbEntity* Existing = Entities.Find(Id);
+		if (Existing && (Existing->Component || Existing->Effect)) { return false; }
+		++DeferredEntities;
+		return true;
+	};
 	// Adds the time of one record to its type's total, however the record's branch ends.
 	struct FRecordTimer { double& Total; double Start; ~FRecordTimer() { Total += (FPlatformTime::Seconds() - Start) * 1000.0; } };
 	while (K < Count)
@@ -1093,6 +1141,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			FJsgbGeometry* G = Geometries.Find(Geo);
 			if (G && !G->Mesh) { FirstBuild(Geo, G); }
 			if (!G || !G->Mesh) { ++SkippedEntities; TraceRecord(Id, 2, G ? TEXT("mesh could not be built") : TEXT("geometry released")); continue; }
+			if (Defer(Id)) { continue; }
 			FJsgbEntity& Ent = EntityOf(Id, RMesh);
 			if (!Ent.Component) { Ent.Component = NewComponent(false); }
 			UStaticMeshComponent* C = CastChecked<UStaticMeshComponent>(Ent.Component);
@@ -1115,12 +1164,11 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			{
 				TSharedPtr<FJsonObject> A = Asset(-Geo);
 				const FString Path = Str(A, TEXT("mesh"));
-				TObjectPtr<UObject>& Cached = LoadedAssets.FindOrAdd(Path);
-				if (!Cached && !Path.IsEmpty()) { Cached = LoadObject<UStaticMesh>(nullptr, *Path); }
-				Mesh = Cast<UStaticMesh>(Cached); Revision = 1;
+				Mesh = Resolve<UStaticMesh>(Path); Revision = 1;
 			}
 			else if (FJsgbGeometry* G = Geometries.Find(Geo)) { if (!G->Mesh) { FirstBuild(Geo, G); } Mesh = G->Mesh; Slots = G->Slots; Revision = G->BuiltRevision; }
 			if (!Mesh) { ++SkippedEntities; TraceRecord(Id, 2, TEXT("instanced mesh could not be built")); continue; }
+			if (Defer(Id)) { continue; }
 			FJsgbEntity& Ent = EntityOf(Id, RInstanced);
 			if (!Ent.Component) { Ent.Component = NewComponent(true); }
 			UInstancedStaticMeshComponent* C = CastChecked<UInstancedStaticMeshComponent>(Ent.Component);
@@ -1190,6 +1238,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 				// three.js: attenuated points are size * tan(fov/2) world units across; others are pixels.
 				if (!MatInfo || MatInfo->bSizeAttenuation) { SizeX = SizeY = Size * TanHalf * Cm; Mode = 0; } else { SizeX = SizeY = Size; Mode = 1; }
 			}
+			if (Defer(Id)) { continue; }
 			FJsgbEntity& Ent = EntityOf(Id, Type);
 			if (!Ent.Component) { Ent.Component = NewComponent(false); CastChecked<UStaticMeshComponent>(Ent.Component)->SetBoundsScale(4.f); }
 			UStaticMeshComponent* C = CastChecked<UStaticMeshComponent>(Ent.Component);
@@ -1250,10 +1299,8 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			TSharedPtr<FJsonObject> A = Asset(KeyId);
 			const FString Path = Str(A, TEXT("mesh"));
 			if (Path.IsEmpty()) { continue; }
-			TObjectPtr<UObject>& Cached = LoadedAssets.FindOrAdd(Path);
-			if (!Cached) { Cached = LoadObject<UStaticMesh>(nullptr, *Path); }
-			UStaticMesh* Mesh = Cast<UStaticMesh>(Cached);
-			if (!Mesh) { continue; }
+			UStaticMesh* Mesh = Resolve<UStaticMesh>(Path);
+			if (!Mesh || Defer(Id)) { continue; }
 			FJsgbEntity& Ent = EntityOf(Id, RAsset);
 			if (!Ent.Component) { Ent.Component = NewComponent(false); }
 			UStaticMeshComponent* C = CastChecked<UStaticMeshComponent>(Ent.Component);
@@ -1263,9 +1310,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 				const FString MatPath = Str(A, TEXT("material"));
 				if (!MatPath.IsEmpty())
 				{
-					TObjectPtr<UObject>& MC = LoadedAssets.FindOrAdd(MatPath);
-					if (!MC) { MC = LoadObject<UMaterialInterface>(nullptr, *MatPath); }
-					if (UMaterialInterface* MI = Cast<UMaterialInterface>(MC)) { for (int32 S = 0; S < C->GetNumMaterials(); ++S) { C->SetMaterial(S, MI); } }
+					if (UMaterialInterface* MI = Resolve<UMaterialInterface>(MatPath)) { for (int32 S = 0; S < C->GetNumMaterials(); ++S) { C->SetMaterial(S, MI); } }
 				}
 			}
 			Place(Ent, C, ToTransform(M), 0);
@@ -1279,13 +1324,11 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			K += 19;
 			TSharedPtr<FJsonObject> A = Asset(KeyId);
 			const FString Path = Str(A, TEXT("niagara"));
-			if (Path.IsEmpty()) { continue; }
+			if (Path.IsEmpty() || Defer(Id)) { continue; }
 			FJsgbEntity& Ent = EntityOf(Id, REffect);
 			if (!Ent.Effect)
 			{
-				TObjectPtr<UObject>& Cached = LoadedAssets.FindOrAdd(Path);
-				if (!Cached) { Cached = LoadObject<UNiagaraSystem>(nullptr, *Path); }
-				if (UNiagaraSystem* System = Cast<UNiagaraSystem>(Cached))
+				if (UNiagaraSystem* System = Resolve<UNiagaraSystem>(Path))
 				{
 					Ent.Effect = UNiagaraFunctionLibrary::SpawnSystemAttached(System, GetOwner()->GetRootComponent(), NAME_None, FVector::ZeroVector, FRotator::ZeroRotator, EAttachLocation::KeepWorldPosition, false);
 				}
@@ -1430,7 +1473,7 @@ void UJsgbSceneMirror::ApplyEvents(const FString& Json)
 		E->TryGetObjectField(TEXT("parameters"), Params);
 		if (Kind == TEXT("effect"))
 		{
-			if (UNiagaraSystem* System = LoadObject<UNiagaraSystem>(nullptr, *Str(A, TEXT("niagara"))))
+			if (UNiagaraSystem* System = Resolve<UNiagaraSystem>(Str(A, TEXT("niagara"))))
 			{
 				if (UNiagaraComponent* C = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), System, T.GetLocation(), T.Rotator(), T.GetScale3D()))
 				{
@@ -1444,7 +1487,7 @@ void UJsgbSceneMirror::ApplyEvents(const FString& Json)
 		}
 		else if (Kind == TEXT("sound"))
 		{
-			if (USoundBase* Sound = LoadObject<USoundBase>(nullptr, *Str(A, TEXT("sound")))) { UGameplayStatics::PlaySoundAtLocation(this, Sound, T.GetLocation(), Num(E, TEXT("volume"), 1), Num(E, TEXT("pitch"), 1)); }
+			if (USoundBase* Sound = Resolve<USoundBase>(Str(A, TEXT("sound")))) { UGameplayStatics::PlaySoundAtLocation(this, Sound, T.GetLocation(), Num(E, TEXT("volume"), 1), Num(E, TEXT("pitch"), 1)); }
 		}
 		else if (Kind == TEXT("cameraShake"))
 		{
@@ -1545,9 +1588,7 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 			{
 				UMaterialExpressionTextureObjectParameter* P = NewObject<UMaterialExpressionTextureObjectParameter>(Mat);
 				P->ParameterName = *Param;
-				P->Texture = Source == TEXT("cube") ? LoadObject<UTexture>(nullptr, TEXT("/Engine/EngineResources/DefaultTextureCube.DefaultTextureCube"))
-					: Source == TEXT("volume") ? LoadObject<UTexture>(nullptr, TEXT("/Engine/EngineResources/DefaultVolumeTexture.DefaultVolumeTexture"))
-					: LoadObject<UTexture>(nullptr, TEXT("/Engine/EngineResources/WhiteSquareTexture.WhiteSquareTexture"));
+				P->Texture = Source == TEXT("cube") ? DefaultCube : Source == TEXT("volume") ? DefaultVolume : DefaultTexture2D;
 				P->SamplerType = SAMPLERTYPE_Color;
 				E = P;
 			}
@@ -1586,8 +1627,11 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 		}
 		else { Ed->EmissiveColor.Connect(0, Rgb); }
 		if (Blend == 1) { Ed->Opacity.Connect(0, Alpha); }
-		Mat->PreEditChange(nullptr);
-		Mat->PostEditChange();
+		// A new material has no components to update, so it skips PostEditChange, which flushes the render
+		// thread and re-registers every component in the scene (tens of milliseconds with a thousand objects).
+		static const bool bPostEditChange = FParse::Param(FCommandLine::Get(), TEXT("JsgbMaterialPostEditChange"));
+		if (bPostEditChange) { Mat->PreEditChange(nullptr); Mat->PostEditChange(); }
+		else { Mat->ForceRecompileForRendering(EMaterialShaderPrecompileMode::None); }
 		// Finish compiling now, so the first frame that uses it draws the game's shader and not
 		// Unreal's default material. The time comes off the game clock (StallMs).
 		{

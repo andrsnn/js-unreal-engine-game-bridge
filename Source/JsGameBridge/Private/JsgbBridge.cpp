@@ -8,6 +8,9 @@
 #include "Misc/Paths.h"
 #include "Misc/SecureHash.h"
 #include "Async/Async.h"
+#include "Dom/JsonObject.h"
+#include "Serialization/JsonReader.h"
+#include "Serialization/JsonSerializer.h"
 THIRD_PARTY_INCLUDES_START
 #include "ft2build.h"
 #include FT_FREETYPE_H
@@ -69,10 +72,10 @@ FArrayBufferValue UJsgbBridge::BlobGet(const FString& Url) { FArrayBufferValue O
 FString UJsgbBridge::BlobType(const FString& Url) { TArray<uint8> Bytes; FString Type; FJsgbBlobs::Get(Url, Bytes, Type); return Type; }
 void UJsgbBridge::BlobRevoke(const FString& Url) { FJsgbBlobs::Revoke(Url); }
 
-void UJsgbBridge::RunOnGame(TFunction<void()>&& Fn, bool bFrame)
+void UJsgbBridge::RunOnGame(TFunction<void()>&& Fn, bool bFrame, std::source_location From)
 {
 	if (!bJsThread || IsInGameThread()) { Fn(); return; }
-	GameCommands.Enqueue(FGameCommand{MoveTemp(Fn), bFrame});
+	GameCommands.Enqueue(FGameCommand{MoveTemp(Fn), bFrame, From});
 }
 
 int32 UJsgbBridge::DrainGameCommands()
@@ -82,7 +85,15 @@ int32 UJsgbBridge::DrainGameCommands()
 	while (GameCommands.Dequeue(Cmd)) { Batch.Add(MoveTemp(Cmd)); }
 	int32 LastFrame = INDEX_NONE;
 	for (int32 I = 0; I < Batch.Num(); ++I) { if (Batch[I].bFrame) { LastFrame = I; } }
-	for (int32 I = 0; I < Batch.Num(); ++I) { if (!Batch[I].bFrame || I == LastFrame) { Batch[I].Fn(); } }
+	for (int32 I = 0; I < Batch.Num(); ++I)
+	{
+		if (Batch[I].bFrame && I != LastFrame) { continue; }
+		const double T0 = FPlatformTime::Seconds();
+		Batch[I].Fn();
+		// A slow command names the bridge function that queued it.
+		const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0;
+		if (Ms > 15.0) { UE_LOG(LogTemp, Display, TEXT("Slow game-thread command: %.1f ms, queued at %s line %u"), Ms, ANSI_TO_TCHAR(Batch[I].From.function_name()), Batch[I].From.line()); }
+	}
 	return LastFrame == INDEX_NONE ? 0 : 1;
 }
 
@@ -251,7 +262,23 @@ void UJsgbBridge::Material(int32 Id, const FString& Json)
 }
 void UJsgbBridge::Texture(int32 Id, const FString& Json, FArrayBuffer Bytes)
 {
-	RunOnGame([this, Id, Json, B = FBytes(Bytes)] { const double T0 = FPlatformTime::Seconds(); if (Mirror) { Mirror->SetTexture(Id, Json, B.View()); } const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0; MirrorMs += Ms; TextureMs += Ms; ++TextureCalls; });
+	if (!bJsThread || IsInGameThread())
+	{
+		const double T0 = FPlatformTime::Seconds();
+		if (Mirror) { Mirror->SetTexture(Id, Json, Bytes); }
+		const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0; MirrorMs += Ms; TextureMs += Ms; ++TextureCalls;
+		return;
+	}
+	// On the JavaScript thread: read and decode the image here, so the game thread only creates the texture.
+	TArray<uint8> FileData;
+	if (Json.Contains(TEXT("\"file\"")))
+	{
+		TSharedPtr<FJsonObject> J;
+		FString Path;
+		if (FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), J) && J.IsValid() && J->GetStringField(TEXT("kind")) == TEXT("file") && J->TryGetStringField(TEXT("path"), Path)) { FileData = ReadFile(Path).Data; }
+	}
+	TSharedPtr<FJsgbPreparedTexture> P = UJsgbSceneMirror::PrepareTexture(Json, Bytes, FileData);
+	RunOnGame([this, Id, P] { const double T0 = FPlatformTime::Seconds(); if (Mirror) { Mirror->AcceptTexture(Id, P); } const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0; MirrorMs += Ms; TextureMs += Ms; ++TextureCalls; });
 }
 void UJsgbBridge::Events(const FString& Json) { RunOnGame([this, Json] { if (Mirror) { Mirror->ApplyEvents(Json); } }); }
 void UJsgbBridge::Shader(const FString& Key, const FString& Json) { RunOnGame([this, Key, Json] { if (Mirror) { Mirror->SetShader(Key, Json); } }); }
@@ -279,6 +306,7 @@ void UJsgbBridge::PublishUI(const FString& Html)
 	RunOnGame([this, Html] { UIHtml = Html; ++UIVersion; });
 }
 
+void UJsgbBridge::AudioPreload(const FString& Path) { if (Audio) { Audio->Preload(Path); } }
 void UJsgbBridge::AudioVoices(const FString& Json) { RunOnGame([this, Json] { if (Audio) { Audio->ApplyVoices(Json); } }); }
 
 void UJsgbBridge::AudioPcm(int32 Id, FArrayBuffer Samples, int32 SampleRate)

@@ -39,7 +39,7 @@ globalThis.__jsgbHost = {
     shader: (key, json) => bridge.Shader(key, json),
   },
   ui: {publish: html => bridge.PublishUI(html)},
-  audio: {voices: json => bridge.AudioVoices(json), pcm: (id, samples, rate) => bridge.AudioPcm(id, samples, rate)},
+  audio: {voices: json => bridge.AudioVoices(json), pcm: (id, samples, rate) => bridge.AudioPcm(id, samples, rate), preload: path => bridge.AudioPreload(path)},
 };
 
 const guard = (name, fn) => (...args) => { try { return fn(...args); } catch (e) { bridge.Log('error', `${name}: ${e && e.stack || e}`); } };

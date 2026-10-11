@@ -724,6 +724,15 @@ FString AJsgbHost::Eval(const FString& Source)
 	if (JsThread) { JsThread->Poke(); }
 	return Answer->Done->Wait(10000) ? Answer->Text : FString(TEXT("ERR the JavaScript thread did not answer within 10 s"));
 }
+TSharedRef<AJsgbHost::FAnswer> AJsgbHost::Ask(const FString& Source)
+{
+	TSharedRef<FAnswer> Answer = MakeShared<FAnswer>();
+	UJsgbBridge* B = Bridge;
+	if (!B || !B->bJsThread) { Answer->Text = Eval(Source); Answer->bDone = true; return Answer; }
+	B->RunOnJs([B, Source, Answer] { Answer->Text = B->OnEval.IsBound() ? B->OnEval.Execute(Source) : FString(TEXT("ERR no js")); Answer->bDone = true; });
+	if (JsThread) { JsThread->Poke(); }
+	return Answer;
+}
 double AJsgbHost::GameSeconds() const { return Bridge ? Bridge->NowMs() / 1000.0 : 0.0; }
 
 // Upscaling and frame generation, chosen on the command line:
@@ -959,14 +968,28 @@ static FString ScriptArg(const FString& Args)
 void AJsgbHost::RunScript()
 {
 	if (Script.Num() == 0 || ReadyFrame < 0) { return; }
+	for (int32 I = 0; I < ScriptAnswers.Num(); ++I)
+	{
+		if (!ScriptAnswers[I].Value->bDone) { break; }
+		Bridge->Log(TEXT("log"), FString::Printf(TEXT("%s -> %s"), *ScriptAnswers[I].Key, *ScriptAnswers[I].Value->Text.Left(800)));
+		ScriptAnswers.RemoveAt(I--);
+	}
 	if (!WaitFor.IsEmpty())
 	{
 		// "wait <text or selector>" holds the script until that element exists, "gone" until it no
 		// longer does (a loading screen closing). Later steps keep their spacing.
 		const double Now = GameSeconds();
-		const bool bFound = WaitUIVersion >= 0 || (Eval(FString::Printf(TEXT("__jsgb.find(%s)"), *ScriptArg(WaitFor))) == TEXT("true")) != bWaitGone;
+		bool bFound = WaitUIVersion >= 0;
+		if (!bFound)
+		{
+			// Asked without waiting, so a busy JavaScript thread never holds up Unreal's frame.
+			if (!WaitQuery.IsValid()) { WaitQuery = Ask(FString::Printf(TEXT("__jsgb.find(%s)"), *ScriptArg(WaitFor))); }
+			if (!WaitQuery->bDone && Now - WaitStart < 120.0) { return; }
+			bFound = WaitQuery->bDone && (WaitQuery->Text == TEXT("true")) != bWaitGone;
+			WaitQuery.Reset();
+		}
 		// The game's DOM changed; the wait ends when the overlay shows that change on screen.
-		if (bFound && WaitUIVersion < 0 && UIPort && Browser.IsValid()) { Eval(TEXT("__jsgb.publish&&__jsgb.publish()")); WaitUIVersion = Bridge->UIVersion; }
+		if (bFound && WaitUIVersion < 0 && UIPort && Browser.IsValid()) { Ask(TEXT("__jsgb.publish&&__jsgb.publish()")); WaitUIVersion = Bridge->UIVersion; }
 		const bool bShown = !bFound || WaitUIVersion < 0 || !UIPort || UIPort->AppliedUIVersion >= WaitUIVersion;
 		if ((!bFound || !bShown) && Now - WaitStart < 120.0) { return; }
 		WaitUIVersion = -1;
@@ -981,10 +1004,14 @@ void AJsgbHost::RunScript()
 		const FJsgbScriptStep& S = Script[ScriptCursor++];
 		FString Result;
 		if (S.Verb == TEXT("wait") || S.Verb == TEXT("gone")) { WaitFor = S.Args; bWaitGone = S.Verb == TEXT("gone"); WaitStart = GameSeconds(); Bridge->Log(TEXT("log"), FString::Printf(TEXT("script %s %s: waiting"), *S.Verb, *S.Args)); return; }
-		if (S.Verb == TEXT("eval")) { Result = Eval(S.Args); }
-		else if (S.Verb == TEXT("click")) { Result = Eval(FString::Printf(TEXT("__jsgb.click(%s)"), *ScriptArg(S.Args))); }
-		else if (S.Verb == TEXT("seed")) { Result = Eval(FString::Printf(TEXT("__jsgb.seed(%s)"), *S.Args)); }
-		else if (S.Verb == TEXT("key")) { Result = Eval(FString::Printf(TEXT("__jsgb.key(%s)"), *S.Args)); }
+		const FString Code = S.Verb == TEXT("eval") ? S.Args : S.Verb == TEXT("click") ? FString::Printf(TEXT("__jsgb.click(%s)"), *ScriptArg(S.Args))
+			: S.Verb == TEXT("seed") ? FString::Printf(TEXT("__jsgb.seed(%s)"), *S.Args) : S.Verb == TEXT("key") ? FString::Printf(TEXT("__jsgb.key(%s)"), *S.Args) : FString();
+		if (!Code.IsEmpty())
+		{
+			// The JavaScript thread answers on its next turn; the step is logged when the answer arrives.
+			ScriptAnswers.Emplace(FString::Printf(TEXT("script %.2fs %s %s"), Rel, *S.Verb, *S.Args.Left(160)), Ask(Code));
+			continue;
+		}
 		else if (S.Verb == TEXT("shot")) { Capture(CaptureDir.IsEmpty() ? FPaths::ProjectSavedDir() / TEXT("JsGameBridge") / (S.Args + TEXT(".png")) : CaptureDir / (S.Args + TEXT(".png"))); }
 		else if (S.Verb == TEXT("quit")) { ExitFrame = Frame + 2; }
 		else if (S.Verb == TEXT("upscaler")) { FString Mode = S.Args.TrimStartAndEnd(), Pct; if (Mode.StartsWith(TEXT("tsr"))) { Pct = Mode.Mid(3).TrimStart(); Mode.Reset(); } ApplyUpscaler(Mode, Pct); Result = Upscaler; if (!CaptureDir.IsEmpty() && CaptureStart >= 0) { CaptureTimes += FString::Printf(TEXT("upscaler %.3f %s\n"), GameSeconds() - CaptureStart, *Upscaler); } }
@@ -1023,6 +1050,7 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		StartJs();
 	}
 	if (!Bridge || !Bridge->OnFrame.IsBound()) { return; }
+	Audio->StartPending();
 	if (Bridge->FixedStepMs > 0) { Bridge->VirtualMs += Bridge->FixedStepMs; }
 
 	FIntPoint Size(1920, 1080);
