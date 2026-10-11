@@ -36,10 +36,8 @@ The averages vary between runs by up to 20%, mostly with what the game streams i
 averages after the first rows are lower for a good reason. A vertex color fix made its grass and foliage draw,
 so the GPU now does more work (15 ms per frame instead of 3).
 
-On 2026-10-10 from about 22:50, another project on this PC used the same GPU from WSL (up to 100% of it). The last
-row was measured during that, and its GPU time per frame swung between 5.6 and 12.5 ms for the same scene. The Hard
-Burn frames that still take 300 ms are Windows holding back Unreal's GPU submissions (`ExecuteCommandLists` waited
-309 ms) while that job ran. They need a re-run on an idle GPU.
+The last row was measured while another project used the same GPU (see "Two causes of slow frames are on this PC"
+below), so its GPU time per frame swung between 5.6 and 12.5 ms for the same scene.
 
 Hard Burn rows measured between c832e80 and this fix may have drawn the sky without its nebula shader (see the second
 bug below the numbered list), which makes the GPU's work lighter than it should be. The next measurement includes the fix.
@@ -93,6 +91,19 @@ Each entry is a cause found with the logs or a profile, and the general fix for 
 16. **Test scripts waited for the JavaScript thread.** A script's `wait` step asked the game a question and blocked
     Unreal's frame until it answered, up to a second while the game loads. Script steps now ask and read the answer
     on a later frame. This only affected scripted runs such as the benchmark.
+17. **The game thread read the JavaScript thread's delegates.** Each tick checked whether the game's frame callback
+    was bound while the JavaScript thread was calling it. Unreal's race detector caught it, and writing each report
+    froze the game for about 2 s. The game thread no longer touches the game's delegates while the JavaScript
+    thread runs.
+
+Two causes of slow frames are on this PC, not in the bridge or Unreal:
+
+- **Another project shares the GPU from WSL.** While its job runs (up to 100% of the GPU), Unreal's GPU time per
+  frame doubles and Windows can hold back Unreal's GPU submissions for 300 ms. Benchmarks run when that job is idle.
+- **Windows switching the display on and off.** The PC sits on its lock screen, and Windows turns the display on
+  and off every minute or two. Each switch (System log, Kernel-Power event 566, at the same second) stalls the GPU
+  queue for 300 to 400 ms, even in an empty game. A player at the screen never sees this. `Tools/bench.mjs` keeps
+  the display on while it measures.
 
 Two bugs found while checking these changes against the conformance films:
 
@@ -115,9 +126,8 @@ Deterministic captures (`--fixed-fps`, used by the conformance films) keep JavaS
 ## What's left
 
 - **A clean measurement on an idle GPU** of every game, with min and 1% low, after the fixes above.
-- **Generated materials still take 15 to 60 ms each** on first use in Hard Burn while they compile.
-- **Unreal's development build queries video memory every frame**, and that query waited 300 ms while another
-  program used the GPU. Packaged games don't run it.
+- **Materials patched with `onBeforeCompile`** draw with the plain material in Unreal. Unlit's voxel ships use one,
+  so a cockpit glow shows as a flat orange shape.
 - **Measuring DLSS and Frame Generation** with these changes, at 1440p and 4K. That needs an unlocked desktop for
   Frame Generation.
 - **Depth and motion vectors for DLSS.** Mirrored objects need correct per-pixel motion vectors, including

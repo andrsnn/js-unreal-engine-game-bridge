@@ -80,6 +80,15 @@ let pairs = 0;
 // Pairs where one side is holding at a wait are compared only on the Unreal side's own counts.
 const violations = [];
 let checked = 0, compared = 0;
+// Captures are 1/fps apart, and when the game swaps scenes its object count can change between two of them, so
+// each Unreal frame is held to the fewest objects the browser drew within one capture interval of the pair.
+// An object that stays missing still fails.
+const around = (side, t) => {
+  const near = side.list.filter(f => Math.abs(f.t - t) <= 1 / fps + 1e-6);
+  if (!near.length) return null;
+  const least = key => near.some(f => f[key] === undefined || f[key] < 0) ? -1 : Math.min(...near.map(f => f[key]));
+  return {...near[0], objects: least('objects'), lines: least('lines'), sprites: least('sprites'), points: least('points')};
+};
 const check = (pair, w, ue, held) => {
   if (ue.drawn === undefined) return;
   checked++;
@@ -102,7 +111,7 @@ for (let i = 0; i + 1 < bw.length && web.list.length && unreal.list.length; i++)
     const w = nearest(web, bw[i] + Math.min(u, dw)), ue = nearest(unreal, bu[i] + Math.min(u, du));
     fs.copyFileSync(w.file, path.join(pairDir, `web_${String(pairs).padStart(5, '0')}.png`));
     fs.copyFileSync(ue.file, path.join(pairDir, `ue_${String(pairs).padStart(5, '0')}.png`));
-    check(pairs, w, ue, u > dw || u > du);
+    check(pairs, {...(around(web, w.t) ?? w), file: w.file}, ue, u > dw || u > du);
   }
 }
 report.pairs = pairs;
