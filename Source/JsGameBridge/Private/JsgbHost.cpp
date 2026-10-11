@@ -350,6 +350,12 @@ void AJsgbHost::BeginPlay()
 	// billboards (stars, sprites) into streaks, because their offset follows the camera.
 	if (IConsoleVariable* Aa = IConsoleManager::Get().FindConsoleVariable(TEXT("r.AntiAliasingMethod"))) { Aa->Set(1, ECVF_SetByCode); }
 	SetupUpscaler();
+	// Garbage collection spread over frames (reachability and purging in small time slices), so a
+	// collection doesn't stop one frame for tens of milliseconds.
+	if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(TEXT("gc.AllowIncrementalReachability"))) { V->Set(1, ECVF_SetByCode); }
+	if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(TEXT("gc.AllowIncrementalGather"))) { V->Set(1, ECVF_SetByCode); }
+	if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(TEXT("gc.IncrementalReachabilityTimeLimit"))) { V->Set(0.002f, ECVF_SetByCode); }
+	if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(TEXT("gc.IncrementalGatherTimeLimit"))) { V->Set(0.002f, ECVF_SetByCode); }
 	// The web scene supplies all lighting, fog and sky. Remove whatever the boot map brought.
 	for (TActorIterator<AActor> It(World); It; ++It)
 	{
@@ -439,6 +445,8 @@ void AJsgbHost::StartJs()
 		double Hz = 60;
 		FParse::Value(FCommandLine::Get(), TEXT("JsgbJsHz="), Hz);
 		Bridge->bJsThread = true;
+		Mirror->bInterpolate = !FParse::Param(FCommandLine::Get(), TEXT("JsgbNoInterpolation"));
+		LastSnapshot = 0; SnapshotInterval = 1.0 / Hz;
 		JsThread = MakeShared<FJsgbJsThread>(Bridge, Hz);
 		Bridge->Log(TEXT("log"), FString::Printf(TEXT("JavaScript runs on its own thread at up to %.0f frames per second"), Hz));
 	}
@@ -455,6 +463,7 @@ void AJsgbHost::StopJs()
 	{
 		Bridge->DrainGameCommands();
 		Bridge->bJsThread = false;
+		Mirror->bInterpolate = false;
 		Bridge->StopWorkers();
 		Bridge->OnFrame.Clear(); Bridge->OnUIInput.Clear(); Bridge->OnKey.Clear(); Bridge->OnMouse.Clear();
 		Bridge->OnWheel.Clear(); Bridge->OnViewport.Clear(); Bridge->OnGamepads.Clear(); Bridge->OnEval.Clear();
@@ -1031,7 +1040,17 @@ void AJsgbHost::Tick(float DeltaSeconds)
 	const double MirrorBefore = Bridge->MirrorMs, QueueBefore = Mirror->QueueMs, StallBefore = Mirror->StallMs;
 	const int32 BuildsBefore = Mirror->QueueBuilds;
 	const double T0 = FPlatformTime::Seconds();
-	if (JsThread) { Bridge->DrainGameCommands(); }
+	if (JsThread)
+	{
+		// Snapshots arrive at the game's rate; between them objects and the camera glide (one snapshot behind).
+		const double Now = FPlatformTime::Seconds();
+		if (Bridge->DrainGameCommands() > 0)
+		{
+			if (LastSnapshot > 0) { SnapshotInterval = FMath::Clamp(0.8 * SnapshotInterval + 0.2 * (Now - LastSnapshot), 0.004, 0.1); }
+			LastSnapshot = Now;
+		}
+		Mirror->Interpolate(LastSnapshot > 0 ? static_cast<float>((Now - LastSnapshot) / SnapshotInterval) : 1.f);
+	}
 	else { Bridge->OnFrame.Execute(ReadyFrame < 0 ? 40.f : 8.f); }
 	const double T1 = FPlatformTime::Seconds();
 	JsMs += (T1 - T0) * 1000.0; ++TimedFrames;

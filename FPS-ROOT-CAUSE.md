@@ -1,5 +1,29 @@
 # Why Hard Burn was slow in Unreal
 
+## 2026-10-10 23:20 PDT: Unreal waited for the game's JavaScript on every frame
+
+**What was slow.** Even with the bridge's own costs fixed, Hard Burn's JavaScript takes 12 to 25 ms per game
+frame on Puerts' older V8, and some updates take a few hundred milliseconds. Unreal ran that JavaScript on its
+game thread, so no frame could finish faster than the game's update, and every slow update froze the picture.
+
+**The framework fix.** The game's JavaScript now runs on its own thread (`-JsgbJsThread`). Each finished game
+frame goes to Unreal as a snapshot, and Unreal draws at its own rate, applying the newest snapshot each time. Web
+Workers also run on their own threads now, so decoding textures and building meshes in workers never blocks either
+thread. One more stall came from inside Puerts: in its thread-safe mode it locked the JavaScript engine for every
+object Unreal deleted, so Unreal's garbage collector waited for the game's frame. The bridge's Puerts patch
+(Patches/puerts-thread-safe.patch) queues those deletions instead.
+
+| 1440p, DLSS off | Average FPS | 1% low FPS | Game updates per second |
+| --- | --- | --- | --- |
+| Hard Burn, before today | 14 to 21 | about 3 | same as FPS |
+| Hard Burn, JavaScript on its own thread | 132 | 28 | 40 to 55 |
+| Unlit Worlds, JavaScript on its own thread | 196 | 68 | 60 (capped) |
+
+**Still to do for "above 60 on every frame".** Hard Burn's 1% low is still 28 FPS. The slowest frames now come
+from big texture and mesh uploads landing in one frame, and from Unreal's own garbage collection. Next: spread
+uploads over frames and prepare mesh buffers on the JavaScript thread. Also, because Unreal now draws faster than
+the game updates, moving objects need smoothing between game frames, so they glide instead of stepping.
+
 ## 2026-10-10 23:10 PDT: frames froze for up to a second while the game loaded ship models
 
 The new target is above 60 FPS on every frame, so I now measure the slowest frames, not the average. Hard Burn's

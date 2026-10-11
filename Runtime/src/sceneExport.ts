@@ -384,7 +384,8 @@ function syncMaterial(mat: THREE.Material): number {
 
 const tmpV = new THREE.Vector3(), tmpV2 = new THREE.Vector3();
 const visibleTo = (o: THREE.Object3D, cam: THREE.Camera) => o.layers.test(cam.layers);
-const flagsOf = (o: THREE.Object3D) => (o.castShadow ? 1 : 0) | (o.receiveShadow ? 2 : 0) | (o.frustumCulled ? 0 : 4) | ((o as THREE.SkinnedMesh).isSkinnedMesh ? 8 : 0);
+// 16: userData.jsgbNoInterpolate, the object jumps to each new position instead of gliding between game frames.
+const flagsOf = (o: THREE.Object3D) => (o.castShadow ? 1 : 0) | (o.receiveShadow ? 2 : 0) | (o.frustumCulled ? 0 : 4) | ((o as THREE.SkinnedMesh).isSkinnedMesh ? 8 : 0) | (o.userData?.jsgbNoInterpolate ? 16 : 0);
 const materialsOf = (o: THREE.Mesh) => (Array.isArray(o.material) ? o.material : [o.material]) as THREE.Material[];
 
 function emitInstances(im: THREE.InstancedMesh, gid: number, mat: number) {

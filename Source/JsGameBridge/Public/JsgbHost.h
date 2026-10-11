@@ -94,6 +94,7 @@ private:
 
 	TSharedPtr<PUERTS_NAMESPACE::FJsEnv> JsEnv;
 	TSharedPtr<class FJsgbJsThread> JsThread;
+	double LastSnapshot = 0, SnapshotInterval = 1.0 / 60.0;
 	TSharedPtr<SWebBrowser> Browser;
 	TSharedPtr<IHttpRouter> Router;
 	FDelegateHandle RouteHandle;

@@ -13,7 +13,7 @@ const [game, ...rest] = process.argv.slice(2);
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 const from = +flag('--from', 30), to = +flag('--to', 90), res = flag('--res', '1920x1080');
 const pass = [];
-for (const f of ['--dlss', '--tsr', '--vibrance', '--dlss-preset', '--script', '--search', '--js-hz']) if (flag(f)) pass.push(f, flag(f));
+for (const f of ['--dlss', '--tsr', '--vibrance', '--dlss-preset', '--script', '--search', '--js-hz', '--ue']) if (flag(f)) pass.push(f, flag(f));
 for (const f of ['--frame-gen', '--hud', '--js-thread']) if (rest.includes(f)) pass.push(f);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const status = () => fetch('http://127.0.0.1:5292/bridge/status', {signal: AbortSignal.timeout(3000)}).then(r => r.json()).catch(() => null);
@@ -33,10 +33,17 @@ for (;;) {
   if (ready !== null && s) {
     const t = (Date.now() - ready) / 1000;
     upscaler = s.upscaler ?? upscaler;
-    if (t >= from && !timing) { timing = true; await readTimes(); }
-    if (t >= from) frameTimes.push(...await readTimes());
-    if (t >= from) samples.push({t, frames: s.hostFrames, gpuMs: s.gpuMs, presentedFps: s.presentedFps});
-    if (t >= to) break;
+    if (t >= from && !timing) {
+      // The window itself makes no requests: an HTTP request is handled on the game thread and can stall a
+      // frame, so the frame times are cleared at the start and read once at the end.
+      timing = true; await readTimes();
+      samples.push({t, frames: s.hostFrames, gpuMs: s.gpuMs, presentedFps: s.presentedFps});
+      await sleep((to - t) * 1000);
+      const s2 = await status(), t2 = (Date.now() - ready) / 1000;
+      frameTimes.push(...await readTimes());
+      if (s2) samples.push({t: t2, frames: s2.hostFrames, gpuMs: s2.gpuMs, presentedFps: s2.presentedFps});
+      break;
+    }
   }
   if (child.exitCode !== null) break;
   await sleep(1000);

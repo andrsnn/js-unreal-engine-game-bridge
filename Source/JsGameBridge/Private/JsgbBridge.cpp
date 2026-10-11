@@ -236,10 +236,12 @@ void UJsgbBridge::JsReady(const FString& Info)
 
 void UJsgbBridge::Geometry(int32 Id, FArrayBuffer Positions, FArrayBuffer Normals, FArrayBuffer UVs, FArrayBuffer Colors, int32 ColorSize, FArrayBuffer Indices, const FString& Groups)
 {
-	RunOnGame([this, Id, P = FBytes(Positions), N = FBytes(Normals), U = FBytes(UVs), C = FBytes(Colors), ColorSize, I = FBytes(Indices), Groups]
-	{
-		if (Mirror) { Mirror->SetGeometry(Id, P.View(), N.View(), U.View(), C.View(), ColorSize, I.View(), Groups); }
-	});
+	if (!bJsThread || IsInGameThread()) { if (Mirror) { Mirror->SetGeometry(Id, Positions, Normals, UVs, Colors, ColorSize, Indices, Groups); } return; }
+	// On the JavaScript thread: parse the arrays and build the render buffers here, so the game thread
+	// only wraps them in an Unreal mesh.
+	TSharedPtr<FJsgbPendingGeometry> G = UJsgbSceneMirror::ParseGeometry(Positions, Normals, UVs, Colors, ColorSize, Indices, Groups);
+	if (G->Primitive < 2 && !UJsgbSceneMirror::UseMeshDescription()) { G->Prepared = UJsgbSceneMirror::PrepareMesh(*G); }
+	RunOnGame([this, Id, G] { if (Mirror) { Mirror->AcceptGeometry(Id, G); } });
 }
 
 void UJsgbBridge::ReleaseGeometry(int32 Id) { RunOnGame([this, Id] { if (Mirror) { Mirror->ReleaseGeometry(Id); } }); }

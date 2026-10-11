@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Engine/StreamableManager.h"
 #include "Components/ActorComponent.h"
 #include "Components/LineBatchComponent.h"
 #include "ArrayBuffer.h"
@@ -20,6 +21,15 @@ class UCameraComponent;
 class UJsgbBridge;
 
 /** Geometry waiting to become a UStaticMesh (Three.js space, unconverted). */
+/** A mesh's render buffers, built from the game's arrays on any thread; FinishMesh makes the Unreal mesh. */
+struct FJsgbPreparedMesh
+{
+	TUniquePtr<class FStaticMeshRenderData> RenderData;
+	int32 Slots = 1, Vertices = 0, Triangles = 0, UVChannels = 1;
+	double Ms = 0;
+	bool bOffGameThread = false;
+};
+
 struct FJsgbPendingGeometry
 {
 	TArray<float> Positions, Normals, UVs, Colors;
@@ -31,6 +41,8 @@ struct FJsgbPendingGeometry
 	int32 Primitive = 0;
 	/** UV channels per vertex: 0 is the mesh UV, 1-7 carry the shader's own attributes. */
 	int32 UVChannels = 1;
+	/** Built ahead of time on the JavaScript thread, when it runs on its own thread. */
+	TSharedPtr<FJsgbPreparedMesh> Prepared;
 };
 
 USTRUCT()
@@ -98,6 +110,9 @@ struct FJsgbEntity
 	TArray<FBatchedLine> Lines;
 	FVector LineCenter = FVector::ZeroVector;
 	float Model[16] = {0};
+	/** Interpolation (JavaScript on its own thread): drawn from From toward To between two snapshots. */
+	FTransform From, To;
+	bool bPlaced = false;
 };
 
 USTRUCT()
@@ -131,6 +146,8 @@ public:
 	FString Describe(int32 Kind) const;
 	int32 DebugHiddenKinds = 0;
 	bool SetAssetRegistry(const FString& Json);
+	FStreamableManager Streamable;
+	TSharedPtr<struct FStreamableHandle> RegistryLoad;
 	void ResetAll();
 
 	UPROPERTY() TObjectPtr<UCameraComponent> Camera;
@@ -142,6 +159,14 @@ public:
 	int32 LineSegmentsDrawn = 0;
 	/** Time spent ordering and rebuilding the shared lines, summed until the host reads and clears it. */
 	double LinesMs = 0;
+	/** With the game's JavaScript on its own thread, objects and the camera glide between snapshots:
+	 *  each snapshot sets where they go, and Interpolate moves them there over the time between snapshots. */
+	bool bInterpolate = false;
+	void Interpolate(float Alpha);
+	TArray<int32> Moving;
+	FTransform CameraFrom, CameraTo;
+	bool bCameraPlaced = false;
+	void Place(FJsgbEntity& Ent, USceneComponent* C, const FTransform& T, int32 Flags);
 	/** Time per record type (index = record type) and in the build queue, and builds done, until the host reads and clears them. */
 	double RecordMs[16] = {};
 	double QueueMs = 0;
@@ -175,6 +200,13 @@ public:
 private:
 	UStaticMesh* BuildMesh(const FJsgbPendingGeometry& G, int32& OutSlots);
 	UStaticMesh* BuildMeshFromDescription(const FJsgbPendingGeometry& G, int32& OutSlots);
+	UStaticMesh* FinishMesh(FJsgbPreparedMesh& P, int32& OutSlots);
+public:
+	static TSharedPtr<FJsgbPreparedMesh> PrepareMesh(const FJsgbPendingGeometry& G);
+	static bool UseMeshDescription();
+	static TSharedPtr<FJsgbPendingGeometry> ParseGeometry(const FArrayBuffer& Positions, const FArrayBuffer& Normals, const FArrayBuffer& UVs, const FArrayBuffer& Colors, int32 ColorSize, const FArrayBuffer& Indices, const FString& Groups);
+	void AcceptGeometry(int32 Id, TSharedPtr<FJsgbPendingGeometry> G);
+private:
 	/** Builds a geometry the game draws for the first time, in this frame, as WebGL uploads it. */
 	UStaticMesh* FirstBuild(int32 GeometryId, struct FJsgbGeometry* G);
 	UStaticMesh* SpriteQuad();

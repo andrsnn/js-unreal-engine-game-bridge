@@ -28,6 +28,7 @@
 #include "MeshDescription.h"
 #include "StaticMeshAttributes.h"
 #include "StaticMeshResources.h"
+#include "Engine/StreamableManager.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
@@ -166,6 +167,28 @@ bool UJsgbSceneMirror::SetAssetRegistry(const FString& Json)
 	Registry.Reset();
 	for (const auto& Pair : (*Map)->Values) { if (Pair.Value->Type == EJson::Object) { Registry.Add(FString(*Pair.Key), Pair.Value->AsObject()); } }
 	UE_LOG(LogJsgbMirror, Display, TEXT("Asset registry: %d keys"), Registry.Num());
+	// Every Unreal asset the registry names starts loading now, in the background, so its first use in a
+	// frame finds it in memory instead of stopping the game thread to load it (and compile its shaders).
+	TArray<FSoftObjectPath> Paths;
+	TArray<FString> Names;
+	for (const auto& Pair : Registry)
+	{
+		for (const TCHAR* Field : {TEXT("mesh"), TEXT("material"), TEXT("niagara")})
+		{
+			FString Path;
+			if (Pair.Value.IsValid() && Pair.Value->TryGetStringField(Field, Path) && !Path.IsEmpty() && !Names.Contains(Path)) { Names.Add(Path); Paths.Add(FSoftObjectPath(Path)); }
+		}
+	}
+	if (Paths.Num() > 0)
+	{
+		const double Start = FPlatformTime::Seconds();
+		RegistryLoad = Streamable.RequestAsyncLoad(Paths, FStreamableDelegate::CreateWeakLambda(this, [this, Paths, Names, Start]
+		{
+			int32 Loaded = 0;
+			for (int32 I = 0; I < Paths.Num(); ++I) { if (UObject* O = Paths[I].ResolveObject()) { LoadedAssets.FindOrAdd(Names[I]) = O; ++Loaded; } }
+			UE_LOG(LogJsgbMirror, Display, TEXT("Preloaded %d of %d registry assets in %.1f s"), Loaded, Paths.Num(), FPlatformTime::Seconds() - Start);
+		}), FStreamableManager::AsyncLoadHighPriority);
+	}
 	return true;
 }
 
@@ -176,6 +199,11 @@ TSharedPtr<FJsonObject> UJsgbSceneMirror::Asset(int32 KeyId) const
 }
 
 void UJsgbSceneMirror::SetGeometry(int32 Id, const FArrayBuffer& Positions, const FArrayBuffer& Normals, const FArrayBuffer& UVs, const FArrayBuffer& Colors, int32 ColorSize, const FArrayBuffer& Indices, const FString& Groups)
+{
+	AcceptGeometry(Id, ParseGeometry(Positions, Normals, UVs, Colors, ColorSize, Indices, Groups));
+}
+
+TSharedPtr<FJsgbPendingGeometry> UJsgbSceneMirror::ParseGeometry(const FArrayBuffer& Positions, const FArrayBuffer& Normals, const FArrayBuffer& UVs, const FArrayBuffer& Colors, int32 ColorSize, const FArrayBuffer& Indices, const FString& Groups)
 {
 	TSharedPtr<FJsgbPendingGeometry> G = MakeShared<FJsgbPendingGeometry>();
 	CopyBuffer(G->Positions, Positions);
@@ -205,6 +233,11 @@ void UJsgbSceneMirror::SetGeometry(int32 Id, const FArrayBuffer& Positions, cons
 			}
 		}
 	}
+	return G;
+}
+
+void UJsgbSceneMirror::AcceptGeometry(int32 Id, TSharedPtr<FJsgbPendingGeometry> G)
+{
 	FJsgbGeometry& Geo = Geometries.FindOrAdd(Id);
 	Geo.Primitive = G->Primitive;
 	if (G->Primitive >= 2)
@@ -367,12 +400,43 @@ UStaticMesh* UJsgbSceneMirror::BuildMeshFromDescription(const FJsgbPendingGeomet
 	return SM;
 }
 
-UStaticMesh* UJsgbSceneMirror::BuildMesh(const FJsgbPendingGeometry& G, int32& OutSlots)
+bool UJsgbSceneMirror::UseMeshDescription()
 {
 	static const bool bDescription = FParse::Param(FCommandLine::Get(), TEXT("JsgbMeshDescriptionBuild"));
-	if (bDescription) { return BuildMeshFromDescription(G, OutSlots); }
+	return bDescription;
+}
+
+UStaticMesh* UJsgbSceneMirror::BuildMesh(const FJsgbPendingGeometry& G, int32& OutSlots)
+{
+	if (UseMeshDescription()) { return BuildMeshFromDescription(G, OutSlots); }
+	// Usually prepared already on the JavaScript thread; otherwise here.
+	TSharedPtr<FJsgbPreparedMesh> Prepared = G.Prepared.IsValid() ? G.Prepared : PrepareMesh(G);
+	return Prepared.IsValid() ? FinishMesh(*Prepared, OutSlots) : nullptr;
+}
+
+UStaticMesh* UJsgbSceneMirror::FinishMesh(FJsgbPreparedMesh& P, int32& OutSlots)
+{
+	if (!P.RenderData.IsValid()) { return nullptr; }
+	const double Start = FPlatformTime::Seconds();
+	UStaticMesh* SM = NewObject<UStaticMesh>(this, NAME_None, RF_Transient);
+	for (int32 S = 0; S < P.Slots; ++S)
+	{
+		const FName Name(*FString::Printf(TEXT("S%d"), S));
+		SM->GetStaticMaterials().Add(FStaticMaterial(nullptr, Name, Name));
+	}
+	SM->SetRenderData(MoveTemp(P.RenderData));
+	SM->CalculateExtendedBounds();
+	SM->InitResources();
+	const double Ms = (FPlatformTime::Seconds() - Start) * 1000.0;
+	if (P.Ms + Ms > 10.0) { UE_LOG(LogJsgbMirror, Display, TEXT("Mesh build: %d vertices, %d triangles, %d UV channels: buffers %.1f ms (%s), Unreal mesh %.1f ms"), P.Vertices, P.Triangles, P.UVChannels, P.Ms, P.bOffGameThread ? TEXT("JavaScript thread") : TEXT("game thread"), Ms); }
+	OutSlots = P.Slots;
+	return SM;
+}
+
+TSharedPtr<FJsgbPreparedMesh> UJsgbSceneMirror::PrepareMesh(const FJsgbPendingGeometry& G)
+{
 	const int32 SourceVerts = G.Positions.Num() / 3;
-	if (SourceVerts < (G.Primitive == 1 ? 1 : 3)) { return nullptr; }
+	if (SourceVerts < (G.Primitive == 1 ? 1 : 3)) { return {}; }
 	const double BuildStart = FPlatformTime::Seconds();
 	const bool bPoints = G.Primitive == 1;
 	const bool bIndexed = !bPoints && G.Indices.Num() > 0;
@@ -448,7 +512,7 @@ UStaticMesh* UJsgbSceneMirror::BuildMesh(const FJsgbPendingGeometry& G, int32& O
 	const int32 NumVerts = Positions.Num();
 	int32 Triangles = 0;
 	for (const TArray<uint32>& Out : SlotIndices) { Triangles += Out.Num() / 3; }
-	if (Triangles == 0) { return nullptr; }
+	if (Triangles == 0) { return {}; }
 
 	// Tangents follow UV 0, as normal maps expect; without UVs any direction across the normal will do.
 	TArray<FVector3f> Tangents;
@@ -470,14 +534,10 @@ UStaticMesh* UJsgbSceneMirror::BuildMesh(const FJsgbPendingGeometry& G, int32& O
 		}
 	}
 
-	UStaticMesh* SM = NewObject<UStaticMesh>(this, NAME_None, RF_Transient);
-	for (int32 S = 0; S < Slots; ++S)
-	{
-		const FName Name(*FString::Printf(TEXT("S%d"), S));
-		SM->GetStaticMaterials().Add(FStaticMaterial(nullptr, Name, Name));
-	}
-	SM->SetRenderData(MakeUnique<FStaticMeshRenderData>());
-	FStaticMeshRenderData* RD = SM->GetRenderData();
+	// Plain data from here on: it can be built on any thread, and FinishMesh hands it to Unreal.
+	TSharedPtr<FJsgbPreparedMesh> Result = MakeShared<FJsgbPreparedMesh>();
+	Result->RenderData = MakeUnique<FStaticMeshRenderData>();
+	FStaticMeshRenderData* RD = Result->RenderData.Get();
 	RD->AllocateLODResources(1);
 	FStaticMeshLODResources& LOD = RD->LODResources[0];
 	// The buffers live in memory here, not in Unreal's derived-data cache.
@@ -523,13 +583,10 @@ UStaticMesh* UJsgbSceneMirror::BuildMesh(const FJsgbPendingGeometry& G, int32& O
 	}
 	LOD.IndexBuffer.SetIndices(Indices, NumVerts > 65535 ? EIndexBufferStride::Force32Bit : EIndexBufferStride::Force16Bit);
 	RD->Bounds = FBoxSphereBounds(FBox(Box));
-	SM->CalculateExtendedBounds();
-	const double FillEnd = FPlatformTime::Seconds();
-	SM->InitResources();
-	const double BuildEnd = FPlatformTime::Seconds();
-	if (BuildEnd - BuildStart > 0.01) { UE_LOG(LogJsgbMirror, Display, TEXT("Mesh build: %d vertices, %d triangles, %d UV channels: buffers %.1f ms, render resources %.1f ms"), NumVerts, Triangles, UVN, (FillEnd - BuildStart) * 1000.0, (BuildEnd - FillEnd) * 1000.0); }
-	OutSlots = Slots;
-	return SM;
+	Result->Slots = Slots; Result->Vertices = NumVerts; Result->Triangles = Triangles; Result->UVChannels = UVN;
+	Result->bOffGameThread = !IsInGameThread();
+	Result->Ms = (FPlatformTime::Seconds() - BuildStart) * 1000.0;
+	return Result;
 }
 
 UStaticMesh* UJsgbSceneMirror::SpriteQuad()
@@ -891,6 +948,42 @@ void UJsgbSceneMirror::ApplyPost(const float* H)
 	P.bOverride_BloomThreshold = true; P.BloomThreshold = H[37] > 0 ? H[39] : -1.f;
 }
 
+void UJsgbSceneMirror::Place(FJsgbEntity& Ent, USceneComponent* C, const FTransform& T, int32 Flags)
+{
+	// Flag 16: the game asked for no smoothing (userData.jsgbNoInterpolate).
+	if (!bInterpolate || (Flags & 16)) { C->SetWorldTransform(T); Ent.bPlaced = true; return; }
+	const FTransform Current = C->GetComponentTransform();
+	const FVector S0 = Current.GetScale3D(), S1 = T.GetScale3D();
+	// New objects, jumps over 50 m and large scale changes snap; everything else glides from where it is drawn now.
+	const bool bSnap = !Ent.bPlaced || FVector::DistSquared(Current.GetLocation(), T.GetLocation()) > FMath::Square(5000.0)
+		|| S0.GetAbsMax() > 2.0 * S1.GetAbsMax() + 1e-4 || S1.GetAbsMax() > 2.0 * S0.GetAbsMax() + 1e-4;
+	Ent.bPlaced = true;
+	Ent.To = T;
+	if (bSnap) { Ent.From = T; C->SetWorldTransform(T); return; }
+	Ent.From = Current;
+	if (!Current.Equals(T, 1e-3)) { Moving.Add(Ent.Id); }
+}
+
+void UJsgbSceneMirror::Interpolate(float Alpha)
+{
+	Alpha = FMath::Clamp(Alpha, 0.f, 1.f);
+	for (const int32 Id : Moving)
+	{
+		FJsgbEntity* Ent = Entities.Find(Id);
+		USceneComponent* C = Ent ? (Ent->Component ? static_cast<USceneComponent*>(Ent->Component) : static_cast<USceneComponent*>(Ent->Effect)) : nullptr;
+		if (!C) { continue; }
+		FTransform B;
+		B.Blend(Ent->From, Ent->To, Alpha);
+		C->SetWorldTransform(B);
+	}
+	if (Camera && bCameraPlaced)
+	{
+		FTransform B;
+		B.Blend(CameraFrom, CameraTo, Alpha);
+		Camera->SetWorldLocationAndRotation(B.GetLocation(), B.Rotator());
+	}
+}
+
 void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst, int32 InstCount)
 {
 	if (Count < HeaderFloats) { return; }
@@ -901,6 +994,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	const double StallAtStart = StallMs;
 	++Stamp;
 	++FrameCounter;
+	Moving.Reset();
 
 	// Build queued geometry within the budget.
 	while (BuildQueue.Num() > 0 && (FPlatformTime::Seconds() - T0) * 1000.0 < BuildBudgetMs)
@@ -931,7 +1025,17 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	const float TanHalf = VFov > 0 ? FMath::Tan(FMath::DegreesToRadians(VFov) * 0.5f) : 0.5f;
 	if (Camera)
 	{
-		Camera->SetWorldLocationAndRotation(CameraLocation, CameraRotation);
+		if (bInterpolate)
+		{
+			// The camera glides like the objects; a jump over 50 m (a cut) snaps.
+			const FTransform Target(CameraRotation, CameraLocation);
+			const bool bSnap = !bCameraPlaced || FVector::DistSquared(Camera->GetComponentLocation(), CameraLocation) > FMath::Square(5000.0);
+			CameraFrom = bSnap ? Target : Camera->GetComponentTransform();
+			CameraTo = Target;
+			bCameraPlaced = true;
+			Camera->SetWorldLocationAndRotation(CameraFrom.GetLocation(), CameraFrom.Rotator());
+		}
+		else { Camera->SetWorldLocationAndRotation(CameraLocation, CameraRotation); }
 		if (D[20] > 0.5f) { Camera->SetProjectionMode(ECameraProjectionMode::Orthographic); Camera->SetOrthoWidth(D[21] * 2.f * ViewAspect * Cm); Camera->SetOrthoNearClipPlane(D[18] * Cm); Camera->SetOrthoFarClipPlane(D[19] * Cm); }
 		else { Camera->SetProjectionMode(ECameraProjectionMode::Perspective); Camera->SetFieldOfView(CameraHFov); }
 		ApplyPost(D);
@@ -994,7 +1098,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			UStaticMeshComponent* C = CastChecked<UStaticMeshComponent>(Ent.Component);
 			if (Ent.Geometry != Geo || Ent.GeometryRevision != G->BuiltRevision) { C->SetStaticMesh(G->Mesh); Ent.Geometry = Geo; Ent.GeometryRevision = G->BuiltRevision; Ent.Materials.Reset(); }
 			SetSlots(Ent, C, G->Slots, Mats, NumMats);
-			C->SetWorldTransform(ToTransform(M));
+			Place(Ent, C, ToTransform(M), Flags);
 			Show(Ent, C, Flags);
 		}
 		else if (Type == RInstanced)
@@ -1027,7 +1131,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 				Ent.Materials.SetNum(1); Ent.Materials[0] = Mat;
 				if (UMaterialInstanceDynamic* Mid = MaterialFor(Mat)) { for (int32 S = 0; S < Slots; ++S) { C->SetMaterial(S, Mid); } }
 			}
-			C->SetWorldTransform(ToTransform(M));
+			Place(Ent, C, ToTransform(M), Flags);
 			if ((bChanged || bNewMesh || Ent.InstanceCount < 0) && Offset >= 0 && Offset + N * 16 <= InstCount)
 			{
 				TArray<FTransform> Ts;
@@ -1092,7 +1196,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			if (Ent.Geometry != Geo || Ent.GeometryRevision != Revision || C->GetStaticMesh() != Mesh) { C->SetStaticMesh(Mesh); Ent.Geometry = Geo; Ent.GeometryRevision = Revision; Ent.Materials.Reset(); }
 			const float MatF = static_cast<float>(Mat);
 			SetSlots(Ent, C, 1, &MatF, 1);
-			C->SetWorldTransform(Xf);
+			Place(Ent, C, Xf, Flags);
 			C->SetCustomPrimitiveDataFloat(0, SizeX);
 			C->SetCustomPrimitiveDataFloat(1, SizeY);
 			C->SetCustomPrimitiveDataFloat(2, Rotation);
@@ -1164,7 +1268,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 					if (UMaterialInterface* MI = Cast<UMaterialInterface>(MC)) { for (int32 S = 0; S < C->GetNumMaterials(); ++S) { C->SetMaterial(S, MI); } }
 				}
 			}
-			C->SetWorldTransform(ToTransform(M));
+			Place(Ent, C, ToTransform(M), 0);
 			Show(Ent, C, 1);
 		}
 		else if (Type == REffect)
@@ -1188,7 +1292,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			}
 			if (Ent.Effect)
 			{
-				Ent.Effect->SetWorldTransform(ToTransform(M));
+				Place(Ent, Ent.Effect, ToTransform(M), 0);
 				if (!Ent.Effect->IsActive()) { Ent.Effect->Activate(true); }
 				Ent.Seen = Stamp;
 				++Drawn;
