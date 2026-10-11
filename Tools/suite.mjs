@@ -11,12 +11,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
+import {settings} from './jsgb.mjs';
 
 const bridge = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rest = process.argv.slice(2);
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 const has = name => rest.includes(name);
-const work = path.join(bridge, '..', 'JsGameBridgeBuilds', 'conformance-suite');
+const work = path.join(settings().builds, 'conformance-suite');
 const docs = path.join(bridge, 'Docs', 'conformance');
 const log = t => console.log(`[suite ${new Date().toISOString().slice(11, 19)}] ${t}`);
 
@@ -24,8 +25,11 @@ const log = t => console.log(`[suite ${new Date().toISOString().slice(11, 19)}] 
 const index = fs.readFileSync(path.join(bridge, 'Tests/suite/src/cases/index.js'), 'utf8');
 const allCases = (/export const cases = \{([^}]*)\}/.exec(index)?.[1] ?? '').split(',').map(s => s.trim()).filter(Boolean);
 const cases = has('--only-games') ? [] : flag('--cases') ? flag('--cases').split(',') : allCases;
-// Real games, run unchanged with their own conformance scripts (Tests/scripts/<game>.txt).
-const games = has('--only-cases') ? [] : (flag('--games') ?? 'orbit-demo,hardburn-demo,unlit,threejs-fps,threejs-pointerlock').split(',').filter(Boolean);
+// Real games, run unchanged with their own conformance scripts (Tests/scripts/<game>.txt): by default every
+// Games/<game>.json with "suite": true.
+const suiteGames = () => fs.readdirSync(path.join(bridge, 'Games')).filter(f => f.endsWith('.json'))
+  .filter(f => { try { return JSON.parse(fs.readFileSync(path.join(bridge, 'Games', f), 'utf8')).suite === true; } catch { return false; } }).map(f => f.slice(0, -5)).sort();
+const games = has('--only-cases') ? [] : (flag('--games')?.split(',') ?? suiteGames()).filter(Boolean);
 const entries = [
   // A case with its own steps (input) has Tests/scripts/suite-<case>.txt; the rest share Tests/scripts/suite.txt.
   ...cases.map(name => ({id: `case-${name}`, label: name, kind: 'case', game: 'suite', search: `?case=${name}`,

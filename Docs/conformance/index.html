@@ -11,7 +11,7 @@ th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line
 p.muted { color: var(--muted); }
 </style></head><body><main>
 <h1>Conformance results</h1>
-<p>Bridge commit 178a102, 2026-10-11 15:39 UTC. <strong>27 of 28 passed.</strong></p>
+<p>Bridge commit 922af8a, 2026-10-11 16:23 UTC. <strong>27 of 28 passed.</strong></p>
 <p class="muted">Each run plays the same script in Chrome and in Unreal from the same commit, with a fixed game clock, and compares the paired frames. A case passes when the pictures match (SSIM at least 0.9 and at most 2.5% of pixels clearly different for test cases; SSIM 0.7 and 20% for games), every Unreal frame after the game finishes loading draws at least what the browser drew, and neither side reports a JavaScript error.</p>
 <div class="wrap"><table><thead><tr><th>Run</th><th>Result</th><th>SSIM</th><th>Pixels differing %</th><th>PSNR dB</th><th>Coverage</th><th>Errors</th><th>JS ms/frame</th><th>Memory MB</th><th>Notes</th></tr></thead><tbody>
 <tr><td>basics</td><td class="pass">pass</td><td>0.997 (low 0.996)</td><td>0.72 (worst 0.72)</td><td>42.3</td><td>ok</td><td>0, 0</td><td>613.56</td><td>3405</td><td></td></tr>
@@ -37,11 +37,11 @@ p.muted { color: var(--muted); }
 <tr><td>input</td><td class="pass">pass</td><td>1 (low 1)</td><td>0 (worst 0.01)</td><td>57.6</td><td>ok</td><td>0, 0</td><td>6.19</td><td>2893</td><td></td></tr>
 <tr><td>timers</td><td class="pass">pass</td><td>0.994 (low 0.969)</td><td>1.3 (worst 6.41)</td><td>45.4</td><td>ok</td><td>0, 0</td><td>0</td><td>2808</td><td></td></tr>
 <tr><td>audio</td><td class="pass">pass</td><td>1 (low 0.998)</td><td>0.01 (worst 0.08)</td><td>53.8</td><td>ok</td><td>0, 0</td><td>0</td><td>2810</td><td></td></tr>
-<tr><td>orbit-demo</td><td class="pass">pass</td><td>0.975 (low 0.974)</td><td>0.53 (worst 0.56)</td><td>33.5</td><td>ok</td><td>0, 0</td><td>0</td><td>2810</td><td></td></tr>
 <tr><td>hardburn-demo</td><td class="pass">pass</td><td>0.916 (low 0.907)</td><td>10.19 (worst 11.29)</td><td>27</td><td>ok</td><td>0, 0</td><td>9.18</td><td>5092</td><td></td></tr>
-<tr><td>unlit</td><td class="pass">pass</td><td>0.84 (low 0.803)</td><td>14.85 (worst 18.22)</td><td>26.3</td><td>ok</td><td>0, 0</td><td>0</td><td>2904</td><td></td></tr>
+<tr><td>orbit-demo</td><td class="pass">pass</td><td>0.975 (low 0.974)</td><td>0.53 (worst 0.56)</td><td>33.5</td><td>ok</td><td>0, 0</td><td>0</td><td>2810</td><td></td></tr>
 <tr><td>threejs-fps</td><td class="pass">pass</td><td>0.953 (low 0.854)</td><td>0.49 (worst 2.48)</td><td>31.1</td><td>ok</td><td>0, 0</td><td>0</td><td>2859</td><td></td></tr>
 <tr><td>threejs-pointerlock</td><td class="pass">pass</td><td>0.993 (low 0.993)</td><td>0 (worst 0)</td><td>38.1</td><td>ok</td><td>0, 0</td><td>0</td><td>2826</td><td></td></tr>
+<tr><td>unlit</td><td class="pass">pass</td><td>0.84 (low 0.803)</td><td>14.85 (worst 18.22)</td><td>26.3</td><td>ok</td><td>0, 0</td><td>0</td><td>2904</td><td></td></tr>
 </tbody></table></div>
 <h2>Known differences</h2>
 <ul><li><strong>transparency</strong>: WebGL blends transparent surfaces using sRGB values, and Unreal blends them in linear light. Over a dark background a transparent colour comes out brighter in Unreal, and over a light one darker. No single change to opacity matches both.</li></ul>
@@ -69,9 +69,9 @@ p.muted { color: var(--muted); }
 <h3>input</h3><img src="img/case-input.jpg" alt="input: browser and Unreal side by side" loading="lazy">
 <h3>timers</h3><img src="img/case-timers.jpg" alt="timers: browser and Unreal side by side" loading="lazy">
 <h3>audio</h3><img src="img/case-audio.jpg" alt="audio: browser and Unreal side by side" loading="lazy">
-<h3>orbit-demo</h3><img src="img/game-orbit-demo.jpg" alt="orbit-demo: browser and Unreal side by side" loading="lazy">
 <h3>hardburn-demo</h3><img src="img/game-hardburn-demo.jpg" alt="hardburn-demo: browser and Unreal side by side" loading="lazy">
-<h3>unlit</h3><img src="img/game-unlit.jpg" alt="unlit: browser and Unreal side by side" loading="lazy">
+<h3>orbit-demo</h3><img src="img/game-orbit-demo.jpg" alt="orbit-demo: browser and Unreal side by side" loading="lazy">
 <h3>threejs-fps</h3><img src="img/game-threejs-fps.jpg" alt="threejs-fps: browser and Unreal side by side" loading="lazy">
 <h3>threejs-pointerlock</h3><img src="img/game-threejs-pointerlock.jpg" alt="threejs-pointerlock: browser and Unreal side by side" loading="lazy">
+<h3>unlit</h3><img src="img/game-unlit.jpg" alt="unlit: browser and Unreal side by side" loading="lazy">
 </main></body></html>

@@ -1,6 +1,6 @@
 # Conformance results
 
-Bridge commit 178a102, 2026-10-11 15:39 UTC. 27 of 28 passed.
+Bridge commit 922af8a, 2026-10-11 16:23 UTC. 27 of 28 passed.
 
 Each run plays the same script in Chrome and in Unreal from the same commit, with a fixed game clock, and compares
 the paired frames. A case passes when the pictures match (SSIM at least 0.9 and at most 2.5% of pixels clearly different for test
@@ -32,11 +32,11 @@ Unreal frame after the game finishes loading draws at least what the browser dre
 | input | pass | 1, 1 | 0, 0.01 | 57.6 | ok | 0, 0 | 6.19 | 2893 | 9.5 |  |
 | timers | pass | 0.994, 0.969 | 1.3, 6.41 | 45.4 | ok | 0, 0 | 0 | 2808 | 9.5 |  |
 | audio | pass | 1, 0.998 | 0.01, 0.08 | 53.8 | ok | 0, 0 | 0 | 2810 | 9.5 |  |
-| orbit-demo | pass | 0.975, 0.974 | 0.53, 0.56 | 33.5 | ok | 0, 0 | 0 | 2810 | 9.5 |  |
 | hardburn-demo | pass | 0.916, 0.907 | 10.19, 11.29 | 27 | ok | 0, 0 | 9.18 | 5092 | 1373.3 |  |
-| unlit | pass | 0.84, 0.803 | 14.85, 18.22 | 26.3 | ok | 0, 0 | 0 | 2904 | 92.9 |  |
+| orbit-demo | pass | 0.975, 0.974 | 0.53, 0.56 | 33.5 | ok | 0, 0 | 0 | 2810 | 9.5 |  |
 | threejs-fps | pass | 0.953, 0.854 | 0.49, 2.48 | 31.1 | ok | 0, 0 | 0 | 2859 | 9.5 |  |
 | threejs-pointerlock | pass | 0.993, 0.993 | 0, 0 | 38.1 | ok | 0, 0 | 0 | 2826 | 17.4 |  |
+| unlit | pass | 0.84, 0.803 | 14.85, 18.22 | 26.3 | ok | 0, 0 | 0 | 2904 | 92.9 |  |
 
 ## Known differences
 
@@ -136,17 +136,13 @@ Unreal frame after the game finishes loading draws at least what the browser dre
 
 ![audio](img/case-audio.jpg)
 
-### orbit-demo
-
-![orbit-demo](img/game-orbit-demo.jpg)
-
 ### hardburn-demo
 
 ![hardburn-demo](img/game-hardburn-demo.jpg)
 
-### unlit
+### orbit-demo
 
-![unlit](img/game-unlit.jpg)
+![orbit-demo](img/game-orbit-demo.jpg)
 
 ### threejs-fps
 
@@ -155,3 +151,7 @@ Unreal frame after the game finishes loading draws at least what the browser dre
 ### threejs-pointerlock
 
 ![threejs-pointerlock](img/game-threejs-pointerlock.jpg)
+
+### unlit
+
+![unlit](img/game-unlit.jpg)

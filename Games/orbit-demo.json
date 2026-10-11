@@ -2,5 +2,6 @@
   "title": "Orbit Demo",
   "repo": "Examples/orbit-demo",
   "index": "index.html",
-  "public": ["public"]
+  "public": ["public"],
+  "suite": true
 }
