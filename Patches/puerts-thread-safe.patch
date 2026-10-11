@@ -1,0 +1,111 @@
+--- a/Source/JsEnv/JsEnv.Build.cs
++++ b/Source/JsEnv/JsEnv.Build.cs
+@@ -39,7 +39,7 @@
+     
+     private bool ForceStaticLibInEditor = false;
+ 
+-    private bool ThreadSafe = false;
++    private bool ThreadSafe = true;
+ 
+     private bool FTextAsString = true;
+     
+--- a/Source/JsEnv/Private/JsEnvImpl.h
++++ b/Source/JsEnv/Private/JsEnvImpl.h
+@@ -268,6 +268,15 @@
+ #endif
+     virtual void NotifyUObjectDeleted(const class UObjectBase* Object, int32 Index) override;
+ 
++    // JsGameBridge patch: with THREAD_SAFE, deletions are queued and applied under the isolate lock on the
++    // next call into script, so the engine never waits for a script thread's frame to free an object.
++    void ApplyUObjectDeleted(const class UObjectBase* Object);
++    void ApplyPendingDeletes();
++    FCriticalSection PendingDeletesLock;
++    TArray<const class UObjectBase*> PendingDeletes;
++    void CheckDelegateProxiesLocked();
++    TAtomic<bool> bDelegateCheckDue{false};
++
+     void TryReleaseType(UStruct* Struct);
+ 
+ private:
+--- a/Source/JsEnv/Private/JsEnvImpl.cpp
++++ b/Source/JsEnv/Private/JsEnvImpl.cpp
+@@ -1968,6 +1968,16 @@
+ #ifdef SINGLE_THREAD_VERIFY
+     ensureMsgf(BoundThreadId == FPlatformTLS::GetCurrentThreadId(), TEXT("Access by illegal thread!"));
+ #endif
++#ifdef THREAD_SAFE
++    // Called with the isolate locked (UDynamicDelegateProxy::ProcessEvent): apply the queued deletions first,
++    // and the delegate check the engine's ticker asked for.
++    ApplyPendingDeletes();
++    if (bDelegateCheckDue)
++    {
++        bDelegateCheckDue = false;
++        CheckDelegateProxiesLocked();
++    }
++#endif
+     auto SignatureFunction = Proxy->SignatureFunction;
+     auto Iter = JsCallbackPrototypeMap.find(SignatureFunction.Get());
+     if (Iter == JsCallbackPrototypeMap.end())
+@@ -2146,9 +2156,29 @@
+     ensureMsgf(BoundThreadId == FPlatformTLS::GetCurrentThreadId(), TEXT("Access by illegal thread!"));
+ #endif
+ #ifdef THREAD_SAFE
+-    v8::Locker Locker(MainIsolate);
++    // Only the pointer is needed later (every map below is keyed by it), so the work can wait.
++    FScopeLock Lock(&PendingDeletesLock);
++    PendingDeletes.Add(ObjectBase);
++#else
++    ApplyUObjectDeleted(ObjectBase);
+ #endif
++}
+ 
++void FJsEnvImpl::ApplyPendingDeletes()
++{
++    TArray<const UObjectBase*> Pending;
++    {
++        FScopeLock Lock(&PendingDeletesLock);
++        Pending = MoveTemp(PendingDeletes);
++    }
++    for (const UObjectBase* ObjectBase : Pending)
++    {
++        ApplyUObjectDeleted(ObjectBase);
++    }
++}
++
++void FJsEnvImpl::ApplyUObjectDeleted(const class UObjectBase* ObjectBase)
++{
+     TryReleaseType((UStruct*) ObjectBase);
+ 
+ #if !defined(ENGINE_INDEPENDENT_JSENV)
+@@ -2801,10 +2831,20 @@
+ #ifdef SINGLE_THREAD_VERIFY
+     ensureMsgf(BoundThreadId == FPlatformTLS::GetCurrentThreadId(), TEXT("Access by illegal thread!"));
+ #endif
+-    auto Isolate = MainIsolate;
+ #ifdef THREAD_SAFE
+-    v8::Locker Locker(Isolate);
++    // JsGameBridge patch: the check needs the isolate lock, which a script thread may hold for a whole
++    // frame. The engine's ticker only marks it due; the next call into script runs it, already locked.
++    bDelegateCheckDue = true;
++    return true;
++#else
++    CheckDelegateProxiesLocked();
++    return true;
+ #endif
++}
++
++void FJsEnvImpl::CheckDelegateProxiesLocked()
++{
++    auto Isolate = MainIsolate;
+ 
+     std::vector<void*> PendingToRemove;
+     for (auto& KV : DelegateMap)
+@@ -2850,7 +2890,7 @@
+         }
+     }
+ 
+-    return true;
++    return;
+ }
+ 
+ FPropertyTranslator* FJsEnvImpl::GetContainerPropertyTranslator(PropertyMacro* Property)

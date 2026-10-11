@@ -1,0 +1,5 @@
+# Conformance suite case: wait for the scene, then three stills over four seconds.
+0 wait #ready
+1 shot case-1s
+3 shot case-3s
+4 quit

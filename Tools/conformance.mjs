@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Conformance check for one game: from one source commit, build the browser and Unreal targets, run
 // the same script on both (Tests/scripts/<game>.txt), and write a side-by-side film and stills.
-//   node Tools/conformance.mjs <game> [--script file] [--fps 10] [--film out.mp4] [--skip-web] [--skip-unreal]
+//   node Tools/conformance.mjs <game> [--script file] [--fps 10] [--film out.mp4] [--no-film] [--out dir] [--skip-web] [--skip-unreal]
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync, spawnSync} from 'node:child_process';
@@ -18,7 +18,8 @@ const fps = +flag('--fps', 10);
 const seed = flag('--seed', '1234');
 // A query string both sides boot with (Games/<game>.json conformanceSearch), e.g. to fix a world seed.
 const search = flag('--search', game.conformanceSearch ?? game.search ?? '');
-const root = path.join(game.out, 'conformance');
+// --out: where this run's frames, pairs, stills and report go (the suite runner gives each case its own).
+const root = path.resolve(flag('--out', path.join(game.out, 'conformance')));
 const webDir = path.join(root, 'web'), unrealDir = path.join(root, 'unreal'), pairDir = path.join(root, 'pairs');
 const film = path.resolve(flag('--film', path.join(root, `${game.id}-side-by-side.mp4`)));
 const node = process.execPath;
@@ -42,7 +43,7 @@ if (!has('--skip-web')) {
   fs.rmSync(webDir, {recursive: true, force: true});
   run(['Tools/web.mjs', 'build', game.id], 'web build');
   if (git('rev-parse', 'HEAD') !== commit) throw Error('source moved during the web build');
-  const out = run(['Tools/web.mjs', 'capture', game.id, '--script', script, '--frames', path.join(webDir, 'frames'), '--shots', webDir, '--fps', String(fps), '--res', '1280x720', '--seed', seed, ...(search ? ['--search', search] : [])], 'browser run');
+  const out = run(['Tools/web.mjs', 'capture', game.id, '--script', script, '--frames', path.join(webDir, 'frames'), '--shots', webDir, '--fps', String(fps), '--res', '1280x720', '--seed', seed, '--fixed-fps', flag('--fixed-fps', '60'), ...(search ? ['--search', search] : [])], 'browser run');
   report.web = JSON.parse(out.trim().split(/\r?\n/).filter(l => l.startsWith('{')).pop() ?? '{}');
 }
 if (!has('--skip-unreal')) {
@@ -80,6 +81,15 @@ let pairs = 0;
 // Pairs where one side is holding at a wait are compared only on the Unreal side's own counts.
 const violations = [];
 let checked = 0, compared = 0;
+// Captures are 1/fps apart, and when the game swaps scenes its object count can change between two of them (and
+// work that finishes on other threads lands a frame or two apart on the two sides), so each Unreal frame is held to
+// the fewest objects the browser drew within two capture intervals of the pair. An object that stays missing still fails.
+const around = (side, t) => {
+  const near = side.list.filter(f => Math.abs(f.t - t) <= 2 / fps + 1e-6);
+  if (!near.length) return null;
+  const least = key => near.some(f => f[key] === undefined || f[key] < 0) ? -1 : Math.min(...near.map(f => f[key]));
+  return {...near[0], objects: least('objects'), lines: least('lines'), sprites: least('sprites'), points: least('points')};
+};
 const check = (pair, w, ue, held) => {
   if (ue.drawn === undefined) return;
   checked++;
@@ -102,14 +112,19 @@ for (let i = 0; i + 1 < bw.length && web.list.length && unreal.list.length; i++)
     const w = nearest(web, bw[i] + Math.min(u, dw)), ue = nearest(unreal, bu[i] + Math.min(u, du));
     fs.copyFileSync(w.file, path.join(pairDir, `web_${String(pairs).padStart(5, '0')}.png`));
     fs.copyFileSync(ue.file, path.join(pairDir, `ue_${String(pairs).padStart(5, '0')}.png`));
-    check(pairs, w, ue, u > dw || u > du);
+    // A segment that ends at a wait is the game loading toward that state (the first scene, a planet), each side at
+    // its own pace, so it isn't compared with the browser; Unreal's own missing and untextured counts still apply.
+    // A frame captured before its own side's wait ended belongs to that earlier segment.
+    const early = w.t < bw[i] - 1e-6 || ue.t < bu[i] - 1e-6;
+    check(pairs, {...(around(web, w.t) ?? w), file: w.file}, ue, u > dw || u > du || i < anchors || early);
   }
 }
 report.pairs = pairs;
 report.objectCheck = {pass: violations.length === 0 && checked > 0, unrealFramesChecked: checked, pairsCompared: compared, failures: violations.length, first: violations.slice(0, 20)};
 console.log(report.objectCheck.pass ? `object check passed: ${checked} Unreal frames, ${compared} compared with the browser`
+  : checked === 0 ? `OBJECT CHECK FAILED: no frames to check (the browser captured ${report.web?.frames ?? 0} and Unreal ${report.unreal?.frames ?? 0}; see the errors above)`
   : `OBJECT CHECK FAILED on ${violations.length} of ${checked} frames; first: ${JSON.stringify(violations.slice(0, 3))}`);
-if (pairs > 1) {
+if (pairs > 1 && !has('--no-film')) {
   const font = 'C\\:/Windows/Fonts/arial.ttf';
   const label = (text, x) => `drawtext=fontfile='${font}':text='${text}':x=${x}:y=16:fontsize=26:fontcolor=white:box=1:boxcolor=black@0.55:boxborderw=8`;
   const filter = `[0:v]scale=1280:720,setsar=1,${label('Browser (Chrome, WebGL)', 16)}[a];[1:v]scale=1280:720,setsar=1,${label('Unreal Engine 5.8 (JsGameBridge)', 16)}[b];` +

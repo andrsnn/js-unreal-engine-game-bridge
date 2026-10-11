@@ -96,6 +96,9 @@ interface State {
   shadowBlur: number; shadowColor: string; shadowOffsetX: number; shadowOffsetY: number; filter: string; lineDashOffset: number; dash: number[];
 }
 
+/** Every 2D context made so far, for mirroring the ones that sit in the page (ui.ts). */
+export const contexts = new Set<WeakRef<Context2D>>();
+
 export class Context2D {
   private w = 0; private h = 0; private data = new Uint8ClampedArray(0);
   private s: State = Context2D.initial();
@@ -106,7 +109,7 @@ export class Context2D {
   private covered: Uint8Array | null = null;
   readonly canvas: any;
 
-  constructor(canvas: any) { this.canvas = canvas; this.resize(); }
+  constructor(canvas: any) { this.canvas = canvas; this.resize(); contexts.add(new WeakRef(this)); }
 
   static initial(): State {
     const black: Paint = {kind: 'color', c: [0, 0, 0, 1]};
@@ -547,4 +550,30 @@ export class Path2DImpl {
     (ctx as unknown as {subpaths: number[][]}).subpaths = saved; (ctx as unknown as {cur: unknown}).cur = savedCur;
     return out;
   }
+}
+
+/** ImageBitmap: a file reference (the host loads the texture by path), encoded bytes, or pixels. */
+export class ImageBitmapImpl {
+  constructor(public width: number, public height: number, public __jsgbAsset?: string, public __bytes?: Uint8Array, public __pixels?: {width: number; height: number; data: Uint8ClampedArray}) {}
+  close() {}
+}
+
+export class ImageDataImpl {
+  data: Uint8ClampedArray; width: number; height: number; colorSpace = 'srgb';
+  constructor(a: Uint8ClampedArray | number, b: number, c?: number) {
+    if (typeof a === 'number') { this.width = a; this.height = b; this.data = new Uint8ClampedArray(a * b * 4); }
+    else { this.data = a; this.width = b; this.height = c ?? a.length / 4 / b; }
+  }
+}
+
+/** OffscreenCanvas with a 2D context, for the page and for Web Workers (which have no DOM). */
+export class OffscreenCanvasImpl {
+  private dims = {width: 0, height: 0}; __ctx?: Context2D;
+  constructor(w: number, h: number) { this.dims = {width: Math.max(0, w | 0), height: Math.max(0, h | 0)}; }
+  get width() { return this.dims.width; } set width(v: number) { this.dims.width = Math.max(0, v | 0); this.__ctx?.resize(); }
+  get height() { return this.dims.height; } set height(v: number) { this.dims.height = Math.max(0, v | 0); this.__ctx?.resize(); }
+  getContext(kind: string) { return kind === '2d' ? (this.__ctx ??= new Context2D(this)) : null; }
+  convertToBlob() { const B = (globalThis as {Blob?: new (parts: unknown[], o: {type: string}) => unknown}).Blob; return Promise.resolve(B ? new B([], {type: 'image/png'}) : null); }
+  transferToImageBitmap() { const b = this.__ctx?.bitmap(); return new ImageBitmapImpl(this.width, this.height, undefined, undefined, b ? {width: b.width, height: b.height, data: b.data.slice()} : undefined); }
+  addEventListener() {} removeEventListener() {}
 }

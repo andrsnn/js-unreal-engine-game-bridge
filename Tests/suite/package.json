@@ -1,0 +1,18 @@
+{
+  "name": "jsgb-conformance-suite",
+  "private": true,
+  "type": "module",
+  "description": "Small three.js scenes, one per feature, that the conformance suite runs in the browser and in Unreal.",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0",
+    "vite": "8.3.1"
+  },
+  "license": "MIT"
+}

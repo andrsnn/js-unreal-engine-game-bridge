@@ -9,9 +9,9 @@ import {channelFor, isExtraAttribute} from './attributes';
  *  attributes, so its varyings reach the fragment stage unchanged for the usual transforms;
  *  uniforms arrive as material parameters of the same name. */
 
-export type ShaderInput = {name: string; source: 'localPosition' | 'localAxis' | 'localOrigin' | 'localNormal' | 'uv' | 'vertexColor' | 'primitiveData' | 'collection' | 'scalar' | 'vector' | 'texture' | 'cube' | 'volume' | 'worldPosition';
+export type ShaderInput = {name: string; source: 'localPosition' | 'instanceColor' | 'localAxis' | 'localOrigin' | 'localNormal' | 'uv' | 'vertexColor' | 'primitiveData' | 'collection' | 'scalar' | 'vector' | 'texture' | 'cube' | 'volume' | 'worldPosition';
   param?: string; index?: number};
-export type TranslatedShader = {key: string; hlsl: string; inputs: ShaderInput[]; vertexHlsl: string; vertexInputs: ShaderInput[]};
+export type TranslatedShader = {key: string; hlsl: string; inputs: ShaderInput[]; vertexHlsl: string; vertexInputs: ShaderInput[]; lit?: boolean; encoded?: boolean};
 
 type Decl = {qualifier: string; type: string; name: string; array: string};
 const BUILTIN_UNIFORMS: Record<string, string> = {modelMatrix: 'mat4', viewMatrix: 'mat4', projectionMatrix: 'mat4', cameraPosition: 'vec3', isOrthographic: 'bool'};
@@ -35,6 +35,43 @@ function crossShader() {
 
 function expandIncludes(src: string, depth = 0): string {
   return depth > 8 ? src : src.replace(/^[ \t]*#include +<([\w.]+)>/gm, (_m, n: string) => expandIncludes((THREE.ShaderChunk as Record<string, string>)[n] ?? '', depth + 1));
+}
+/** Resolves #if/#ifdef/#ifndef/#elif/#else/#endif with the given defines (and the #defines met on the way), so
+ *  declarations inside inactive blocks are dropped before the uniforms and varyings are collected. three's
+ *  built-in shader chunks declare most of their uniforms inside such blocks. */
+export function preprocess(src: string, defines: Record<string, unknown>): string {
+  const known = new Map<string, string>(Object.entries(defines).map(([k, v]) => [k, v === true ? '' : String(v)]));
+  const test = (expr: string) => {
+    let e = expr.replace(/defined\s*\(\s*(\w+)\s*\)/g, (_m, n: string) => known.has(n) ? '1' : '0').replace(/defined\s+(\w+)/g, (_m, n: string) => known.has(n) ? '1' : '0');
+    for (let i = 0; i < 4; i++) e = e.replace(/\b[A-Za-z_]\w*\b/g, n => { const v = known.get(n); return v === undefined || v === '' ? '0' : v; });
+    try { return !!Function(`return (${e});`)(); } catch { return false; }
+  };
+  const out: string[] = [];
+  // Each level: is this branch active, has any branch of the #if been taken, was the enclosing level active.
+  const stack: {active: boolean; taken: boolean; outer: boolean}[] = [];
+  const active = () => stack.length === 0 || stack[stack.length - 1].active;
+  for (const line of src.split(/\r?\n/)) {
+    const d = /^\s*#\s*(ifdef|ifndef|if|elif|else|endif|define|undef)\b\s*(.*)$/.exec(line);
+    if (!d) { if (active()) out.push(line); continue; }
+    const [, kind, rest] = d;
+    if (kind === 'ifdef' || kind === 'ifndef' || kind === 'if') {
+      const outer = active();
+      const on = outer && (kind === 'ifdef' ? known.has(rest.trim().split(/\s+/)[0]) : kind === 'ifndef' ? !known.has(rest.trim().split(/\s+/)[0]) : test(rest));
+      stack.push({active: on, taken: on, outer});
+    } else if (kind === 'elif') {
+      const top = stack[stack.length - 1]; if (!top) continue;
+      top.active = top.outer && !top.taken && test(rest); top.taken ||= top.active;
+    } else if (kind === 'else') {
+      const top = stack[stack.length - 1]; if (!top) continue;
+      top.active = top.outer && !top.taken; top.taken = true;
+    } else if (kind === 'endif') stack.pop();
+    else if (active()) {
+      const m = /^(\w+)(?:\s+(.*))?$/.exec(rest.trim());
+      if (m) { if (kind === 'define' && !/^\w+\(/.test(rest.trim())) known.set(m[1], (m[2] ?? '').trim()); else if (kind === 'undef') known.delete(m[1]); }
+      out.push(line);
+    }
+  }
+  return out.join(String.fromCharCode(10));
 }
 const stripComments = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
 
@@ -61,9 +98,28 @@ const sourceKey = (m: THREE.ShaderMaterial) => {
 };
 
 /** GLSL 4.50 for glslang, plus what the HLSL glue needs to know. */
+/** True when the vertex shader places vertices with the plain model, view and projection matrices.
+ *  The Unreal mesh is already drawn there, so such shaders need no world position offset. */
+export function standardVertexTransform(source: string): boolean {
+  const src = stripComments(expandIncludes(source)).replace(/\s+/g, '');
+  if (/(^|[^.\w])position=/.test(src) || /transformed/.test(src)) return false;
+  const assigns = [...src.matchAll(/gl_Position=([^;]+);/g)];
+  if (assigns.length !== 1) return false;
+  let expr = assigns[0][1];
+  // Inline local vec4 values the expression uses (vec4 wp = modelMatrix * vec4(position, 1.0); ...).
+  // A value that is changed after it is declared (mv.xy += ...) is not a plain transform.
+  for (const m of src.matchAll(/vec4(\w+)=([^;]+);/g)) if (new RegExp(`[^\\w]${m[1]}(\\.\\w+)?[-+*/]?=`).test(src.replace(m[0], ''))) return false;
+  for (let i = 0; i < 4; i++) {
+    for (const m of src.matchAll(/vec4(\w+)=([^;]+);/g)) expr = expr.replace(new RegExp(`\\b${m[1]}\\b`, 'g'), `(${m[2]})`);
+  }
+  expr = expr.replace(/[()]/g, '').replace(/vec4position,1\.0?/g, 'P').replace(/vec4position\.xyz,1\.0?/g, 'P');
+  return ['projectionMatrix*viewMatrix*modelMatrix*P', 'projectionMatrix*modelViewMatrix*P'].includes(expr);
+}
+
 function prepare(material: THREE.ShaderMaterial, stage: 'vertex' | 'fragment') {
   const raw = !!material.isRawShaderMaterial;
-  let src = stripComments(expandIncludes(stage === 'vertex' ? material.vertexShader : material.fragmentShader));
+  const stageDefines = {...(material.defines ?? {}), [stage === 'vertex' ? 'JSGB_VERTEX' : 'JSGB_FRAGMENT']: 1};
+  let src = preprocess(stripComments(expandIncludes(stage === 'vertex' ? material.vertexShader : material.fragmentShader)), stageDefines);
   src = src.replace(/^[ \t]*#version[^\n]*$/gm, '').replace(/^[ \t]*#extension[^\n]*$/gm, '').replace(/^[ \t]*precision\s+\w+\s+\w+\s*;/gm, '');
   const glsl3 = material.glslVersion === THREE.GLSL3;
   const u = takeDeclarations(src, ['uniform']); src = u.src;
@@ -86,6 +142,10 @@ function prepare(material: THREE.ShaderMaterial, stage: 'vertex' | 'fragment') {
     const attrs: Decl[] = raw ? [] : [{qualifier: 'in', type: 'vec3', name: 'position', array: ''}, {qualifier: 'in', type: 'vec3', name: 'normal', array: ''}, {qualifier: 'in', type: 'vec2', name: 'uv', array: ''}];
     if (!raw && /\bUSE_COLOR\b|\bvertexColors\b/.test(JSON.stringify(material.defines ?? {})) || material.vertexColors) attrs.push({qualifier: 'in', type: material.defines?.USE_COLOR_ALPHA ? 'vec4' : 'vec3', name: 'color', array: ''});
     for (const d of a.decls) if (!attrs.some(x => x.name === d.name)) attrs.push(d);
+    // Per-instance colours come from Unreal's per-instance custom data when the mesh has them.
+    if (/\binstanceColor\b/.test(src) && !attrs.some(x => x.name === 'instanceColor')) {
+      if (material.defines?.USE_INSTANCING_COLOR !== undefined) attrs.push({qualifier: 'in', type: 'vec3', name: 'instanceColor', array: ''}); else lines.push('vec3 instanceColor = vec3(1.0);');
+    }
     for (const d of attrs) lines.push(`layout(location = ${loc++}) in ${d.type} ${d.name}${d.array};`);
     loc = 0;
     for (const d of v.decls) lines.push(`layout(location = ${loc++}) out ${d.type} ${d.name}${d.array};`);
@@ -93,7 +153,6 @@ function prepare(material: THREE.ShaderMaterial, stage: 'vertex' | 'fragment') {
     lines.push('float jsgb_PointSize;', '#define gl_PointSize jsgb_PointSize');
     // Instancing attributes the per-instance mirror does not feed: identity transform, white colour.
     if (/\binstanceMatrix\b/.test(src) && !attrs.some(x => x.name === 'instanceMatrix')) lines.push('mat4 instanceMatrix = mat4(1.0);');
-    if (/\binstanceColor\b/.test(src) && !attrs.some(x => x.name === 'instanceColor')) lines.push('vec3 instanceColor = vec3(1.0);');
     lines.push(src, 'void main() { modelViewMatrix = viewMatrix * modelMatrix; normalMatrix = transpose(inverse(mat3(modelViewMatrix))); jsgb_main(); }');
     return {glsl: lines.join('\n'), uniforms, attributes: attrs, varyings: v.decls};
   }
@@ -261,6 +320,7 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial): Transla
     if (has(V, 'normal')) glue.push('vs.normal = normalize(float3(JsgbN.x, JsgbN.z, JsgbN.y) + 1e-6);');
     if (has(V, 'uv')) glue.push('vs.uv = JsgbUV;');
     if (has(V, 'color')) glue.push(`vs.color = JsgbC${V.members.find(m => m.name === 'color')?.type === 'float4' ? '' : '.xyz'};`);
+    if (vs.attributes.some(d => d.name === 'instanceColor') && has(V, 'instanceColor')) { inputs.push({name: 'JsgbIC', source: 'instanceColor'}); glue.push('vs.instanceColor = JsgbIC.xyz;'); }
     // The shader's own attributes come from the UV channels the geometry export put them in.
     for (const d of vs.attributes) {
       if (!isExtraAttribute(d.name) || !has(V, d.name)) continue;
@@ -281,14 +341,18 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial): Transla
     if (has(F, 'gl_FrontFacing')) glue.push('fs.gl_FrontFacing = Parameters.TwoSidedSign > 0;');
     glue.push(`fs.${F.entry}();`, 'return fs.jsgb_FragColor;');
     const hlsl = [V.types + F.types, V.struct, F.struct, ...vsGlue, ...glue].filter(Boolean).join('\n');
-    // Vertex stage: the shader's own gl_Position, taken back to a world position through the
-    // inverse camera, becomes Unreal's world position offset (billboards, view-space quads).
+    // Vertex stage: the shader's own gl_Position, taken back to a world position, becomes Unreal's
+    // world position offset (billboards, view-space quads). The view-space point is solved from the
+    // projection's columns (JsgbPr0-3): for a perspective camera clip.w is exactly -z. Multiplying by
+    // the inverse projection instead loses most of the depth in floats (clip z is close to clip w far
+    // away), which pushed surfaces tens of units back, so lines behind them showed through.
     const vertexInputs: ShaderInput[] = [...vsInputs.filter(i => !i.name.startsWith('T_')),
-      ...[0, 1, 2, 3].map(i => ({name: `JsgbW${i}`, source: 'collection' as const, param: `CamCol${i}`})),
-      ...[0, 1, 2, 3].map(i => ({name: `JsgbPI${i}`, source: 'collection' as const, param: `ProjInvCol${i}`})), {name: 'JsgbWorld', source: 'worldPosition'}];
-    const vertexHlsl = vsInputs.some(i => i.name.startsWith('T_')) ? '' : [V.types, V.struct, ...vsGlue,
-      'float4 jsgbW = mul(vs.gl_Position, mul(float4x4(JsgbPI0, JsgbPI1, JsgbPI2, JsgbPI3), float4x4(JsgbW0, JsgbW1, JsgbW2, JsgbW3)));',
-      'float3 jsgbT = jsgbW.xyz / (abs(jsgbW.w) > 1e-8 ? jsgbW.w : 1e-8);',
+      ...[0, 1, 2, 3].map(i => ({name: `JsgbW${i}`, source: 'collection' as const, param: `CamCol${i}`})), {name: 'JsgbWorld', source: 'worldPosition'}];
+    const vertexHlsl = vsInputs.some(i => i.name.startsWith('T_')) || standardVertexTransform(material.vertexShader) ? '' : [V.types, V.struct, ...vsGlue,
+      'float4 jsgbC = vs.gl_Position; float3 jsgbV;',
+      'if (abs(JsgbPr2.w) > 0.5) { jsgbV.z = jsgbC.w / JsgbPr2.w; jsgbV.x = (jsgbC.x - JsgbPr2.x * jsgbV.z) / JsgbPr0.x; jsgbV.y = (jsgbC.y - JsgbPr2.y * jsgbV.z) / JsgbPr1.y; }',
+      'else { float jsgbInvW = 1.0 / (abs(jsgbC.w) > 1e-8 ? jsgbC.w : 1e-8); jsgbV.z = (jsgbC.z * jsgbInvW - JsgbPr3.z) / JsgbPr2.z; jsgbV.x = (jsgbC.x * jsgbInvW - JsgbPr3.x) / JsgbPr0.x; jsgbV.y = (jsgbC.y * jsgbInvW - JsgbPr3.y) / JsgbPr1.y; }',
+      'float3 jsgbT = (jsgbV.x * JsgbW0 + jsgbV.y * JsgbW1 + jsgbV.z * JsgbW2 + JsgbW3).xyz;',
       'float3 jsgbOffset = float3(jsgbT.x, jsgbT.z, jsgbT.y) * 100.0 - JsgbWorld;',
       'return any(isnan(jsgbOffset)) || dot(jsgbOffset, jsgbOffset) < 1e-4 ? float3(0, 0, 0) : jsgbOffset;'].filter(Boolean).join('\n');
     result = {key, hlsl, inputs, vertexHlsl, vertexInputs};
@@ -297,4 +361,90 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial): Transla
   }
   cache.set(key, result);
   return result;
+}
+
+/** onBeforeCompile on a built-in material (MeshStandardMaterial and the rest): the game edits three's own
+ *  shader source at compile time. The edited source is rebuilt here as three would build it, then cut where
+ *  lighting starts, so the generated material computes the surface colour and alpha exactly as the game's
+ *  shader does (colour, texture and alpha edits, discards, vertex displacement) and Unreal lights the result.
+ *  Edits to the lighting itself are not carried over. */
+export type HookedShader = {vertexShader: string; fragmentShader: string; uniforms: Record<string, {value: unknown}>; defines: Record<string, unknown>};
+const UNLIT_HOOKED = new Set(['MeshBasicMaterial', 'MeshMatcapMaterial', 'MeshNormalMaterial']);
+const HOOKABLE = new Set(['MeshBasicMaterial', 'MeshLambertMaterial', 'MeshPhongMaterial', 'MeshStandardMaterial', 'MeshPhysicalMaterial', 'MeshToonMaterial', 'MeshMatcapMaterial', 'MeshNormalMaterial']);
+const NO_LIGHTS = ['NUM_DIR_LIGHTS', 'NUM_SPOT_LIGHTS', 'NUM_RECT_AREA_LIGHTS', 'NUM_POINT_LIGHTS', 'NUM_HEMI_LIGHTS', 'NUM_DIR_LIGHT_SHADOWS', 'NUM_POINT_LIGHT_SHADOWS',
+  'NUM_SPOT_LIGHT_SHADOWS', 'NUM_SPOT_LIGHT_MAPS', 'NUM_SPOT_LIGHT_COORDS', 'NUM_SPOT_LIGHT_SHADOWS_WITH_MAPS', 'NUM_CLIPPING_PLANES', 'UNION_CLIPPING_PLANES', 'NUM_LIGHT_PROBES'];
+// Where the surface is complete and lighting begins, in each built-in fragment shader.
+const LIGHTING_STARTS = [/^[ \t]*#include <normal_fragment_begin>/m, /^[ \t]*#include <lights_/m, /^[ \t]*#include <aomap_fragment>/m, /^[ \t]*#ifdef USE_LIGHTMAP/m, /^[ \t]*#include <opaque_fragment>/m];
+const MAPS: [string, string][] = [['map', 'MAP'], ['alphaMap', 'ALPHAMAP'], ['emissiveMap', 'EMISSIVEMAP'], ['roughnessMap', 'ROUGHNESSMAP'], ['metalnessMap', 'METALNESSMAP'], ['specularMap', 'SPECULARMAP'], ['aoMap', 'AOMAP']];
+const hookedSource = new WeakMap<object, {key: string; material: THREE.ShaderMaterial}>();
+
+/** Built-in uniform values from the material's own properties, as WebGLRenderer sets them each frame. */
+export function fillBuiltinUniforms(material: THREE.Material, u: Record<string, {value: any}>) {
+  const m = material as Record<string, any>;
+  const set = (k: string, v: unknown) => { if (u[k] && v !== undefined) u[k].value = v; };
+  if (m.color?.isColor) set('diffuse', m.color);
+  set('opacity', m.opacity);
+  if (m.emissive?.isColor && u.emissive) { const e = u.emissive.value?.isColor ? u.emissive.value : (u.emissive.value = m.emissive.clone()); e.copy(m.emissive).multiplyScalar(m.emissiveIntensity ?? 1); }
+  if (m.specular?.isColor) set('specular', m.specular);
+  for (const k of ['roughness', 'metalness', 'shininess', 'alphaTest', 'reflectivity', 'aoMapIntensity']) if (typeof m[k] === 'number') set(k, m[k]);
+  for (const [k] of MAPS) set(k, m[k] ?? null);
+  // Texture transforms travel as two rows (the material parameters carry vectors, not matrices), with
+  // three's flipY applied: Unreal textures keep the image's first row at v = 0.
+  for (const [k] of MAPS) {
+    const r0 = u[`${k}Transform_r0`], r1 = u[`${k}Transform_r1`];
+    if (!r0 || !r1) continue;
+    const t = m[k] as THREE.Texture | null;
+    if (t?.matrixAutoUpdate) t.updateMatrix();
+    const e = t ? t.matrix.elements : [1, 0, 0, 0, 1, 0, 0, 0, 1];
+    r0.value = new THREE.Vector3(e[0], e[3], e[6]);
+    r1.value = t?.flipY !== false ? new THREE.Vector3(-e[1], -e[4], 1 - e[7]) : new THREE.Vector3(e[1], e[4], e[7]);
+  }
+}
+
+/** The generated-material description for a built-in material patched in onBeforeCompile, or null/undefined as translateShaderMaterial. */
+export function translateHookedMaterial(material: THREE.Material, hooked: HookedShader, hookKey: string, instancing?: {color: boolean}): TranslatedShader | null | undefined {
+  if (!HOOKABLE.has(material.type)) return null;
+  const m = material as Record<string, any>;
+  const defines: Record<string, unknown> = {...hooked.defines, ...(m.defines ?? {})};
+  for (const k of NO_LIGHTS) defines[k] = 0;
+  for (const [k, d] of MAPS) if (m[k]) { defines[`USE_${d}`] = ''; defines[`${d}_UV`] = 'uv'; defines.USE_UV = ''; }
+  if (m.vertexColors) defines.USE_COLOR = '';
+  if (m.alphaTest > 0) defines.USE_ALPHATEST = '';
+  if (m.flatShading) defines.FLAT_SHADED = '';
+  if (m.side === THREE.DoubleSide) defines.DOUBLE_SIDED = '';
+  // On an InstancedMesh: Unreal's model matrix already holds each instance's transform, so instanceMatrix is
+  // the identity, and instance colours arrive per instance.
+  if (instancing) { defines.USE_INSTANCING = ''; if (instancing.color) { defines.USE_INSTANCING_COLOR = ''; defines.USE_COLOR = ''; } }
+  const key = `${hookKey}|${material.type}|${JSON.stringify(defines)}`;
+  let cached = hookedSource.get(material);
+  if (!cached || cached.key !== key) {
+    // Texture transforms: mat3 uniforms become two vec3 rows.
+    const rows = (s: string) => s.replace(/uniform\s+mat3\s+(\w+Transform)\s*;/g, 'uniform vec3 $1_r0; uniform vec3 $1_r1;')
+      .replace(/\(\s*(\w+Transform)\s*\*\s*vec3\(\s*(\w+)\s*,\s*1(?:\.0)?\s*\)\s*\)\s*\.xy/g, 'vec2( dot( $1_r0, vec3( $2, 1.0 ) ), dot( $1_r1, vec3( $2, 1.0 ) ) )');
+    const vertex = rows(expandIncludes(hooked.vertexShader));
+    let fragment = rows(expandIncludes(hooked.fragmentShader.replace(/^[ \t]*#include <(normal_fragment_begin|lights_\w+|aomap_fragment|opaque_fragment)>/gm, '__JSGB_CUT_$1__')));
+    fragment = fragment.replace(/__JSGB_CUT_(\w+)__/g, '#include <$1>');
+    const main = fragment.search(/\bvoid\s+main\s*\(/);
+    const cuts = LIGHTING_STARTS.map(rx => { const at = fragment.slice(main).search(rx); return at < 0 ? Infinity : main + at; });
+    const cut = Math.min(...cuts);
+    if (main < 0 || cut === Infinity) return null;
+    let kept = fragment.slice(0, cut);
+    // Close any #if blocks the cut left open inside main.
+    const body = kept.slice(main);
+    const open = (body.match(/^[ \t]*#if/gm) ?? []).length - (body.match(/^[ \t]*#endif/gm) ?? []).length;
+    for (let i = 0; i < open; i++) kept += '\n#endif';
+    kept += '\n\tgl_FragColor = vec4( diffuseColor.rgb, diffuseColor.a );\n}\n';
+    const uniforms = hooked.uniforms;
+    for (const [k] of MAPS) if (vertex.includes(` ${k}Transform_r0;`)) {
+      uniforms[`${k}Transform_r0`] ??= {value: new THREE.Vector3(1, 0, 0)}; uniforms[`${k}Transform_r1`] ??= {value: new THREE.Vector3(0, 1, 0)};
+    }
+    const synthetic = {isShaderMaterial: true, name: material.name, vertexShader: vertex, fragmentShader: kept, defines, uniforms,
+      vertexColors: !!m.vertexColors, glslVersion: null, isRawShaderMaterial: false} as unknown as THREE.ShaderMaterial;
+    cached = {key, material: synthetic};
+    hookedSource.set(material, cached);
+  }
+  fillBuiltinUniforms(material, hooked.uniforms as Record<string, {value: any}>);
+  const t = translateShaderMaterial(cached.material);
+  if (t) t.lit = !UNLIT_HOOKED.has(material.type);
+  return t;
 }

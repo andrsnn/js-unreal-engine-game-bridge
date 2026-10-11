@@ -8,7 +8,7 @@ public class JsGameBridge : ModuleRules {
   AddEngineThirdPartyPrivateStaticDependencies(Target,"zlib");
   PCHUsage=PCHUsageMode.UseExplicitOrSharedPCHs;
   PublicDependencyModuleNames.AddRange(new[]{"Core","CoreUObject","Engine","Json","JsonUtilities","ProceduralMeshComponent","Niagara","RenderCore","RHI","JsEnv","HTTPServer","Slate","SlateCore","InputCore","ApplicationCore","WebBrowser",
-   "MeshDescription","StaticMeshDescription","ImageWrapper","Projects","AudioMixer","VorbisAudioDecoder"});
+   "MeshDescription","StaticMeshDescription","ImageWrapper","ImageCore","MovieSceneCapture","Projects","AudioMixer","VorbisAudioDecoder"});
   // FSoundQualityInfo for the runtime Ogg Vorbis decoder.
   PrivateIncludePathModuleNames.Add("TargetPlatform");
  }

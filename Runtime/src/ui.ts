@@ -1,6 +1,7 @@
 import {host} from './host';
 import {layoutBoxes, setViewport, submitForm} from './dom';
 import {deliver} from './input';
+import {contexts} from './canvas2d';
 
 /** Mirrors the game's DOM into the host's CEF overlay. Every element gets a stable data-jsgb id;
  *  the overlay sends back each element's laid-out box and the DOM events the player causes, which
@@ -25,14 +26,49 @@ export function publishUI(intervalMs = 100) {
   const out = host.ui; if (!out) return;
   const now = host.now(); if (now - lastPublish < intervalMs) return;
   lastPublish = now;
+  publishCanvases(out);
   if (!dirty && last) return;
   dirty = false;
   const body = g.document.body; stamp(body);
-  const html = body.outerHTML;
+  // The <html> element's attributes go too: games set CSS variables there (a HUD zoom, a theme).
+  const root = g.document.documentElement as {attributes: {name: string; value: string}[]};
+  const attrs = [...root.attributes].map(a => ` ${a.name}="${a.value.replaceAll('&', '&amp;').replaceAll('"', '&quot;')}"`).join('');
+  // Styles the game adds to <head> while it runs (UI libraries such as lil-gui inject theirs) go along too.
+  const headCss = [...(g.document.head?.querySelectorAll('style') ?? [])].map((s: {textContent: string | null}) => s.textContent ?? '').join(String.fromCharCode(10));
+  const html = `<html${attrs}><head>${headCss ? `<style data-jsgb-head>${headCss}</style>` : ''}</head>${body.outerHTML}</html>`;
   // The game's own origin is http://localhost/; the overlay loads files from the host's origin, so
   // absolute links to the game origin (new URL(path, document.baseURI)) become root-relative.
   if (html !== last) { last = html; out.publish(html.replaceAll('http://localhost/', '/')); }
   dirty = false;
+}
+
+/** The pixels of 2D canvases in the page (a portrait, a minimap): the overlay's copy of the page only has the
+ *  element, so each canvas's pixels go to the overlay when they change. */
+const sentCanvas = new Map<string, string>(), sentAt = new Map<string, number>();
+let canvasPass = 0;
+function publishCanvases(out: NonNullable<typeof host.ui>) {
+  if (!out.canvas) return;
+  for (const ref of contexts) {
+    const ctx = ref.deref() as (Record<string, any> & {version: number; bitmap(): {width: number; height: number; data: Uint8ClampedArray}}) | undefined;
+    if (!ctx) { contexts.delete(ref); continue; }
+    const el = ctx.canvas as Record<string, any>;
+    if (!el?.isConnected || el.nodeType !== 1) continue;
+    const b = ctx.bitmap();
+    if (!b.width || !b.height || b.width * b.height > 1 << 20) continue;
+    stamp(el);
+    const id = el.getAttribute(ATTR), key = `${ctx.version}:${b.width}x${b.height}`;
+    if (sentCanvas.get(id) === key) continue;
+    // Pixels go through the overlay as text, so a big canvas (a full-screen layer) updates at most once a second.
+    const now = host.now(), big = b.width * b.height > 256 * 256;
+    if (big && now - (sentAt.get(id) ?? -1e9) < 1000) continue;
+    sentCanvas.set(id, key); sentAt.set(id, now);
+    const words = new Uint32Array(b.data.buffer, b.data.byteOffset, b.data.byteLength >> 2);
+    let clear = true;
+    for (let i = 0; i < words.length; i++) if (words[i] >>> 24) { clear = false; break; }
+    out.canvas(id, b.width, b.height, clear ? new ArrayBuffer(0) : b.data.slice().buffer);
+  }
+  // Forget canvases that left the page now and then.
+  if (++canvasPass % 50 === 0) for (const id of sentCanvas.keys()) if (!byId(id)) sentCanvas.delete(id);
 }
 
 const byId = (id: string) => g.document.querySelector(`[${ATTR}="${id}"]`);

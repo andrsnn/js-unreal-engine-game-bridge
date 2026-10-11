@@ -8,6 +8,7 @@
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
+#include "Async/Async.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogJsgbAudio, Log, All);
 
@@ -51,35 +52,69 @@ UJsgbAudio::UJsgbAudio()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-TSharedPtr<UJsgbAudio::FPcm> UJsgbAudio::Decode(const FString& Path)
+namespace
 {
-	if (TSharedPtr<FPcm>* Found = Decoded.Find(Path)) { return *Found; }
-	TSharedPtr<FPcm> Pcm;
-	FArrayBufferValue File = Bridge ? Bridge->ReadFile(Path) : FArrayBufferValue();
-	if (File.Data.Num() > 0)
+	/** PCM from a WAV or Ogg Vorbis file, or null. Safe on any thread. */
+	TSharedPtr<UJsgbAudio::FPcm> DecodeFile(const TArray<uint8>& File)
 	{
-		TSharedPtr<FPcm> P = MakeShared<FPcm>();
-		if (DecodeWav(File.Data, *P)) { Pcm = P; }
-		else if (File.Data.Num() > 4 && !FMemory::Memcmp(File.Data.GetData(), "OggS", 4))
+		if (File.Num() == 0) { return nullptr; }
+		TSharedPtr<UJsgbAudio::FPcm> P = MakeShared<UJsgbAudio::FPcm>();
+		if (DecodeWav(File, *P)) { return P; }
+		if (File.Num() > 4 && !FMemory::Memcmp(File.GetData(), "OggS", 4))
 		{
 #if WITH_OGGVORBIS
 			LoadVorbisLibraries();
 			FVorbisAudioInfo Vorbis;
 			FSoundQualityInfo Info;
-			if (Vorbis.ReadCompressedInfo(File.Data.GetData(), File.Data.Num(), &Info) && Info.SampleDataSize > 0)
+			if (Vorbis.ReadCompressedInfo(File.GetData(), File.Num(), &Info) && Info.SampleDataSize > 0)
 			{
 				P->Channels = Info.NumChannels;
 				P->SampleRate = Info.SampleRate;
 				P->Samples.SetNumZeroed(Info.SampleDataSize / 2);
 				Vorbis.ExpandFile(reinterpret_cast<uint8*>(P->Samples.GetData()), &Info);
-				Pcm = P;
+				return P;
 			}
 #endif
 		}
+		return nullptr;
 	}
-	if (!Pcm) { UE_LOG(LogJsgbAudio, Warning, TEXT("Cannot play %s (missing, or not Ogg Vorbis/WAV)"), *Path); }
-	Decoded.Add(Path, Pcm);
-	return Pcm;
+}
+
+void UJsgbAudio::SetFileAssets(const TMap<FString, FString>& Files)
+{
+	FileAssets = Files;
+	// The imported Unreal sounds load in the background now, so playing one never waits for the disk.
+	TArray<FSoftObjectPath> Paths;
+	for (const TPair<FString, FString>& F : Files) { Paths.AddUnique(FSoftObjectPath(F.Value)); }
+	AssetLoad = Paths.Num() ? Streamable.RequestAsyncLoad(Paths, FStreamableDelegate(), FStreamableManager::AsyncLoadHighPriority) : nullptr;
+}
+
+TSharedPtr<UJsgbAudio::FDecode> UJsgbAudio::DecodeOf(const FString& Path)
+{
+	{
+		FScopeLock Lock(&DecodeLock);
+		if (const TSharedPtr<FDecode>* Found = Decodes.Find(Path)) { return *Found; }
+	}
+	// Decoding a long Ogg file takes hundreds of milliseconds, so it runs on the thread pool.
+	TArray<uint8> File = Bridge ? Bridge->ReadFile(Path).Data : TArray<uint8>();
+	TSharedPtr<FDecode> D = MakeShared<FDecode>();
+	{
+		FScopeLock Lock(&DecodeLock);
+		if (const TSharedPtr<FDecode>* Found = Decodes.Find(Path)) { return *Found; }
+		Decodes.Add(Path, D);
+	}
+	Async(EAsyncExecution::ThreadPool, [D, Path, File = MoveTemp(File)]
+	{
+		D->Pcm = DecodeFile(File);
+		if (!D->Pcm) { UE_LOG(LogJsgbAudio, Warning, TEXT("Cannot play %s (missing, or not Ogg Vorbis/WAV)"), *Path); }
+		D->bDone = true;
+	});
+	return D;
+}
+
+void UJsgbAudio::Preload(const FString& Path)
+{
+	if (!Path.IsEmpty() && !FileAssets.Contains(Path)) { DecodeOf(Path); }
 }
 
 void UJsgbAudio::SetPcm(int32 Id, const float* Samples, int32 Count, int32 SampleRate)
@@ -92,7 +127,7 @@ void UJsgbAudio::SetPcm(int32 Id, const float* Samples, int32 Count, int32 Sampl
 	Synthesized.Add(Id, P);
 }
 
-UAudioComponent* UJsgbAudio::Start(int32 Id, const TSharedPtr<FJsonObject>& Op)
+bool UJsgbAudio::Start(int32 Id, const TSharedPtr<FJsonObject>& Op)
 {
 	const bool bLoop = Op->GetBoolField(TEXT("loop"));
 	const double Offset = Num(Op, TEXT("offset"));
@@ -105,10 +140,20 @@ UAudioComponent* UJsgbAudio::Start(int32 Id, const TSharedPtr<FJsonObject>& Op)
 		if (const FString* AssetPath = FileAssets.Find(Src))
 		{
 			TObjectPtr<USoundBase>& Cached = Assets.FindOrAdd(*AssetPath);
-			if (!Cached) { Cached = LoadObject<USoundBase>(nullptr, **AssetPath, nullptr, LOAD_NoWarn | LOAD_Quiet); }
+			if (!Cached)
+			{
+				// Still loading in the background: the voice starts when the sound arrives.
+				if (AssetLoad.IsValid() && AssetLoad->IsLoadingInProgress() && !FSoftObjectPath(*AssetPath).ResolveObject()) { return false; }
+				Cached = LoadObject<USoundBase>(nullptr, **AssetPath, nullptr, LOAD_NoWarn | LOAD_Quiet);
+			}
 			Sound = Cached;
 		}
-		if (!Sound) { Pcm = Decode(Src); }
+		if (!Sound)
+		{
+			const TSharedPtr<FDecode> D = DecodeOf(Src);
+			if (!D->bDone) { return false; }
+			Pcm = D->Pcm;
+		}
 	}
 	else { Synthesized.RemoveAndCopyValue(Id, Pcm); }
 	if (!Sound && Pcm && Pcm->Samples.Num() > 0)
@@ -133,7 +178,7 @@ UAudioComponent* UJsgbAudio::Start(int32 Id, const TSharedPtr<FJsonObject>& Op)
 		}
 		Sound = Wave;
 	}
-	if (!Sound) { ++UnplayableVoices; return nullptr; }
+	if (!Sound) { ++UnplayableVoices; return true; }
 	UAudioComponent* C = NewObject<UAudioComponent>(GetOwner());
 	C->bAutoDestroy = !bLoop;
 	C->bAllowSpatialization = false;
@@ -142,7 +187,8 @@ UAudioComponent* UJsgbAudio::Start(int32 Id, const TSharedPtr<FJsonObject>& Op)
 	Update(C, Op);
 	C->Play(Sound->IsA<USoundWaveProcedural>() ? 0.f : Offset);
 	++StartedVoices;
-	return C;
+	Voices.Add(Id, C);
+	return true;
 }
 
 void UJsgbAudio::Update(UAudioComponent* C, const TSharedPtr<FJsonObject>& Op)
@@ -178,16 +224,27 @@ void UJsgbAudio::ApplyVoices(const FString& Json)
 		if (!Op) { continue; }
 		FString Kind; Op->TryGetStringField(TEXT("op"), Kind);
 		const int32 Id = static_cast<int32>(Num(Op, TEXT("id")));
-		if (Kind == TEXT("start")) { if (UAudioComponent* C = Start(Id, Op)) { Voices.Add(Id, C); } }
-		else if (Kind == TEXT("update")) { if (UAudioComponent* C = Voices.FindRef(Id)) { Update(C, Op); } }
-		else if (Kind == TEXT("stop")) { if (UAudioComponent* C = Voices.FindRef(Id)) { C->Stop(); C->DestroyComponent(); } Voices.Remove(Id); }
+		if (Kind == TEXT("start")) { if (!Start(Id, Op)) { Pending.Add(Id, Op); } }
+		else if (Kind == TEXT("update"))
+		{
+			if (UAudioComponent* C = Voices.FindRef(Id)) { Update(C, Op); }
+			// A waiting voice starts with the latest gain, rate and position.
+			else if (const TSharedPtr<FJsonObject>* P = Pending.Find(Id)) { for (const auto& F : Op->Values) { if (F.Key != TEXT("op")) { (*P)->SetField(F.Key, F.Value); } } }
+		}
+		else if (Kind == TEXT("stop")) { if (UAudioComponent* C = Voices.FindRef(Id)) { C->Stop(); C->DestroyComponent(); } Voices.Remove(Id); Pending.Remove(Id); }
 	}
 	// Forget one-shots that finished on their own.
 	for (auto It = Voices.CreateIterator(); It; ++It) { if (!It.Value() || !IsValid(It.Value()) || !It.Value()->IsPlaying()) { It.RemoveCurrent(); } }
 }
 
+void UJsgbAudio::StartPending()
+{
+	for (auto It = Pending.CreateIterator(); It; ++It) { if (Start(It.Key(), It.Value())) { It.RemoveCurrent(); } }
+}
+
 void UJsgbAudio::StopAll()
 {
+	Pending.Reset();
 	for (TPair<int32, TObjectPtr<UAudioComponent>>& V : Voices) { if (V.Value) { V.Value->Stop(); V.Value->DestroyComponent(); } }
 	Voices.Reset();
 	Synthesized.Reset();

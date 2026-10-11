@@ -41,17 +41,55 @@
   }
   const scheduleLayout = () => { if (!layoutPending) { layoutPending = true; requestAnimationFrame(layout); } };
 
+  const report = text => send({type: 'host-log', text: String(text).slice(0, 500)});
+  window.addEventListener('error', e => report(`${e.message} at ${e.filename}:${e.lineno}`));
+  const canvases = new Map();
+  function paintCanvas(id) {
+    const image = canvases.get(id), el = document.querySelector(`[data-jsgb="${id}"]`);
+    if (!image || !el || el.tagName !== 'CANVAS') return;
+    if (el.width !== image.width) el.width = image.width;
+    if (el.height !== image.height) el.height = image.height;
+    // The overlay hides the game's canvases (Unreal draws the 3D view); one with mirrored pixels shows.
+    el.setAttribute('data-jsgb-pixels', '');
+    if (image.empty) el.getContext('2d').clearRect(0, 0, el.width, el.height); else el.getContext('2d').putImageData(image, 0, 0);
+  }
   window.JsGameUI = {
     apply(html, version) {
       // The host's UI version this page now shows; layout reports carry it back, so scripts know what is on screen.
       if (version !== undefined) appliedVersion = version;
-      const parsed = new DOMParser().parseFromString('<!doctype html><html><head></head>' + html + '</html>', 'text/html');
+      const full = html.startsWith('<html');
+      const parsed = new DOMParser().parseFromString(full ? '<!doctype html>' + html : '<!doctype html><html><head></head>' + html + '</html>', 'text/html');
+      if (full) {
+        // The game's <html> attributes, such as CSS variables in its style attribute.
+        const root = document.documentElement, next = parsed.documentElement;
+        for (const a of [...root.attributes]) if (!next.hasAttribute(a.name)) root.removeAttribute(a.name);
+        for (const a of next.attributes) if (!/^on/i.test(a.name) && root.getAttribute(a.name) !== a.value) root.setAttribute(a.name, a.value);
+      }
+      // Styles the game added to its <head> at run time, kept in a stylesheet of their own after the page CSS.
+      const headCss = parsed.head?.querySelector('style[data-jsgb-head]')?.textContent ?? '';
+      let headStyle = document.getElementById('jsgb-head-css');
+      if (headCss && !headStyle) { headStyle = document.createElement('style'); headStyle.id = 'jsgb-head-css'; document.head.append(headStyle); }
+      if (headStyle && headStyle.textContent !== headCss) headStyle.textContent = headCss;
       parsed.querySelectorAll('script').forEach(n => n.remove());
       for (const n of parsed.querySelectorAll('*')) for (const a of [...n.attributes]) if (/^on/i.test(a.name)) n.removeAttribute(a.name);
       patching = true; sync(document.body, parsed.body); patching = false;
+      for (const id of canvases.keys()) paintCanvas(id);
       scheduleLayout();
     },
+    // The pixels of a 2D canvas the game drew (a portrait, a minimap), as base64 RGBA.
+    canvas(id, width, height, base64) {
+      try {
+        // No pixels means the canvas is clear.
+        canvases.set(id, base64 ? new ImageData(Uint8ClampedArray.from(atob(base64), c => c.charCodeAt(0)), width, height) : {width, height, empty: true});
+        paintCanvas(id);
+      } catch (e) { report('canvas ' + id + ': ' + e); }
+    },
     reset() { document.body.replaceChildren(); },
+    // A stylesheet-only edit: swap the page CSS in place and report once it is painted.
+    css(text, version) {
+      document.getElementById('jsgb-page-css').textContent = text;
+      requestAnimationFrame(() => requestAnimationFrame(() => { send({type: 'host-css', version}); scheduleLayout(); }));
+    },
   };
 
   const pointer = ['click', 'dblclick', 'auxclick', 'contextmenu', 'pointerdown', 'pointerup', 'pointermove', 'pointercancel', 'pointerover', 'pointerout', 'pointerenter', 'pointerleave',

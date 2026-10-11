@@ -19,17 +19,20 @@ const [command, gameArg, ...rest] = process.argv.slice(2);
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 const has = name => rest.includes(name);
 
+// Notepad and Windows PowerShell save UTF-8 with a byte order mark, which JSON.parse rejects.
+export const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
+
 /** Machine settings: jsgb.local.json (not in git), overridden by JSGB_ENGINE, JSGB_PROJECT, JSGB_BUILDS. */
 export function settings() {
   const file = path.join(bridge, 'jsgb.local.json');
-  const local = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : {};
+  const local = fs.existsSync(file) ? readJson(file) : {};
   return {engine: process.env.JSGB_ENGINE ?? local.engine, project: process.env.JSGB_PROJECT ?? local.project,
     builds: path.resolve(bridge, process.env.JSGB_BUILDS ?? local.builds ?? 'Builds')};
 }
 
 export function loadGame(name) {
   const file = fs.existsSync(name) ? path.resolve(name) : path.join(bridge, 'Games', name + '.json');
-  const game = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const game = readJson(file);
   game.id ??= path.basename(file, '.json');
   game.repo = path.resolve(bridge, game.repo);
   game.out = path.resolve(game.out ?? path.join(settings().builds, game.id));
@@ -47,9 +50,13 @@ function readPage(game) {
   let body = /<body\b[^>]*>([\s\S]*)<\/body>/i.exec(html)?.[1] ?? '';
   const inline = [], css = [];
   let entry = null;
+  // Module code written inline in the page (three.js's own examples and many small games) is the entry when
+  // the page has no module file.
+  const inlineModules = [];
   for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
     const src = /\bsrc="([^"]+)"/.exec(m[1])?.[1];
     if (/type="module"/.test(m[1]) && src) entry ??= src;
+    else if (/type="module"/.test(m[1])) inlineModules.push(m[2]);
     else if (!src && !/type="(?!text\/javascript)/.test(m[1])) inline.push(m[2]);
   }
   body = body.replace(/<script\b[\s\S]*?<\/script>/gi, '');
@@ -60,8 +67,11 @@ function readPage(game) {
     if (file) css.push({file, text: fs.readFileSync(file, 'utf8')});
   }
   for (const m of html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)) css.push({file: null, text: m[1]});
-  if (!entry) throw Error('index.html has no <script type="module" src>');
-  return {title, lang, htmlAttrs: attrs('html').replace(/lang="[^"]*"/, ''), bodyAttrs: attrs('body'), body, inline, css, entry: path.join(game.repo, game.entryOverride ?? entry)};
+  if (!entry && !game.entryOverride && !inlineModules.length) throw Error('the page has no <script type="module">');
+  const fromFile = !!(entry || game.entryOverride);
+  return {title, lang, htmlAttrs: attrs('html').replace(/lang="[^"]*"/, ''), bodyAttrs: attrs('body'), body, inline, css,
+    entry: fromFile ? path.join(game.repo, game.entryOverride ?? entry) : path.join(game.repo, '__page_module__.js'),
+    inlineModule: fromFile ? null : inlineModules.join('\n;\n')};
 }
 
 function threeFiles(game) {
@@ -78,7 +88,8 @@ function bridgePlugin(game, page) {
   return {
     name: 'jsgamebridge',
     setup(b) {
-      b.onResolve({filter: /^jsgb:game$/}, () => ({path: page.entry}));
+      b.onResolve({filter: /^jsgb:game$/}, () => page.inlineModule === null ? {path: page.entry} : {path: page.entry, namespace: 'jsgb-page-module'});
+      b.onLoad({filter: /.*/, namespace: 'jsgb-page-module'}, () => ({contents: page.inlineModule, resolveDir: game.repo, loader: 'js'}));
       // 'three' is the real library with WebGLRenderer replaced; the runtime reaches the real one as 'three-real'.
       b.onResolve({filter: /^three$/}, a => a.importer === path.join(src, 'three.ts') ? {path: three.core} : {path: path.join(src, 'three.ts')});
       b.onResolve({filter: /^three-real$/}, () => ({path: three.core}));
@@ -134,11 +145,28 @@ function bridgePlugin(game, page) {
           else if (/^export\s*\{\s*\};?\s*$/.test(line) || /^\/\/\/\s*<reference/.test(line)) continue;
           else body.push(line.replace(/\bself\b/g, '__jsgbSelf').replace(/\bglobalThis\b/g, '__jsgbSelf').replace(/^(\s*)onmessage\s*=/, '$1__jsgbSelf.onmessage ='));
         }
-        return {contents: `${top.join('\n')}\nexport default function __jsgbWorkerMain(__jsgbSelf) {\nconst postMessage = (d, t) => __jsgbSelf.postMessage(d, t);\n${body.join('\n')}\n}\n`,
+        // The same module is also bundled on its own (workerBundles), so it can run on a worker thread.
+        const url = workerUrl(game, a.path);
+        workerEntries.set(a.path, url);
+        return {contents: `${top.join('\n')}\nexport default function __jsgbWorkerMain(__jsgbSelf) {\nconst postMessage = (d, t) => __jsgbSelf.postMessage(d, t);\n${body.join('\n')}\n}\n__jsgbWorkerMain.url = ${JSON.stringify(url)};\n`,
           loader: path.extname(a.path) === '.ts' ? 'ts' : 'js', resolveDir: path.dirname(a.path), watchFiles: [a.path]};
       });
     },
   };
+}
+
+/** Worker modules the main build met, and the URL of each one's standalone bundle. */
+const workerEntries = new Map();
+const workerUrl = (game, file) => '/jsgb/workers/' + path.relative(game.repo, file).replace(/[\\/:]+/g, '_').replace(/\.(m?[jt]sx?)$/, '') + '.js';
+
+/** Bundles each worker module as a classic script for a worker thread. */
+async function workerBundles(esbuild, game, page, options) {
+  for (const [file, url] of workerEntries) {
+    const outfile = path.join(game.out, url.slice(1));
+    await esbuild.build({...options, entryPoints: [file], format: 'iife', splitting: false, metafile: false, outfile, plugins: [bridgePlugin(game, page)]});
+    // A worker thread has no __jsgbHost: a runtime module that imports host.ts throws there before the worker starts.
+    if (fs.readFileSync(outfile, 'utf8').includes('__jsgbHost is missing')) throw Error(`worker bundle ${url} includes Runtime/src/host.ts; a module the worker imports (three.ts, renderer.ts) must not import the host`);
+  }
 }
 
 /** import.meta.glob('./dir/*.json', {eager, import, query}) as Vite expands it. */
@@ -168,6 +196,27 @@ function expandGlobs(code, dir) {
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const git = (repo, ...args) => { try { return execFileSync('git', ['--no-optional-locks', '-C', repo, ...args], {encoding: 'utf8'}).trim(); } catch { return ''; } };
 
+// three gives every object a random id from Math.random. A browser bundle keeps WebGLRenderer, whose module-level
+// objects draw ids before the game's own code runs; the Unreal bundle replaces WebGLRenderer, so it draws as many
+// on purpose (Runtime/src/three.ts) and a seeded game builds the same world on both sides. Counted per three build.
+const webglDrawCache = new Map();
+async function webglModuleDraws(esbuild, threeModule) {
+  if (webglDrawCache.has(threeModule)) return webglDrawCache.get(threeModule);
+  const count = async names => {
+    const r = await esbuild.build({stdin: {contents: `import {${names}} from ${JSON.stringify(threeModule)}; globalThis.__jsgbKeep = [${names}];`, resolveDir: runtime, loader: 'js'},
+      bundle: true, write: false, format: 'iife', platform: 'neutral', logLevel: 'silent'});
+    const real = Math.random, hadSelf = 'self' in globalThis;
+    let n = 0;
+    Math.random = () => { n++; return real(); };
+    try { if (!hadSelf) globalThis.self = globalThis; (0, eval)(r.outputFiles[0].text); } finally { Math.random = real; if (!hadSelf) delete globalThis.self; delete globalThis.__jsgbKeep; }
+    return n;
+  };
+  let draws = 0;
+  try { draws = (await count('WebGLRenderer, Object3D')) - (await count('Object3D')); } catch (e) { console.warn(`three: could not count WebGLRenderer's module-level ids (${e.message}); seeded worlds may differ`); }
+  webglDrawCache.set(threeModule, draws);
+  return draws;
+}
+
 export async function build(game) {
   const esbuild = await import(pathToFileURL(path.join(runtime, 'node_modules/esbuild/lib/main.js')).href);
   const started = performance.now();
@@ -175,24 +224,31 @@ export async function build(game) {
   const commit = git(game.repo, 'rev-parse', 'HEAD');
   fs.mkdirSync(game.out, {recursive: true});
   const pageInfo = {title: page.title, lang: page.lang, htmlAttrs: page.htmlAttrs, bodyAttrs: page.bodyAttrs, body: page.body};
-  const result = await esbuild.build({
-    entryPoints: {[game.id]: path.join(runtime, 'src/entry.ts')}, outdir: game.out, outExtension: {'.js': '.mjs'},
-    bundle: true, format: 'esm', target: game.target ?? 'es2022', platform: 'neutral', splitting: false,
+  // Settings shared by the game bundle and the standalone worker bundles.
+  const common = {
+    bundle: true, target: game.target ?? 'es2022', platform: 'neutral',
     mainFields: ['browser', 'module', 'main'], conditions: ['browser', 'import', 'module', 'default'],
     absWorkingDir: game.repo, nodePaths: [path.join(game.repo, 'node_modules'), path.join(runtime, 'node_modules')],
     define: {
       'import.meta.env': JSON.stringify({DEV: false, PROD: true, SSR: false, MODE: 'production', BASE_URL: '/', UNREAL: true, ...(game.env ?? {})}),
+      __JSGB_WEBGL_MODULE_DRAWS__: String(await webglModuleDraws(esbuild, threeFiles(game).core)),
       'process.env.NODE_ENV': '"production"', 'import.meta.hot': 'undefined', 'import.meta.url': '"http://localhost/index.js"', __JSGB_PAGE__: JSON.stringify(pageInfo), __JSGB_INLINE__: JSON.stringify(page.inline), ...(game.define ?? {}),
     },
     loader: {'.json': 'json', '.css': 'css', '.glsl': 'text', '.vert': 'text', '.frag': 'text', '.wgsl': 'text', '.txt': 'text',
       '.png': 'file', '.jpg': 'file', '.jpeg': 'file', '.webp': 'file', '.svg': 'file', '.gif': 'file', '.woff': 'file', '.woff2': 'file', '.ttf': 'file', '.otf': 'file',
       '.wasm': 'file', '.glb': 'file', '.gltf': 'file', '.ktx2': 'file', '.bin': 'file', '.ogg': 'file', '.mp3': 'file', '.wav': 'file', '.hdr': 'file', '.exr': 'file'},
-    assetNames: 'assets/[name]-[hash]', publicPath: '/', metafile: true, logLevel: 'warning', legalComments: 'none', keepNames: false, minify: false, sourcemap: false,
-    plugins: [bridgePlugin(game, page)], external: ['fs', 'path', 'crypto', 'url', 'module', 'worker_threads'],
+    assetNames: 'assets/[name]-[hash]', publicPath: '/', logLevel: 'warning', legalComments: 'none', keepNames: false, minify: false, sourcemap: false,
+    external: ['fs', 'path', 'crypto', 'url', 'module', 'worker_threads'],
     logOverride: {'direct-eval': 'silent', 'empty-import-meta': 'silent', 'import-is-undefined': 'silent', 'unsupported-dynamic-import': 'silent'},
-  });
-  // Runtime files the bundle reads at run time (the shader compiler).
+  };
+  workerEntries.clear();
+  const result = await esbuild.build({...common, entryPoints: {[game.id]: path.join(runtime, 'src/entry.ts')}, outdir: game.out, outExtension: {'.js': '.mjs'},
+    format: 'esm', splitting: false, metafile: true, plugins: [bridgePlugin(game, page)]});
+  await workerBundles(esbuild, game, page, common);
+  // Runtime files the bundle reads at run time (the shader compiler, and the runtime inside threaded Web Workers).
   fs.mkdirSync(path.join(game.out, 'jsgb'), {recursive: true});
+  await esbuild.build({entryPoints: [path.join(runtime, 'src/workerRuntime.ts')], bundle: true, format: 'iife', target: 'es2020', platform: 'neutral',
+    mainFields: ['browser', 'module', 'main'], nodePaths: [path.join(runtime, 'node_modules')], outfile: path.join(game.out, 'jsgb/worker-runtime.js'), logLevel: 'warning'});
   const wasm = path.join(runtime, 'vendor/cross-shader/CrossShader.wasm'), wasmOut = path.join(game.out, 'jsgb/CrossShader.wasm');
   if (!fs.existsSync(wasmOut) || fs.statSync(wasmOut).size !== fs.statSync(wasm).size) fs.copyFileSync(wasm, wasmOut);
   // index.html stylesheets come after the CSS the modules import, as in the page.
@@ -254,6 +310,26 @@ export async function reload(game) {
   }
 }
 
+/** Sends a stylesheet-only change: the Unreal overlay swaps the page CSS while the game keeps running. */
+export async function swapCss(game) {
+  const publication = JSON.parse(fs.readFileSync(path.join(game.out, 'publication.json'), 'utf8'));
+  const host = `http://127.0.0.1:${game.reloadPort ?? 5292}/bridge`;
+  const status = async () => (await fetch(`${host}/status`, {signal: AbortSignal.timeout(30000)})).json();
+  const response = await fetch(`${host}/css`, {method: 'POST', headers: {'Content-Type': 'application/json'}, signal: AbortSignal.timeout(5000),
+    body: JSON.stringify({buildMs: publication.buildMilliseconds})}).catch(error => { throw Error(`Built, but no JsGameBridge host answers at ${host}. (${error.message})`); });
+  const {cssVersion} = await response.json();
+  const deadline = performance.now() + 30000;
+  for (;;) {
+    const s = await status();
+    if (s.cssAppliedVersion >= cssVersion && s.lastCssMs >= 0) {
+      console.log(`hot reload (CSS) of ${game.id}: build ${(publication.buildMilliseconds / 1000).toFixed(2)} s + Unreal ${(s.lastCssMs / 1000).toFixed(2)} s = ${((publication.buildMilliseconds + s.lastCssMs) / 1000).toFixed(2)} s`);
+      return s;
+    }
+    if (performance.now() > deadline) throw Error('the overlay did not apply the new stylesheet within 30 s');
+    await new Promise(r => setTimeout(r, 50));
+  }
+}
+
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
 if (!isMain) { /* imported as a library */ }
 else if (command === 'build') await build(loadGame(gameArg));
@@ -268,25 +344,27 @@ else if (command === 'unreal' || command === 'watch') {
     if (running && path.dirname(path.resolve(running.bundle ?? '')) === game.out) await reload(game);
     else if (running) throw Error(`Unreal is running another game (${running.game}); close it first`);
     else {
-      const started = spawnSync(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), gameArg, '--res', flag('--res', '1600x900'), '--timeout', flag('--timeout', '14400'), '--detach', ...(flag('--search') ? ['--search', flag('--search')] : []), ...['--offscreen', '--mute'].filter(has)], {stdio: 'inherit'});
+      const started = spawnSync(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), gameArg, '--res', flag('--res', '1600x900'), '--timeout', flag('--timeout', '14400'), '--detach', ...(flag('--search') ? ['--search', flag('--search')] : []), ...['--offscreen', '--mute', '--frame-gen', '--hud'].filter(has), ...['--dlss', '--tsr', '--vibrance'].flatMap(f => flag(f) ? [f, flag(f)] : [])], {stdio: 'inherit'});
       if (started.status !== 0) throw Error('Unreal did not start; see the log above');
     }
   }
   // Every save in the game's folder (outside node_modules, builds and dot folders) rebuilds the
   // bundle and reloads it into the running Unreal host.
   const skip = /(^|[\\/])(node_modules|dist[^\\/]*|output|\.[^\\/]+)([\\/]|$)/;
-  let timer = null, busy = false, again = false;
-  const run = async file => {
+  let timer = null, busy = false, again = false, changed = new Set();
+  const run = async () => {
     if (busy) { again = true; return; }
     busy = true;
-    console.log(`\nchanged ${file}`);
-    try { await build(game); await reload(game); } catch (error) { console.log('reload failed: ' + error.message); }
+    const files = [...changed]; changed = new Set();
+    console.log(`\nchanged ${files.join(', ')}`);
+    try { await build(game); files.every(f => /\.css$/.test(f)) ? await swapCss(game) : await reload(game); } catch (error) { console.log('reload failed: ' + error.message); }
     busy = false;
-    if (again) { again = false; run('(more changes)'); }
+    if (again) { again = false; run(); }
   };
   fs.watch(game.repo, {recursive: true}, (event, file) => {
     if (!file || skip.test(file) || !/\.(m?[jt]sx?|css|html|json|glsl|vert|frag|wgsl)$/.test(file)) return;
-    clearTimeout(timer); timer = setTimeout(() => run(file), 120);
+    changed.add(file);
+    clearTimeout(timer); timer = setTimeout(run, 120);
   });
   console.log(`watching ${game.repo} for ${game.id}; save a file to reload it into Unreal`);
 }
@@ -295,5 +373,5 @@ else if (command === 'smoke') {
   if (!has('--no-build')) await build(game);
   const {smoke} = await import(pathToFileURL(path.join(bridge, 'Tools/smoke.mjs')).href);
   const report = await smoke(game, {frames: +flag('--frames', 600), script: flag('--script'), search: flag('--search', game.search ?? ''), verbose: has('--verbose')});
-  process.exit(report.errors ? 1 : 0);
+  process.exit(report.errors || !report.booted ? 1 : 0);
 } else if (command) { console.error('unknown command: ' + command); process.exit(2); }

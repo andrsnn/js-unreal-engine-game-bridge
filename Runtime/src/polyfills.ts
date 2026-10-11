@@ -85,7 +85,31 @@ if (!g.URLSearchParams) {
 }
 
 let blobIds = 0;
-export const blobStore = new Map<string, unknown>();
+/** Blob URLs are shared by the page and its worker threads, as in a browser. Each JavaScript engine keeps
+ *  its own blobs, and the host's registry (__jsgbBlobs, when present) holds a copy every engine can read. */
+type SharedBlobs = {put(url: string, bytes: ArrayBuffer, type: string): void; get(url: string): {bytes: ArrayBuffer; type: string} | null; revoke(url: string): void};
+const sharedBlobs = () => g.__jsgbBlobs as SharedBlobs | undefined;
+class BlobStore extends Map<string, unknown> {
+  get(url: string) {
+    const local = super.get(url);
+    if (local !== undefined) return local;
+    const s = typeof url === 'string' && url.startsWith('blob:') ? sharedBlobs()?.get(url) : null;
+    if (!s) return undefined;
+    const blob = new g.Blob([s.bytes], {type: s.type});
+    super.set(url, blob);
+    return blob;
+  }
+  set(url: string, blob: unknown) {
+    super.set(url, blob);
+    const bytes = (blob as {bytes?: Uint8Array})?.bytes, shared = sharedBlobs();
+    if (shared && bytes) shared.put(url, bytes.slice().buffer, (blob as {type?: string}).type ?? '');
+    return this;
+  }
+  delete(url: string) { sharedBlobs()?.revoke(url); return super.delete(url); }
+}
+export const blobStore = new BlobStore();
+// Each engine names its blobs with its own prefix, so URLs from a worker and the page never collide.
+const blobPrefix = () => (g.__jsgbBlobPrefix as string | undefined) ?? 'blob:jsgb/';
 
 if (!g.URL) {
   class URLImpl {
@@ -114,13 +138,13 @@ if (!g.URL) {
     get searchParams() { return new g.URLSearchParams(this.search); }
     toString() { return this.href; }
     toJSON() { return this.href; }
-    static createObjectURL(blob: unknown) { const id = 'blob:jsgb/' + (++blobIds); blobStore.set(id, blob); return id; }
+    static createObjectURL(blob: unknown) { const id = blobPrefix() + (++blobIds); blobStore.set(id, blob); return id; }
     static revokeObjectURL(id: string) { blobStore.delete(id); }
   }
   g.URL = URLImpl;
 } else {
   const native = g.URL;
-  native.createObjectURL = (blob: unknown) => { const id = 'blob:jsgb/' + (++blobIds); blobStore.set(id, blob); return id; };
+  native.createObjectURL = (blob: unknown) => { const id = blobPrefix() + (++blobIds); blobStore.set(id, blob); return id; };
   native.revokeObjectURL = (id: string) => { blobStore.delete(id); };
 }
 
@@ -139,6 +163,34 @@ if (!g.Blob) {
     async arrayBuffer() { return this.bytes.slice().buffer; }
     async text() { return new g.TextDecoder().decode(this.bytes); }
     slice(a?: number, b?: number, type?: string) { return new g.Blob([this.bytes.slice(a, b)], {type}); }
+  };
+}
+
+// FileReader over Blob: reads finish on a later turn and fire load and loadend, as in a browser.
+if (!g.FileReader) {
+  g.FileReader = class FileReader {
+    static EMPTY = 0; static LOADING = 1; static DONE = 2;
+    readyState = 0; result: unknown = null; error: unknown = null;
+    onload: ((e: unknown) => void) | null = null; onloadend: ((e: unknown) => void) | null = null; onerror: ((e: unknown) => void) | null = null;
+    onloadstart: ((e: unknown) => void) | null = null; onprogress: ((e: unknown) => void) | null = null; onabort: ((e: unknown) => void) | null = null;
+    private listeners: Record<string, ((e: unknown) => void)[]> = {};
+    addEventListener(type: string, fn: (e: unknown) => void) { (this.listeners[type] ??= []).push(fn); }
+    removeEventListener(type: string, fn: (e: unknown) => void) { this.listeners[type] = (this.listeners[type] ?? []).filter(f => f !== fn); }
+    private fire(type: string) {
+      const e = {type, target: this, currentTarget: this};
+      (this as unknown as Record<string, ((e: unknown) => void) | null>)['on' + type]?.(e);
+      for (const fn of this.listeners[type] ?? []) fn(e);
+    }
+    private read(blob: {bytes?: Uint8Array; arrayBuffer(): Promise<ArrayBuffer>; type?: string}, convert: (b: ArrayBuffer) => unknown) {
+      this.readyState = 1; this.fire('loadstart');
+      Promise.resolve(blob.arrayBuffer()).then(b => { this.result = convert(b); this.readyState = 2; this.fire('progress'); this.fire('load'); this.fire('loadend'); },
+        e => { this.error = e; this.readyState = 2; this.fire('error'); this.fire('loadend'); });
+    }
+    readAsArrayBuffer(blob: never) { this.read(blob, b => b); }
+    readAsText(blob: never) { this.read(blob, b => new g.TextDecoder().decode(b)); }
+    readAsBinaryString(blob: never) { this.read(blob, b => { let s = ''; for (const c of new Uint8Array(b)) s += String.fromCharCode(c); return s; }); }
+    readAsDataURL(blob: {type?: string}) { this.read(blob as never, b => { let s = ''; for (const c of new Uint8Array(b)) s += String.fromCharCode(c); return `data:${blob.type || 'application/octet-stream'};base64,${g.btoa(s)}`; }); }
+    abort() { this.readyState = 2; this.fire('abort'); this.fire('loadend'); }
   };
 }
 

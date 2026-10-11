@@ -15,6 +15,12 @@ export interface SceneSink {
 export interface JsgbHost {
   /** Reads a file below the web build's site root ("/models/x.glb"); null when missing. */
   readFile(path: string): ArrayBuffer | null;
+  /** Web Workers on their own threads: create returns 0 when the host runs workers on the game thread. */
+  workerCreate?(source: string, url: string, name: string): number;
+  workerPost?(id: number, bytes: ArrayBuffer): void;
+  /** Replies since the last poll: [id, kind (0 message, 1 error), length, bytes padded to 4] repeated. */
+  workerPoll?(): ArrayBuffer | null;
+  workerTerminate?(id: number): void;
   /** Monotonic milliseconds. */
   now(): number;
   log(level: 'log' | 'warn' | 'error', text: string): void;
@@ -32,13 +38,15 @@ export interface JsgbHost {
   cache?: {get(key: string): ArrayBuffer | null; put(key: string, bytes: ArrayBuffer): void};
   sink?: SceneSink;
   /** The game's DOM UI, serialized for the CEF overlay. */
-  ui?: {publish(html: string): void};
+  ui?: {publish(html: string): void; canvas?(id: string, width: number, height: number, rgba: ArrayBuffer): void};
   /** WebAudio voices as a JSON array of start/update/stop operations. */
-  audio?: {voices(json: string): void; pcm?(id: number, samples: ArrayBuffer, sampleRate: number): void};
+  audio?: {voices(json: string): void; pcm?(id: number, samples: ArrayBuffer, sampleRate: number): void; preload?(path: string): void};
   /** Canvas text: alpha mask and metrics for a run (see JsgbBridge::Text). */
   text?(fontPath: string, sizePx: number, run: string): ArrayBuffer | null;
   /** Seed for Math.random (deterministic captures); 0 or absent keeps it random. */
   seed?: number;
+  /** Milliseconds per frame when game time is stepped (deterministic captures); 0 or absent for real time. */
+  fixedStepMs?: number;
   /** Asset registry JSON ({assets: {key: {mesh, material, niagara, sound}}}); empty when none. */
   registry?: string;
 }

@@ -1,0 +1,9 @@
+# Conformance suite, input case: key presses move the cube, clicks on the page recolour it.
+0 wait #ready
+0.5 key 'ArrowRight'
+1 key 'ArrowRight'
+1.5 click #input-status
+2 key 'ArrowLeft'
+2.5 click #input-status
+3 shot case-3s
+4 quit

@@ -1,9 +1,10 @@
 import {parseHTML} from 'linkedom';
+import {installNoOpSkips} from './query';
 import {host} from './host';
 import {blobStore} from './polyfills';
 import {imageSize} from './imageSize';
 import {windowTarget} from './input';
-import {Context2D, Path2DImpl, setImageReader} from './canvas2d';
+import {Context2D, Path2DImpl, setImageReader, OffscreenCanvasImpl, ImageDataImpl, ImageBitmapImpl} from './canvas2d';
 
 /** The page the web build boots in, as a linkedom document. The game's UI code builds its DOM
  *  here exactly as it does in a browser; the Unreal host mirrors it into the CEF overlay. */
@@ -26,6 +27,8 @@ const CLASSES = ['Event', 'CustomEvent', 'InputEvent', 'EventTarget', 'Node', 'E
   'NodeFilter', 'Attr', 'CharacterData', 'ShadowRoot', 'HTMLCollection', 'NodeList', 'CSSStyleDeclaration', 'Image'];
 for (const name of CLASSES) if (page[name] && !g[name]) g[name] = page[name];
 g.document = doc;
+// installFastQueries() was slower than linkedom's own engine on a game-sized DOM (its tree walk getters are costly); off.
+installNoOpSkips(doc);
 
 // UI events linkedom does not define. They carry the fields the game reads.
 const BaseEvent = page.Event as {new (type: string, init?: Record<string, unknown>): Record<string, unknown>};
@@ -195,24 +198,11 @@ for (const dim of ['width', 'height'] as const) {
   Object.defineProperty(CanvasP, dim, {get() { return this.__dims?.[dim] ?? (dim === 'width' ? 300 : 150); },
     set(v) { (this.__dims ??= {})[dim] = Math.max(0, v | 0); this.__ctx?.resize(); }, configurable: true});
 }
-class OffscreenCanvasImpl {
-  private dims = {width: 0, height: 0}; __ctx?: Context2D;
-  constructor(w: number, h: number) { this.dims = {width: Math.max(0, w | 0), height: Math.max(0, h | 0)}; }
-  get width() { return this.dims.width; } set width(v: number) { this.dims.width = Math.max(0, v | 0); this.__ctx?.resize(); }
-  get height() { return this.dims.height; } set height(v: number) { this.dims.height = Math.max(0, v | 0); this.__ctx?.resize(); }
-  getContext(kind: string) { return kind === '2d' ? (this.__ctx ??= new Context2D(this)) : null; }
-  convertToBlob() { return Promise.resolve(new g.Blob([], {type: 'image/png'})); }
-  transferToImageBitmap() { const b = this.__ctx?.bitmap(); return new g.ImageBitmap(this.width, this.height, undefined, undefined, b ? {width: b.width, height: b.height, data: b.data.slice()} : undefined); }
-  addEventListener() {} removeEventListener() {}
-}
 g.OffscreenCanvas = OffscreenCanvasImpl;
 g.CanvasRenderingContext2D = Context2D;
 g.OffscreenCanvasRenderingContext2D = Context2D;
 g.Path2D = Path2DImpl;
-g.ImageData ??= class ImageData { data: Uint8ClampedArray; width: number; height: number; colorSpace = 'srgb';
-  constructor(a: Uint8ClampedArray | number, b: number, c?: number) {
-    if (typeof a === 'number') { this.width = a; this.height = b; this.data = new Uint8ClampedArray(a * b * 4); }
-    else { this.data = a; this.width = b; this.height = c ?? a.length / 4 / b; } } };
+g.ImageData ??= ImageDataImpl;
 
 // Images. The bitmap stays a file reference: Unreal loads the texture itself by its source path.
 export function resolveAssetPath(url: string): string {
@@ -249,7 +239,7 @@ Object.defineProperty(ImgP, 'height', {get() { return this.__dh ?? this.__h ?? 0
 Object.defineProperty(ImgP, 'complete', {get() { return this.__ok !== undefined; }, configurable: true});
 ImgP.decode = function (this: Record<string, any>) { return new Promise<void>((res, rej) => { if (this.__ok) res(); else { this.addEventListener('load', () => res()); this.addEventListener('error', () => rej(new Error('decode failed'))); } }); };
 
-g.ImageBitmap ??= class ImageBitmap { constructor(public width: number, public height: number, public __jsgbAsset?: string, public __bytes?: Uint8Array, public __pixels?: {width: number; height: number; data: Uint8ClampedArray}) {} close() {} };
+g.ImageBitmap ??= ImageBitmapImpl;
 g.createImageBitmap ??= async (source: Record<string, any>) => {
   if (source?.bytes) { const s = imageSize(source.bytes); return new g.ImageBitmap(s.width, s.height, undefined, source.bytes); }
   if (source?.__ctx) { const b = source.__ctx.bitmap(); return new g.ImageBitmap(b.width, b.height, undefined, undefined, {width: b.width, height: b.height, data: b.data.slice()}); }

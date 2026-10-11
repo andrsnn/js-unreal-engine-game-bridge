@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include <source_location>
 #include "UObject/Object.h"
 #include "ArrayBuffer.h"
 #include "JsgbBridge.generated.h"
@@ -47,6 +48,33 @@ public:
 
 	// Platform services.
 	UFUNCTION() FArrayBufferValue ReadFile(const FString& Path);
+	/** Web Workers on their own threads (JsgbWorkers.h). Create returns 0 when threaded workers are off. */
+	UFUNCTION() int32 WorkerCreate(const FString& Source, const FString& Url, const FString& Name);
+	UFUNCTION() void WorkerPost(int32 Id, FArrayBuffer Bytes);
+	/** Every message and error from all workers since the last poll: [id, kind (0 message, 1 error), length, bytes] repeated, as int32s and bytes. */
+	UFUNCTION() FArrayBufferValue WorkerPoll();
+	UFUNCTION() void WorkerTerminate(int32 Id);
+	/** Blob URLs shared with worker threads (FJsgbBlobs). */
+	UFUNCTION() void BlobPut(const FString& Url, FArrayBuffer Bytes, const FString& Type);
+	UFUNCTION() FArrayBufferValue BlobGet(const FString& Url);
+	UFUNCTION() FString BlobType(const FString& Url);
+	UFUNCTION() void BlobRevoke(const FString& Url);
+	void StopWorkers();
+
+	/** With the game's JavaScript on its own thread (-JsgbJsThread), calls that change Unreal state are
+	 *  queued and run on the game thread by DrainGameCommands, in order; of several frame snapshots
+	 *  waiting at once, only the newest is applied. Input and eval travel the other way through RunOnJs. */
+	bool bJsThread = false;
+	void RunOnGame(TFunction<void()>&& Fn, bool bFrame = false, std::source_location From = std::source_location::current());
+	/** Runs the queued state changes; returns how many frame snapshots it applied (0 or 1). */
+	int32 DrainGameCommands();
+	void RunOnJs(TFunction<void()>&& Fn);
+	/** Runs the queued input and eval calls on the JavaScript thread. */
+	void DrainJsCommands();
+	struct FGameCommand { TFunction<void()> Fn; bool bFrame = false; std::source_location From; };
+	TQueue<FGameCommand, EQueueMode::Mpsc> GameCommands;
+	TQueue<TFunction<void()>, EQueueMode::Mpsc> JsCommands;
+	FCriticalSection LogLock;
 	UFUNCTION() double NowMs() const;
 	UFUNCTION() void Log(const FString& Level, const FString& Text);
 	UFUNCTION() void RequestReload();
@@ -71,22 +99,36 @@ public:
 
 	// DOM UI and audio.
 	UFUNCTION() void PublishUI(const FString& Html);
+	UFUNCTION() void UICanvas(const FString& Id, int32 Width, int32 Height, FArrayBuffer Rgba);
 	UFUNCTION() void AudioVoices(const FString& Json);
+	UFUNCTION() void AudioPreload(const FString& Path);
 	UFUNCTION() void AudioPcm(int32 Id, FArrayBuffer Samples, int32 SampleRate);
 
 	TArray<FString> PublicRoots;
+	/** The worker runtime script (jsgb/worker-runtime.js in the game build); empty turns threaded workers off. */
+	FString WorkerRuntime;
+	TMap<int32, TSharedPtr<class FJsgbWorker>> Workers;
+	int32 NextWorker = 0;
 	FString StoreDir;
 	FString LogPath;
 	double StartSeconds = 0;
 	/** When > 0, the game clock advances this many ms per host tick (deterministic captures). */
-	double FixedStepMs = 0;
+	UPROPERTY() double FixedStepMs = 0;
 	double VirtualMs = 0;
+	/** Time spent in the mirror (frames, materials, textures) since the host last read it. */
+	double MirrorMs = 0;
+	/** The material and texture parts of MirrorMs, and how many updates arrived, until the host reads and clears them. */
+	double MaterialMs = 0, TextureMs = 0;
+	int32 MaterialCalls = 0, TextureCalls = 0;
 	bool bReloadRequested = false;
 	bool bReady = false;
 	int32 ErrorCount = 0;
 	int32 Generation = 0;
 	FString UIHtml;
 	int64 UIVersion = 0;
+	/** Pixels of the page's 2D canvases waiting for the overlay: id -> width, height, RGBA. */
+	struct FUICanvas { int32 Width = 0, Height = 0; TArray<uint8> Rgba; };
+	TMap<FString, FUICanvas> UICanvases;
 	int64 SceneFrames = 0;
 	UPROPERTY() TObjectPtr<UJsgbSceneMirror> Mirror;
 	UPROPERTY() TObjectPtr<UJsgbAudio> Audio;

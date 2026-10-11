@@ -1,0 +1,7 @@
+{
+  "title": "Pointer lock controls (three.js example)",
+  "repo": "Examples/threejs-examples",
+  "index": "misc_controls_pointerlock.html",
+  "public": ["public"],
+  "suite": true
+}

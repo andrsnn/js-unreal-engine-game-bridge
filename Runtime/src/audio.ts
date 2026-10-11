@@ -16,7 +16,28 @@ class Param {
   constructor(private ctx: Ctx, value = 0) { this.v = value; this.defaultValue = value; }
   get value() { return this.at(this.ctx.currentTime); }
   set value(x: number) { this.v = +x; this.events = []; }
-  private add(e: Event) { this.events.push(e); this.events.sort((a, b) => a.time - b.time); return this; }
+  /** Events arrive mostly in time order, so each goes in by a short scan from the end, not a sort. */
+  private add(e: Event) {
+    const list = this.events;
+    let i = list.length;
+    while (i > 0 && list[i - 1].time > e.time) i--;
+    list.splice(i, 0, e);
+    this.prune();
+    return this;
+  }
+  /** Events already in the past are folded into one 'set' with the value they lead to. Games that
+   *  call setTargetAtTime every frame would otherwise grow the list, and every lookup, without end. */
+  private prune() {
+    if (this.events.length < 4) return;
+    const past = this.ctx.currentTime - 0.05;
+    let k = 0;
+    while (k < this.events.length && this.events[k].time <= past) k++;
+    // Keep the last past event: a target or ramp that started then still shapes the value now.
+    k--;
+    if (k < 1) return;
+    const time = this.events[k].time;
+    this.events.splice(0, k, {type: 'set', time, value: this.at(time, k)});
+  }
   setValueAtTime(value: number, time: number) { return this.add({type: 'set', time, value}); }
   linearRampToValueAtTime(value: number, time: number) { return this.add({type: 'linear', time, value}); }
   exponentialRampToValueAtTime(value: number, time: number) { return this.add({type: 'exp', time, value}); }
@@ -25,9 +46,10 @@ class Param {
   cancelScheduledValues(time: number) { this.v = this.at(time); this.events = this.events.filter(e => e.time < time); return this; }
   cancelAndHoldAtTime(time: number) { return this.cancelScheduledValues(time); }
   /** Value at time t, following the Web Audio automation rules closely enough for mixing. */
-  at(t: number): number {
+  at(t: number, end = this.events.length): number {
     let value = this.v, prevTime = 0;
-    for (const e of this.events) {
+    for (let i = 0; i < end; i++) {
+      const e = this.events[i];
       if (e.type === 'linear' || e.type === 'exp') {
         if (t >= e.time) { value = e.value; prevTime = e.time; continue; }
         const span = e.time - prevTime, k = span > 0 ? (t - prevTime) / span : 1;
@@ -115,8 +137,11 @@ function renderPcm(s: Source, path: Path, rate: number): Float32Array {
   let phase = 0;
   const data = s.buffer?.getChannelData(0), playback = p(s, 'playbackRate');
   let read = s.offset * (s.buffer?.sampleRate ?? rate);
+  // The gain envelope is read from the graph every 32 samples (under 1 ms), not every sample.
+  let gain = 0;
   for (let i = 0; i < frames; i++) {
     const t = s.startAt + i / rate;
+    if ((i & 31) === 0) gain = path.gain > 0 ? envelope(s, t) : 0;
     let v = 0;
     if (data) {
       const k = read | 0; v = data[s.loop ? k % data.length : k] ?? 0;
@@ -126,7 +151,7 @@ function renderPcm(s: Source, path: Path, rate: number): Float32Array {
       phase = (phase + f / rate) % 1;
       v = s.type === 'square' ? (phase < 0.5 ? 1 : -1) : s.type === 'sawtooth' ? 2 * phase - 1 : s.type === 'triangle' ? 1 - 4 * Math.abs(phase - 0.5) : Math.sin(phase * 2 * Math.PI);
     }
-    out[i] = v * (path.gain > 0 ? envelope(s, t) : 0);
+    out[i] = v * gain;
   }
   return out;
 }
@@ -226,6 +251,7 @@ class Ctx {
     const b = new AudioBufferImpl(2, Math.max(1, Math.round(encodedDuration(bytes) * this.sampleRate)), this.sampleRate);
     const origin = bufferOrigin.get(data); b.__src = origin ? decodeURIComponent(new g.URL(origin, 'http://localhost/').pathname) : undefined;
     if (!b.__src) host.log('warn', 'decodeAudioData: buffer has no source file; it will play silent');
+    else host.audio?.preload?.(b.__src);
     ok?.(b); return Promise.resolve(b);
   }
   addEventListener() {} removeEventListener() {}
@@ -240,7 +266,7 @@ class MediaElement {
   src = ''; volume = 1; loop = false; muted = false; playbackRate = 1; currentTime = 0; paused = true; preload = 'auto'; readyState = 4; duration = NaN;
   node: Node | null = null; private id = 0; private last = ''; private listeners: Record<string, ((e: unknown) => void)[]> = {};
   onended: null | ((e: unknown) => void) = null;
-  constructor(src?: string) { if (src) this.src = src; }
+  constructor(src?: string) { if (src) { this.src = src; host.audio?.preload?.(new g.URL(src, 'http://localhost/').pathname); } }
   play() { if (!this.id) { this.id = ++voiceSerial; this.last = ''; mediaElements.add(this); } this.paused = false; return Promise.resolve(); }
   pause() { this.paused = true; if (this.id) ops.push({op: 'stop', id: this.id}); this.id = 0; mediaElements.delete(this); }
   load() {} canPlayType() { return 'probably'; }

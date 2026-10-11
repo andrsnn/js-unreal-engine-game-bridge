@@ -1,0 +1,7 @@
+{
+  "title": "Octree FPS (three.js example)",
+  "repo": "Examples/threejs-examples",
+  "index": "games_fps.html",
+  "public": ["public"],
+  "suite": true
+}

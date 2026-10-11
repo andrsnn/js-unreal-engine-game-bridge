@@ -4,14 +4,18 @@
   "type": "module",
   "description": "Run an unchanged three.js browser game inside Unreal Engine 5, with live reload.",
   "scripts": {
+    "lint": "node Tools/lint.mjs",
+    "test": "node Tools/unit.mjs",
     "build": "node Tools/jsgb.mjs build",
     "smoke": "node Tools/jsgb.mjs smoke",
     "unreal": "node Tools/jsgb.mjs unreal",
     "web": "node Tools/web.mjs dev",
     "start": "node Tools/run-unreal.mjs",
     "conformance": "node Tools/conformance.mjs",
+    "suite": "node Tools/suite.mjs",
+    "ci": "node Tools/ci.mjs",
     "demo": "node Tools/demo.mjs"
   },
   "license": "MIT",
-  "version": "0.1.0"
+  "version": "0.3.0"
 }

@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Conformance results</title>
+<style>
+:root { --bg: #fff; --fg: #1a1d21; --muted: #5d6670; --line: #dde1e6; --pass: #1f7a3a; --fail: #b3261e; }
+@media (prefers-color-scheme: dark) { :root { --bg: #111417; --fg: #e8ecef; --muted: #9aa4ae; --line: #2a3036; --pass: #5cc77d; --fail: #ff7a70; } }
+body { margin: 0; padding: 24px 16px; background: var(--bg); color: var(--fg); font: 15px/1.5 system-ui, sans-serif; }
+main { max-width: 1100px; margin: 0 auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.pass { color: var(--pass); font-weight: 600; } .fail { color: var(--fail); font-weight: 600; }
+.wrap { overflow-x: auto; } img { width: 100%; max-width: 960px; display: block; border: 1px solid var(--line); }
+p.muted { color: var(--muted); }
+</style></head><body><main>
+<h1>Conformance results</h1>
+<p>Version 0.2.0, measured 2026-10-11 16:24 UTC. <strong>25 of 26 passed.</strong></p>
+<p class="muted">Each run plays the same script in Chrome and in Unreal from the same commit, with a fixed game clock, and compares the paired frames. A case passes when the pictures match (SSIM at least 0.9 and at most 2.5% of pixels clearly different for test cases; SSIM 0.7 and 20% for games), every Unreal frame after the game finishes loading draws at least what the browser drew, and neither side reports a JavaScript error.</p>
+<div class="wrap"><table><thead><tr><th>Run</th><th>Result</th><th>SSIM</th><th>Pixels differing %</th><th>PSNR dB</th><th>Coverage</th><th>Errors</th><th>JS ms/frame</th><th>Memory MB</th><th>Notes</th></tr></thead><tbody>
+<tr><td>basics</td><td class="pass">pass</td><td>0.997 (low 0.996)</td><td>0.72 (worst 0.72)</td><td>42.3</td><td>ok</td><td>0, 0</td><td>613.56</td><td>3405</td><td></td></tr>
+<tr><td>materials</td><td class="pass">pass</td><td>0.988 (low 0.988)</td><td>2.17 (worst 2.17)</td><td>34.8</td><td>ok</td><td>0, 0</td><td>8.92</td><td>2906</td><td></td></tr>
+<tr><td>textures</td><td class="pass">pass</td><td>1 (low 1)</td><td>0 (worst 0)</td><td>49.8</td><td>ok</td><td>0, 0</td><td>483.62</td><td>3298</td><td></td></tr>
+<tr><td>ktx2</td><td class="pass">pass</td><td>0.999 (low 0.999)</td><td>0 (worst 0)</td><td>51.5</td><td>ok</td><td>0, 0</td><td>11.65</td><td>2917</td><td></td></tr>
+<tr><td>transparency</td><td class="fail">fail</td><td>0.994 (low 0.994)</td><td>7.26 (worst 7.29)</td><td>33.3</td><td>ok</td><td>0, 0</td><td>0</td><td>2804</td><td>7.26% of pixels differ (limit 2.5%)</td></tr>
+<tr><td>lines</td><td class="pass">pass</td><td>0.992 (low 0.992)</td><td>0.58 (worst 0.58)</td><td>36.7</td><td>ok</td><td>0, 0</td><td>0</td><td>2793</td><td></td></tr>
+<tr><td>billboards</td><td class="pass">pass</td><td>0.973 (low 0.973)</td><td>2.07 (worst 2.08)</td><td>28.1</td><td>ok</td><td>0, 0</td><td>0</td><td>2802</td><td></td></tr>
+<tr><td>shadows</td><td class="pass">pass</td><td>0.997 (low 0.997)</td><td>0 (worst 0)</td><td>47</td><td>ok</td><td>0, 0</td><td>9.69</td><td>2923</td><td></td></tr>
+<tr><td>fog</td><td class="pass">pass</td><td>0.999 (low 0.999)</td><td>0 (worst 0)</td><td>47.7</td><td>ok</td><td>0, 0</td><td>7.57</td><td>2878</td><td></td></tr>
+<tr><td>fogExp2</td><td class="pass">pass</td><td>0.999 (low 0.999)</td><td>0 (worst 0)</td><td>48.1</td><td>ok</td><td>0, 0</td><td>0</td><td>2810</td><td></td></tr>
+<tr><td>ortho</td><td class="pass">pass</td><td>0.998 (low 0.998)</td><td>0 (worst 0)</td><td>42</td><td>ok</td><td>0, 0</td><td>13.61</td><td>2924</td><td></td></tr>
+<tr><td>instances</td><td class="pass">pass</td><td>0.975 (low 0.975)</td><td>0 (worst 0)</td><td>41.5</td><td>ok</td><td>0, 0</td><td>0</td><td>2813</td><td></td></tr>
+<tr><td>batched</td><td class="pass">pass</td><td>0.999 (low 0.998)</td><td>0 (worst 0)</td><td>48.1</td><td>ok</td><td>0, 0</td><td>6.66</td><td>2914</td><td></td></tr>
+<tr><td>churn</td><td class="pass">pass</td><td>0.998 (low 0.997)</td><td>0.1 (worst 0.21)</td><td>49.3</td><td>ok</td><td>0, 0</td><td>8.68</td><td>2887</td><td></td></tr>
+<tr><td>motion</td><td class="pass">pass</td><td>0.99 (low 0.976)</td><td>0.59 (worst 1.47)</td><td>46.3</td><td>ok</td><td>0, 0</td><td>0</td><td>2816</td><td></td></tr>
+<tr><td>skinning</td><td class="pass">pass</td><td>0.999 (low 0.998)</td><td>0.03 (worst 0.07)</td><td>50.7</td><td>ok</td><td>0, 0</td><td>16.29</td><td>2889</td><td></td></tr>
+<tr><td>gltf</td><td class="pass">pass</td><td>0.998 (low 0.996)</td><td>0.1 (worst 0.21)</td><td>50</td><td>ok</td><td>0, 0</td><td>6.28</td><td>2899</td><td></td></tr>
+<tr><td>postprocess</td><td class="pass">pass</td><td>0.995 (low 0.995)</td><td>0.15 (worst 0.23)</td><td>41.3</td><td>ok</td><td>0, 0</td><td>0</td><td>2812</td><td></td></tr>
+<tr><td>hooks</td><td class="pass">pass</td><td>0.998 (low 0.997)</td><td>0 (worst 0)</td><td>47.8</td><td>ok</td><td>0, 0</td><td>0</td><td>2827</td><td></td></tr>
+<tr><td>ui</td><td class="pass">pass</td><td>0.997 (low 0.997)</td><td>0.44 (worst 0.45)</td><td>34</td><td>ok</td><td>0, 0</td><td>25.56</td><td>2896</td><td></td></tr>
+<tr><td>input</td><td class="pass">pass</td><td>1 (low 1)</td><td>0 (worst 0.01)</td><td>57.6</td><td>ok</td><td>0, 0</td><td>6.19</td><td>2893</td><td></td></tr>
+<tr><td>timers</td><td class="pass">pass</td><td>0.994 (low 0.969)</td><td>1.3 (worst 6.41)</td><td>45.4</td><td>ok</td><td>0, 0</td><td>0</td><td>2808</td><td></td></tr>
+<tr><td>audio</td><td class="pass">pass</td><td>1 (low 0.998)</td><td>0.01 (worst 0.08)</td><td>53.8</td><td>ok</td><td>0, 0</td><td>0</td><td>2810</td><td></td></tr>
+<tr><td>orbit-demo</td><td class="pass">pass</td><td>0.975 (low 0.974)</td><td>0.53 (worst 0.56)</td><td>33.5</td><td>ok</td><td>0, 0</td><td>0</td><td>2810</td><td></td></tr>
+<tr><td>threejs-fps</td><td class="pass">pass</td><td>0.953 (low 0.854)</td><td>0.49 (worst 2.48)</td><td>31.1</td><td>ok</td><td>0, 0</td><td>0</td><td>2859</td><td></td></tr>
+<tr><td>threejs-pointerlock</td><td class="pass">pass</td><td>0.993 (low 0.993)</td><td>0 (worst 0)</td><td>38.1</td><td>ok</td><td>0, 0</td><td>0</td><td>2826</td><td></td></tr>
+</tbody></table></div>
+<h2>Known differences</h2>
+<ul><li><strong>transparency</strong>: WebGL blends transparent surfaces using sRGB values, and Unreal blends them in linear light. Over a dark background a transparent colour comes out brighter in Unreal, and over a light one darker. No single change to opacity matches both.</li></ul>
+<h2>Side by side (browser left, Unreal right)</h2>
+<h3>basics</h3><img src="img/case-basics.jpg" alt="basics: browser and Unreal side by side" loading="lazy">
+<h3>materials</h3><img src="img/case-materials.jpg" alt="materials: browser and Unreal side by side" loading="lazy">
+<h3>textures</h3><img src="img/case-textures.jpg" alt="textures: browser and Unreal side by side" loading="lazy">
+<h3>ktx2</h3><img src="img/case-ktx2.jpg" alt="ktx2: browser and Unreal side by side" loading="lazy">
+<h3>transparency</h3><img src="img/case-transparency.jpg" alt="transparency: browser and Unreal side by side" loading="lazy">
+<h3>lines</h3><img src="img/case-lines.jpg" alt="lines: browser and Unreal side by side" loading="lazy">
+<h3>billboards</h3><img src="img/case-billboards.jpg" alt="billboards: browser and Unreal side by side" loading="lazy">
+<h3>shadows</h3><img src="img/case-shadows.jpg" alt="shadows: browser and Unreal side by side" loading="lazy">
+<h3>fog</h3><img src="img/case-fog.jpg" alt="fog: browser and Unreal side by side" loading="lazy">
+<h3>fogExp2</h3><img src="img/case-fogExp2.jpg" alt="fogExp2: browser and Unreal side by side" loading="lazy">
+<h3>ortho</h3><img src="img/case-ortho.jpg" alt="ortho: browser and Unreal side by side" loading="lazy">
+<h3>instances</h3><img src="img/case-instances.jpg" alt="instances: browser and Unreal side by side" loading="lazy">
+<h3>batched</h3><img src="img/case-batched.jpg" alt="batched: browser and Unreal side by side" loading="lazy">
+<h3>churn</h3><img src="img/case-churn.jpg" alt="churn: browser and Unreal side by side" loading="lazy">
+<h3>motion</h3><img src="img/case-motion.jpg" alt="motion: browser and Unreal side by side" loading="lazy">
+<h3>skinning</h3><img src="img/case-skinning.jpg" alt="skinning: browser and Unreal side by side" loading="lazy">
+<h3>gltf</h3><img src="img/case-gltf.jpg" alt="gltf: browser and Unreal side by side" loading="lazy">
+<h3>postprocess</h3><img src="img/case-postprocess.jpg" alt="postprocess: browser and Unreal side by side" loading="lazy">
+<h3>hooks</h3><img src="img/case-hooks.jpg" alt="hooks: browser and Unreal side by side" loading="lazy">
+<h3>ui</h3><img src="img/case-ui.jpg" alt="ui: browser and Unreal side by side" loading="lazy">
+<h3>input</h3><img src="img/case-input.jpg" alt="input: browser and Unreal side by side" loading="lazy">
+<h3>timers</h3><img src="img/case-timers.jpg" alt="timers: browser and Unreal side by side" loading="lazy">
+<h3>audio</h3><img src="img/case-audio.jpg" alt="audio: browser and Unreal side by side" loading="lazy">
+<h3>orbit-demo</h3><img src="img/game-orbit-demo.jpg" alt="orbit-demo: browser and Unreal side by side" loading="lazy">
+<h3>threejs-fps</h3><img src="img/game-threejs-fps.jpg" alt="threejs-fps: browser and Unreal side by side" loading="lazy">
+<h3>threejs-pointerlock</h3><img src="img/game-threejs-pointerlock.jpg" alt="threejs-pointerlock: browser and Unreal side by side" loading="lazy">
+</main></body></html>

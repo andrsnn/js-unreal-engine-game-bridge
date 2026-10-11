@@ -2,7 +2,8 @@
 // Starts Unreal on the JsGameBridge test host with a built game, once no other Unreal process runs.
 //   node Tools/run-unreal.mjs <game> [--offscreen] [--res 1920x1080] [--script file] [--capture dir]
 //        [--capture-fps 30] [--fixed-fps 30] [--frames N] [--search ?x] [--fresh] [--timeout 900]
-//        [--project path/to/Host.uproject] [--no-ui] [--detach]
+//        [--project path/to/Host.uproject] [--no-ui] [--detach] [--inspect port]
+//        [--dlss dlaa|quality|balanced|performance|ultra] [--tsr percent] [--frame-gen] [--vibrance 0..1] [--hud]
 // The engine and host project come from jsgb.local.json or JSGB_ENGINE / JSGB_PROJECT.
 // Prints the host's /bridge/status once the game is ready. Without --detach it waits for Unreal to
 // exit (use --frames or a script `quit` step) and kills it when --timeout seconds pass.
@@ -42,15 +43,24 @@ for (let running = unrealProcesses(); running.length; running = unrealProcesses(
 const log = `jsgb-${game.id}.log`;
 const args = [project, '/Engine/Maps/Entry?game=/Script/JsGameBridge.JsgbGameMode', '-game', '-windowed', `-ResX=${resX}`, `-ResY=${resY}`,
   `-JsgbGame=${game.out}`, `-JsgbPort=${port}`, '-JsgbAllowRemote', '-nosplash', '-unattended', `-log=${log}`, `-JsgbMaxSeconds=${timeout / 1000}`];
-if (has('--offscreen')) args.push('-RenderOffScreen');
+// A game run never uses Unreal's Python plugin (an editor plugin), whose start-up scripts and garbage collection
+// cost 15 to 20 ms frames during play.
+args.push('-DisablePython');
+// Off screen, the window may be larger than the desktop.
+if (has('--offscreen')) args.push('-RenderOffScreen', '-ForceRes');
 if (has('--no-ui')) args.push('-JsgbNoUI');
+// Upscaling: --dlss dlaa|quality|balanced|performance|ultra, --tsr <percent>, --frame-gen, --vibrance <0..1>, --hud (FPS readout).
+if (has('--frame-gen')) args.push('-JsgbFrameGen');
+if (has('--hud')) args.push('-JsgbHud');
+// --js-thread runs the game's JavaScript on its own thread (Puerts built with THREAD_SAFE); --js-hz caps its frame rate.
+if (has('--js-thread')) args.push('-JsgbJsThread');
 if (has('--no-post')) args.push('-JsgbNoPost');
 if (has('--fresh')) args.push('-JsgbFresh');
 if (has('--mute')) args.push('-JsgbVolume=0');
 if (has('--trace')) args.push('-JsgbTraceMirror');
 // --ue "<args>": extra Unreal command-line arguments, e.g. --ue "-ExecCmds=r.AntiAliasingMethod 1".
 if (flag('--ue')) args.push(...flag('--ue').match(/(?:[^\s"]+|"[^"]*")+/g).map(a => a.replace(/"/g, '')));
-for (const [option, name] of [['--script', 'JsgbScript'], ['--capture', 'JsgbCapture'], ['--capture-fps', 'JsgbCaptureFps'], ['--fixed-fps', 'JsgbFixedFps'], ['--frames', 'JsgbFrames'], ['--search', 'JsgbSearch'], ['--seed', 'JsgbSeed']]) {
+for (const [option, name] of [['--script', 'JsgbScript'], ['--capture', 'JsgbCapture'], ['--capture-fps', 'JsgbCaptureFps'], ['--fixed-fps', 'JsgbFixedFps'], ['--frames', 'JsgbFrames'], ['--search', 'JsgbSearch'], ['--seed', 'JsgbSeed'], ['--inspect', 'JsgbInspect'], ['--dlss', 'JsgbDLSS'], ['--tsr', 'JsgbTSR'], ['--vibrance', 'JsgbVibrance'], ['--dlss-preset', 'JsgbDLSSPreset'], ['--js-hz', 'JsgbJsHz']]) {
   const value = flag(option); if (value !== undefined) args.push(`-${name}=${/^(--script|--capture)$/.test(option) ? path.resolve(value) : value}`);
 }
 const started = Date.now();

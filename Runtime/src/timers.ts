@@ -1,4 +1,6 @@
 import {host} from './host';
+import {pollWorkers} from './worker';
+import {frameCount} from './frameCount';
 
 /** Timers and animation frames driven by the host's tick, so the game advances only when Unreal
  *  steps it. `pumpFrame` runs everything that is due, yielding to promise jobs between batches. */
@@ -11,6 +13,12 @@ const g = globalThis as Record<string, unknown>;
 const perf = (g.performance ??= {}) as Record<string, unknown>;
 perf.now = () => host.now();
 perf.timeOrigin ??= Date.now() - host.now();
+/** Wall-clock milliseconds, for timing the bridge itself (Date.now may follow the game clock). */
+export const wallNow: () => number = Date.now.bind(Date);
+/** Time spent in the last pumpFrame: timers, the slowest timer callback, and animation-frame callbacks. */
+export const pumpTiming = {workersMs: 0, workerReplies: 0, timersMs: 0, timerCalls: 0, slowestMs: 0, slowest: '', rafMs: 0, rafCalls: 0};
+// With stepped game time, Date.now follows the same clock, as the browser capture does.
+if (host.fixedStepMs) { const origin = perf.timeOrigin as number; Date.now = () => Math.floor(origin + host.now()); }
 for (const m of ['mark', 'measure', 'clearMarks', 'clearMeasures']) perf[m] ??= () => undefined;
 perf.getEntriesByName ??= () => []; perf.getEntriesByType ??= () => []; perf.getEntries ??= () => [];
 perf.memory ??= {usedJSHeapSize: 0, totalJSHeapSize: 0, jsHeapSizeLimit: 4e9};
@@ -40,7 +48,11 @@ const yieldJobs = () => new Promise<void>(resolve => resolve());
 /** Runs due timers (several passes, so 0 ms chains progress within one tick) and then one round
  *  of animation-frame callbacks. `budgetMs` bounds the timer passes. */
 export async function pumpFrame(budgetMs: number): Promise<void> {
-  const start = host.now();
+  const pollStart = wallNow();
+  pumpTiming.workerReplies = pollWorkers();
+  pumpTiming.workersMs = wallNow() - pollStart;
+  const start = host.now(), wallStart = wallNow();
+  pumpTiming.timerCalls = 0; pumpTiming.slowestMs = 0; pumpTiming.slowest = '';
   for (let pass = 0; pass < 200; pass++) {
     const now = host.now();
     const due = [...timers.values()].filter(t => t.due <= now).sort((a, b) => a.due - b.due || a.id - b.id);
@@ -48,15 +60,23 @@ export async function pumpFrame(budgetMs: number): Promise<void> {
     for (const t of due) {
       if (!timers.has(t.id)) continue;
       if (t.every >= 0) t.due = now + t.every; else timers.delete(t.id);
+      const t0 = wallNow();
       try { t.fn(...t.args); } catch (e) { report(e); }
+      const took = wallNow() - t0; pumpTiming.timerCalls++;
+      if (took > pumpTiming.slowestMs) { pumpTiming.slowestMs = took; pumpTiming.slowest = (t.fn as {name?: string}).name || '(anonymous)'; }
     }
     await yieldJobs();
     if (host.now() - start > budgetMs) break;
   }
+  const rafStart = wallNow();
+  pumpTiming.timersMs = rafStart - wallStart;
   const run = frameCallbacks; frameCallbacks = [];
+  frameCount.animation++;
   const ts = host.now();
   for (const [, fn] of run) { try { fn(ts); } catch (e) { report(e); } }
   await yieldJobs();
+  pumpTiming.rafMs = wallNow() - rafStart; pumpTiming.rafCalls = run.length;
 }
 
 export const pendingTimers = () => timers.size;
+

@@ -1,8 +1,9 @@
 /** JsGameBridge entry. Installs the browser environment, then boots the unchanged game entry that
  *  the build resolves as 'jsgb:game'. The host drives everything through `globalThis.__jsgb`. */
+import {seedRandom} from './seed';
 import './polyfills';
 import {host} from './host';
-import {pumpFrame, pendingTimers} from './timers';
+import {pumpFrame, pendingTimers, pumpTiming, wallNow} from './timers';
 import {setViewport} from './dom';
 import './fetch';
 import {flushAudio, audioTime} from './audio';
@@ -10,8 +11,8 @@ import './worker';
 import './text';
 import {input} from './input';
 import {publishUI, uiInput, clickElement, findElement} from './ui';
-import {lastFrame} from './renderer';
-import {exportFrame, describeScene, emitEvent} from './sceneExport';
+import {lastFrame, post} from './renderer';
+import {exportFrame, describeScene, emitEvent, objectById} from './sceneExport';
 
 const g = globalThis as Record<string, any>;
 for (const level of ['log', 'info', 'debug', 'warn', 'error'] as const) {
@@ -27,29 +28,31 @@ g.__jsgb = {
   /** One host tick: due timers and promise jobs within budgetMs, the animation frame, then the
    *  scene, UI and audio go out to the host. */
   frame: async (budgetMs = 8) => {
+    const t0 = wallNow();
     await pumpFrame(budgetMs); frames++;
+    const t1 = wallNow();
     try { exportFrame(); } catch (e) { host.log('error', 'scene export: ' + (e instanceof Error ? e.stack : e)); }
+    const t2 = wallNow();
     try { publishUI(); } catch (e) { host.log('error', 'ui publish: ' + (e instanceof Error ? e.stack : e)); }
+    const t3 = wallNow();
     try { flushAudio(audioTime()); } catch (e) { host.log('error', 'audio: ' + (e instanceof Error ? e.stack : e)); }
+    const t4 = wallNow();
+    // A JavaScript frame much longer than 60 FPS allows gets a breakdown in the log.
+    if (booted && t4 - t0 > 30) {
+      const p = pumpTiming;
+      host.log('log', `slow js frame ${frames}: ${t4 - t0} ms = worker replies ${p.workersMs} (${p.workerReplies}) + timers ${p.timersMs} (${p.timerCalls} calls, slowest ${p.slowestMs} ms in ${p.slowest}) + animation frame ${p.rafMs} (${p.rafCalls} callbacks) + scene export ${t2 - t1} + ui ${t3 - t2} + audio ${t4 - t3}`);
+    }
   },
   input, ui: uiInput, publish: () => publishUI(0), viewport: setViewport, emit: emitEvent,
   click: clickElement, find: (what: string) => !!findElement(what),
   key: (code: string, how = 'press') => { if (how !== 'up') input.key('keydown', code); if (how !== 'down') input.key('keyup', code); return code; },
-  pendingTimers, lastFrame, describeScene,
+  pendingTimers, lastFrame, post, describeScene, objectById,
   get frames() { return frames; },
   get booted() { return booted; },
   get bootError() { return bootError; },
 };
 
-// A fixed seed (-JsgbSeed / conformance --seed) makes Math.random repeat, so a browser and an
-// Unreal run of the same script build the same world.
 // Scripts can re-seed later (seed <n>) so both runs share the moment the world is built.
-function seedRandom(seed: number) {
-  let a = seed >>> 0;
-  Math.random = () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
-  return seed;
-}
-if (host.seed) seedRandom(host.seed);
 // A script's "seed <n>" re-seeds when the next click event starts, after pointer/mouse handlers,
 // at the same point as the browser side of a conformance run (Tools/web.mjs).
 g.__jsgb.seed = (seed: number) => { g.addEventListener('click', () => seedRandom(seed), {capture: true, once: true}); return seed; };
