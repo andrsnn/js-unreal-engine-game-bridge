@@ -34,11 +34,14 @@ jobs:
           Push-Location Tests/suite; npx playwright install chromium; Pop-Location
 
       - name: Build the plugin in a new host project and run the suite
+        id: suite
         shell: powershell
         env:
           SUITE_ARGS: ${{ github.event.inputs.suite_args }}
         run: |
-          $env:JSGB_BUILDS = "$env:RUNNER_TEMP/jsgb-builds"
+          # The runner's .env file can set JSGB_BUILDS to keep the suite's work folder after the job.
+          if (-not $env:JSGB_BUILDS) { $env:JSGB_BUILDS = "$env:RUNNER_TEMP/jsgb-builds" }
+          "builds=$env:JSGB_BUILDS" >> $env:GITHUB_OUTPUT
           $extra = @(($env:SUITE_ARGS -split ' ') | Where-Object { $_ })
           node Tools/ci.mjs --clean-host "$env:RUNNER_TEMP/jsgb-host" --films @extra
 
@@ -55,6 +58,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: conformance-films
-          path: ${{ runner.temp }}/jsgb-builds/conformance-suite/*/*-side-by-side.mp4
+          path: ${{ steps.suite.outputs.builds }}/conformance-suite/*/*-side-by-side.mp4
           if-no-files-found: warn
           retention-days: 14

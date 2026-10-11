@@ -13,7 +13,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {settings} from './jsgb.mjs';
+import {readJson, settings} from './jsgb.mjs';
 
 const bridge = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rest = process.argv.slice(2);
@@ -31,9 +31,9 @@ const cases = has('--only-games') ? [] : flag('--cases') ? flag('--cases').split
 // Real games, run unchanged with their own conformance scripts (Tests/scripts/<game>.txt): by default every
 // Games/<game>.json with "suite": true.
 const suiteGames = () => fs.readdirSync(path.join(bridge, 'Games')).filter(f => f.endsWith('.json'))
-  .filter(f => { try { return JSON.parse(fs.readFileSync(path.join(bridge, 'Games', f), 'utf8')).suite === true; } catch { return false; } }).map(f => f.slice(0, -5)).sort();
+  .filter(f => { try { return readJson(path.join(bridge, 'Games', f)).suite === true; } catch { return false; } }).map(f => f.slice(0, -5)).sort();
 // A game whose source is not on this machine (a private game on a CI runner) is skipped, and the log says so.
-const gameRepo = game => { try { return path.resolve(bridge, JSON.parse(fs.readFileSync(path.join(bridge, 'Games', `${game}.json`), 'utf8')).repo); } catch { return ''; } };
+const gameRepo = game => { try { return path.resolve(bridge, readJson(path.join(bridge, 'Games', `${game}.json`)).repo); } catch { return ''; } };
 const games = (has('--only-cases') ? [] : (flag('--games')?.split(',') ?? suiteGames()).filter(Boolean))
   .filter(game => fs.existsSync(gameRepo(game)) || (console.log(`[suite] skipping ${game}: its source is not on this machine`), false));
 const entries = [

@@ -20,16 +20,19 @@ const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ?
 const has = name => rest.includes(name);
 
 /** Machine settings: jsgb.local.json (not in git), overridden by JSGB_ENGINE, JSGB_PROJECT, JSGB_BUILDS. */
+// Notepad and Windows PowerShell save UTF-8 with a byte order mark, which JSON.parse rejects.
+export const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
+
 export function settings() {
   const file = path.join(bridge, 'jsgb.local.json');
-  const local = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : {};
+  const local = fs.existsSync(file) ? readJson(file) : {};
   return {engine: process.env.JSGB_ENGINE ?? local.engine, project: process.env.JSGB_PROJECT ?? local.project,
     builds: path.resolve(bridge, process.env.JSGB_BUILDS ?? local.builds ?? 'Builds')};
 }
 
 export function loadGame(name) {
   const file = fs.existsSync(name) ? path.resolve(name) : path.join(bridge, 'Games', name + '.json');
-  const game = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const game = readJson(file);
   game.id ??= path.basename(file, '.json');
   game.repo = path.resolve(bridge, game.repo);
   game.out = path.resolve(game.out ?? path.join(settings().builds, game.id));

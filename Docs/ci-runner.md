@@ -38,6 +38,7 @@ You need a Windows PC with Unreal Engine 5.8, an NVIDIA RTX GPU, Node 22, Git an
    ```
    JSGB_ENGINE=<Unreal folder>/Engine/Binaries/Win64/UnrealEditor.exe
    PUERTS_DIR=<the Puerts folder from step 1>
+   JSGB_BUILDS=<a folder for the suite's work files, kept between runs (optional)>
    ```
 
 5. Start the runner with `run.cmd` from a signed-in Windows session. Unreal needs the desktop session to use the GPU,
