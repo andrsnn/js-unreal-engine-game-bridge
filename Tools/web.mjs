@@ -78,14 +78,18 @@ async function capture() {
   await page.addInitScript(fps => {
     if (!fps) return;
     const step = 1000 / fps, realRaf = window.requestAnimationFrame.bind(window), realDateNow = Date.now, start = realDateNow();
-    let vnow = 0, nextId = 1;
+    let vnow = 0, nextId = 1, stopAt = Infinity;
     const callbacks = new Map();
+    // The clock stops at the frame a script step is due, so the step acts on that exact frame (as in Unreal).
     const loop = () => {
-      vnow += step;
-      const list = [...callbacks.values()]; callbacks.clear();
-      for (const cb of list) { try { cb(vnow); } catch (e) { setTimeout(() => { throw e; }); } }
+      if (vnow < stopAt - 1e-6) {
+        vnow += step;
+        const list = [...callbacks.values()]; callbacks.clear();
+        for (const cb of list) { try { cb(vnow); } catch (e) { setTimeout(() => { throw e; }); } }
+      }
       realRaf(loop);
     };
+    window.__jsgbStopAt = ms => { stopAt = ms ?? Infinity; };
     realRaf(loop);
     window.requestAnimationFrame = cb => { const id = nextId++; callbacks.set(id, cb); return id; };
     window.cancelAnimationFrame = id => { callbacks.delete(id); };
@@ -138,23 +142,30 @@ async function capture() {
     });
     await cdp.send('Page.startScreencast', {format: 'jpeg', quality: 85, maxWidth: w, maxHeight: h, everyNthFrame: 1});
   }
-  const find = what => page.evaluate(w => {
-    try { const el = document.querySelector(w); if (el) return true; } catch { /* text */ }
-    return [...document.querySelectorAll('button,a,[role=button],li,div,span,label,option,summary')].some(el => el.textContent.trim() === w && el.getClientRects().length > 0)
-      || [...document.querySelectorAll('button,a')].some(el => el.textContent.trim().toUpperCase().includes(w.toUpperCase()) && el.getClientRects().length > 0);
-  }, what);
+  // Checked on every frame in the page; the answer carries the game time it saw the element (or saw it go).
+  const seen = (what, present) => page.waitForFunction(([w, want]) => {
+    const has = (() => {
+      try { if (document.querySelector(w)) return true; } catch { /* text */ }
+      return [...document.querySelectorAll('button,a,[role=button],li,div,span,label,option,summary')].some(el => el.textContent.trim() === w && el.getClientRects().length > 0)
+        || [...document.querySelectorAll('button,a')].some(el => el.textContent.trim().toUpperCase().includes(w.toUpperCase()) && el.getClientRects().length > 0);
+    })();
+    return has === want ? {t: window.__jsgbVirtualMs ? window.__jsgbVirtualMs() : null} : false;
+  }, [what, present], {polling: 'raf', timeout: 120000}).then(h => h.jsonValue()).catch(() => null);
+  const stopAt = ms => fixedFps ? page.evaluate(v => window.__jsgbStopAt?.(v), ms).catch(() => {}) : null;
   const steps = fs.readFileSync(flag('--script'), 'utf8').split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith('#'))
     .map(l => { const [when, verb, ...args] = l.split(' '); return {time: +when, verb, args: args.join(' ')}; }).sort((a, b) => a.time - b.time);
   let offset = 0;
   const unquote = s => s.replace(/^(['"`])(.*)\1$/, '$2');
   for (const s of steps) {
     const due = ready + s.time + offset;
-    while ((await clock()) < due) await new Promise(r => setTimeout(r, 10));
+    await stopAt(due * 1000);
+    while ((await clock()) < due - 1e-6) await new Promise(r => setTimeout(r, 10));
     if (s.verb === 'wait' || s.verb === 'gone') {
       // wait: until the element exists. gone: until it no longer exists (a loading screen closing).
       const start = await clock(), wallStart = Date.now(), present = s.verb === 'wait';
-      while ((await find(unquote(s.args))) !== present && Date.now() - wallStart < 120000) await new Promise(r => setTimeout(r, 100));
-      const end = await clock();
+      await stopAt(null);
+      const hit = await seen(unquote(s.args), present);
+      const end = fixedFps && typeof hit?.t === 'number' ? hit.t / 1000 : await clock();
       offset += end - start;
       times.push(`wait-end ${(end - ready).toFixed(3)}`);
       anchors.push(`${s.verb} ${unquote(s.args)} ${Date.now()}`);
@@ -180,6 +191,7 @@ async function capture() {
     else if (s.verb === 'seed') await page.evaluate(n => window.addEventListener('click', () => window.__jsgbSeed(n), {capture: true, once: true}), +s.args);
     else if (s.verb === 'shot') await page.screenshot({path: path.join(shots, s.args + '.png')});
     else if (s.verb === 'quit') break;
+    await stopAt(null);
   }
   grabbing = false; await grabber;
   if (live) {

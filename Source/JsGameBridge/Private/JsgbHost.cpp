@@ -1053,7 +1053,11 @@ void AJsgbHost::RunScript()
 		// The game's DOM changed; the wait ends when the overlay shows that change on screen.
 		if (bFound && WaitUIVersion < 0 && UIPort && Browser.IsValid()) { Ask(TEXT("__jsgb.publish&&__jsgb.publish()")); WaitUIVersion = Bridge->UIVersion; }
 		const bool bShown = !bFound || WaitUIVersion < 0 || !UIPort || UIPort->AppliedUIVersion >= WaitUIVersion;
+		// A browser shows a DOM change in the frame that made it. With a fixed game clock the game waits
+		// for the overlay too, so the game's time and the script's stay together.
+		bHoldClock = bFound && !bShown && Bridge->FixedStepMs > 0;
 		if ((!bFound || !bShown) && Now - WaitStart < 120.0) { return; }
+		bHoldClock = false;
 		WaitUIVersion = -1;
 		Bridge->Log(bFound ? TEXT("log") : TEXT("error"), FString::Printf(TEXT("script %s %s: %s after %.1fs"), bWaitGone ? TEXT("gone") : TEXT("wait"), *WaitFor, bFound ? TEXT("done") : TEXT("timed out"), Now - WaitStart));
 		// The wait ends when the game reached that state, as in a browser. The time Unreal took to learn
@@ -1130,7 +1134,7 @@ void AJsgbHost::Tick(float DeltaSeconds)
 	// The game's delegates belong to the JavaScript thread while it runs, so the game thread doesn't read them.
 	if (!Bridge || (!JsThread && !Bridge->OnFrame.IsBound())) { return; }
 	Audio->StartPending();
-	if (Bridge->FixedStepMs > 0) { Bridge->VirtualMs += Bridge->FixedStepMs; }
+	if (Bridge->FixedStepMs > 0 && !bHoldClock) { Bridge->VirtualMs += Bridge->FixedStepMs; }
 
 	FIntPoint Size(1920, 1080);
 	if (UGameViewportClient* Vp = GetWorld()->GetGameViewport()) { FVector2D S; Vp->GetViewportSize(S); if (S.X > 0) { Size = FIntPoint(S.X, S.Y); } }

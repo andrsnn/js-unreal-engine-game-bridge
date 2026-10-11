@@ -135,6 +135,8 @@ private:
 	double WaitStart = 0;
 	/** Game seconds at which the JavaScript thread found what the current wait asks for; -1 until then. */
 	double WaitSeen = -1;
+	/** The fixed game clock stops while the overlay catches up with a wait's DOM change. */
+	bool bHoldClock = false;
 	double JsMs = 0;
 	int32 TimedFrames = 0;
 	// Hot reload timing: from the moment a new bundle arrives to the first frame it draws.

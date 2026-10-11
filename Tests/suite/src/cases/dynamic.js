@@ -158,3 +158,23 @@ export async function postprocess({THREE, scene, renderer, camera}) {
   update.skipRender = true;
   return update;
 }
+
+// Fast movers for motion vectors (DLSS, TSR): a box sweeping across the view, a row of instances moving up and
+// down, and a sphere that teleports every half second (a teleport must not streak).
+export function motion({THREE, scene}) {
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x303030, 1.5));
+  const box = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 1.2), new THREE.MeshLambertMaterial({color: 0xffd040}));
+  scene.add(box);
+  const n = 12, row = new THREE.InstancedMesh(new THREE.SphereGeometry(0.3, 16, 8), new THREE.MeshLambertMaterial({color: 0x50a0ff}), n);
+  scene.add(row);
+  const jumper = new THREE.Mesh(new THREE.SphereGeometry(0.6, 24, 12), new THREE.MeshLambertMaterial({color: 0xff5050}));
+  scene.add(jumper);
+  const m = new THREE.Matrix4();
+  return (dt, time) => {
+    box.position.set(Math.sin(time * 3) * 5, 2, 0);
+    box.rotation.set(time * 2, time * 3, 0);
+    for (let i = 0; i < n; i++) row.setMatrixAt(i, m.makeTranslation(-5.5 + i, -1 + Math.sin(time * 6 + i * 0.5) * 1.2, 0));
+    row.instanceMatrix.needsUpdate = true;
+    jumper.position.set(Math.floor(time * 2) % 2 ? 3.5 : -3.5, -3, 0);
+  };
+}
