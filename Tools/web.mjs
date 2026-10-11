@@ -66,7 +66,7 @@ async function capture() {
   // The same seeded Math.random as the runtime (entry.ts), so both runs build the same world.
   const seed = +flag('--seed', 0);
   await page.addInitScript(s0 => {
-    window.__jsgbSeed = seed => { let a = seed >>> 0; Math.random = () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return seed; };
+    window.__jsgbSeed = seed => { let a = seed >>> 0; window.__jsgbRandomCount = 0; Math.random = () => { window.__jsgbRandomCount++; a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; return seed; };
     if (s0) window.__jsgbSeed(s0);
   }, seed);
   // Each captured frame records how many objects the game drew, for the conformance check.

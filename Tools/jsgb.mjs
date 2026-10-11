@@ -193,6 +193,27 @@ function expandGlobs(code, dir) {
 const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const git = (repo, ...args) => { try { return execFileSync('git', ['--no-optional-locks', '-C', repo, ...args], {encoding: 'utf8'}).trim(); } catch { return ''; } };
 
+// three gives every object a random id from Math.random. A browser bundle keeps WebGLRenderer, whose module-level
+// objects draw ids before the game's own code runs; the Unreal bundle replaces WebGLRenderer, so it draws as many
+// on purpose (Runtime/src/three.ts) and a seeded game builds the same world on both sides. Counted per three build.
+const webglDrawCache = new Map();
+async function webglModuleDraws(esbuild, threeModule) {
+  if (webglDrawCache.has(threeModule)) return webglDrawCache.get(threeModule);
+  const count = async names => {
+    const r = await esbuild.build({stdin: {contents: `import {${names}} from ${JSON.stringify(threeModule)}; globalThis.__jsgbKeep = [${names}];`, resolveDir: runtime, loader: 'js'},
+      bundle: true, write: false, format: 'iife', platform: 'neutral', logLevel: 'silent'});
+    const real = Math.random, hadSelf = 'self' in globalThis;
+    let n = 0;
+    Math.random = () => { n++; return real(); };
+    try { if (!hadSelf) globalThis.self = globalThis; (0, eval)(r.outputFiles[0].text); } finally { Math.random = real; if (!hadSelf) delete globalThis.self; delete globalThis.__jsgbKeep; }
+    return n;
+  };
+  let draws = 0;
+  try { draws = (await count('WebGLRenderer, Object3D')) - (await count('Object3D')); } catch (e) { console.warn(`three: could not count WebGLRenderer's module-level ids (${e.message}); seeded worlds may differ`); }
+  webglDrawCache.set(threeModule, draws);
+  return draws;
+}
+
 export async function build(game) {
   const esbuild = await import(pathToFileURL(path.join(runtime, 'node_modules/esbuild/lib/main.js')).href);
   const started = performance.now();
@@ -207,6 +228,7 @@ export async function build(game) {
     absWorkingDir: game.repo, nodePaths: [path.join(game.repo, 'node_modules'), path.join(runtime, 'node_modules')],
     define: {
       'import.meta.env': JSON.stringify({DEV: false, PROD: true, SSR: false, MODE: 'production', BASE_URL: '/', UNREAL: true, ...(game.env ?? {})}),
+      __JSGB_WEBGL_MODULE_DRAWS__: String(await webglModuleDraws(esbuild, threeFiles(game).core)),
       'process.env.NODE_ENV': '"production"', 'import.meta.hot': 'undefined', 'import.meta.url': '"http://localhost/index.js"', __JSGB_PAGE__: JSON.stringify(pageInfo), __JSGB_INLINE__: JSON.stringify(page.inline), ...(game.define ?? {}),
     },
     loader: {'.json': 'json', '.css': 'css', '.glsl': 'text', '.vert': 'text', '.frag': 'text', '.wgsl': 'text', '.txt': 'text',
