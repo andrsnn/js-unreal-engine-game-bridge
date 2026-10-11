@@ -13,10 +13,12 @@ const [game, ...rest] = process.argv.slice(2);
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 const from = +flag('--from', 30), to = +flag('--to', 90), res = flag('--res', '1920x1080');
 const pass = [];
-for (const f of ['--dlss', '--tsr', '--vibrance', '--dlss-preset', '--script', '--search', '--js-hz', '--ue']) if (flag(f)) pass.push(f, flag(f));
-for (const f of ['--frame-gen', '--hud', '--js-thread']) if (rest.includes(f)) pass.push(f);
+for (const f of ['--dlss', '--tsr', '--vibrance', '--dlss-preset', '--script', '--search', '--js-hz', '--ue', '--lumen-preset', '--seed', '--fixed-fps']) if (flag(f)) pass.push(f, flag(f));
+for (const f of ['--frame-gen', '--hud', '--js-thread', '--lumen', '--no-overrides']) if (rest.includes(f)) pass.push(f);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
-const status = () => fetch('http://127.0.0.1:5292/bridge/status', {signal: AbortSignal.timeout(3000)}).then(r => r.json()).catch(() => null);
+const {loadGame} = await import(new URL('./jsgb.mjs', import.meta.url).href);
+const port = loadGame(game).reloadPort ?? 5292;
+const status = () => fetch(`http://127.0.0.1:${port}/bridge/status`, {signal: AbortSignal.timeout(3000)}).then(r => r.json()).catch(() => null);
 
 // Windows switches the display off on a locked or idle PC, and each switch stalls the GPU queue for 300 to
 // 400 ms (Kernel-Power event 566 at the same second). The display stays on while the benchmark runs, as it
@@ -31,7 +33,7 @@ const exited = new Promise(r => child.on('exit', r));
 let ready = null, upscaler = '';
 const samples = [];
 const frameTimes = [];
-const readTimes = () => fetch('http://127.0.0.1:5292/bridge/frametimes', {signal: AbortSignal.timeout(5000)}).then(r => r.json()).catch(() => []);
+const readTimes = () => fetch(`http://127.0.0.1:${port}/bridge/frametimes`, {signal: AbortSignal.timeout(5000)}).then(r => r.json()).catch(() => []);
 let timing = false;
 for (;;) {
   const s = await status();
@@ -54,7 +56,7 @@ for (;;) {
   if (child.exitCode !== null) break;
   await sleep(1000);
 }
-await fetch('http://127.0.0.1:5292/bridge/close', {method: 'POST', body: '', signal: AbortSignal.timeout(5000)}).catch(() => {});
+await fetch(`http://127.0.0.1:${port}/bridge/close`, {method: 'POST', body: '', signal: AbortSignal.timeout(5000)}).catch(() => {});
 await Promise.race([exited, sleep(60000)]);
 if (child.exitCode === null) child.kill();
 awake?.kill();

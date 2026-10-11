@@ -94,6 +94,8 @@ struct FJsgbMaterial
 	/** A fat line's width (Line2): in pixels, or in world units; 0 for an ordinary one-pixel line. */
 	float FatWidth = 0.f;
 	bool bFatWorld = false;
+	/** Textures bound through uniforms (shader materials and hooks): parameter name and texture id. */
+	TArray<TPair<FName, int32>> UniformTextures;
 };
 
 USTRUCT()
@@ -169,6 +171,14 @@ struct FJsgbLight
 	int32 Capture = 0;
 };
 
+USTRUCT()
+struct FJsgbOverrideMaterials
+{
+	GENERATED_BODY()
+	UPROPERTY() TArray<TObjectPtr<UMaterialInstanceDynamic>> Slots;
+	UPROPERTY() TObjectPtr<UStaticMesh> Mesh;
+};
+
 /** Draws the web game's Three.js scene with Unreal components. Geometry becomes runtime static
  *  meshes shared by every object that uses it; instanced meshes become ISMs; points and sprites
  *  become camera-facing quads; lines go to a line batcher; lights, ambient, fog, background and
@@ -232,6 +242,14 @@ public:
 	/** New objects left for the next snapshot this frame. */
 	int32 DeferredEntities = 0;
 	float LightScale = 1.f;
+	/** How much of the scene's ambient and hemisphere light the override materials add (1 as in three.js;
+	 *  lower with Lumen, which lights them from the sky instead). */
+	float OverrideAmbientScale = 1.f;
+	/** Lumen mode (-JsgbLumen): directional lights get this source angle in degrees (soft shadows), shadows and
+	 *  volumetric scattering; ambient and hemisphere light in the bridge's materials is scaled by LumenAmbientScale. */
+	bool bLumen = false;
+	float SunSourceAngle = 1.f;
+	float LumenAmbientScale = 1.f;
 	int32 FrameCounter = 0;
 
 	FVector CameraLocation = FVector::ZeroVector;
@@ -326,6 +344,9 @@ private:
 	UPROPERTY() TMap<FString, TObjectPtr<UMaterial>> Generated;
 	TArray<FString> GeneratedPending;
 	TMap<int32, FString> KeyNames;
+	/** Asset overrides: one material instance per override and slot, shared by every object it draws. */
+	UPROPERTY() TMap<FString, FJsgbOverrideMaterials> OverrideMaterials;
+	void UseOverrideMaterials(UStaticMeshComponent* C, int32 KeyId);
 	TArray<int32> BuildQueue;
 	uint32 Stamp = 0;
 	// Trace state per object id: 1 drawn, 2 skipped, 3 drawn with a compiling material.

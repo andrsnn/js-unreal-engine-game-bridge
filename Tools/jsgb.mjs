@@ -155,6 +155,20 @@ function bridgePlugin(game, page) {
       b.onLoad({filter: /.*/, namespace: 'jsgb-url'}, a => ({contents: fs.readFileSync(a.path), loader: 'file'}));
       b.onLoad({filter: /.*/, namespace: 'jsgb-worker'}, a => ({resolveDir: path.dirname(a.path), loader: 'js',
         contents: `import main from ${JSON.stringify('jsgb-worker-main:' + a.path)};\nexport default class extends Worker { constructor(options) { super(main, options); } };\n`}));
+      // three's GLTFLoader tells the overrides which file each model came from (Runtime/src/overrides.ts).
+      b.onLoad({filter: /[\\/]GLTFLoader\.js$/}, async a => ({resolveDir: path.dirname(a.path), loader: 'js', contents: (await fs.promises.readFile(a.path, 'utf8')) + `
+import {gltfLoaded as __jsgbGltfLoaded} from ${JSON.stringify(path.join(src, 'overrides.ts'))};
+{
+  const parse = GLTFLoader.prototype.parse;
+  GLTFLoader.prototype.parse = function (data, path, onLoad, onError) {
+    return parse.call(this, data, path, gltf => { try { __jsgbGltfLoaded(gltf, path); } catch {} onLoad(gltf); }, onError);
+  };
+  const load = GLTFLoader.prototype.load;
+  GLTFLoader.prototype.load = function (url, onLoad, onProgress, onError) {
+    return load.call(this, url, gltf => { try { __jsgbGltfLoaded(gltf, url); } catch {} onLoad(gltf); }, onProgress, onError);
+  };
+}
+`}));
       // Workers: each worker module becomes a function of its own `self`, sharing the main bundle's modules.
       b.onLoad({filter: /\.(m?[jt]sx?)$/}, async a => {
         if (a.path.includes('node_modules') || a.namespace !== 'file') return undefined;
@@ -318,6 +332,10 @@ export async function build(game) {
     const cues = JSON.parse(fs.readFileSync(path.resolve(bridge, game.audioCues.file), 'utf8')).games?.[game.audioCues.game]?.cues ?? {};
     for (const cue of Object.values(cues)) for (const v of cue.variants ?? []) if (v.source && v.wave) files[v.source.replaceAll('\\', '/').replace(/^.*?\/public(?=\/)/, '')] = v.wave;
   }
+  // Asset overrides (Games/<game>.json "overrides"): the host reads overrides.json from beside publication.json.
+  const overridesOut = path.join(game.out, 'overrides.json');
+  if (game.overrides) fs.copyFileSync(path.resolve(bridge, game.overrides), overridesOut);
+  else if (fs.existsSync(overridesOut)) fs.rmSync(overridesOut);
   fs.writeFileSync(path.join(game.out, 'registry.json'), JSON.stringify({version: 1, assets, files, swaps: {assets: !!game.swaps?.assets, effects: !!game.swaps?.effects}}));
   const publication = {version: 1, game: game.id, sourceCommit: commit || '0'.repeat(40), sourceDirty: !!git(game.repo, 'status', '--porcelain', '--untracked-files=no'),
     bridgeCommit: git(bridge, 'rev-parse', 'HEAD'), bundle: bundlePath, bundleSHA256: sha256(bundle), modules: Object.keys(result.metafile.inputs).length,

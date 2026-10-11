@@ -295,6 +295,44 @@ bool UJsgbSceneMirror::SetAssetRegistry(const FString& Json)
 	return true;
 }
 
+void UJsgbSceneMirror::UseOverrideMaterials(UStaticMeshComponent* C, int32 KeyId)
+{
+	const FString* Key = KeyNames.Find(KeyId);
+	const TSharedPtr<FJsonObject> A = Asset(KeyId);
+	UStaticMesh* Mesh = C->GetStaticMesh();
+	if (!Key || !A || !Mesh) { return; }
+	FJsgbOverrideMaterials& O = OverrideMaterials.FindOrAdd(*Key);
+	if (O.Mesh != Mesh)
+	{
+		// The rule's "material" replaces every slot; otherwise each slot keeps the mesh's own material. "params" sets
+		// scalar (number) and vector ([r, g, b] or [r, g, b, a]) parameters on them.
+		O.Mesh = Mesh;
+		O.Slots.Reset();
+		UMaterialInterface* Replace = Resolve<UMaterialInterface>(Str(A, TEXT("material")));
+		const TSharedPtr<FJsonObject>* Params = nullptr;
+		A->TryGetObjectField(TEXT("params"), Params);
+		for (int32 S = 0; S < Mesh->GetStaticMaterials().Num(); ++S)
+		{
+			UMaterialInterface* Parent = Replace ? Replace : Mesh->GetMaterial(S);
+			UMaterialInstanceDynamic* Mid = Parent ? UMaterialInstanceDynamic::Create(Parent, this) : nullptr;
+			if (Mid && Params)
+			{
+				for (const auto& P : (*Params)->Values)
+				{
+					if (P.Value->Type == EJson::Number) { Mid->SetScalarParameterValue(FName(*P.Key), P.Value->AsNumber()); }
+					else if (P.Value->Type == EJson::Array)
+					{
+						const TArray<TSharedPtr<FJsonValue>>& V = P.Value->AsArray();
+						if (V.Num() >= 3) { Mid->SetVectorParameterValue(FName(*P.Key), FLinearColor(V[0]->AsNumber(), V[1]->AsNumber(), V[2]->AsNumber(), V.Num() > 3 ? V[3]->AsNumber() : 1.f)); }
+					}
+				}
+			}
+			O.Slots.Add(Mid);
+		}
+	}
+	for (int32 S = 0; S < O.Slots.Num(); ++S) { if (O.Slots[S]) { C->SetMaterial(S, O.Slots[S]); } }
+}
+
 TSharedPtr<FJsonObject> UJsgbSceneMirror::Asset(int32 KeyId) const
 {
 	const FString* Name = KeyNames.Find(KeyId);
@@ -848,6 +886,21 @@ void UJsgbSceneMirror::AcceptTexture(int32 Id, TSharedPtr<FJsgbPreparedTexture> 
 	}
 	// Materials that use this texture pick up the new image.
 	for (TPair<int32, FJsgbMaterial>& M : Materials) { if (M.Value.Map == Id && M.Value.Instance) { ApplyTextureParams(M.Value.Instance, Id); } }
+	// So do materials that bind it through a uniform: a texture that starts as a placeholder and gets its image later
+	// (a new Unreal texture) changes nothing in the material's own description.
+	if (Result)
+	{
+		for (TPair<int32, FJsgbMaterial>& M : Materials)
+		{
+			if (!M.Value.Instance) { continue; }
+			for (const TPair<FName, int32>& U : M.Value.UniformTextures)
+			{
+				if (U.Value != Id) { continue; }
+				M.Value.Instance->SetTextureParameterValue(U.Key, Result);
+				if (M.Value.bCustom) { M.Value.Instance->SetScalarParameterValue(FName(U.Key.ToString() + TEXT("_jsgbFlipY")), T.bFlipY ? 1.f : 0.f); }
+			}
+		}
+	}
 }
 
 void UJsgbSceneMirror::ApplyTextureParams(UMaterialInstanceDynamic* Mid, int32 TextureId)
@@ -951,7 +1004,9 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 			else if (U.Value->Type == EJson::Object)
 			{
 				const int32 TexId = static_cast<int32>(Num(U.Value->AsObject(), TEXT("tex")));
-				if (const FJsgbTexture* T = Textures.Find(TexId)) { if (T->Texture) { Mid->SetTextureParameterValue(*Name, T->Texture); } }
+				M.UniformTextures.AddUnique(TPair<FName, int32>(FName(*Name), TexId));
+				// Generated materials flip v for a texture three uploads flipped (flipY), as built-in ones do with FlipV.
+				if (const FJsgbTexture* T = Textures.Find(TexId)) { if (T->Texture) { Mid->SetTextureParameterValue(*Name, T->Texture); if (M.bCustom) { Mid->SetScalarParameterValue(*(Name + TEXT("_jsgbFlipY")), T->bFlipY ? 1.f : 0.f); } } }
 			}
 			else if (U.Value->Type == EJson::Array)
 			{
@@ -1075,7 +1130,12 @@ void UJsgbSceneMirror::ApplyLight(const float* S, uint32 FrameStamp, FLinearColo
 	if (!C->IsVisible()) { C->SetVisibility(true); }
 	C->SetLightColor(Color, true);
 	C->SetIntensity(Intensity);
-	C->SetCastShadows(S[17] > 0.5f);
+	C->SetCastShadows(S[17] > 0.5f || (bLumen && Kind == 1));
+	if (bLumen && Kind == 1)
+	{
+		UDirectionalLightComponent* Sun = Cast<UDirectionalLightComponent>(C);
+		if (Sun->LightSourceAngle != SunSourceAngle) { Sun->SetLightSourceAngle(SunSourceAngle); Sun->SetVolumetricScatteringIntensity(1.f); }
+	}
 	const FVector Loc(Pos(&S[7]));
 	const FVector Forward(Dir(&S[10]));
 	C->SetWorldLocationAndRotation(Loc, Forward.IsNearlyZero() ? FRotator(-90, 0, 0) : Forward.Rotation());
@@ -1409,7 +1469,10 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			if (K + 25 > Count) { break; }
 			const int32 Id = static_cast<int32>(D[K + 1]), Geo = static_cast<int32>(D[K + 2]), Mat = static_cast<int32>(D[K + 3]), Flags = static_cast<int32>(D[K + 4]), N = static_cast<int32>(D[K + 5]);
 			const float* M = &D[K + 6];
-			const bool bChanged = D[K + 22] > 0.5f, bColors = D[K + 23] > 0.5f;
+			// D[K + 23]: bit 0, instance colours follow the matrices; the rest, the per-instance extra floats after them.
+			const int32 ColorBits = FMath::RoundToInt(D[K + 23]);
+			const bool bChanged = D[K + 22] > 0.5f, bColors = (ColorBits & 1) != 0;
+			const int32 Extra = ColorBits >> 1;
 			const int32 Offset = static_cast<int32>(D[K + 24]);
 			K += 25;
 			// A negative geometry id names a registry mesh (asset key) instead of mirrored geometry.
@@ -1427,14 +1490,18 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			if (!Ent.Component) { Ent.Component = NewComponent(true); }
 			UInstancedStaticMeshComponent* C = CastChecked<UInstancedStaticMeshComponent>(Ent.Component);
 			const bool bNewMesh = Ent.Geometry != Geo || Ent.GeometryRevision != Revision;
-			if (bNewMesh) { C->SetStaticMesh(Mesh); Ent.Geometry = Geo; Ent.GeometryRevision = Revision; Ent.Materials.Reset(); }
+			if (bNewMesh)
+			{
+				C->SetStaticMesh(Mesh); Ent.Geometry = Geo; Ent.GeometryRevision = Revision; Ent.Materials.Reset();
+				if (Geo < 0 && Str(Asset(-Geo), TEXT("name")).Len() > 0) { UseOverrideMaterials(C, -Geo); }
+			}
 			if (Geo >= 0 && (Ent.Materials.Num() == 0 || Ent.Materials[0] != Mat || (MaterialFor(Mat) && C->GetMaterial(0) != MaterialFor(Mat))))
 			{
 				Ent.Materials.SetNum(1); Ent.Materials[0] = Mat;
 				if (UMaterialInstanceDynamic* Mid = MaterialFor(Mat)) { for (int32 S = 0; S < Slots; ++S) { C->SetMaterial(S, Mid); } }
 			}
 			Place(Ent, C, ToTransform(M), Flags);
-			const int32 RawFloats = N * (bColors ? 19 : 16);
+			const int32 RawFloats = N * ((bColors ? 19 : 16) + Extra);
 			// A game marks instances changed whenever it touches them; the same bytes as last time change nothing.
 			const bool bSameData = !bNewMesh && Ent.InstanceCount == N && Offset >= 0 && Offset + RawFloats <= InstCount && Ent.InstanceRaw.Num() == RawFloats
 				&& FMemory::Memcmp(Ent.InstanceRaw.GetData(), &Inst[Offset], RawFloats * sizeof(float)) == 0;
@@ -1458,9 +1525,26 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 				const int32 Existing = Ent.InstanceDrawn.Num();
 				if (Used > Existing) { C->AddInstances(TArray<FTransform>(Ts.GetData() + Existing, Used - Existing), false, false, false); }
 				C->BatchUpdateInstancesTransforms(0, Ts, Prev, false, false, false);
-				const bool bColorsChanged = bColors && Offset + N * 19 <= InstCount
-					&& (Ent.InstanceRaw.Num() != RawFloats || FMemory::Memcmp(Ent.InstanceRaw.GetData() + N * 16, &Inst[Offset + N * 16], N * 3 * sizeof(float)) != 0);
-				if (bColorsChanged)
+				const int32 ColorFloats = bColors ? N * 3 : 0;
+				const bool bDataChanged = (bColors || Extra > 0) && Offset + N * (16 + Extra) + ColorFloats <= InstCount
+					&& (Existing == 0 || Ent.InstanceRaw.Num() != RawFloats || FMemory::Memcmp(Ent.InstanceRaw.GetData() + N * 16, &Inst[Offset + N * 16], (ColorFloats + N * Extra) * sizeof(float)) != 0);
+				if (bDataChanged && Extra > 0)
+				{
+					// Colour (white without one), then the per-instance attributes, as custom data.
+					if (C->NumCustomDataFloats != 3 + Extra) { C->SetNumCustomDataFloats(3 + Extra); }
+					const float* Col = bColors ? &Inst[Offset + N * 16] : nullptr;
+					const float* Ex = &Inst[Offset + N * 16 + ColorFloats];
+					TArray<float> Data;
+					Data.SetNumUninitialized(3 + Extra);
+					for (int32 I = 0; I < N; ++I)
+					{
+						for (int32 F = 0; F < 3; ++F) { Data[F] = Col ? Col[I * 3 + F] : 1.f; }
+						for (int32 F = 0; F < Extra; ++F) { Data[3 + F] = Ex[I * Extra + F]; }
+						C->SetCustomData(I, Data, false);
+					}
+					if (bColors) { if (UMaterialInstanceDynamic* Mid = MaterialFor(Mat)) { Mid->SetScalarParameterValue(TEXT("InstanceColorMix"), 1.f); } }
+				}
+				else if (bDataChanged && bColors)
 				{
 					const float* Col = &Inst[Offset + N * 16];
 					for (int32 I = 0; I < N; ++I) { C->SetCustomData(I, TArray<float>({Col[I * 3], Col[I * 3 + 1], Col[I * 3 + 2]}), false); }
@@ -1598,7 +1682,8 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			{
 				C->SetStaticMesh(Mesh);
 				const FString MatPath = Str(A, TEXT("material"));
-				if (!MatPath.IsEmpty())
+				if (Str(A, TEXT("name")).Len() > 0) { UseOverrideMaterials(C, KeyId); }
+				else if (!MatPath.IsEmpty())
 				{
 					if (UMaterialInterface* MI = Resolve<UMaterialInterface>(MatPath)) { for (int32 S = 0; S < C->GetNumMaterials(); ++S) { C->SetMaterial(S, MI); } }
 				}
@@ -1742,9 +1827,12 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	// divides ambient irradiance by pi in its Lambert term; the materials add BaseColor * value.
 	{
 		const float InvPi = 1.f / PI;
-		SetScene(TEXT("Ambient"), Ambient * InvPi);
-		SetScene(TEXT("HemiSky"), HemiSky * InvPi);
-		SetScene(TEXT("HemiGround"), HemiGround * InvPi);
+		SetScene(TEXT("Ambient"), Ambient * InvPi * LumenAmbientScale);
+		SetScene(TEXT("HemiSky"), HemiSky * InvPi * LumenAmbientScale);
+		SetScene(TEXT("HemiGround"), HemiGround * InvPi * LumenAmbientScale);
+		// Override materials add the ambient and the mean of the hemisphere light, as a three.js material does.
+		const FLinearColor OverrideAmbient = (Ambient + (HemiSky + HemiGround) * 0.5f) * InvPi * OverrideAmbientScale;
+		for (TPair<FString, FJsgbOverrideMaterials>& O : OverrideMaterials) { for (UMaterialInstanceDynamic* Mid : O.Value.Slots) { if (Mid) { Mid->SetVectorParameterValue(TEXT("Ambient"), OverrideAmbient); } } }
 		SetScene(TEXT("Background"), FLinearColor(D[23], D[24], D[25], D[22]));
 		SetScene(TEXT("FogColor"), FLinearColor(D[27], D[28], D[29], D[26]));
 		SetScene(TEXT("CameraParams"), FLinearColor(D[18] * Cm, D[19] * Cm * 0.999f, 3e6f, 0));
@@ -1935,6 +2023,13 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 				// Instance colours ride in the first three per-instance custom data floats (white without them).
 				UMaterialExpressionPerInstanceCustomData3Vector* P = NewObject<UMaterialExpressionPerInstanceCustomData3Vector>(Mat);
 				P->DataIndex = 0; P->ConstDefaultValue = FLinearColor::White;
+				E = P;
+			}
+			else if (Source == TEXT("instanceData"))
+			{
+				// A per-instance attribute (InstancedBufferAttribute): one float of per-instance custom data.
+				UMaterialExpressionPerInstanceCustomData* P = NewObject<UMaterialExpressionPerInstanceCustomData>(Mat);
+				P->DataIndex = static_cast<uint32>(Num(In, TEXT("index")));
 				E = P;
 			}
 			else if (Source == TEXT("primitiveData"))

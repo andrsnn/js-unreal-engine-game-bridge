@@ -4,6 +4,7 @@
 //        [--capture-fps 30] [--fixed-fps 30] [--frames N] [--search ?x] [--fresh] [--timeout 900]
 //        [--project path/to/Host.uproject] [--no-ui] [--detach] [--inspect port]
 //        [--dlss dlaa|quality|balanced|performance|ultra] [--tsr percent] [--frame-gen] [--vibrance 0..1] [--hud]
+//        [--lumen] [--lumen-preset high|light] [--no-overrides]
 // The engine and host project come from jsgb.local.json or JSGB_ENGINE / JSGB_PROJECT.
 // Prints the host's /bridge/status once the game is ready. Without --detach it waits for Unreal to
 // exit (use --frames or a script `quit` step) and kills it when --timeout seconds pass.
@@ -56,6 +57,9 @@ if (has('--hud')) args.push('-JsgbHud');
 if (has('--js-thread')) args.push('-JsgbJsThread');
 if (has('--no-post')) args.push('-JsgbNoPost');
 if (has('--fresh')) args.push('-JsgbFresh');
+// Fidelity: --lumen (Unreal's own lighting; --lumen-preset light for the cheaper one), --no-overrides (draw the game's own models).
+if (flag('--lumen-preset')) args.push(`-JsgbLumen=${flag('--lumen-preset')}`); else if (has('--lumen')) args.push('-JsgbLumen');
+if (has('--no-overrides')) args.push('-JsgbOverrides=0');
 if (has('--mute')) args.push('-JsgbVolume=0');
 if (has('--trace')) args.push('-JsgbTraceMirror');
 // --ue "<args>": extra Unreal command-line arguments, e.g. --ue "-ExecCmds=r.AntiAliasingMethod 1".

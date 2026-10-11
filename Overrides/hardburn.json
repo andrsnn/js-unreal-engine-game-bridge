@@ -1,0 +1,295 @@
+{
+ "version": 1,
+ "overrides": [
+  {
+   "name": "concept_tdf_frigate",
+   "match": {
+    "url": "*/concept-tdf-frigate/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_frigate/concept_tdf_frigate/StaticMeshes/SM_concept_tdf_frigate.SM_concept_tdf_frigate",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.5004448890686035,
+     -0.21373292803764343,
+     -0.3631925582885742
+    ],
+    [
+     0.36991071701049805,
+     0.31256377696990967,
+     0.3367098569869995
+    ]
+   ],
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-frigate/pixal3d_textured.glb",
+   "triangles": 960318,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   },
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_tdf_destroyer",
+   "match": {
+    "url": "*/concept-helion-destroyer/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_destroyer/concept_tdf_destroyer/StaticMeshes/SM_concept_tdf_destroyer.SM_concept_tdf_destroyer",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.4960296154022217,
+     -0.20113621652126312,
+     -0.3985467553138733
+    ],
+    [
+     0.37177222967147827,
+     0.2964646816253662,
+     0.3289194703102112
+    ]
+   ],
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-destroyer/pixal3d_textured.glb",
+   "triangles": 952102,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   },
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_tdf_cruiser",
+   "match": {
+    "url": "*/concept-tdf-cruiser/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_cruiser/concept_tdf_cruiser/StaticMeshes/SM_concept_tdf_cruiser.SM_concept_tdf_cruiser",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.49660390615463257,
+     -0.22402739524841309,
+     -0.45136529207229614
+    ],
+    [
+     0.3442615866661072,
+     0.3439784348011017,
+     0.47227323055267334
+    ]
+   ],
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-cruiser/pixal3d_textured.glb",
+   "triangles": 973437,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   },
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_tdf_corvette",
+   "match": {
+    "url": "*/concept-tdf-corvette/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_corvette/concept_tdf_corvette/StaticMeshes/SM_concept_tdf_corvette.SM_concept_tdf_corvette",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.5006029009819031,
+     -0.20511846244335175,
+     -0.3861294388771057
+    ],
+    [
+     0.38179919123649597,
+     0.29466357827186584,
+     0.44570913910865784
+    ]
+   ],
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-corvette/pixal3d_textured.glb",
+   "triangles": 997729,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   },
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_tdf_carrier",
+   "match": {
+    "url": "*/concept-tdf-carrier/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_carrier/concept_tdf_carrier/StaticMeshes/SM_concept_tdf_carrier.SM_concept_tdf_carrier",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.3754972815513611,
+     -0.23107153177261353,
+     -0.4200422763824463
+    ],
+    [
+     0.5005782246589661,
+     0.3418794274330139,
+     0.31507256627082825
+    ]
+   ],
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-carrier/pixal3d_textured.glb",
+   "triangles": 998796,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   },
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_mrn_frigate",
+   "match": {
+    "url": "*/concept-mrn-frigate/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_frigate/concept_mrn_frigate/StaticMeshes/SM_concept_mrn_frigate.SM_concept_mrn_frigate",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.49909645318984985,
+     -0.1955568641424179,
+     -0.351342111825943
+    ],
+    [
+     0.3607853651046753,
+     0.3107895255088806,
+     0.34645673632621765
+    ]
+   ],
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-frigate/pixal3d_textured.glb",
+   "triangles": 933975,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   },
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_mrn_destroyer",
+   "match": {
+    "url": "*/concept-mrn-destroyer/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_destroyer/concept_mrn_destroyer/StaticMeshes/SM_concept_mrn_destroyer.SM_concept_mrn_destroyer",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.49828147888183594,
+     -0.2583070397377014,
+     -0.31191694736480713
+    ],
+    [
+     0.36821722984313965,
+     0.33249416947364807,
+     0.30366742610931396
+    ]
+   ],
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-destroyer/pixal3d_textured.glb",
+   "triangles": 971485,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   },
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_mrn_cruiser",
+   "match": {
+    "url": "*/concept-mrn-cruiser/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_cruiser/concept_mrn_cruiser/StaticMeshes/SM_concept_mrn_cruiser.SM_concept_mrn_cruiser",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.4993411600589752,
+     -0.2466781586408615,
+     -0.4669119119644165
+    ],
+    [
+     0.40734484791755676,
+     0.31367141008377075,
+     0.3683592677116394
+    ]
+   ],
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-cruiser/pixal3d_textured.glb",
+   "triangles": 952006,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   },
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_mrn_corvette",
+   "match": {
+    "url": "*/concept-mrn-corvette/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_corvette/concept_mrn_corvette/StaticMeshes/SM_concept_mrn_corvette.SM_concept_mrn_corvette",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.5005075931549072,
+     -0.21187250316143036,
+     -0.45091015100479126
+    ],
+    [
+     0.3988223671913147,
+     0.34678757190704346,
+     0.44464272260665894
+    ]
+   ],
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-corvette/pixal3d_textured.glb",
+   "triangles": 939833,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   },
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_mrn_carrier",
+   "match": {
+    "url": "*/concept-mrn-carrier/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_carrier/concept_mrn_carrier/StaticMeshes/SM_concept_mrn_carrier.SM_concept_mrn_carrier",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.492543488740921,
+     -0.2309325933456421,
+     -0.3700340986251831
+    ],
+    [
+     0.34610503911972046,
+     0.3036724328994751,
+     0.33617573976516724
+    ]
+   ],
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-carrier/pixal3d_textured.glb",
+   "triangles": 979846,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   },
+   "params": {
+    "EnvIntensity": 1
+   }
+  }
+ ]
+}

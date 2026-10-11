@@ -69,8 +69,13 @@ async function capture() {
   const port = +flag('--port', 5391);
   const server = await serve(port);
   const [w, h] = flag('--res', '1280x720').split('x').map(Number);
-  const browser = await chromium.launch({headless: true, args: [...(process.platform === 'win32' ? ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist'] : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader']), '--autoplay-policy=no-user-gesture-required']});
-  const page = await browser.newPage({viewport: {width: w, height: h}});
+  const args = [...(process.platform === 'win32' ? ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist'] : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader']), '--autoplay-policy=no-user-gesture-required'];
+  // --profile dir: a profile on disk. An incognito context keeps blobs in memory only, and a game that unpacks many
+  // large models into blob URLs (Hard Burn's fleet view) runs out of blob memory (ERR_BLOB_OUT_OF_MEMORY).
+  const profile = flag('--profile');
+  if (profile) fs.rmSync(profile, {recursive: true, force: true});
+  const browser = profile ? await chromium.launchPersistentContext(profile, {headless: true, args, viewport: {width: w, height: h}}) : await chromium.launch({headless: true, args});
+  const page = profile ? browser.pages()[0] ?? await browser.newPage() : await browser.newPage({viewport: {width: w, height: h}});
   const errors = [];
   // The same seeded Math.random as the runtime (entry.ts), so both runs build the same world.
   const seed = +flag('--seed', 0);

@@ -107,6 +107,11 @@ private:
 	void ShowReloadBanner(const FString& Text);
 	void SwapCss(double BuildMs);
 	void SetupUpscaler();
+	/** -JsgbLumen[=high|light]: Unreal's own lighting (JsgbFidelity.cpp). */
+	void SetupLumen();
+	UPROPERTY() TObjectPtr<class USkyLightComponent> LumenSky;
+	UPROPERTY() TObjectPtr<class UExponentialHeightFogComponent> LumenFog;
+	FString LumenPreset;
 	void ApplyUpscaler(const FString& Mode, const FString& TsrPercent);
 	/** F6: the next DLSS mode (off, DLAA, Quality, Balanced, Performance, DLSS 5). F7: Frame Generation off, 2x, and on RTX 50
 	 *  GPUs 3x and 4x (Multi Frame Generation). */

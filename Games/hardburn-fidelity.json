@@ -1,0 +1,19 @@
+{
+  "title": "Hard Burn (fidelity)",
+  "repo": "F:/HardBurnSnapshot",
+  "index": "index.html",
+  "public": [
+    "public"
+  ],
+  "search": "?view=black",
+  "registry": [
+    "JavaScript/hardburn-assets.json"
+  ],
+  "overrides": "Overrides/hardburn.json",
+  "reloadPort": 5392,
+  "audioCues": {
+    "file": "Registry/audio-cues-v5.json",
+    "game": "hardburn"
+  },
+  "conformanceSearch": "?view=black"
+}

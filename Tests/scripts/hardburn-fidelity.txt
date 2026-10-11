@@ -1,0 +1,7 @@
+# Hard Burn's fleet battle (?view=black) for the fidelity mode: same steps in Chrome and Unreal.
+0 gone #startup
+4 shot hbf-04s
+12 shot hbf-12s
+24 shot hbf-24s
+36 shot hbf-36s
+38 quit

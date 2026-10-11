@@ -8,6 +8,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 
+// The registry as the Unreal host loads it: registry.json, with overrides.json's rules added as assets (JsgbHost.cpp).
+function registryWithOverrides(out) {
+  const file = path.join(out, 'registry.json'), overrides = path.join(out, 'overrides.json');
+  if (!fs.existsSync(overrides)) return fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
+  const reg = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : {};
+  const rules = JSON.parse(fs.readFileSync(overrides, 'utf8')).overrides ?? [];
+  reg.assets = {...reg.assets};
+  for (const r of rules) if (r?.name) reg.assets['override:' + r.name] = r;
+  reg.overrides = rules;
+  return JSON.stringify(reg);
+}
+
 export async function smoke(game, {frames = 600, script, search = '', verbose = false} = {}) {
   const publication = JSON.parse(fs.readFileSync(path.join(game.out, 'publication.json'), 'utf8'));
   const t0 = performance.now(), nativeNow = performance.now.bind(performance), nodeTimeout = setTimeout;
@@ -34,7 +46,7 @@ export async function smoke(game, {frames = 600, script, search = '', verbose = 
     },
     reload() { print('reload requested'); },
     storage: {load: k => storage.get(k) ?? null, save: (k, v) => storage.set(k, v)},
-    registry: fs.existsSync(path.join(game.out, 'registry.json')) ? fs.readFileSync(path.join(game.out, 'registry.json'), 'utf8') : '',
+    registry: registryWithOverrides(game.out),
     sink: {
       geometry(id, pos, nrm, uv, col, cs, idx) { stats.geometries++; stats.geometryMB += (pos.byteLength + (nrm?.byteLength ?? 0) + (uv?.byteLength ?? 0) + (col?.byteLength ?? 0) + (idx?.byteLength ?? 0)) / 1e6; },
       releaseGeometry() {},

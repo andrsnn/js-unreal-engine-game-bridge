@@ -356,6 +356,33 @@ bool AJsgbHost::LoadPublication(const FString& Dir, const FString& OverrideBundl
 	if (const TSharedPtr<FJsonObject> Page = LoadJson(Dir / TEXT("page.json"))) { FFileHelper::LoadFileToString(PageCss, *(Dir / Page->GetStringField(TEXT("css")))); }
 	RegistryJson.Reset();
 	FFileHelper::LoadFileToString(RegistryJson, *(Dir / TEXT("registry.json")));
+	// Asset overrides: overrides.json beside publication.json, or -JsgbOverrides=<file>; -JsgbOverrides=0 turns them
+	// off. Each rule becomes registry asset "override:<name>", and the rules travel to the game's runtime, which
+	// decides what each rule matches.
+	const FString OverridesPath = Arg(TEXT("JsgbOverrides="), Dir / TEXT("overrides.json"));
+	if (OverridesPath != TEXT("0") && FPaths::FileExists(OverridesPath))
+	{
+		TSharedPtr<FJsonObject> Reg;
+		if (RegistryJson.IsEmpty() || !FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(RegistryJson), Reg) || !Reg) { Reg = MakeShared<FJsonObject>(); }
+		const TSharedPtr<FJsonObject> Overrides = LoadJson(OverridesPath);
+		const TArray<TSharedPtr<FJsonValue>>* Rules = nullptr;
+		if (Overrides && Overrides->TryGetArrayField(TEXT("overrides"), Rules))
+		{
+			const TSharedPtr<FJsonObject>* Existing = nullptr;
+			TSharedPtr<FJsonObject> Assets = Reg->TryGetObjectField(TEXT("assets"), Existing) ? *Existing : MakeShared<FJsonObject>();
+			int32 Added = 0;
+			for (const TSharedPtr<FJsonValue>& R : *Rules)
+			{
+				const TSharedPtr<FJsonObject> Rule = R.IsValid() ? R->AsObject() : nullptr;
+				FString Name;
+				if (Rule && Rule->TryGetStringField(TEXT("name"), Name)) { Assets->SetObjectField(TEXT("override:") + Name, Rule); ++Added; }
+			}
+			Reg->SetObjectField(TEXT("assets"), Assets);
+			Reg->SetArrayField(TEXT("overrides"), *Rules);
+			RegistryJson = JsonString(Reg.ToSharedRef());
+			UE_LOG(LogJsgbHost, Display, TEXT("Asset overrides: %d rules from %s"), Added, *OverridesPath);
+		}
+	}
 	Mirror->SetAssetRegistry(RegistryJson.IsEmpty() ? TEXT("{\"assets\":{}}") : RegistryJson);
 	TMap<FString, FString> Files;
 	if (const TSharedPtr<FJsonObject> Reg = LoadJson(Dir / TEXT("registry.json")))
@@ -408,6 +435,7 @@ void AJsgbHost::BeginPlay()
 	}
 	ConfigurePost(Camera->PostProcessSettings);
 	Camera->PostProcessBlendWeight = 1.f;
+	SetupLumen();
 	// Engine warnings printed over the game view are not part of the game.
 	if (GEngine && !FParse::Param(FCommandLine::Get(), TEXT("JsgbScreenMessages"))) { GEngine->bEnableOnScreenDebugMessages = false; GEngine->Exec(World, TEXT("DisableAllScreenMessages")); }
 	Mirror->Camera = Camera;

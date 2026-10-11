@@ -4,6 +4,7 @@ import {lastFrame, post, captures} from './renderer';
 import {frameCount} from './frameCount';
 import {translateShaderMaterial, translateHookedMaterial, fillBuiltinUniforms, type HookedShader, type TranslatedShader} from './shaders';
 import {channelFor, isExtraAttribute} from './attributes';
+import {overrideRules, overrideFor} from './overrides';
 
 /** Mirrors the game's Three.js scene into Unreal each frame. Geometry, materials and textures are
  *  sent once and again only when their version changes; transforms, instances, lights and the
@@ -101,7 +102,8 @@ const resends = new Map<number, number>();
 function syncGeometryNow(geo: THREE.BufferGeometry, primitive: number): number {
   const id = idOf(geo);
   const a = geo.attributes, idx = geo.index;
-  const extras = Object.entries(a).filter(([name, attr]) => isExtraAttribute(name) && attr.itemSize <= 4);
+  // Per-instance attributes (InstancedBufferAttribute) travel with the instances instead (instanceExtras).
+  const extras = Object.entries(a).filter(([name, attr]) => isExtraAttribute(name) && attr.itemSize <= 4 && !(attr as THREE.InstancedBufferAttribute).isInstancedBufferAttribute);
   const sig = `${primitive}|${contentVersion(a.position)}|${a.position?.count}|${contentVersion(a.normal)}|${contentVersion(a.uv)}|${contentVersion(a.color)}|${contentVersion(idx)}|${idx?.count}|${geo.drawRange.start},${geo.drawRange.count}|${geo.groups.length}|${extras.map(([n, x]) => n + contentVersion(x)).join(',')}`;
   const previous = geometrySig.get(id);
   if (previous === sig) return id;
@@ -301,8 +303,22 @@ function shaderKey(m: THREE.ShaderMaterial): string {
 // A material shared by many meshes is described once per frame.
 const materialFrame = new WeakMap<THREE.Material, number>();
 // Materials drawn on an InstancedMesh, and whether its instances have colours (for patched built-in shaders).
-const instancedUse = new WeakMap<THREE.Material, {color: boolean}>();
-const noteInstanced = (mat: THREE.Material | undefined, im: THREE.InstancedMesh) => { if (mat) instancedUse.set(mat, {color: !!im.instanceColor}); return mat; };
+const instancedUse = new WeakMap<THREE.Material, {color: boolean; extras: InstanceExtra[]}>();
+const noteInstanced = (mat: THREE.Material | undefined, im: THREE.InstancedMesh) => { if (mat) instancedUse.set(mat, {color: !!im.instanceColor, extras: instanceExtras(im.geometry)}); return mat; };
+/** A geometry's per-instance attributes (InstancedBufferAttribute), in name order, with where each starts among an
+ *  instance's extra floats. Unreal gets them as per-instance custom data after the instance colour. */
+export type InstanceExtra = {name: string; size: number; offset: number; attr: THREE.InstancedBufferAttribute};
+function instanceExtras(geo: THREE.BufferGeometry): InstanceExtra[] {
+  const list: InstanceExtra[] = [];
+  let offset = 0;
+  for (const name of Object.keys(geo.attributes).sort()) {
+    const attr = geo.attributes[name] as THREE.InstancedBufferAttribute;
+    if (!attr.isInstancedBufferAttribute || attr.itemSize > 4 || !isExtraAttribute(name)) continue;
+    list.push({name, size: attr.itemSize, offset, attr});
+    offset += attr.itemSize;
+  }
+  return list;
+}
 
 // Every value a material sends, as numbers (with its uniforms for shader materials): when they all match the last frame's,
 // the material is unchanged and its description is not built again.
@@ -381,7 +397,7 @@ function syncMaterial(mat: THREE.Material): number {
   let custom: string | undefined;
   const hooked = shader ? undefined : hookShader(mat);
   if ((shader || hooked) && !registryMaterial) {
-    let t = shader ? translateShaderMaterial(m) : translateHookedMaterial(mat, hooked!.shader, hooked!.key, instancedUse.get(mat));
+    let t = shader ? translateShaderMaterial(m, instancedUse.get(mat)) : translateHookedMaterial(mat, hooked!.shader, hooked!.key, instancedUse.get(mat));
     // A ShaderMaterial's gl_FragColor drawn to the screen is already in display (sRGB) values, and Unreal decodes it
     // to linear light so its own output encoding gives the same pixel. Drawn into a post-processing render target
     // (EffectComposer), it's linear light, and the final pass encodes it with the rest of the scene.
@@ -426,18 +442,33 @@ const visibleTo = (o: THREE.Object3D, cam: THREE.Camera) => o.layers.test(cam.la
 const flagsOf = (o: THREE.Object3D) => (o.castShadow ? 1 : 0) | (o.receiveShadow ? 2 : 0) | (o.frustumCulled ? 0 : 4) | ((o as THREE.SkinnedMesh).isSkinnedMesh ? 8 : 0) | (o.userData?.jsgbNoInterpolate ? 16 : 0);
 const materialsOf = (o: THREE.Mesh) => (Array.isArray(o.material) ? o.material : [o.material]) as THREE.Material[];
 
-function emitInstances(im: THREE.InstancedMesh, gid: number, mat: number) {
+const fitScratch = new THREE.Matrix4(), fitOut = new THREE.Matrix4();
+/** fit: an override's source-to-geometry matrix, applied inside each instance's own transform. */
+function emitInstances(im: THREE.InstancedMesh, gid: number, mat: number, fit: THREE.Matrix4 | null = null) {
   const count = im.count; if (count <= 0) return;
-  const version = `${im.instanceMatrix.version}|${count}|${im.instanceColor?.version ?? -1}|${gid}`;
+  const extras = gid >= 0 ? instanceExtras(im.geometry) : [];
+  const extraFloats = extras.reduce((n, e) => n + e.size, 0);
+  const version = `${im.instanceMatrix.version}|${count}|${im.instanceColor?.version ?? -1}|${gid}|${extras.map(e => e.attr.version).join(',')}`;
   const changed = instanceVersion.get(im) !== version;
   push(INSTANCED); push(idOf(im)); push(gid); push(mat); push(flagsOf(im)); push(count); pushMatrix(im.matrixWorld);
-  push(changed ? 1 : 0); push(changed && im.instanceColor ? 1 : 0);
+  // Bit 0: instance colours follow the matrices; the rest: the number of per-instance extra floats after them.
+  push(changed ? 1 : 0); push(changed ? (im.instanceColor ? 1 : 0) + extraFloats * 2 : 0);
   if (changed) {
     instanceVersion.set(im, version);
-    const k = count * 16 + (im.instanceColor ? count * 3 : 0); reserveInst(k);
+    const k = count * 16 + (im.instanceColor ? count * 3 : 0) + count * extraFloats; reserveInst(k);
     push(ni);
-    inst.set(im.instanceMatrix.array.subarray(0, count * 16) as Float32Array, ni); ni += count * 16;
+    if (fit) {
+      for (let i = 0; i < count; i++) { fitScratch.fromArray(im.instanceMatrix.array, i * 16); fitOut.multiplyMatrices(fitScratch, fit); inst.set(fitOut.elements, ni + i * 16); }
+    } else inst.set(im.instanceMatrix.array.subarray(0, count * 16) as Float32Array, ni);
+    ni += count * 16;
     if (im.instanceColor) { inst.set((im.instanceColor.array as Float32Array).subarray(0, count * 3), ni); ni += count * 3; }
+    if (extraFloats) {
+      for (let i = 0; i < count; i++) for (const e of extras) {
+        const base = ni + i * extraFloats + e.offset;
+        inst[base] = e.attr.getX(i); if (e.size > 1) inst[base + 1] = e.attr.getY(i); if (e.size > 2) inst[base + 2] = e.attr.getZ(i); if (e.size > 3) inst[base + 3] = e.attr.getW(i);
+      }
+      ni += count * extraFloats;
+    }
   } else push(-1);
 }
 
@@ -700,6 +731,7 @@ function hasContentTag(o: THREE.Object3D, key: string): boolean {
   return false;
 }
 
+const overrideWorld = new THREE.Matrix4();
 function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
   if (!o.visible) return;
   if ((o as THREE.LOD).isLOD && (o as THREE.LOD).autoUpdate) (o as THREE.LOD).update(cam);
@@ -712,6 +744,16 @@ function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
       traced.add(o);
       const g = (o as THREE.Mesh).geometry, m = materialsOf(o as THREE.Mesh)[0];
       host.log('log', `TRACE id ${idOf(o)} ${o.type} "${o.name}" uuid ${o.uuid} parent "${o.parent?.name ?? ''}" geometry ${g ? idOf(g) : 0} ${g?.type ?? ''} material ${m ? idOf(m) : 0} ${m?.type ?? ''}`);
+    }
+    const rules = overrideRules(host.registry);
+    const ov = rules.length && (o as THREE.Mesh).isMesh && !(o as unknown as THREE.BatchedMesh).isBatchedMesh && !(o as unknown as {isLineSegments2?: boolean}).isLineSegments2 ? overrideFor(o, rules) : null;
+    if (ov) {
+      if (!ov.hide) {
+        if ((o as THREE.InstancedMesh).isInstancedMesh) emitInstances(o as THREE.InstancedMesh, -keyId(ov.key), 0, ov.fit);
+        else { push(ASSET); push(idOf(o)); push(keyId(ov.key)); push(0); pushMatrix(ov.fit ? overrideWorld.multiplyMatrices(o.matrixWorld, ov.fit) : o.matrixWorld); }
+      }
+      const ch = o.children; for (let i = 0; i < ch.length; i++) walk(ch[i], cam, skipKey);
+      return;
     }
     const swap = registrySwap(o);
     if (swap?.kind === EFFECT) { push(EFFECT); push(idOf(o)); push(keyId(swap.key)); pushMatrix(o.matrixWorld); return; }

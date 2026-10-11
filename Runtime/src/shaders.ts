@@ -10,7 +10,7 @@ import {channelFor, isExtraAttribute} from './attributes';
  *  attributes, so its varyings reach the fragment stage unchanged for the usual transforms;
  *  uniforms arrive as material parameters of the same name. */
 
-export type ShaderInput = {name: string; source: 'localPosition' | 'instanceColor' | 'localAxis' | 'localOrigin' | 'localNormal' | 'uv' | 'vertexColor' | 'primitiveData' | 'collection' | 'scalar' | 'vector' | 'texture' | 'cube' | 'volume' | 'worldPosition';
+export type ShaderInput = {name: string; source: 'localPosition' | 'instanceColor' | 'localAxis' | 'localOrigin' | 'localNormal' | 'uv' | 'vertexColor' | 'primitiveData' | 'instanceData' | 'collection' | 'scalar' | 'vector' | 'texture' | 'cube' | 'volume' | 'worldPosition';
   param?: string; index?: number};
 export type TranslatedShader = {key: string; hlsl: string; inputs: ShaderInput[]; vertexHlsl: string; vertexInputs: ShaderInput[]; lit?: boolean; encoded?: boolean};
 
@@ -117,7 +117,7 @@ export function standardVertexTransform(source: string): boolean {
   return ['projectionMatrix*viewMatrix*modelMatrix*P', 'projectionMatrix*modelViewMatrix*P'].includes(expr);
 }
 
-function prepare(material: THREE.ShaderMaterial, stage: 'vertex' | 'fragment') {
+function prepare(material: THREE.ShaderMaterial, stage: 'vertex' | 'fragment', instancing = {matrix: false, color: false}) {
   const raw = !!material.isRawShaderMaterial;
   const stageDefines = {...(material.defines ?? {}), [stage === 'vertex' ? 'JSGB_VERTEX' : 'JSGB_FRAGMENT']: 1};
   let src = preprocess(stripComments(expandIncludes(stage === 'vertex' ? material.vertexShader : material.fragmentShader)), stageDefines);
@@ -145,16 +145,24 @@ function prepare(material: THREE.ShaderMaterial, stage: 'vertex' | 'fragment') {
     for (const d of a.decls) if (!attrs.some(x => x.name === d.name)) attrs.push(d);
     // Per-instance colours come from Unreal's per-instance custom data when the mesh has them.
     if (/\binstanceColor\b/.test(src) && !attrs.some(x => x.name === 'instanceColor')) {
-      if (material.defines?.USE_INSTANCING_COLOR !== undefined) attrs.push({qualifier: 'in', type: 'vec3', name: 'instanceColor', array: ''}); else lines.push('vec3 instanceColor = vec3(1.0);');
+      // three.js defines USE_INSTANCING_COLOR itself for an InstancedMesh with instance colours.
+      if (material.defines?.USE_INSTANCING_COLOR !== undefined || instancing.color) attrs.push({qualifier: 'in', type: 'vec3', name: 'instanceColor', array: ''}); else lines.push('vec3 instanceColor = vec3(1.0);');
     }
     for (const d of attrs) lines.push(`layout(location = ${loc++}) in ${d.type} ${d.name}${d.array};`);
     loc = 0;
     for (const d of v.decls) lines.push(`layout(location = ${loc++}) out ${d.type} ${d.name}${d.array};`);
     // Point size has no HLSL equivalent; the billboard material sizes points itself.
     lines.push('float jsgb_PointSize;', '#define gl_PointSize jsgb_PointSize');
-    // Instancing attributes the per-instance mirror does not feed: identity transform, white colour.
-    if (/\binstanceMatrix\b/.test(src) && !attrs.some(x => x.name === 'instanceMatrix')) lines.push('mat4 instanceMatrix = mat4(1.0);');
-    lines.push(src, 'void main() { modelViewMatrix = viewMatrix * modelMatrix; normalMatrix = transpose(inverse(mat3(modelViewMatrix))); jsgb_main(); }');
+    // On an InstancedMesh, Unreal's model matrix holds the instance's whole transform. A shader that reads
+    // instanceMatrix itself (its scale, say, as a width) gets that transform there and an identity modelMatrix,
+    // so modelMatrix * instanceMatrix is still the whole transform. Elsewhere instanceMatrix is the identity.
+    let main = 'void main() { modelViewMatrix = viewMatrix * modelMatrix; normalMatrix = transpose(inverse(mat3(modelViewMatrix))); jsgb_main(); }';
+    if (instancing.matrix && /\binstanceMatrix\b/.test(src) && !attrs.some(x => x.name === 'instanceMatrix')) {
+      src = src.replace(/\binstanceMatrix\b/g, 'jsgb_InstanceMatrix').replace(/\bmodelMatrix\b/g, 'jsgb_ModelMatrix');
+      lines.push('mat4 jsgb_InstanceMatrix; mat4 jsgb_ModelMatrix;');
+      main = 'void main() { jsgb_InstanceMatrix = modelMatrix; jsgb_ModelMatrix = mat4(1.0); modelViewMatrix = viewMatrix; normalMatrix = transpose(inverse(mat3(modelViewMatrix))); jsgb_main(); }';
+    } else if (/\binstanceMatrix\b/.test(src) && !attrs.some(x => x.name === 'instanceMatrix')) lines.push('mat4 instanceMatrix = mat4(1.0);');
+    lines.push(src, main);
     return {glsl: lines.join('\n'), uniforms, attributes: attrs, varyings: v.decls};
   }
   for (const d of v.decls) lines.push(`layout(location = ${loc++}) in ${d.type} ${d.name}${d.array};`);
@@ -205,6 +213,25 @@ function modernSampling(s: string): string {
 }
 
 type Member = {type: string; name: string; array: string; resource?: 'tex' | 'cube' | 'volume'};
+
+/** three.js uploads an image with flipY set upside down, so v = 0 is the image's last row; Unreal keeps the first
+ *  row at v = 0. Each 2D texture's samples flip v when its <name>_jsgbFlipY member is 1 (the host sets it per texture). */
+function flipSamples(body: string, members: Member[]): string {
+  const textures = members.filter(m => m.resource === 'tex').map(m => m.name);
+  if (!textures.length) return body;
+  const rx = new RegExp(`\\b(${textures.join('|')})\\.(Sample|SampleLevel|SampleBias|SampleGrad)\\s*\\(`, 'g');
+  let out = '', last = 0, m: RegExpExecArray | null;
+  while ((m = rx.exec(body))) {
+    const {end, args} = callArgs(body, m.index + m[0].length - 1);
+    if (args.length < 2) continue;
+    args[1] = `jsgbFlipUV(${args[1]}, ${m[1]}_jsgbFlipY)`;
+    out += body.slice(last, m.index) + `${m[1]}.${m[2]}(${args.join(', ')})`;
+    last = end; rx.lastIndex = end;
+  }
+  if (!last) return body;
+  for (const t of textures) members.push({type: 'float', name: t + '_jsgbFlipY', array: ''});
+  return 'float2 jsgbFlipUV(float2 c, float f) { return float2(c.x, f > 0.5 ? 1.0 - c.y : c.y); }\n' + out + body.slice(last);
+}
 /** SPIRV-Cross HLSL as a struct: globals become members, functions become methods. */
 function toStruct(hlsl: string, name: string): {struct: string; members: Member[]; types: string; entry: string} {
   let src = hlsl.replace(/\r/g, '');
@@ -232,7 +259,7 @@ function toStruct(hlsl: string, name: string): {struct: string; members: Member[
   src = src.replace(/^struct\s+\w+\s*\{[\s\S]*?^\};\s*$/gm, m => { types += m + '\n'; return ''; });
   src = src.replace(/^static\s+const[^;]*;\s*$/gm, m => { types += m + '\n'; return ''; });
   const entry = /\bvoid\s+(vert_main|frag_main)\s*\(\s*\)/.exec(src)?.[1] ?? 'main';
-  const body = modernSampling(src).trim();
+  let body = flipSamples(modernSampling(src).trim(), members);
   const decl = members.map(m => m.resource ? `  ${m.type} ${m.name}; SamplerState ${m.name}Sampler;` : `  ${m.type} ${m.name}${m.array};`).join('\n');
   return {struct: `struct ${name} {\n${decl}\n${body.replace(/^/gm, '  ')}\n};\n`, members, types, entry};
 }
@@ -251,11 +278,16 @@ function textHash(s: string) {
   return (a >>> 0).toString(16) + (b >>> 0).toString(16) + s.length.toString(16);
 }
 /** The generated-material description for a ShaderMaterial; undefined while the compiler loads, null when it cannot be translated. */
-export function translateShaderMaterial(material: THREE.ShaderMaterial): TranslatedShader | null | undefined {
-  const key = sourceKey(material);
+export function translateShaderMaterial(material: THREE.ShaderMaterial, instanced?: {color: boolean; extras?: {name: string; size: number; offset: number}[]}): TranslatedShader | null | undefined {
+  // Drawn on an InstancedMesh, a vertex shader that reads instanceMatrix, instanceColor or per-instance attributes
+  // translates differently (see prepare and the attribute glue below).
+  const vertex = material.vertexShader ?? '';
+  const instancing = {matrix: !!instanced && /\binstanceMatrix\b/.test(vertex), color: !!instanced?.color && /\binstanceColor\b/.test(vertex)};
+  const extras = (instanced?.extras ?? []).filter(e => new RegExp(`\\b${e.name}\\b`).test(vertex));
+  const key = sourceKey(material) + (instancing.matrix ? '_i' : '') + (instancing.color ? '_c' : '') + (extras.length ? '_x' + String(textHash(extras.map(e => `${e.name}${e.size}@${e.offset}`).join(','))).slice(0, 6) : '');
   if (cache.has(key)) return cache.get(key);
   let vs: ReturnType<typeof prepare>, fs: ReturnType<typeof prepare>;
-  try { vs = prepare(material, 'vertex'); fs = prepare(material, 'fragment'); } catch (error) {
+  try { vs = prepare(material, 'vertex', instancing); fs = prepare(material, 'fragment'); } catch (error) {
     host.log('warn', `custom shader ${material.name || key} stays generic: ${error instanceof Error ? error.message : error}`);
     cache.set(key, null);
     return null;
@@ -301,6 +333,11 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial): Transla
         `${target}.projectionMatrix = float4x4(JsgbPr0, JsgbPr1, JsgbPr2, JsgbPr3);`, `${target}.cameraPosition = JsgbCam.xyz;`, `${target}.isOrthographic = JsgbPr3.w > 0.5;`);
       for (const m of S.members) {
         if (m.name in BUILTIN_UNIFORMS || DERIVED.includes(m.name) || m.array) continue;
+        if (m.name.endsWith('_jsgbFlipY')) {
+          if (!seen.has(m.name)) { seen.add(m.name); inputs.push({name: 'U_' + m.name, source: 'scalar', param: m.name}); }
+          glue.push(`${target}.${m.name} = U_${m.name};`);
+          continue;
+        }
         // SPIRV-Cross puts an underscore before a name HLSL reserves (noise, line, point, ...).
         const decl = [...vsDecls, ...fsDecls].find(d => d.name === m.name) ?? [...vsDecls, ...fsDecls].find(d => '_' + d.name === m.name);
         if (!decl) continue;
@@ -328,6 +365,14 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial): Transla
     // The shader's own attributes come from the UV channels the geometry export put them in.
     for (const d of vs.attributes) {
       if (!isExtraAttribute(d.name) || !has(V, d.name)) continue;
+      // Per-instance attributes are per-instance custom data, after the instance colour's three floats.
+      const extra = instanced?.extras?.find(e => e.name === d.name);
+      if (extra) {
+        const parts = Array.from({length: extra.size}, (_, k) => `JsgbI_${d.name}${k}`);
+        parts.forEach((name, k) => inputs.push({name, source: 'instanceData', index: 3 + extra.offset + k}));
+        glue.push(`vs.${d.name} = ${extra.size === 1 ? parts[0] : `float${extra.size}(${parts.join(', ')})`};`);
+        continue;
+      }
       const size = d.type === 'float' ? 1 : +(/\d$/.exec(d.type)?.[0] ?? 0);
       const slot = size ? channelFor(d.name, size) : null;
       if (!slot) continue;

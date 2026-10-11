@@ -1,0 +1,126 @@
+{
+ "root": "/Game/Fidelity/HardBurn",
+ "modules": "C:/Users/Aidan Anderson/falling-frontier-clone/node_modules",
+ "sources": [
+  {
+   "name": "concept_tdf_frigate",
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-frigate/pixal3d_textured.glb",
+   "match": {
+    "url": "*/concept-tdf-frigate/*"
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-frigate/67dadcf78ae6/lod0.glb",
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_tdf_destroyer",
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-destroyer/pixal3d_textured.glb",
+   "match": {
+    "url": "*/concept-helion-destroyer/*"
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-helion-destroyer/11407e3075f6/lod0.glb",
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_tdf_cruiser",
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-cruiser/pixal3d_textured.glb",
+   "match": {
+    "url": "*/concept-tdf-cruiser/*"
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-cruiser/a84b2758cc3f/lod0.glb",
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_tdf_corvette",
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-corvette/pixal3d_textured.glb",
+   "match": {
+    "url": "*/concept-tdf-corvette/*"
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-corvette/1bcf3e1f4b0a/lod0.glb",
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_tdf_carrier",
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-carrier/pixal3d_textured.glb",
+   "match": {
+    "url": "*/concept-tdf-carrier/*"
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-tdf-carrier/2ecf7491216e/lod0.glb",
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_mrn_frigate",
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-frigate/pixal3d_textured.glb",
+   "match": {
+    "url": "*/concept-mrn-frigate/*"
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-frigate/ec7ab1b88b06/lod0.glb",
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_mrn_destroyer",
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-destroyer/pixal3d_textured.glb",
+   "match": {
+    "url": "*/concept-mrn-destroyer/*"
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-destroyer/c189555ac7b7/lod0.glb",
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_mrn_cruiser",
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-cruiser/pixal3d_textured.glb",
+   "match": {
+    "url": "*/concept-mrn-cruiser/*"
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-cruiser/e2d677368923/lod0.glb",
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_mrn_corvette",
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-corvette/pixal3d_textured.glb",
+   "match": {
+    "url": "*/concept-mrn-corvette/*"
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-corvette/b0994902e559/lod0.glb",
+   "params": {
+    "EnvIntensity": 1
+   }
+  },
+  {
+   "name": "concept_mrn_carrier",
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-carrier/pixal3d_textured.glb",
+   "match": {
+    "url": "*/concept-mrn-carrier/*"
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/vault-planar/concept-mrn-carrier/0e17c7f0fbc1/lod0.glb",
+   "params": {
+    "EnvIntensity": 1
+   }
+  }
+ ]
+}
