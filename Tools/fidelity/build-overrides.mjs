@@ -84,7 +84,7 @@ if (!rest.includes('--skip-import')) {
   execFileSync('python', [path.join(bridge, 'Tools/fidelity/studio_env.py'), studio], {stdio: 'ignore'});
   // --materials-only: keep the imported meshes and textures, rebuild the materials (with --rebuild-master).
   fs.writeFileSync(jobs, JSON.stringify({root: list.root, studio, maxTexture: list.maxTexture ?? 0, rebuildMaster: rest.includes('--rebuild-master'),
-    materialsOnly: rest.includes('--materials-only'), assets: prepared.map(({rule, ...p}) => p)}, null, 1));
+    materialsOnly: rest.includes('--materials-only'), assets: prepared.map(({rule, ...p}) => ({...p, ...(rule.maxTexture ? {maxTexture: rule.maxTexture} : {})}))}, null, 1));
   // One Unreal at a time on this PC (Tools/run-unreal.mjs): wait for the slot.
   const busy = () => execFileSync('tasklist', ['/FO', 'CSV', '/NH'], {encoding: 'utf8'}).split(/\r?\n/).some(l => /^"Unreal(Editor|Editor-Cmd|Game)?[^"]*\.exe"/i.test(l) && !/TraceServer|CrashReport/i.test(l));
   for (const start = Date.now(); busy();) {

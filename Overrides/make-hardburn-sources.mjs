@@ -30,8 +30,12 @@ const palettes = {tdf: 0x9eafb5, mrn: 0x63332f, cartel: 0x42464c, helion: 0xb7a1
 const linear = hex => [16, 8, 0].map(s => { const c = ((hex >> s) & 255) / 255; return +(c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4).toFixed(4); });
 function liveryParams(dir, station) {
   const faction = /^concept-([a-z]+)-/.exec(dir)?.[1];
-  const paint = palettes[faction] ?? palettes.tdf;
-  return {EnvIntensity: 0.5, LiveryWeight: station ? 0 : 0.55, LiveryPaint: linear(paint), ...(station ? {MetalScale: 0.35} : {})};
+  const paint = linear(palettes[faction] ?? palettes.tdf);
+  // A light coat of the faction paint, and the paint's hue multiplied into the texture so its dark seams and
+  // machinery stay dark; stations keep their own weathered texture.
+  const peak = Math.max(...paint), luma = 0.2126 * paint[0] + 0.7152 * paint[1] + 0.0722 * paint[2];
+  const shade = Math.min(1, Math.max(0.45, luma / 0.3)), hue = paint.map(c => +((0.35 + 0.65 * c / peak) * shade).toFixed(3));
+  return {EnvIntensity: 0.3, LiveryWeight: station ? 0 : 0.25, LiveryPaint: paint, ...(station ? {MetalScale: 0.35, Tint: [0.78, 0.84, 0.9]} : {Tint: hue})};
 }
 const hulls = [];
 for (const m of models.values()) {
@@ -47,6 +51,8 @@ for (const m of models.values()) {
 }
 const rank = h => { const i = h.keys.findIndex(k => battle.includes(k)); return i >= 0 ? battle.indexOf(h.keys[i]) : 1000; };
 hulls.sort((a, b) => rank(a) - rank(b) || a.name.localeCompare(b.name));
+// The battle-view models keep their 4096 maps; the rest import at 2048 to fit the disk budget (Nanite keeps every triangle).
+for (const h of hulls) if (rank(h) >= 1000) h.maxTexture = 2048;
 list.sources = [...hulls, ...list.sources.filter(s => s.kind)];
 fs.writeFileSync(file, JSON.stringify(list, null, 1) + '\n');
 console.log(`${hulls.length} hulls (${hulls.filter(h => h.receipt).length} with symmetry repairs), ${list.sources.length - hulls.length} planet sources`);

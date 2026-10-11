@@ -257,7 +257,7 @@ def import_mesh_only(a):
     return {'name': name, 'mesh': mesh.get_path_name(), 'unrealBounds': [[box.min.x, box.min.y, box.min.z], [box.max.x, box.max.y, box.max.z]]}
 
 
-def texture(file, dest, name, srgb, normal=False):
+def texture(file, dest, name, srgb, normal=False, max_size=None):
     path = dest + '/' + name
     if materials_only and eal.does_asset_exist(path):
         return eal.load_asset(path)
@@ -268,7 +268,7 @@ def texture(file, dest, name, srgb, normal=False):
         tex.set_editor_property('compression_settings', unreal.TextureCompressionSettings.TC_NORMALMAP)
     elif not srgb:
         tex.set_editor_property('compression_settings', unreal.TextureCompressionSettings.TC_MASKS)
-    tex.set_editor_property('max_texture_size', jobs.get('maxTexture', 0))
+    tex.set_editor_property('max_texture_size', jobs.get('maxTexture', 0) if max_size is None else max_size)
     eal.save_loaded_asset(tex)
     return tex
 
@@ -291,8 +291,9 @@ for a in jobs['assets']:
     if a.get('kind') == 'mesh':
         results.append(import_mesh_only(a)); log('done', name, results[-1]); continue
     tx = a.get('textures', {})
-    base_tex = texture(tx['baseColor']['file'], dest, 'T_' + name + '_BaseColor', True) if 'baseColor' in tx else None
-    mr_tex = texture(tx['metallicRoughness']['file'], dest, 'T_' + name + '_MetalRough', False) if 'metallicRoughness' in tx else None
+    cap = a.get('maxTexture')
+    base_tex = texture(tx['baseColor']['file'], dest, 'T_' + name + '_BaseColor', True, max_size=cap) if 'baseColor' in tx else None
+    mr_tex = texture(tx['metallicRoughness']['file'], dest, 'T_' + name + '_MetalRough', False, max_size=cap) if 'metallicRoughness' in tx else None
     if master is None:
         if not (base_tex and mr_tex):
             results.append({'name': name, 'error': 'the first asset needs both PBR textures'})

@@ -90,11 +90,11 @@ void AJsgbHost::SetupLumen()
 	Mirror->SunSourceAngle = bLight ? 0.6f : 1.2f;
 	// Lumen's bounce light and the sky light replace most of three.js's flat ambient.
 	Mirror->LumenAmbientScale = 0.35f;
-	Mirror->OverrideAmbientScale = 0.15f;
+	Mirror->OverrideAmbientScale = 0.08f;
 	// The game's dark-space look: a strong key light and deep shadow sides. The sun is a little stronger than the
 	// game's, exposure stays the game's own, and drives and weapons get a little more bloom.
 	Mirror->ExposureOffset = 0.f;
-	Mirror->SunScale = 1.3f;
+	Mirror->SunScale = 1.6f;
 	Mirror->BloomScale = 1.3f;
 	UE_LOG(LogJsgbFidelity, Display, TEXT("Lumen lighting on (preset %s): global illumination and reflections, sky light capture, soft sun shadows, volumetric fog"), *LumenPreset);
 }

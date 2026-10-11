@@ -137,12 +137,17 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "LiveryWeight": 0.55,
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
     "LiveryPaint": [
      0.3419,
      0.4287,
      0.4621
+    ],
+    "Tint": [
+     0.831,
+     0.953,
+     1
     ]
    },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-frigate/pixal3d_textured.glb",
@@ -176,12 +181,17 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "LiveryWeight": 0.55,
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
     "LiveryPaint": [
      0.4735,
      0.3564,
      0.1946
+    ],
+    "Tint": [
+     1,
+     0.839,
+     0.617
     ]
    },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-destroyer/pixal3d_textured.glb",
@@ -216,12 +226,17 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "LiveryWeight": 0.55,
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
     "LiveryPaint": [
      0.3419,
      0.4287,
      0.4621
+    ],
+    "Tint": [
+     0.831,
+     0.953,
+     1
     ]
    },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-corvette/pixal3d_textured.glb",
@@ -255,12 +270,17 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "LiveryWeight": 0.55,
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
     "LiveryPaint": [
      0.3419,
      0.4287,
      0.4621
+    ],
+    "Tint": [
+     0.831,
+     0.953,
+     1
     ]
    },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-carrier/pixal3d_textured.glb",
@@ -294,12 +314,17 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "LiveryWeight": 0.55,
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
     "LiveryPaint": [
      0.3419,
      0.4287,
      0.4621
+    ],
+    "Tint": [
+     0.831,
+     0.953,
+     1
     ]
    },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-cruiser/pixal3d_textured.glb",
@@ -333,12 +358,17 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "LiveryWeight": 0.55,
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
     "LiveryPaint": [
      0.1248,
      0.0331,
      0.0284
+    ],
+    "Tint": [
+     0.45,
+     0.235,
+     0.224
     ]
    },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-frigate/pixal3d_textured.glb",
@@ -372,12 +402,17 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "LiveryWeight": 0.55,
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
     "LiveryPaint": [
      0.1248,
      0.0331,
      0.0284
+    ],
+    "Tint": [
+     0.45,
+     0.235,
+     0.224
     ]
    },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-destroyer/pixal3d_textured.glb",
@@ -411,12 +446,17 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "LiveryWeight": 0.55,
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
     "LiveryPaint": [
      0.1248,
      0.0331,
      0.0284
+    ],
+    "Tint": [
+     0.45,
+     0.235,
+     0.224
     ]
    },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-corvette/pixal3d_textured.glb",
@@ -450,12 +490,17 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "LiveryWeight": 0.55,
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
     "LiveryPaint": [
      0.1248,
      0.0331,
      0.0284
+    ],
+    "Tint": [
+     0.45,
+     0.235,
+     0.224
     ]
    },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-carrier/pixal3d_textured.glb",
@@ -489,12 +534,17 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "LiveryWeight": 0.55,
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
     "LiveryPaint": [
      0.1248,
      0.0331,
      0.0284
+    ],
+    "Tint": [
+     0.45,
+     0.235,
+     0.224
     ]
    },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-cruiser/pixal3d_textured.glb",
@@ -528,14 +578,19 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
+    "EnvIntensity": 0.3,
     "LiveryWeight": 0,
     "LiveryPaint": [
      0.3419,
      0.4287,
      0.4621
     ],
-    "MetalScale": 0.35
+    "MetalScale": 0.35,
+    "Tint": [
+     0.78,
+     0.84,
+     0.9
+    ]
    },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-tdf-starbase/pixal3d_textured.glb",
    "keys": [
@@ -567,14 +622,19 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
+    "EnvIntensity": 0.3,
     "LiveryWeight": 0,
     "LiveryPaint": [
      0.1248,
      0.0331,
      0.0284
     ],
-    "MetalScale": 0.35
+    "MetalScale": 0.35,
+    "Tint": [
+     0.78,
+     0.84,
+     0.9
+    ]
    },
    "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-mrn-starbase/pixal3d_textured.glb",
    "keys": [
