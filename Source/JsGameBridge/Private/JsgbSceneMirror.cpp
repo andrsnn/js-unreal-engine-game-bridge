@@ -1,4 +1,5 @@
 #include "JsgbSceneMirror.h"
+#include "Rendering/MotionVectorSimulation.h"
 #include "JsgbBridge.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
@@ -905,6 +906,8 @@ UStaticMeshComponent* UJsgbSceneMirror::NewComponent(bool bInstanced)
 	{
 		UInstancedStaticMeshComponent* I = NewObject<UInstancedStaticMeshComponent>(Owner);
 		I->NumCustomDataFloats = 3;
+		// Previous instance transforms give each instance its own motion vectors (DLSS, TSR).
+		I->SetHasPerInstancePrevTransforms(true);
 		C = I;
 	}
 	else { C = NewObject<UStaticMeshComponent>(Owner); }
@@ -1038,10 +1041,24 @@ void UJsgbSceneMirror::Place(FJsgbEntity& Ent, USceneComponent* C, const FTransf
 	// Flag 16: the game asked for no smoothing (userData.jsgbNoInterpolate).
 	// A new object or a jump has no motion to show: its velocity history is reset, so DLSS and TSR don't
 	// smear it across the screen.
-	auto Jump = [C](const FTransform& To) { C->SetWorldTransform(To); if (UPrimitiveComponent* P = Cast<UPrimitiveComponent>(C)) { P->ResetSceneVelocity(); } };
+	// The jump's previous transform is its new one, applied with the same render update (ResetSceneVelocity
+	// runs before that update and has no effect on it).
+	auto Jump = [C](const FTransform& To)
+	{
+		if (!FMotionVectorSimulation::IsEnabled()) { if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(TEXT("r.MotionVectorSimulation"))) { V->Set(1, ECVF_SetByCode); } }
+		FMotionVectorSimulation::Get().SetPreviousTransform(C, To);
+		C->SetWorldTransform(To);
+	};
+	// three has no teleport flag. A move that starts from rest and covers more than twice the object's size in
+	// one frame is taken as one (a respawn, a pooled object reused); a fast object already moving keeps its
+	// motion vectors.
+	const double Step = Ent.bPlaced ? FVector::Dist(Ent.LastTarget, T.GetLocation()) : 0.0;
+	const bool bTeleport = Ent.bPlaced && !Ent.bWasMoving && Step > FMath::Max(100.0, 4.0 * C->Bounds.SphereRadius);
+	Ent.bWasMoving = Step > 0.1;
+	Ent.LastTarget = T.GetLocation();
 	if (!bInterpolate || (Flags & 16))
 	{
-		const bool bFar = !Ent.bPlaced || FVector::DistSquared(C->GetComponentLocation(), T.GetLocation()) > FMath::Square(5000.0);
+		const bool bFar = !Ent.bPlaced || bTeleport || FVector::DistSquared(C->GetComponentLocation(), T.GetLocation()) > FMath::Square(5000.0);
 		if (bFar) { Jump(T); } else { C->SetWorldTransform(T); }
 		Ent.bPlaced = true;
 		return;
@@ -1049,7 +1066,7 @@ void UJsgbSceneMirror::Place(FJsgbEntity& Ent, USceneComponent* C, const FTransf
 	const FTransform Current = C->GetComponentTransform();
 	const FVector S0 = Current.GetScale3D(), S1 = T.GetScale3D();
 	// New objects, jumps over 50 m and large scale changes snap; everything else glides from where it is drawn now.
-	const bool bSnap = !Ent.bPlaced || FVector::DistSquared(Current.GetLocation(), T.GetLocation()) > FMath::Square(5000.0)
+	const bool bSnap = !Ent.bPlaced || bTeleport || FVector::DistSquared(Current.GetLocation(), T.GetLocation()) > FMath::Square(5000.0)
 		|| S0.GetAbsMax() > 2.0 * S1.GetAbsMax() + 1e-4 || S1.GetAbsMax() > 2.0 * S0.GetAbsMax() + 1e-4;
 	Ent.bPlaced = true;
 	Ent.To = T;
@@ -1247,19 +1264,40 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 				TArray<FTransform> Ts;
 				Ts.SetNumUninitialized(N);
 				for (int32 I = 0; I < N; ++I) { Ts[I] = ToTransform(&Inst[Offset + I * 16]); }
-				// Moving instances keep their previous transforms (no teleport), so Unreal draws per-instance motion
-				// vectors for DLSS and TSR, and the update goes to the existing render proxy instead of a new one.
+				// Each instance's previous transform is where it was drawn last frame, so Unreal draws per-instance
+				// motion vectors for DLSS and TSR; a jump over 50 m has none. The update goes to the existing
+				// render proxy instead of a new one.
 				const bool bSameCount = C->GetInstanceCount() == N;
-				if (bSameCount) { C->BatchUpdateInstancesTransforms(0, Ts, false, true, false); }
+				if (bSameCount)
+				{
+					TArray<FTransform> Prev;
+					Prev.SetNumUninitialized(N);
+					for (int32 I = 0; I < N; ++I)
+					{
+						C->GetInstanceTransform(I, Prev[I], false);
+						if (FVector::DistSquared(Prev[I].GetLocation(), Ts[I].GetLocation()) > FMath::Square(5000.0)) { Prev[I] = Ts[I]; }
+					}
+					C->BatchUpdateInstancesTransforms(0, Ts, Prev, false, false, false);
+				}
 				else { C->ClearInstances(); C->AddInstances(Ts, false, false, false); }
+				Ent.bInstancesMoved = bSameCount;
 				if (bColors && Offset + N * 19 <= InstCount)
 				{
 					const float* Col = &Inst[Offset + N * 16];
-					for (int32 I = 0; I < N; ++I) { C->SetCustomData(I, TArray<float>({Col[I * 3], Col[I * 3 + 1], Col[I * 3 + 2]}), I == N - 1); }
+					for (int32 I = 0; I < N; ++I) { C->SetCustomData(I, TArray<float>({Col[I * 3], Col[I * 3 + 1], Col[I * 3 + 2]}), false); }
 					if (UMaterialInstanceDynamic* Mid = MaterialFor(Mat)) { Mid->SetScalarParameterValue(TEXT("InstanceColorMix"), 1.f); }
 				}
 				if (!bSameCount) { C->MarkRenderStateDirty(); }
 				Ent.InstanceCount = N;
+			}
+			else if (Ent.bInstancesMoved)
+			{
+				// Unreal keeps previous transforms until told otherwise: instances that stopped get still ones.
+				TArray<FTransform> Ts;
+				Ts.SetNumUninitialized(C->GetInstanceCount());
+				for (int32 I = 0; I < Ts.Num(); ++I) { C->GetInstanceTransform(I, Ts[I], false); }
+				C->BatchUpdateInstancesTransforms(0, Ts, Ts, false, false, false);
+				Ent.bInstancesMoved = false;
 			}
 			Show(Ent, C, Flags);
 		}

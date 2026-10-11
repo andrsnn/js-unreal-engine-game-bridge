@@ -113,6 +113,8 @@ struct FJsgbEntity
 	TArray<int32, TInlineAllocator<2>> Materials;
 	uint32 Seen = 0;
 	int32 InstanceCount = 0;
+	/** The instances moved last frame, so their previous transforms still differ from the current ones. */
+	bool bInstancesMoved = false;
 	/** Hash of what a line object's segments depend on (geometry, material, transform); 0 before the first draw. */
 	uint32 LineSignature = 0;
 	/** A line object's segments in world space, drawn through the mirror's one shared line component. */
@@ -122,6 +124,9 @@ struct FJsgbEntity
 	/** Interpolation (JavaScript on its own thread): drawn from From toward To between two snapshots. */
 	FTransform From, To;
 	bool bPlaced = false;
+	/** Where the game put the object last frame, and whether it had moved then (teleports start from rest). */
+	FVector LastTarget = FVector::ZeroVector;
+	bool bWasMoving = false;
 };
 
 USTRUCT()

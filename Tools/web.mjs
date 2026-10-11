@@ -79,6 +79,7 @@ async function capture() {
     if (!fps) return;
     const step = 1000 / fps, realRaf = window.requestAnimationFrame.bind(window), realDateNow = Date.now, start = realDateNow();
     let vnow = 0, nextId = 1, stopAt = Infinity;
+    const stops = {};
     const callbacks = new Map();
     // The clock stops at the frame a script step is due, so the step acts on that exact frame (as in Unreal).
     const loop = () => {
@@ -89,7 +90,8 @@ async function capture() {
       }
       realRaf(loop);
     };
-    window.__jsgbStopAt = ms => { stopAt = ms ?? Infinity; };
+    // Each user (the film grabber, the script) holds its own stop; the clock stops at the earliest.
+    window.__jsgbStopAt = (who, ms) => { if (ms == null) delete stops[who]; else stops[who] = ms; stopAt = Math.min(Infinity, ...Object.values(stops)); };
     realRaf(loop);
     window.requestAnimationFrame = cb => { const id = nextId++; callbacks.set(id, cb); return id; };
     window.cancelAnimationFrame = id => { callbacks.delete(id); };
@@ -98,6 +100,7 @@ async function capture() {
     window.__jsgbVirtualMs = () => vnow;
   }, fixedFps);
   // Seconds on the run's clock: virtual game time with --fixed-fps, else wall time.
+  const stopAt = (who, ms) => fixedFps ? page.evaluate(([w, v]) => window.__jsgbStopAt?.(w, v), [who, ms]).catch(() => {}) : null;
   const clock = async () => fixedFps ? (await page.evaluate(() => window.__jsgbVirtualMs?.() ?? 0).catch(() => 0)) / 1000 : Date.now() / 1000;
   page.on('pageerror', e => errors.push(String(e)));
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
@@ -113,8 +116,10 @@ async function capture() {
   const times = [];
   const grab = async () => {
     while (grabbing) {
+      // The clock stops at each film frame's time, so the screenshot shows that frame.
+      await stopAt('grab', (ready + next) * 1000);
       const t = (await clock()) - ready;
-      if (t >= next) {
+      if (t >= next - 1e-6) {
         const name = `frame_${String(index++).padStart(5, '0')}.png`;
         await page.screenshot({path: path.join(frames, name)});
         const c = await page.evaluate(() => window.__jsgbCensus?.() ?? {objects: -1, lines: -1, sprites: -1, points: -1}).catch(() => ({objects: -1, lines: -1, sprites: -1, points: -1}));
@@ -123,6 +128,7 @@ async function capture() {
       }
       else await new Promise(r => setTimeout(r, 5));
     }
+    await stopAt('grab', null);
   };
   const grabber = grab();
   // --live: the frames Chrome actually shows, stamped with Unix milliseconds, and the time of every
@@ -151,19 +157,19 @@ async function capture() {
     })();
     return has === want ? {t: window.__jsgbVirtualMs ? window.__jsgbVirtualMs() : null} : false;
   }, [what, present], {polling: 'raf', timeout: 120000}).then(h => h.jsonValue()).catch(() => null);
-  const stopAt = ms => fixedFps ? page.evaluate(v => window.__jsgbStopAt?.(v), ms).catch(() => {}) : null;
+
   const steps = fs.readFileSync(flag('--script'), 'utf8').split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith('#'))
     .map(l => { const [when, verb, ...args] = l.split(' '); return {time: +when, verb, args: args.join(' ')}; }).sort((a, b) => a.time - b.time);
   let offset = 0;
   const unquote = s => s.replace(/^(['"`])(.*)\1$/, '$2');
   for (const s of steps) {
     const due = ready + s.time + offset;
-    await stopAt(due * 1000);
+    await stopAt('script', due * 1000);
     while ((await clock()) < due - 1e-6) await new Promise(r => setTimeout(r, 10));
     if (s.verb === 'wait' || s.verb === 'gone') {
       // wait: until the element exists. gone: until it no longer exists (a loading screen closing).
       const start = await clock(), wallStart = Date.now(), present = s.verb === 'wait';
-      await stopAt(null);
+      await stopAt('script', null);
       const hit = await seen(unquote(s.args), present);
       const end = fixedFps && typeof hit?.t === 'number' ? hit.t / 1000 : await clock();
       offset += end - start;
@@ -191,7 +197,7 @@ async function capture() {
     else if (s.verb === 'seed') await page.evaluate(n => window.addEventListener('click', () => window.__jsgbSeed(n), {capture: true, once: true}), +s.args);
     else if (s.verb === 'shot') await page.screenshot({path: path.join(shots, s.args + '.png')});
     else if (s.verb === 'quit') break;
-    await stopAt(null);
+    await stopAt('script', null);
   }
   grabbing = false; await grabber;
   if (live) {

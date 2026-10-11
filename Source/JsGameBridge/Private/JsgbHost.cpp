@@ -1054,7 +1054,8 @@ void AJsgbHost::RunScript()
 		if (bFound && WaitUIVersion < 0 && UIPort && Browser.IsValid()) { Ask(TEXT("__jsgb.publish&&__jsgb.publish()")); WaitUIVersion = Bridge->UIVersion; }
 		const bool bShown = !bFound || WaitUIVersion < 0 || !UIPort || UIPort->AppliedUIVersion >= WaitUIVersion;
 		// A browser shows a DOM change in the frame that made it. With a fixed game clock the game waits
-		// for the overlay too, so the game's time and the script's stay together.
+		// for the overlay too (no time passes and no game frame runs), so the game's time and the script's
+		// stay together.
 		bHoldClock = bFound && !bShown && Bridge->FixedStepMs > 0;
 		if ((!bFound || !bShown) && Now - WaitStart < 120.0) { return; }
 		bHoldClock = false;
@@ -1085,6 +1086,8 @@ void AJsgbHost::RunScript()
 		}
 		else if (S.Verb == TEXT("shot")) { Capture(CaptureDir.IsEmpty() ? FPaths::ProjectSavedDir() / TEXT("JsGameBridge") / (S.Args + TEXT(".png")) : CaptureDir / (S.Args + TEXT(".png"))); }
 		else if (S.Verb == TEXT("quit")) { ExitFrame = Frame + 2; }
+		// "console <command>": an Unreal console command (Unreal only; the browser runner skips it).
+		else if (S.Verb == TEXT("console") && GEngine) { GEngine->Exec(GetWorld(), *S.Args); }
 		else if (S.Verb == TEXT("upscaler")) { FString Mode = S.Args.TrimStartAndEnd(), Pct; if (Mode.StartsWith(TEXT("tsr"))) { Pct = Mode.Mid(3).TrimStart(); Mode.Reset(); } ApplyUpscaler(Mode, Pct); Result = Upscaler; if (!CaptureDir.IsEmpty() && CaptureStart >= 0) { CaptureTimes += FString::Printf(TEXT("upscaler %.3f %s\n"), GameSeconds() - CaptureStart, *Upscaler); } }
 		Bridge->Log(TEXT("log"), FString::Printf(TEXT("script %.2fs %s %s -> %s"), Rel, *S.Verb, *S.Args.Left(160), *Result.Left(800)));
 	}
@@ -1134,7 +1137,9 @@ void AJsgbHost::Tick(float DeltaSeconds)
 	// The game's delegates belong to the JavaScript thread while it runs, so the game thread doesn't read them.
 	if (!Bridge || (!JsThread && !Bridge->OnFrame.IsBound())) { return; }
 	Audio->StartPending();
-	if (Bridge->FixedStepMs > 0 && !bHoldClock) { Bridge->VirtualMs += Bridge->FixedStepMs; }
+	// With a fixed clock each game frame is one step, as in the browser; a held clock runs no game frame.
+	const bool bHeld = Bridge->FixedStepMs > 0 && bHoldClock;
+	if (Bridge->FixedStepMs > 0 && !bHeld) { Bridge->VirtualMs += Bridge->FixedStepMs; }
 
 	FIntPoint Size(1920, 1080);
 	if (UGameViewportClient* Vp = GetWorld()->GetGameViewport()) { FVector2D S; Vp->GetViewportSize(S); if (S.X > 0) { Size = FIntPoint(S.X, S.Y); } }
@@ -1162,7 +1167,7 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		}
 		Mirror->Interpolate(LastSnapshot > 0 ? static_cast<float>((Now - LastSnapshot) / SnapshotInterval) : 1.f);
 	}
-	else { Bridge->OnFrame.Execute(ReadyFrame < 0 ? 40.f : 8.f); }
+	else if (!bHeld) { Bridge->OnFrame.Execute(ReadyFrame < 0 ? 40.f : 8.f); }
 	const double T1 = FPlatformTime::Seconds();
 	JsMs += (T1 - T0) * 1000.0; ++TimedFrames;
 	PushUI();

@@ -112,8 +112,10 @@ for (let i = 0; i + 1 < bw.length && web.list.length && unreal.list.length; i++)
     const w = nearest(web, bw[i] + Math.min(u, dw)), ue = nearest(unreal, bu[i] + Math.min(u, du));
     fs.copyFileSync(w.file, path.join(pairDir, `web_${String(pairs).padStart(5, '0')}.png`));
     fs.copyFileSync(ue.file, path.join(pairDir, `ue_${String(pairs).padStart(5, '0')}.png`));
-    // Before the first wait ends (i === 0 with anchors) both sides are still loading, each at its own pace.
-    check(pairs, {...(around(web, w.t) ?? w), file: w.file}, ue, u > dw || u > du || (i === 0 && anchors > 0));
+    // Before the first wait ends (i === 0 with anchors) both sides are still loading, each at its own pace; a
+    // frame captured before its own side's wait ended belongs to that earlier segment.
+    const early = w.t < bw[i] - 1e-6 || ue.t < bu[i] - 1e-6;
+    check(pairs, {...(around(web, w.t) ?? w), file: w.file}, ue, u > dw || u > du || (i === 0 && anchors > 0) || early);
   }
 }
 report.pairs = pairs;
