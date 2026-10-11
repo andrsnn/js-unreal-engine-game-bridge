@@ -19,6 +19,7 @@ export async function smoke(game, {frames = 600, script, search = '', verbose = 
   const host = {
     search,
     now: () => nativeNow() - t0,
+    trace: process.env.JSGB_TRACE === '1',
     readFile(p) {
       const file = game.publicRoots.map(r => path.join(r, p)).find(f => fs.existsSync(f) && fs.statSync(f).isFile());
       if (!file) { stats.missing.add(p); return null; }

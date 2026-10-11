@@ -367,6 +367,9 @@ function syncMaterial(mat: THREE.Material): number {
   const hooked = shader ? undefined : hookShader(mat);
   if ((shader || hooked) && !registryMaterial) {
     const t = shader ? translateShaderMaterial(m) : translateHookedMaterial(mat, hooked!.shader, hooked!.key, instancedUse.get(mat));
+    // A ShaderMaterial's gl_FragColor reaches the screen as it is, already in display (sRGB) values; Unreal
+    // decodes it to linear light so its own output encoding gives the same pixel.
+    if (t && shader) t.encoded = true;
     // Still compiling (the shader compiler loads in the background): send it again next frame, even
     // though its values haven't changed, so the generated material replaces the generic one.
     if (t === undefined) quick.delete(mat);
@@ -463,9 +466,76 @@ function emitBatched(b: THREE.BatchedMesh) {
   }
 }
 
+/** Skinned and morph-target meshes: the bridge deforms the vertices the way three's shaders do (bones, then
+ *  morph targets, through Mesh.getVertexPosition) into a copy of the geometry that Unreal draws. The copy is
+ *  rebuilt only when a bone or morph influence moved. */
+type Deformed = {geometry: THREE.BufferGeometry; source: THREE.BufferGeometry; signature: Float64Array | null};
+const deformedOf = new WeakMap<THREE.Mesh, Deformed>();
+const deformVector = new THREE.Vector3(), deformNormal = new THREE.Vector3(), deformTemp = new THREE.Vector3(), deformNormalBase = new THREE.Vector3();
+function deformedGeometry(o: THREE.Mesh): THREE.BufferGeometry {
+  const skinned = (o as THREE.SkinnedMesh).isSkinnedMesh && !!(o as THREE.SkinnedMesh).skeleton;
+  const morphed = !!o.morphTargetInfluences?.length && !!o.geometry.morphAttributes.position?.length;
+  if (!skinned && !morphed) return o.geometry;
+  const source = o.geometry;
+  let d = deformedOf.get(o);
+  if (!d || d.source !== source) {
+    const geometry = new THREE.BufferGeometry();
+    for (const [name, a] of Object.entries(source.attributes)) if (name !== 'position' && name !== 'normal' && name !== 'skinIndex' && name !== 'skinWeight') geometry.setAttribute(name, a);
+    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(source.attributes.position.count * 3), 3));
+    if (source.attributes.normal) geometry.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(source.attributes.normal.count * 3), 3));
+    if (source.index) geometry.setIndex(source.index);
+    for (const g of source.groups) geometry.addGroup(g.start, g.count, g.materialIndex);
+    d = {geometry, source, signature: null};
+    deformedOf.set(o, d);
+  }
+  // What moves the vertices this frame: the bone matrices and the morph influences.
+  if (skinned) (o as THREE.SkinnedMesh).skeleton.update();
+  const bones = skinned ? (o as THREE.SkinnedMesh).skeleton.boneMatrices : null;
+  const influences = o.morphTargetInfluences ?? [];
+  const size = (bones?.length ?? 0) + influences.length;
+  const signature = d.signature?.length === size ? d.signature : new Float64Array(size);
+  let same = d.signature === signature;
+  let k = 0;
+  if (bones) for (let i = 0; i < bones.length; i++, k++) { if (signature[k] !== bones[i]) { same = false; signature[k] = bones[i]; } }
+  for (let i = 0; i < influences.length; i++, k++) { if (signature[k] !== influences[i]) { same = false; signature[k] = influences[i]; } }
+  d.signature = signature;
+  if (same) return d.geometry;
+  // As three's shaders do: morph targets first (positions, and normals when the geometry has morph normals),
+  // then the bone transform. Skinning is affine, so the skinned normal is skin(p + n) - skin(p).
+  const out = d.geometry.attributes.position as THREE.BufferAttribute;
+  const outN = d.geometry.attributes.normal as THREE.BufferAttribute | undefined;
+  const baseN = source.attributes.normal as THREE.BufferAttribute | undefined;
+  const morphN = morphed ? source.morphAttributes.normal : undefined;
+  const relative = source.morphTargetsRelative;
+  for (let i = 0; i < out.count; i++) {
+    THREE.Mesh.prototype.getVertexPosition.call(o, i, deformVector);
+    if (outN && baseN) {
+      deformNormal.fromBufferAttribute(baseN, i);
+      if (morphN) for (let t = 0; t < morphN.length; t++) {
+        const w = influences[t]; if (!w) continue;
+        deformTemp.fromBufferAttribute(morphN[t], i);
+        if (!relative) deformTemp.sub(deformNormalBase.fromBufferAttribute(baseN, i));
+        deformNormal.addScaledVector(deformTemp, w);
+      }
+      if (skinned) {
+        deformTemp.copy(deformVector).add(deformNormal);
+        (o as THREE.SkinnedMesh).applyBoneTransform(i, deformTemp);
+        (o as THREE.SkinnedMesh).applyBoneTransform(i, deformVector);
+        deformNormal.copy(deformTemp).sub(deformVector);
+      }
+      deformNormal.normalize();
+      outN.setXYZ(i, deformNormal.x, deformNormal.y, deformNormal.z);
+    } else if (skinned) (o as THREE.SkinnedMesh).applyBoneTransform(i, deformVector);
+    out.setXYZ(i, deformVector.x, deformVector.y, deformVector.z);
+  }
+  out.needsUpdate = true;
+  if (outN) outN.needsUpdate = true; else d.geometry.computeVertexNormals();
+  return d.geometry;
+}
+
 function emitMesh(o: THREE.Mesh) {
   if ((o as unknown as THREE.BatchedMesh).isBatchedMesh) { emitBatched(o as unknown as THREE.BatchedMesh); return; }
-  const geo = o.geometry; if (!geo?.attributes?.position) return;
+  const geo = deformedGeometry(o); if (!geo?.attributes?.position) return;
   const mats = materialsOf(o);
   if (!mats.length || mats.every(m => !m || !m.visible || m.colorWrite === false)) return;
   const gid = syncGeometry(geo); if (!gid) return;

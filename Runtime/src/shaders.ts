@@ -11,7 +11,7 @@ import {channelFor, isExtraAttribute} from './attributes';
 
 export type ShaderInput = {name: string; source: 'localPosition' | 'instanceColor' | 'localAxis' | 'localOrigin' | 'localNormal' | 'uv' | 'vertexColor' | 'primitiveData' | 'collection' | 'scalar' | 'vector' | 'texture' | 'cube' | 'volume' | 'worldPosition';
   param?: string; index?: number};
-export type TranslatedShader = {key: string; hlsl: string; inputs: ShaderInput[]; vertexHlsl: string; vertexInputs: ShaderInput[]; lit?: boolean};
+export type TranslatedShader = {key: string; hlsl: string; inputs: ShaderInput[]; vertexHlsl: string; vertexInputs: ShaderInput[]; lit?: boolean; encoded?: boolean};
 
 type Decl = {qualifier: string; type: string; name: string; array: string};
 const BUILTIN_UNIFORMS: Record<string, string> = {modelMatrix: 'mat4', viewMatrix: 'mat4', projectionMatrix: 'mat4', cameraPosition: 'vec3', isOrthographic: 'bool'};

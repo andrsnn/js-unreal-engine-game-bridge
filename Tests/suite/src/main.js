@@ -28,11 +28,18 @@ Promise.resolve(make({THREE, scene, camera, renderer})).then(u => {
 });
 
 addEventListener('resize', () => { camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth, innerHeight); });
+// The case clock starts when the case is ready, so both sides show the same moment however long loading took.
 let last = null, time = 0;
+const clock = document.createElement('div');
+clock.id = 'case-clock';
+clock.style.cssText = 'position:fixed;right:16px;top:12px;font:14px monospace;color:#9fb0bf';
+document.body.append(clock);
 renderer.setAnimationLoop(now => {
-  const dt = last === null ? 0 : Math.min(0.1, (now - last) / 1000);
+  const dt = last === null || !update ? 0 : Math.min(0.1, (now - last) / 1000);
   last = now; time += dt;
   update?.(dt, time);
+  // The case clock on screen, so a still shows which moment each side drew.
+  if (update) clock.textContent = `t ${time.toFixed(2)}`;
   // A case that draws for itself (render targets, an EffectComposer) sets update.skipRender.
   if (!update?.skipRender) renderer.render(scene, update?.camera ?? camera);
 });

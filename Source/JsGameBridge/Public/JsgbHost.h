@@ -133,6 +133,8 @@ private:
 	TSharedPtr<FAnswer> WaitQuery;
 	TArray<TPair<FString, TSharedRef<FAnswer>>> ScriptAnswers;
 	double WaitStart = 0;
+	/** Game seconds at which the JavaScript thread found what the current wait asks for; -1 until then. */
+	double WaitSeen = -1;
 	double JsMs = 0;
 	int32 TimedFrames = 0;
 	// Hot reload timing: from the moment a new bundle arrives to the first frame it draws.

@@ -171,6 +171,25 @@ UMaterialInterface* UJsgbSceneMirror::ParentFor(int32 Variant)
 	return P ? P : (Parents[VLit] ? Parents[VLit].Get() : Fallback.Get());
 }
 
+UMaterialInterface* UJsgbSceneMirror::OneSidedParent(int32 Variant)
+{
+	UMaterialInterface* Base = ParentFor(Variant);
+#if WITH_EDITOR
+	if (OneSidedParents.Num() != VCount) { OneSidedParents.SetNum(VCount); }
+	if (OneSidedParents[Variant]) { return OneSidedParents[Variant]; }
+	UMaterial* Source = Base ? Base->GetMaterial() : nullptr;
+	if (!Source || !Source->IsTwoSided()) { return Base; }
+	// A copy of the authored parent that culls back faces, compiled once (the shaders come from the cache).
+	UMaterial* Copy = DuplicateObject<UMaterial>(Source, this);
+	Copy->TwoSided = false;
+	Copy->ForceRecompileForRendering(EMaterialShaderPrecompileMode::None);
+	OneSidedParents[Variant] = Copy;
+	return Copy;
+#else
+	return Base;
+#endif
+}
+
 bool UJsgbSceneMirror::SetAssetRegistry(const FString& Json)
 {
 	ParentFor(VLit);
@@ -802,10 +821,13 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 	// Only DoubleSide draws both faces; BackSide draws back faces through reversed culling (see Show).
 	if (!Parent && !CustomKey.IsEmpty()) { Parent = GeneratedParent(CustomKey, BlendMode, Side == 2); }
 	M.bCustom = Parent && !CustomKey.IsEmpty();
-	const int32 VariantKey = Parent ? 1000 + (GetTypeHash(RegistryPath + CustomKey) + BlendMode * 7 + (Side == 2 ? 1 : 0)) % 100000 : Variant;
+	// The authored transparent, masked and unlit parents draw both faces; three draws only the front (or, with
+	// reversed culling, the back) unless the material is DoubleSide.
+	const bool bOneSided = Side != 2 && !bBillboard && (Variant == VMasked || Variant == VTrans || Variant == VUnlit || Variant == VUnlitTrans || Variant == VAdditive || Variant == VUnlitMasked);
+	const int32 VariantKey = Parent ? 1000 + (GetTypeHash(RegistryPath + CustomKey) + BlendMode * 7 + (Side == 2 ? 1 : 0)) % 100000 : Variant + (bOneSided ? 100 : 0);
 	if (!M.Instance || M.Variant != VariantKey)
 	{
-		M.Instance = UMaterialInstanceDynamic::Create(Parent ? Parent : ParentFor(Variant), this);
+		M.Instance = UMaterialInstanceDynamic::Create(Parent ? Parent : bOneSided ? OneSidedParent(Variant) : ParentFor(Variant), this);
 		M.Variant = VariantKey;
 		ApplySceneParams(M.Instance, VariantKey);
 	}
@@ -1014,7 +1036,16 @@ void UJsgbSceneMirror::ApplyPost(const float* H)
 void UJsgbSceneMirror::Place(FJsgbEntity& Ent, USceneComponent* C, const FTransform& T, int32 Flags)
 {
 	// Flag 16: the game asked for no smoothing (userData.jsgbNoInterpolate).
-	if (!bInterpolate || (Flags & 16)) { C->SetWorldTransform(T); Ent.bPlaced = true; return; }
+	// A new object or a jump has no motion to show: its velocity history is reset, so DLSS and TSR don't
+	// smear it across the screen.
+	auto Jump = [C](const FTransform& To) { C->SetWorldTransform(To); if (UPrimitiveComponent* P = Cast<UPrimitiveComponent>(C)) { P->ResetSceneVelocity(); } };
+	if (!bInterpolate || (Flags & 16))
+	{
+		const bool bFar = !Ent.bPlaced || FVector::DistSquared(C->GetComponentLocation(), T.GetLocation()) > FMath::Square(5000.0);
+		if (bFar) { Jump(T); } else { C->SetWorldTransform(T); }
+		Ent.bPlaced = true;
+		return;
+	}
 	const FTransform Current = C->GetComponentTransform();
 	const FVector S0 = Current.GetScale3D(), S1 = T.GetScale3D();
 	// New objects, jumps over 50 m and large scale changes snap; everything else glides from where it is drawn now.
@@ -1022,7 +1053,7 @@ void UJsgbSceneMirror::Place(FJsgbEntity& Ent, USceneComponent* C, const FTransf
 		|| S0.GetAbsMax() > 2.0 * S1.GetAbsMax() + 1e-4 || S1.GetAbsMax() > 2.0 * S0.GetAbsMax() + 1e-4;
 	Ent.bPlaced = true;
 	Ent.To = T;
-	if (bSnap) { Ent.From = T; C->SetWorldTransform(T); return; }
+	if (bSnap) { Ent.From = T; Jump(T); return; }
 	Ent.From = Current;
 	if (!Current.Equals(T, 1e-3)) { Moving.Add(Ent.Id); }
 }
@@ -1060,7 +1091,9 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	Moving.Reset();
 
 	// Build queued geometry within the budget.
-	while (BuildQueue.Num() > 0 && (FPlatformTime::Seconds() - T0) * 1000.0 < BuildBudgetMs)
+	// Deterministic captures (a fixed game clock) build everything this frame shows, as WebGL would upload it.
+	const bool bAllBuilds = Bridge && Bridge->FixedStepMs > 0;
+	while (BuildQueue.Num() > 0 && (bAllBuilds || (FPlatformTime::Seconds() - T0) * 1000.0 < BuildBudgetMs))
 	{
 		const int32 Id = BuildQueue[0];
 		BuildQueue.RemoveAt(0, EAllowShrinking::No);
@@ -1093,6 +1126,8 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			// The camera glides like the objects; a jump over 50 m (a cut) snaps.
 			const FTransform Target(CameraRotation, CameraLocation);
 			const bool bSnap = !bCameraPlaced || FVector::DistSquared(Camera->GetComponentLocation(), CameraLocation) > FMath::Square(5000.0);
+			// A camera cut: DLSS and TSR drop their history instead of blending two different views.
+			if (bSnap && bCameraPlaced) { if (APlayerCameraManager* Pcm = UGameplayStatics::GetPlayerCameraManager(this, 0)) { Pcm->SetGameCameraCutThisFrame(); } }
 			CameraFrom = bSnap ? Target : Camera->GetComponentTransform();
 			CameraTo = Target;
 			bCameraPlaced = true;
@@ -1212,15 +1247,18 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 				TArray<FTransform> Ts;
 				Ts.SetNumUninitialized(N);
 				for (int32 I = 0; I < N; ++I) { Ts[I] = ToTransform(&Inst[Offset + I * 16]); }
-				if (C->GetInstanceCount() == N) { C->BatchUpdateInstancesTransforms(0, Ts, false, true, true); }
+				// Moving instances keep their previous transforms (no teleport), so Unreal draws per-instance motion
+				// vectors for DLSS and TSR, and the update goes to the existing render proxy instead of a new one.
+				const bool bSameCount = C->GetInstanceCount() == N;
+				if (bSameCount) { C->BatchUpdateInstancesTransforms(0, Ts, false, true, false); }
 				else { C->ClearInstances(); C->AddInstances(Ts, false, false, false); }
 				if (bColors && Offset + N * 19 <= InstCount)
 				{
 					const float* Col = &Inst[Offset + N * 16];
-					for (int32 I = 0; I < N; ++I) { C->SetCustomData(I, TArray<float>({Col[I * 3], Col[I * 3 + 1], Col[I * 3 + 2]}), false); }
+					for (int32 I = 0; I < N; ++I) { C->SetCustomData(I, TArray<float>({Col[I * 3], Col[I * 3 + 1], Col[I * 3 + 2]}), I == N - 1); }
 					if (UMaterialInstanceDynamic* Mid = MaterialFor(Mat)) { Mid->SetScalarParameterValue(TEXT("InstanceColorMix"), 1.f); }
 				}
-				C->MarkRenderStateDirty();
+				if (!bSameCount) { C->MarkRenderStateDirty(); }
 				Ent.InstanceCount = N;
 			}
 			Show(Ent, C, Flags);
@@ -1653,8 +1691,16 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 		UMaterialExpressionCustom* Custom = MakeCustom(Str(S, TEXT("hlsl")), TEXT("inputs"), CMOT_Float4);
 		const FString VertexCode = Str(S, TEXT("vertexHlsl"));
 		if (!VertexCode.IsEmpty()) { Mat->GetEditorOnlyData()->WorldPositionOffset.Connect(0, MakeCustom(VertexCode, TEXT("vertexInputs"), CMOT_Float3)); }
-		UMaterialExpressionComponentMask* Rgb = NewObject<UMaterialExpressionComponentMask>(Mat);
-		Rgb->R = Rgb->G = Rgb->B = true; Rgb->A = false; Rgb->Input.Connect(0, Custom); Add(Rgb);
+		UMaterialExpressionComponentMask* RgbMask = NewObject<UMaterialExpressionComponentMask>(Mat);
+		RgbMask->R = RgbMask->G = RgbMask->B = true; RgbMask->A = false; RgbMask->Input.Connect(0, Custom); Add(RgbMask);
+		// A ShaderMaterial writes display values (WebGL puts them on screen unconverted): decode them to linear.
+		UMaterialExpression* Rgb = RgbMask;
+		if (Flag(S, TEXT("encoded")))
+		{
+			UMaterialExpressionPower* Decode = NewObject<UMaterialExpressionPower>(Mat);
+			Decode->Base.Connect(0, RgbMask); Decode->ConstExponent = 2.2f; Add(Decode);
+			Rgb = Decode;
+		}
 		UMaterialExpressionComponentMask* Alpha = NewObject<UMaterialExpressionComponentMask>(Mat);
 		Alpha->A = true; Alpha->R = Alpha->G = Alpha->B = false; Alpha->Input.Connect(0, Custom); Add(Alpha);
 		UMaterialEditorOnlyData* Ed = Mat->GetEditorOnlyData();

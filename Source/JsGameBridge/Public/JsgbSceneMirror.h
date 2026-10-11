@@ -229,6 +229,7 @@ private:
 	UStaticMesh* FirstBuild(int32 GeometryId, struct FJsgbGeometry* G);
 	UStaticMesh* SpriteQuad();
 	UMaterialInterface* ParentFor(int32 Variant);
+	UMaterialInterface* OneSidedParent(int32 Variant);
 	/** An asset by path: from memory when it's there, otherwise loaded now. A load waits for every background
 	 *  load in flight, so the bridge's own assets load once at start and game assets load in the background. */
 	template <typename T> T* Resolve(const FString& Path)
@@ -258,6 +259,8 @@ private:
 	UPROPERTY() TMap<int32, FJsgbEntity> Entities;
 	UPROPERTY() TMap<int32, FJsgbLight> Lights;
 	UPROPERTY() TArray<TObjectPtr<UMaterialInterface>> Parents;
+	/** One-sided copies of the two-sided parents (transparent, masked and unlit), for FrontSide and BackSide materials. */
+	UPROPERTY() TArray<TObjectPtr<UMaterialInterface>> OneSidedParents;
 	UPROPERTY() TObjectPtr<UMaterialInterface> Fallback;
 	UPROPERTY() TObjectPtr<UTexture> DefaultTexture2D;
 	UPROPERTY() TObjectPtr<UTexture> DefaultCube;

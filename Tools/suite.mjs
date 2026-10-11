@@ -29,8 +29,8 @@ const games = has('--only-cases') ? [] : (flag('--games') ?? 'orbit-demo,hardbur
 const entries = [
   // A case with its own steps (input) has Tests/scripts/suite-<case>.txt; the rest share Tests/scripts/suite.txt.
   ...cases.map(name => ({id: `case-${name}`, label: name, kind: 'case', game: 'suite', search: `?case=${name}`,
-    script: fs.existsSync(path.join(bridge, `Tests/scripts/suite-${name}.txt`)) ? `Tests/scripts/suite-${name}.txt` : 'Tests/scripts/suite.txt', ssimMin: 0.9})),
-  ...games.map(game => ({id: `game-${game}`, label: game, kind: 'game', game, script: `Tests/scripts/${game}.txt`, ssimMin: 0.7})),
+    script: fs.existsSync(path.join(bridge, `Tests/scripts/suite-${name}.txt`)) ? `Tests/scripts/suite-${name}.txt` : 'Tests/scripts/suite.txt', ssimMin: 0.9, changedMax: 2.5})),
+  ...games.map(game => ({id: `game-${game}`, label: game, kind: 'game', game, script: `Tests/scripts/${game}.txt`, ssimMin: 0.7, changedMax: 20})),
 ];
 
 function ffmpegMetric(a, b, filter, rx) {
@@ -57,11 +57,16 @@ function evaluate(entry) {
     if (p !== null) psnr.push(p);
   }
   const mean = l => l.length ? l.reduce((x, y) => x + y, 0) / l.length : null;
+  // Share of pixels that clearly differ (Tools/pixel-diff.py): SSIM over a whole frame hardly moves when one
+  // object is wrong, this does.
+  const pairArgs = sample.flatMap(f => [path.join(pairsDir, f), path.join(pairsDir, f.replace('web_', 'ue_'))]).filter(f => fs.existsSync(f));
+  const changed = pairArgs.length ? spawnSync('python', [path.join(bridge, 'Tools/pixel-diff.py'), ...pairArgs], {encoding: 'utf8'}).stdout.trim().split(/\s+/).map(Number).filter(Number.isFinite) : [];
   const webErrors = report?.web?.errors?.length ?? null;
   const unrealErrors = report?.unreal?.status?.jsErrors ?? null;
   const row = {
     id: entry.id, label: entry.label, kind: entry.kind,
     ssim: mean(ssim) === null ? null : +mean(ssim).toFixed(3), ssimLow: ssim.length ? +Math.min(...ssim).toFixed(3) : null, psnr: mean(psnr) === null ? null : +mean(psnr).toFixed(1),
+    changedPct: mean(changed) === null ? null : +mean(changed).toFixed(2), changedWorstPct: changed.length ? +Math.max(...changed).toFixed(2) : null,
     pairsScored: ssim.length, coverage: report?.objectCheck?.pass ?? false, coverageFailures: report?.objectCheck?.failures ?? null,
     coverageNote: report?.objectCheck?.first?.[0]?.problems?.[0] ?? '',
     webErrors, unrealErrors, firstWebError: report?.web?.errors?.[0] ?? '',
@@ -73,6 +78,7 @@ function evaluate(entry) {
   if (!report) reasons.push('no run');
   if (row.ssim === null) reasons.push('no frames to compare');
   else if (row.ssim < entry.ssimMin) reasons.push(`picture SSIM ${row.ssim} < ${entry.ssimMin}`);
+  if (row.changedPct !== null && row.changedPct > entry.changedMax) reasons.push(`${row.changedPct}% of pixels differ (limit ${entry.changedMax}%)`);
   if (!row.coverage) reasons.push(`coverage: ${row.coverageNote || 'failed'}`);
   if (webErrors) reasons.push(`${webErrors} browser errors`);
   if (unrealErrors) reasons.push(`${unrealErrors} Unreal JavaScript errors`);
@@ -110,11 +116,12 @@ const md = [
   '# Conformance results', '',
   `Bridge commit ${commit}, ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC. ${passed} of ${rows.length} passed.`, '',
   'Each run plays the same script in Chrome and in Unreal from the same commit, with a fixed game clock, and compares',
-  'the paired frames. A case passes when the pictures match (SSIM at least 0.9 for test cases, 0.7 for games), every',
+  'the paired frames. A case passes when the pictures match (SSIM at least 0.9 and at most 2.5% of pixels clearly different for test',
+  'cases; SSIM 0.7 and 20% for games), every',
   'Unreal frame draws at least what the browser drew, and neither side reports a JavaScript error.', '',
-  '| Run | Result | SSIM (mean, lowest) | PSNR dB | Coverage | Errors (browser, Unreal) | JS ms/frame in Unreal | Unreal memory MB | Chrome JS heap MB | Notes |',
-  '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
-  ...rows.map(r => `| ${r.label} | ${r.pass ? 'pass' : 'FAIL'} | ${cell(r.ssim)}, ${cell(r.ssimLow)} | ${cell(r.psnr)} | ${r.coverage ? 'ok' : `${cell(r.coverageFailures)} frames`} | ${cell(r.webErrors)}, ${cell(r.unrealErrors)} | ${cell(r.jsMs)} | ${cell(r.memoryMB)} | ${cell(r.jsHeapMB)} | ${r.reasons.join('; ').replace(/\|/g, '/')} |`),
+  '| Run | Result | SSIM (mean, lowest) | Pixels differing % (mean, worst) | PSNR dB | Coverage | Errors (browser, Unreal) | JS ms/frame in Unreal | Unreal memory MB | Chrome JS heap MB | Notes |',
+  '| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
+  ...rows.map(r => `| ${r.label} | ${r.pass ? 'pass' : 'FAIL'} | ${cell(r.ssim)}, ${cell(r.ssimLow)} | ${cell(r.changedPct)}, ${cell(r.changedWorstPct)} | ${cell(r.psnr)} | ${r.coverage ? 'ok' : `${cell(r.coverageFailures)} frames`} | ${cell(r.webErrors)}, ${cell(r.unrealErrors)} | ${cell(r.jsMs)} | ${cell(r.memoryMB)} | ${cell(r.jsHeapMB)} | ${r.reasons.join('; ').replace(/\|/g, '/')} |`),
   '', '## Side by side (browser left, Unreal right)', '',
   ...rows.filter(r => r.thumb).flatMap(r => [`### ${r.label}`, '', `![${r.label}](${r.thumb})`, '']),
 ].join('\n');
@@ -134,9 +141,9 @@ p.muted { color: var(--muted); }
 </style></head><body><main>
 <h1>Conformance results</h1>
 <p>Bridge commit ${esc(commit)}, ${esc(new Date().toISOString().slice(0, 16).replace('T', ' '))} UTC. <strong>${passed} of ${rows.length} passed.</strong></p>
-<p class="muted">Each run plays the same script in Chrome and in Unreal from the same commit, with a fixed game clock, and compares the paired frames. A case passes when the pictures match (SSIM at least 0.9 for test cases, 0.7 for games), every Unreal frame draws at least what the browser drew, and neither side reports a JavaScript error.</p>
-<div class="wrap"><table><thead><tr><th>Run</th><th>Result</th><th>SSIM</th><th>PSNR dB</th><th>Coverage</th><th>Errors</th><th>JS ms/frame</th><th>Memory MB</th><th>Notes</th></tr></thead><tbody>
-${rows.map(r => `<tr><td>${esc(r.label)}</td><td class="${r.pass ? 'pass' : 'fail'}">${r.pass ? 'pass' : 'fail'}</td><td>${esc(r.ssim)} (low ${esc(r.ssimLow)})</td><td>${esc(r.psnr)}</td><td>${r.coverage ? 'ok' : esc(r.coverageFailures) + ' frames'}</td><td>${esc(r.webErrors)}, ${esc(r.unrealErrors)}</td><td>${esc(r.jsMs)}</td><td>${esc(r.memoryMB)}</td><td>${esc(r.reasons.join('; '))}</td></tr>`).join('\n')}
+<p class="muted">Each run plays the same script in Chrome and in Unreal from the same commit, with a fixed game clock, and compares the paired frames. A case passes when the pictures match (SSIM at least 0.9 and at most 2.5% of pixels clearly different for test cases; SSIM 0.7 and 20% for games), every Unreal frame draws at least what the browser drew, and neither side reports a JavaScript error.</p>
+<div class="wrap"><table><thead><tr><th>Run</th><th>Result</th><th>SSIM</th><th>Pixels differing %</th><th>PSNR dB</th><th>Coverage</th><th>Errors</th><th>JS ms/frame</th><th>Memory MB</th><th>Notes</th></tr></thead><tbody>
+${rows.map(r => `<tr><td>${esc(r.label)}</td><td class="${r.pass ? 'pass' : 'fail'}">${r.pass ? 'pass' : 'fail'}</td><td>${esc(r.ssim)} (low ${esc(r.ssimLow)})</td><td>${esc(r.changedPct)} (worst ${esc(r.changedWorstPct)})</td><td>${esc(r.psnr)}</td><td>${r.coverage ? 'ok' : esc(r.coverageFailures) + ' frames'}</td><td>${esc(r.webErrors)}, ${esc(r.unrealErrors)}</td><td>${esc(r.jsMs)}</td><td>${esc(r.memoryMB)}</td><td>${esc(r.reasons.join('; '))}</td></tr>`).join('\n')}
 </tbody></table></div>
 <h2>Side by side (browser left, Unreal right)</h2>
 ${rows.filter(r => r.thumb).map(r => `<h3>${esc(r.label)}</h3><img src="${esc(r.thumb)}" alt="${esc(r.label)}: browser and Unreal side by side" loading="lazy">`).join('\n')}

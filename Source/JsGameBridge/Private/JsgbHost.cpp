@@ -1042,9 +1042,12 @@ void AJsgbHost::RunScript()
 		if (!bFound)
 		{
 			// Asked without waiting, so a busy JavaScript thread never holds up Unreal's frame.
-			if (!WaitQuery.IsValid()) { WaitQuery = Ask(FString::Printf(TEXT("__jsgb.find(%s)"), *ScriptArg(WaitFor))); }
+			// The answer carries the game time the JavaScript thread saw the element (or saw it go).
+			if (!WaitQuery.IsValid()) { WaitQuery = Ask(FString::Printf(TEXT("__jsgb.find(%s)!==%s?__jsgbHost.now():-1"), *ScriptArg(WaitFor), bWaitGone ? TEXT("true") : TEXT("false"))); }
 			if (!WaitQuery->bDone && Now - WaitStart < 120.0) { return; }
-			bFound = WaitQuery->bDone && (WaitQuery->Text == TEXT("true")) != bWaitGone;
+			const double SeenMs = WaitQuery->bDone ? FCString::Atod(*WaitQuery->Text) : -1.0;
+			bFound = WaitQuery->bDone && WaitQuery->Text.IsNumeric() && SeenMs >= 0;
+			if (bFound) { WaitSeen = FMath::Clamp(SeenMs / 1000.0, WaitStart, Now); }
 			WaitQuery.Reset();
 		}
 		// The game's DOM changed; the wait ends when the overlay shows that change on screen.
@@ -1053,9 +1056,14 @@ void AJsgbHost::RunScript()
 		if ((!bFound || !bShown) && Now - WaitStart < 120.0) { return; }
 		WaitUIVersion = -1;
 		Bridge->Log(bFound ? TEXT("log") : TEXT("error"), FString::Printf(TEXT("script %s %s: %s after %.1fs"), bWaitGone ? TEXT("gone") : TEXT("wait"), *WaitFor, bFound ? TEXT("done") : TEXT("timed out"), Now - WaitStart));
-		ReadySeconds += Now - WaitStart;
+		// The wait ends when the game reached that state, as in a browser. The time Unreal took to learn
+		// of it (the question's round trip, the overlay update) belongs to the next step, so the game's own
+		// clock and the script's stay together.
+		const double End = bFound && WaitSeen >= 0 ? WaitSeen : Now;
+		WaitSeen = -1;
+		ReadySeconds += End - WaitStart;
 		WaitFor.Reset();
-		if (!CaptureDir.IsEmpty()) { CaptureTimes += FString::Printf(TEXT("wait-end %.3f\n"), Now - CaptureStart); }
+		if (!CaptureDir.IsEmpty()) { CaptureTimes += FString::Printf(TEXT("wait-end %.3f\n"), End - CaptureStart); }
 	}
 	const double Rel = GameSeconds() - ReadySeconds;
 	while (ScriptCursor < Script.Num() && (Script[ScriptCursor].bAbsolute ? Script[ScriptCursor].Frame <= Frame : Script[ScriptCursor].Time <= Rel))
