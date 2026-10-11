@@ -173,6 +173,10 @@ private:
 	TArray<float> FrameTimesMs;
 	/** The last tick's js, mirror, build queue, builds, build stall and UI push times, for the slow-frame log. */
 	TArray<double> LastTick;
+	/** Unreal's own per-frame times (as stat unit shows them), summed since the last frame log: game thread, render thread,
+	 *  RHI thread and GPU, in ms. */
+	double EngineMs[4] = {0, 0, 0, 0};
+	int32 EngineFrames = 0;
 	// CSS hot swap timing: from the request to the overlay painting the new stylesheet.
 	int32 CssVersion = 0;
 	double CssStart = -1, CssBuildMs = -1, LastCssMs = -1;

@@ -23,6 +23,8 @@ const remoteDir = 'C:\\JsgbPackage\\JsGameBridge';
 const log = t => console.log(`[package ${new Date().toTimeString().slice(0, 8)}] ${t}`);
 
 // Each game: the launcher name, and the host flags it starts with. Three.js games run their JavaScript on its own thread.
+// Games start with DLSS off: on the RTX 5080 laptop the driver keeps the GPU at 330-550 MHz (power state P5) most of the
+// time while DLSS runs, and about one frame in ten then takes 17 to 40 ms. F6 turns DLSS on.
 const GAMES = {
   hardburn: {name: 'Hard Burn', flags: ['-JsgbJsThread']},
   unlit: {name: 'Unlit Worlds', flags: ['-JsgbJsThread']},
@@ -80,7 +82,7 @@ for (const id of games) {
     '@echo off',
     `rem ${name} in Unreal Engine through JsGameBridge. F6 switches the DLSS mode, F7 Frame Generation (off, 2x, 3x, 4x).`,
     'cd /d "%~dp0"',
-    `start "" "%~dp0host\\Windows\\JsgbHost.exe" "-JsgbGame=%~dp0games\\${id}" -windowed -ResX=1920 -ResY=1080 -JsgbHud -JsgbDlssKeys -JsgbDLSS=dlaa ${flags.join(' ')} -log=jsgb-${id}.log`,
+    `start "" "%~dp0host\\Windows\\JsgbHost.exe" "-JsgbGame=%~dp0games\\${id}" -windowed -ResX=1920 -ResY=1080 -JsgbHud -JsgbDlssKeys ${flags.join(' ')} -log=jsgb-${id}.log`,
     ''].join('\r\n'));
   log(`${id}: ${pub.sourceCommit.slice(0, 8)}${pub.sourceDirty ? ' (with uncommitted changes)' : ''}`);
 }

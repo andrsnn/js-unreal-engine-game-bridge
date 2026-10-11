@@ -56,6 +56,7 @@
 #include "Misc/Base64.h"
 #include "FrameGrabber.h"
 #include "Engine/GameEngine.h"
+#include "RenderTimer.h"
 THIRD_PARTY_INCLUDES_START
 #include <openssl/sha.h>
 THIRD_PARTY_INCLUDES_END
@@ -1292,11 +1293,18 @@ void AJsgbHost::Tick(float DeltaSeconds)
 
 	if (ReadyFrame < 0 && Bridge->bReady) { ReadyFrame = Frame; ReadySeconds = GameSeconds(); CaptureStart = ReadySeconds; Bridge->Log(TEXT("log"), FString::Printf(TEXT("game ready at host frame %lld"), Frame)); }
 	RunScript();
-	// A frame much longer than 60 FPS allows gets a breakdown of the tick before it.
-	if (ReadyFrame >= 0 && DeltaSeconds > 0.034f && LastTick.Num() == 6)
+	// Unreal's own times for the last finished frame: game thread, render thread, RHI thread and GPU.
+	const double Engine[4] = {FPlatformTime::ToMilliseconds(GGameThreadTime), FPlatformTime::ToMilliseconds(GRenderThreadTime),
+		FPlatformTime::ToMilliseconds(GRHIThreadTime), FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles())};
+	for (int32 I = 0; I < 4; ++I) { EngineMs[I] += Engine[I]; }
+	++EngineFrames;
+	// A frame much longer than 60 FPS allows gets a breakdown of the tick before it, and the engine's times.
+	// -JsgbSlowFrameMs=<ms> lowers the threshold, to see what the frames just over 16.7 ms are made of.
+	static const float SlowFrameMs = [] { float Ms = 34.f; FParse::Value(FCommandLine::Get(), TEXT("JsgbSlowFrameMs="), Ms); return Ms; }();
+	if (ReadyFrame >= 0 && DeltaSeconds * 1000.f > SlowFrameMs && LastTick.Num() == 6)
 	{
-		Bridge->Log(TEXT("log"), FString::Printf(TEXT("slow frame %lld: %.0f ms; previous tick: js %.1f ms (mirror %.1f, build queue %.1f in %d builds, stall %.1f), ui %.1f ms; the rest was outside the bridge"),
-			Frame, DeltaSeconds * 1000.f, LastTick[0], LastTick[1], LastTick[2], static_cast<int32>(LastTick[3]), LastTick[4], LastTick[5]));
+		Bridge->Log(TEXT("log"), FString::Printf(TEXT("slow frame %lld: %.0f ms; previous tick: js %.1f ms (mirror %.1f, build queue %.1f in %d builds, stall %.1f), ui %.1f ms; engine: game thread %.1f, render thread %.1f, RHI thread %.1f, GPU %.1f ms"),
+			Frame, DeltaSeconds * 1000.f, LastTick[0], LastTick[1], LastTick[2], static_cast<int32>(LastTick[3]), LastTick[4], LastTick[5], Engine[0], Engine[1], Engine[2], Engine[3]));
 	}
 	const double MirrorBefore = Bridge->MirrorMs, QueueBefore = Mirror->QueueMs, StallBefore = Mirror->StallMs;
 	const int32 BuildsBefore = Mirror->QueueBuilds;
@@ -1337,6 +1345,11 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		Bridge->Log(TEXT("log"), FString::Printf(TEXT("host frame %lld: js+mirror %.2f ms (game js %.2f, mirror %.2f, of which lines %.2f, materials %.2f in %d updates, textures %.2f in %d updates; build queue %.2f in %d builds, meshes %.2f, instanced %.2f, sprites %.2f, points %.2f, line records %.2f), frame %.2f ms, fps %.1f, gpu %.2f ms, drawn %d, lines %d, pending builds %d, voices %d, js errors %d"),
 			Frame, JsMs / N, (JsMs - Bridge->MirrorMs) / N, Bridge->MirrorMs / N, Mirror->LinesMs / N, Bridge->MaterialMs / N, Bridge->MaterialCalls, Bridge->TextureMs / N, Bridge->TextureCalls, Mirror->QueueMs / N, Mirror->QueueBuilds, Mirror->RecordMs[1] / N, Mirror->RecordMs[2] / N, Mirror->RecordMs[4] / N, Mirror->RecordMs[5] / N, Mirror->RecordMs[6] / N, DeltaSeconds * 1000.f, HudFps, FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles()),
 			Mirror->DrawnEntities, Mirror->LineSegmentsDrawn, Mirror->PendingBuilds(), Audio->ActiveVoices(), Bridge->ErrorCount));
+		const double E = FMath::Max(1, EngineFrames);
+		Bridge->Log(TEXT("log"), FString::Printf(TEXT("engine average over %d frames: game thread %.2f ms, render thread %.2f ms, RHI thread %.2f ms, GPU %.2f ms"),
+			EngineFrames, EngineMs[0] / E, EngineMs[1] / E, EngineMs[2] / E, EngineMs[3] / E));
+		for (double& M : EngineMs) { M = 0; }
+		EngineFrames = 0;
 		if (JsThread)
 		{
 			double Avg = 0, Max = 0; int32 JsFrames = 0;

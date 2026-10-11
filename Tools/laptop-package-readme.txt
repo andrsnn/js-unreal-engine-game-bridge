@@ -8,7 +8,9 @@ To play, use the desktop shortcuts, or double-click "Play Hard Burn.cmd", "Play 
 "Play Saltblade.cmd" in this folder.
 
 Keys
-- F6 switches the DLSS mode: off, DLAA, Quality, Balanced, Performance, then DLSS 5. Each game starts in DLAA.
+- F6 switches the DLSS mode: off, DLAA, Quality, Balanced, Performance, then DLSS 5. Each game starts with DLSS
+  off. On the RTX 5080 laptop the graphics card drops to a low clock speed while DLSS runs, and about one frame in
+  ten then takes 17 to 40 ms. With DLSS off the games run at 260 to 380 FPS on that laptop.
 - F7 switches Frame Generation: off, 2x, then 3x and 4x on RTX 50 series cards (Multi Frame Generation).
 - The box in the top right shows the mode, the frame rate and the GPU time per frame.
 
