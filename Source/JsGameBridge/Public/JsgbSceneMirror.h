@@ -91,6 +91,9 @@ struct FJsgbMaterial
 	bool bNoFog = false;
 	/** three.js side: 0 front, 1 back, 2 double. Back-side surfaces draw with reversed culling. */
 	int32 Side = 0;
+	/** A fat line's width (Line2): in pixels, or in world units; 0 for an ordinary one-pixel line. */
+	float FatWidth = 0.f;
+	bool bFatWorld = false;
 };
 
 USTRUCT()
@@ -122,6 +125,9 @@ struct FJsgbEntity
 	/** A line object's segments in world space, drawn through the mirror's one shared line component. */
 	TArray<FBatchedLine> Lines;
 	FVector LineCenter = FVector::ZeroVector;
+	/** The line's width: pixels on screen, or world units when bLineWorld. */
+	float LineWidth = 1.f;
+	bool bLineWorld = false;
 	float Model[16] = {0};
 	/** Interpolation (JavaScript on its own thread): drawn from From toward To between two snapshots. */
 	FTransform From, To;

@@ -906,6 +906,8 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 	M.Color = Color;
 	M.Opacity = Num(J, TEXT("opacity"), 1);
 	M.Size = Num(J, TEXT("size"), 1);
+	M.FatWidth = Num(J, TEXT("fatWidth"), 0);
+	M.bFatWorld = Flag(J, TEXT("fatWorld"));
 	M.bSizeAttenuation = !J->HasField(TEXT("sizeAttenuation")) || Flag(J, TEXT("sizeAttenuation"));
 	M.bVertexColors = Flag(J, TEXT("vertexColors"));
 	Mid->SetVectorParameterValue(TEXT("Color"), Color);
@@ -1481,6 +1483,8 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			const FJsgbMaterial* MatInfo = Materials.Find(Mat);
 			const FLinearColor Base = MatInfo ? MatInfo->Color : FLinearColor::White;
 			const float Alpha = MatInfo ? MatInfo->Opacity : 1.f;
+			Ent.LineWidth = MatInfo && MatInfo->FatWidth > 0 ? MatInfo->FatWidth : 1.f;
+			Ent.bLineWorld = MatInfo && MatInfo->FatWidth > 0 && MatInfo->bFatWorld;
 			// Redraw only when the geometry, material or transform changed.
 			const int32 Keys[3] = {Geo, G->BuiltRevision, Mat};
 			uint32 Sig = FCrc::MemCrc32(M, 16 * sizeof(float), FCrc::MemCrc32(Keys, sizeof(Keys), MatInfo ? GetTypeHash(MatInfo->Json) : 0u));
@@ -1498,8 +1502,9 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 					const float AP[3] = {A3.X, A3.Y, A3.Z}, BP[3] = {B3.X, B3.Y, B3.Z};
 					const FVector A = W.TransformPosition(FVector(AP[0] * Cm, AP[2] * Cm, AP[1] * Cm));
 					const FVector B = W.TransformPosition(FVector(BP[0] * Cm, BP[2] * Cm, BP[1] * Cm));
-					FLinearColor C = Base * (MatInfo && MatInfo->bVertexColors ? G->LineColors[I] : FLinearColor::White);
-					C.A = Alpha;
+					// Unreal's batched lines put their colour on screen as it is, so it goes in sRGB-encoded.
+					const FColor Encoded = (Base * (MatInfo && MatInfo->bVertexColors ? G->LineColors[I] : FLinearColor::White)).ToFColor(true);
+					const FLinearColor C(Encoded.R / 255.f, Encoded.G / 255.f, Encoded.B / 255.f, Alpha);
 					Batch.Emplace(A, B, C, 0.f, 0.f, SDPG_World);
 				}
 			}
@@ -1598,7 +1603,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 		const bool bOrtho = D[20] > 0.5f;
 		const double PixelPerCm = bOrtho ? 2.0 * D[21] * Cm / FMath::Max(1, ViewportSize.Y) : 2.0 * TanHalf / FMath::Max(1, ViewportSize.Y);
 		FString Order = FString::Printf(TEXT("%.1f,%.1f,%.1f,%d|"), CameraLocation.X, CameraLocation.Y, CameraLocation.Z, ViewportSize.Y);
-		for (const TPair<double, int32>& P : FrameLines) { const FJsgbEntity* LineEnt = Entities.Find(P.Value); Order += FString::Printf(TEXT("%d:%u,"), P.Value, LineEnt ? LineEnt->LineSignature : 0u); }
+		for (const TPair<double, int32>& P : FrameLines) { const FJsgbEntity* LineEnt = Entities.Find(P.Value); Order += FString::Printf(TEXT("%d:%u:%g,"), P.Value, LineEnt ? LineEnt->LineSignature : 0u, LineEnt ? LineEnt->LineWidth : 1.f); }
 		if (Order != SharedLinesOrder)
 		{
 			SharedLinesOrder = Order;
@@ -1620,7 +1625,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 				{
 					L.Start += (CameraLocation - L.Start) * Step;
 					L.End += (CameraLocation - L.End) * Step;
-					L.Thickness = bOrtho ? PixelPerCm : PixelPerCm * FVector::Dist(CameraLocation, (L.Start + L.End) * 0.5);
+					L.Thickness = LineEnt->bLineWorld ? LineEnt->LineWidth * Cm : LineEnt->LineWidth * (bOrtho ? PixelPerCm : PixelPerCm * FVector::Dist(CameraLocation, (L.Start + L.End) * 0.5));
 					All.Add(L);
 				}
 			}

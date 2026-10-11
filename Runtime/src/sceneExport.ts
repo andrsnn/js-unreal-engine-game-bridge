@@ -398,6 +398,8 @@ function syncMaterial(mat: THREE.Material): number {
     specular: mat.type === 'MeshLambertMaterial' || mat.type === 'MeshToonMaterial' ? 0 : mat.type === 'MeshPhongMaterial' ? 0.3 : 0.5,
     envIntensity: m.envMapIntensity ?? 1, alphaHash: !!m.alphaHash,
     size: m.size, sizeAttenuation: m.sizeAttenuation, linewidth: (m as unknown as THREE.LineBasicMaterial).linewidth,
+    // A Line2's width (WebGL draws every other line one pixel wide): in pixels, or in world units.
+    fatWidth: mat.userData?.jsgbFatWidth, fatWorld: mat.userData?.jsgbFatWorld,
     clearcoat: m.clearcoat ?? 0, transmission: m.transmission ?? 0, ior: m.ior ?? 1.5,
     tags: Object.keys(mat.userData ?? {}).filter(k => typeof mat.userData[k] !== 'object').slice(0, 8),
   };
@@ -553,10 +555,101 @@ function emitMesh(o: THREE.Mesh) {
 }
 
 function emitPrimitive(o: THREE.Points | THREE.Line, kind: number, primitive: number) {
-  const geo = o.geometry; const mat = (Array.isArray(o.material) ? o.material[0] : o.material) as THREE.Material;
+  let geo = o.geometry; const mat = (Array.isArray(o.material) ? o.material[0] : o.material) as THREE.Material;
   if (!geo?.attributes?.position || !mat?.visible) return;
+  // Dashed lines go to Unreal as one segment per dash.
+  const dashed = mat as THREE.LineDashedMaterial;
+  if (kind === LINES && dashed.isLineDashedMaterial) {
+    const d = dashedGeometry(geo, primitive, geo.attributes.lineDistance as THREE.BufferAttribute | undefined, dashed.dashSize, dashed.gapSize, dashed.scale);
+    if (!d) return;
+    if (d !== geo) { geo = d; primitive = 2; }
+  }
   const gid = syncGeometry(geo, primitive); if (!gid) return;
   push(kind); push(idOf(o)); push(gid); push(syncMaterial(mat)); push(flagsOf(o)); pushMatrix(o.matrixWorld);
+}
+
+// Line2 and LineSegments2 (three's fat lines) are meshes of one quad per segment, placed by instanceStart and
+// instanceEnd. Unreal draws them as ordinary segments with the LineMaterial's width.
+const fatGeometry = new WeakMap<THREE.BufferGeometry, {sig: string; geometry: THREE.BufferGeometry}>();
+const fatMaterial = new WeakMap<THREE.Material, THREE.LineBasicMaterial>();
+function emitFatLine(o: THREE.Mesh) {
+  const src = o.geometry, lm = o.material as THREE.Material & Record<string, any>;
+  const a = src?.attributes as unknown as Record<string, THREE.InterleavedBufferAttribute | undefined>;
+  const start = a?.instanceStart, end = a?.instanceEnd;
+  if (!start || !end || !lm?.visible) return;
+  const cs = a.instanceColorStart, ce = a.instanceColorEnd, ds = a.instanceDistanceStart, de = a.instanceDistanceEnd;
+  const instanced = (src as THREE.InstancedBufferGeometry).instanceCount;
+  const count = Math.min(start.count, Number.isFinite(instanced) ? instanced : start.count);
+  const sig = [start.data.version, cs?.data.version ?? -1, count, lm.dashed ? [ds?.data.version, lm.dashSize, lm.gapSize, lm.dashScale].join(',') : ''].join('|');
+  let cached = fatGeometry.get(src);
+  if (!cached || cached.sig !== sig) {
+    const pos: number[] = [], col: number[] = [];
+    for (let i = 0; i < count; i++) {
+      pos.push(start.getX(i), start.getY(i), start.getZ(i), end.getX(i), end.getY(i), end.getZ(i));
+      if (cs && ce) col.push(cs.getX(i), cs.getY(i), cs.getZ(i), ce.getX(i), ce.getY(i), ce.getZ(i));
+    }
+    let g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    if (col.length) g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    if (lm.dashed && ds && de) {
+      const dist: number[] = [];
+      for (let i = 0; i < count; i++) dist.push(ds.getX(i), de.getX(i));
+      g.setAttribute('lineDistance', new THREE.Float32BufferAttribute(dist, 1));
+      g = dashedGeometry(g, 2, g.attributes.lineDistance as THREE.BufferAttribute, lm.dashSize ?? 1, lm.gapSize ?? 1, lm.dashScale ?? 1) ?? g;
+    }
+    cached = {sig, geometry: g};
+    fatGeometry.set(src, cached);
+  }
+  let m = fatMaterial.get(lm);
+  if (!m) { m = new THREE.LineBasicMaterial(); fatMaterial.set(lm, m); }
+  if (lm.color) m.color.copy(lm.color);
+  m.opacity = lm.opacity; m.transparent = lm.transparent; m.vertexColors = !!lm.vertexColors && !!cs;
+  m.depthTest = lm.depthTest; m.depthWrite = lm.depthWrite; m.blending = lm.blending; m.toneMapped = lm.toneMapped;
+  m.userData.jsgbFatWidth = lm.linewidth ?? 1; m.userData.jsgbFatWorld = !!lm.worldUnits;
+  const gid = syncGeometry(cached.geometry, 2); if (!gid) return;
+  push(LINES); push(idOf(o)); push(gid); push(syncMaterial(m)); push(flagsOf(o)); pushMatrix(o.matrixWorld);
+}
+
+// A dashed line (LineDashedMaterial, or a dashed LineMaterial) as one segment per dash. three keeps the part of
+// each segment where (scale x lineDistance) mod (dash + gap) < dash. Without lineDistance (the game never called
+// computeLineDistances) three's shader reads 0, so the line stays solid.
+const dashCache = new WeakMap<THREE.BufferGeometry, {sig: string; geometry: THREE.BufferGeometry | null}>();
+function dashedGeometry(geo: THREE.BufferGeometry, primitive: number, distance: THREE.BufferAttribute | undefined, dash: number, gap: number, scale: number): THREE.BufferGeometry | null {
+  if (!distance || dash <= 0) return geo;
+  const p = geo.attributes.position as THREE.BufferAttribute, c = geo.attributes.color as THREE.BufferAttribute | undefined;
+  const sig = [p.version, c?.version ?? -1, distance.version, primitive, dash, gap, scale, geo.drawRange.start, geo.drawRange.count].join('|');
+  const cached = dashCache.get(geo);
+  if (cached && cached.sig === sig) return cached.geometry;
+  // Segments as vertex pairs: LineSegments pair them up, Line and LineLoop join each vertex to the next.
+  const idx = geo.index, first = geo.drawRange.start;
+  const n = Math.min(idx ? idx.count : p.count, first + geo.drawRange.count) - first;
+  const at = (k: number) => idx ? idx.getX(first + k) : first + k;
+  const pairs: [number, number][] = [];
+  if (primitive === 2) for (let k = 0; k + 1 < n; k += 2) pairs.push([at(k), at(k + 1)]);
+  else { for (let k = 0; k + 1 < n; k++) pairs.push([at(k), at(k + 1)]); if (primitive === 4 && n > 2) pairs.push([at(n - 1), at(0)]); }
+  const period = dash + gap, pos: number[] = [], col: number[] = [];
+  const va = new THREE.Vector3(), vb = new THREE.Vector3();
+  for (const [ia, ib] of pairs) {
+    const da = distance.getX(ia) * scale, db = distance.getX(ib) * scale;
+    if (!(db > da)) continue;
+    va.fromBufferAttribute(p, ia); vb.fromBufferAttribute(p, ib);
+    for (let s = Math.floor(da / period) * period; s < db; s += period) {
+      const t0 = (Math.max(s, da) - da) / (db - da), t1 = (Math.min(s + dash, db) - da) / (db - da);
+      if (t1 <= t0) continue;
+      for (const t of [t0, t1]) {
+        pos.push(va.x + (vb.x - va.x) * t, va.y + (vb.y - va.y) * t, va.z + (vb.z - va.z) * t);
+        if (c) for (let j = 0; j < 3; j++) col.push(c.getComponent(ia, j) + (c.getComponent(ib, j) - c.getComponent(ia, j)) * t);
+      }
+    }
+  }
+  let g: THREE.BufferGeometry | null = null;
+  if (pos.length) {
+    g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    if (col.length) g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+  }
+  dashCache.set(geo, {sig, geometry: g});
+  return g;
 }
 
 function emitLight(l: THREE.Light) {
@@ -617,7 +710,8 @@ function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
       // Untagged models are replaced whole; tagged ones keep their untagged attachments.
       if (!hasContentTag(o, swap.key)) return;
       childSkip = swap.key;
-    } else if ((o as THREE.Mesh).isMesh) emitMesh(o as THREE.Mesh);
+    } else if ((o as unknown as {isLineSegments2?: boolean}).isLineSegments2) emitFatLine(o as THREE.Mesh);
+    else if ((o as THREE.Mesh).isMesh) emitMesh(o as THREE.Mesh);
     else if ((o as THREE.Points).isPoints) emitPrimitive(o as THREE.Points, POINTS, 1);
     else if ((o as THREE.Line).isLine) emitPrimitive(o as THREE.Line, LINES, (o as THREE.LineSegments).isLineSegments ? 2 : (o as THREE.LineLoop).isLineLoop ? 4 : 3);
     else if ((o as THREE.Light).isLight) emitLight(o as THREE.Light);

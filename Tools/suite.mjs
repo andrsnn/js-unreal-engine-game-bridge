@@ -6,7 +6,7 @@
 //   - errors: JavaScript errors in the browser and in Unreal
 //   - cost: the game's JavaScript time per frame and memory in Unreal, and the JavaScript heap in Chrome
 // It writes Docs/conformance/README.md, index.html, results.json and thumbnails, and exits with 1 if anything fails.
-//   node Tools/suite.mjs [--cases a,b] [--games fixture,orbit-demo] [--only-cases] [--report-only]
+//   node Tools/suite.mjs [--cases a,b] [--games fixture,orbit-demo] [--only-cases] [--only-games] [--report-only]
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
@@ -23,7 +23,7 @@ const log = t => console.log(`[suite ${new Date().toISOString().slice(11, 19)}] 
 // The cases: Tests/suite/src/cases/index.js lists them by name.
 const index = fs.readFileSync(path.join(bridge, 'Tests/suite/src/cases/index.js'), 'utf8');
 const allCases = (/export const cases = \{([^}]*)\}/.exec(index)?.[1] ?? '').split(',').map(s => s.trim()).filter(Boolean);
-const cases = flag('--cases') ? flag('--cases').split(',') : allCases;
+const cases = has('--only-games') ? [] : flag('--cases') ? flag('--cases').split(',') : allCases;
 // Real games, run unchanged with their own conformance scripts (Tests/scripts/<game>.txt).
 const games = has('--only-cases') ? [] : (flag('--games') ?? 'orbit-demo,hardburn-demo,unlit').split(',').filter(Boolean);
 const entries = [
