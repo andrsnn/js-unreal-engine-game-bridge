@@ -645,6 +645,1766 @@
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
    }
+  },
+  {
+   "name": "concept_asteroid_shipyard",
+   "match": {
+    "url": "*/concept-asteroid-shipyard/9b4cf59e27b6/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_asteroid_shipyard/concept_asteroid_shipyard/StaticMeshes/SM_concept_asteroid_shipyard.SM_concept_asteroid_shipyard",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.4120997190475464,
+     -0.2690407335758209,
+     -0.3558824360370636
+    ],
+    [
+     0.4055759310722351,
+     0.2790950536727905,
+     0.49654465913772583
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0,
+    "LiveryPaint": [
+     0.3419,
+     0.4287,
+     0.4621
+    ],
+    "MetalScale": 0.35,
+    "Tint": [
+     0.78,
+     0.84,
+     0.9
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-asteroid-shipyard/pixal3d_textured.glb",
+   "keys": [
+    "concept_asteroid_shipyard"
+   ],
+   "triangles": 945959,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_battleship",
+   "match": {
+    "url": "*/concept-cartel-battleship/34e9270e785a/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_battleship/concept_cartel_battleship/StaticMeshes/SM_concept_cartel_battleship.SM_concept_cartel_battleship",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.3443301022052765,
+     -0.20824599266052246,
+     -0.41679468750953674
+    ],
+    [
+     0.5004228949546814,
+     0.2841828763484955,
+     0.3212248980998993
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "Tint": [
+     0.378,
+     0.405,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-battleship/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_battleship.json",
+   "keys": [
+    "concept_cartel_battleship"
+   ],
+   "triangles": 817458,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_boarding_craft",
+   "match": {
+    "url": "*/concept-cartel-boarding-craft/bf218db94584/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_boarding_craft/concept_cartel_boarding_craft/StaticMeshes/SM_concept_cartel_boarding_craft.SM_concept_cartel_boarding_craft",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.495114266872406,
+     -0.24692261219024658,
+     -0.3805418610572815
+    ],
+    [
+     0.3963799774646759,
+     0.32423192262649536,
+     0.45683324337005615
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "Tint": [
+     0.378,
+     0.405,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-boarding-craft/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_boarding_craft.json",
+   "keys": [
+    "concept_cartel_boarding_craft"
+   ],
+   "triangles": 970082,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_carrier",
+   "match": {
+    "url": "*/concept-cartel-carrier/0e33c07ed99f/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_carrier/concept_cartel_carrier/StaticMeshes/SM_concept_cartel_carrier.SM_concept_cartel_carrier",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.4978598356246948,
+     -0.18830588459968567,
+     -0.4124844968318939
+    ],
+    [
+     0.4416353702545166,
+     0.32885515689849854,
+     0.49928048253059387
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "Tint": [
+     0.378,
+     0.405,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-carrier/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_carrier.json",
+   "keys": [
+    "concept_cartel_carrier"
+   ],
+   "triangles": 1019988,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_corvette",
+   "match": {
+    "url": "*/concept-cartel-corvette/bc1edde90377/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_corvette/concept_cartel_corvette/StaticMeshes/SM_concept_cartel_corvette.SM_concept_cartel_corvette",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.4888648986816406,
+     -0.2115013599395752,
+     -0.33045321702957153
+    ],
+    [
+     0.3451438844203949,
+     0.3522424101829529,
+     0.44513100385665894
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "Tint": [
+     0.378,
+     0.405,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-corvette/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_corvette.json",
+   "keys": [
+    "concept_cartel_corvette"
+   ],
+   "triangles": 1009994,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_cruiser",
+   "match": {
+    "url": "*/concept-cartel-cruiser/ba5a14eda4ad/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_cruiser/concept_cartel_cruiser/StaticMeshes/SM_concept_cartel_cruiser.SM_concept_cartel_cruiser",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.48463496565818787,
+     -0.23238489031791687,
+     -0.4065669775009155
+    ],
+    [
+     0.35874447226524353,
+     0.2512320876121521,
+     0.4686904847621918
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "Tint": [
+     0.378,
+     0.405,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-cruiser/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_cruiser.json",
+   "keys": [
+    "concept_cartel_cruiser"
+   ],
+   "triangles": 958078,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_destroyer",
+   "match": {
+    "url": "*/concept-cartel-destroyer/ba53d361d0a4/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_destroyer/concept_cartel_destroyer/StaticMeshes/SM_concept_cartel_destroyer.SM_concept_cartel_destroyer",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.49605652689933777,
+     -0.19769026339054108,
+     -0.36273831129074097
+    ],
+    [
+     0.35650479793548584,
+     0.2589252293109894,
+     0.23513351380825043
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "Tint": [
+     0.378,
+     0.405,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-destroyer/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_destroyer.json",
+   "keys": [
+    "concept_cartel_destroyer"
+   ],
+   "triangles": 848128,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_fighter_bomber",
+   "match": {
+    "url": "*/concept-cartel-fighter-bomber/9a30faa8031e/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_fighter_bomber/concept_cartel_fighter_bomber/StaticMeshes/SM_concept_cartel_fighter_bomber.SM_concept_cartel_fighter_bomber",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.48734739422798157,
+     -0.2077603042125702,
+     -0.3785679042339325
+    ],
+    [
+     0.44189736247062683,
+     0.3582724332809448,
+     0.4950326085090637
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "Tint": [
+     0.378,
+     0.405,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-fighter-bomber/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_fighter_bomber.json",
+   "keys": [
+    "concept_cartel_fighter_bomber"
+   ],
+   "triangles": 975772,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_flagship",
+   "match": {
+    "url": "*/concept-cartel-flagship/2a4a2bcbaf22/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_flagship/concept_cartel_flagship/StaticMeshes/SM_concept_cartel_flagship.SM_concept_cartel_flagship",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.3436632752418518,
+     -0.21521541476249695,
+     -0.35355350375175476
+    ],
+    [
+     0.49591293931007385,
+     0.28168433904647827,
+     0.3278544843196869
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "Tint": [
+     0.378,
+     0.405,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-flagship/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_flagship.json",
+   "keys": [
+    "concept_cartel_flagship"
+   ],
+   "triangles": 840820,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_frigate",
+   "match": {
+    "url": "*/concept-cartel-frigate/cd15b2c883eb/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_frigate/concept_cartel_frigate/StaticMeshes/SM_concept_cartel_frigate.SM_concept_cartel_frigate",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.4970172047615051,
+     -0.18508848547935486,
+     -0.33371058106422424
+    ],
+    [
+     0.39461395144462585,
+     0.2516370713710785,
+     0.31117716431617737
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "Tint": [
+     0.378,
+     0.405,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-frigate/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_frigate.json",
+   "keys": [
+    "concept_cartel_frigate"
+   ],
+   "triangles": 1069706,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_kinetic_harpoon",
+   "match": {
+    "url": "*/concept-cartel-kinetic-harpoon/2eceb0c035b2/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_kinetic_harpoon/concept_cartel_kinetic_harpoon/StaticMeshes/SM_concept_cartel_kinetic_harpoon.SM_concept_cartel_kinetic_harpoon",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.5004363656044006,
+     -0.2838091254234314,
+     -0.4571685194969177
+    ],
+    [
+     0.3525797426700592,
+     0.3412792682647705,
+     0.4812333881855011
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "MetalScale": 0.35,
+    "Tint": [
+     0.78,
+     0.84,
+     0.9
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-kinetic-harpoon/pixal3d_textured.glb",
+   "keys": [
+    "concept_cartel_kinetic_harpoon"
+   ],
+   "triangles": 998281,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_missile_barge",
+   "match": {
+    "url": "*/concept-cartel-missile-barge/aef13c928992/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_missile_barge/concept_cartel_missile_barge/StaticMeshes/SM_concept_cartel_missile_barge.SM_concept_cartel_missile_barge",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.49711164832115173,
+     -0.2866412401199341,
+     -0.4091646373271942
+    ],
+    [
+     0.414237380027771,
+     0.3208942413330078,
+     0.4621891379356384
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "Tint": [
+     0.378,
+     0.405,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-missile-barge/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_missile_barge.json",
+   "keys": [
+    "concept_cartel_missile_barge"
+   ],
+   "triangles": 979402,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_ransom_freighter",
+   "match": {
+    "url": "*/concept-cartel-ransom-freighter/b318d3e3d4ba/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_ransom_freighter/concept_cartel_ransom_freighter/StaticMeshes/SM_concept_cartel_ransom_freighter.SM_concept_cartel_ransom_freighter",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.4545539319515228,
+     -0.2417573481798172,
+     -0.4341723322868347
+    ],
+    [
+     0.40607237815856934,
+     0.32187002897262573,
+     0.3675013780593872
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "Tint": [
+     0.378,
+     0.405,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-ransom-freighter/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_ransom_freighter.json",
+   "keys": [
+    "concept_cartel_ransom_freighter"
+   ],
+   "triangles": 919078,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_scout",
+   "match": {
+    "url": "*/concept-cartel-scout/ecd18c434181/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_scout/concept_cartel_scout/StaticMeshes/SM_concept_cartel_scout.SM_concept_cartel_scout",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.3906070291996002,
+     -0.20999357104301453,
+     -0.3041408061981201
+    ],
+    [
+     0.4898810386657715,
+     0.2615109384059906,
+     0.3608262240886688
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "Tint": [
+     0.378,
+     0.405,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-scout/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_scout.json",
+   "keys": [
+    "concept_cartel_scout"
+   ],
+   "triangles": 868804,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_signature_unit",
+   "match": {
+    "url": "*/concept-cartel-signature-unit/040dea99eb61/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_signature_unit/concept_cartel_signature_unit/StaticMeshes/SM_concept_cartel_signature_unit.SM_concept_cartel_signature_unit",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.41694375872612,
+     -0.2793630063533783,
+     -0.37536612153053284
+    ],
+    [
+     0.4950725734233856,
+     0.2865891456604004,
+     0.2893168330192566
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "Tint": [
+     0.378,
+     0.405,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-signature-unit/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_signature_unit.json",
+   "keys": [
+    "concept_cartel_signature_unit"
+   ],
+   "triangles": 886534,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_cartel_station",
+   "match": {
+    "url": "*/concept-cartel-station/39b9fd96e500/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_cartel_station/concept_cartel_station/StaticMeshes/SM_concept_cartel_station.SM_concept_cartel_station",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.5000720024108887,
+     -0.30658334493637085,
+     -0.42730361223220825
+    ],
+    [
+     0.3646964132785797,
+     0.31290632486343384,
+     0.46156349778175354
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0,
+    "LiveryPaint": [
+     0.0545,
+     0.0612,
+     0.0723
+    ],
+    "MetalScale": 0.35,
+    "Tint": [
+     0.78,
+     0.84,
+     0.9
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-cartel-station/pixal3d_textured.glb",
+   "keys": [
+    "concept_cartel_station"
+   ],
+   "triangles": 955832,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_battleship",
+   "match": {
+    "url": "*/concept-corsair-battleship/d0c14f3900ae/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_battleship/concept_corsair_battleship/StaticMeshes/SM_concept_corsair_battleship.SM_concept_corsair_battleship",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.49747225642204285,
+     -0.19883234798908234,
+     -0.47978606820106506
+    ],
+    [
+     0.37551286816596985,
+     0.3480812609195709,
+     0.42260923981666565
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-battleship/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_battleship.json",
+   "keys": [
+    "concept_corsair_battleship"
+   ],
+   "triangles": 999962,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_boarding_craft",
+   "match": {
+    "url": "*/concept-corsair-boarding-craft/9f0a56cc0d8f/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_boarding_craft/concept_corsair_boarding_craft/StaticMeshes/SM_concept_corsair_boarding_craft.SM_concept_corsair_boarding_craft",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.4997357130050659,
+     -0.2502720057964325,
+     -0.4258994460105896
+    ],
+    [
+     0.3931030333042145,
+     0.3311583697795868,
+     0.4848953187465668
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-boarding-craft/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_boarding_craft.json",
+   "keys": [
+    "concept_corsair_boarding_craft"
+   ],
+   "triangles": 982274,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_boarding_pod",
+   "match": {
+    "url": "*/concept-corsair-boarding-pod/cd0863f450a4/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_boarding_pod/concept_corsair_boarding_pod/StaticMeshes/SM_concept_corsair_boarding_pod.SM_concept_corsair_boarding_pod",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.49060285091400146,
+     -0.3081081807613373,
+     -0.4476829767227173
+    ],
+    [
+     0.4576527178287506,
+     0.32980111241340637,
+     0.3734514117240906
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-boarding-pod/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_boarding_pod.json",
+   "keys": [
+    "concept_corsair_boarding_pod"
+   ],
+   "triangles": 938728,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_boarding_tender",
+   "match": {
+    "url": "*/concept-corsair-boarding-tender/7bb07d651d2e/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_boarding_tender/concept_corsair_boarding_tender/StaticMeshes/SM_concept_corsair_boarding_tender.SM_concept_corsair_boarding_tender",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.5154048204421997,
+     -0.23486527800559998,
+     -0.45189207792282104
+    ],
+    [
+     0.49975457787513733,
+     0.28988775610923767,
+     0.32732462882995605
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-boarding-tender/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_boarding_tender.json",
+   "keys": [
+    "concept_corsair_boarding_tender"
+   ],
+   "triangles": 1053112,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_carrier",
+   "match": {
+    "url": "*/concept-corsair-carrier/ec3f621a6370/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_carrier/concept_corsair_carrier/StaticMeshes/SM_concept_corsair_carrier.SM_concept_corsair_carrier",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.46082356572151184,
+     -0.23898951709270477,
+     -0.435463011264801
+    ],
+    [
+     0.39086323976516724,
+     0.28795403242111206,
+     0.43670907616615295
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-carrier/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_carrier.json",
+   "keys": [
+    "concept_corsair_carrier"
+   ],
+   "triangles": 1059648,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_cruiser",
+   "match": {
+    "url": "*/concept-corsair-cruiser/7abc74bae2fc/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_cruiser/concept_corsair_cruiser/StaticMeshes/SM_concept_corsair_cruiser.SM_concept_corsair_cruiser",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.4929181933403015,
+     -0.20584377646446228,
+     -0.3755843937397003
+    ],
+    [
+     0.3856106996536255,
+     0.3083316385746002,
+     0.43831121921539307
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-cruiser/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_cruiser.json",
+   "keys": [
+    "concept_corsair_cruiser"
+   ],
+   "triangles": 993282,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_decoy_drone",
+   "match": {
+    "url": "*/concept-corsair-decoy-drone/f5922b69069b/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_decoy_drone/concept_corsair_decoy_drone/StaticMeshes/SM_concept_corsair_decoy_drone.SM_concept_corsair_decoy_drone",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.4068338871002197,
+     -0.4232483506202698,
+     -0.4043169319629669
+    ],
+    [
+     0.42907199263572693,
+     0.40647631883621216,
+     0.46961677074432373
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-decoy-drone/pixal3d_textured.glb",
+   "keys": [
+    "concept_corsair_decoy_drone"
+   ],
+   "triangles": 963211,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_destroyer",
+   "match": {
+    "url": "*/concept-corsair-destroyer/c1343f2bfd86/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_destroyer/concept_corsair_destroyer/StaticMeshes/SM_concept_corsair_destroyer.SM_concept_corsair_destroyer",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.5026535391807556,
+     -0.19823987782001495,
+     -0.33541977405548096
+    ],
+    [
+     0.375919371843338,
+     0.2576277256011963,
+     0.32999539375305176
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-destroyer/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_destroyer.json",
+   "keys": [
+    "concept_corsair_destroyer"
+   ],
+   "triangles": 902952,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_ew_ship",
+   "match": {
+    "url": "*/concept-corsair-ew-ship/ce2afd1e01ae/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_ew_ship/concept_corsair_ew_ship/StaticMeshes/SM_concept_corsair_ew_ship.SM_concept_corsair_ew_ship",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.48131710290908813,
+     -0.25001460313796997,
+     -0.3971616327762604
+    ],
+    [
+     0.43251776695251465,
+     0.2837020754814148,
+     0.4952208995819092
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-ew-ship/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_ew_ship.json",
+   "keys": [
+    "concept_corsair_ew_ship"
+   ],
+   "triangles": 973506,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_frigate",
+   "match": {
+    "url": "*/concept-corsair-frigate/540bed39bd7e/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_frigate/concept_corsair_frigate/StaticMeshes/SM_concept_corsair_frigate.SM_concept_corsair_frigate",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.48981738090515137,
+     -0.24920818209648132,
+     -0.3200116753578186
+    ],
+    [
+     0.37571483850479126,
+     0.3399636745452881,
+     0.44615307450294495
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-frigate/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_frigate.json",
+   "keys": [
+    "concept_corsair_frigate"
+   ],
+   "triangles": 990548,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_heavy_ambusher",
+   "match": {
+    "url": "*/concept-corsair-heavy-ambusher/035ffd954cba/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_heavy_ambusher/concept_corsair_heavy_ambusher/StaticMeshes/SM_concept_corsair_heavy_ambusher.SM_concept_corsair_heavy_ambusher",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.4338974356651306,
+     -0.21943220496177673,
+     -0.3617229163646698
+    ],
+    [
+     0.38413092494010925,
+     0.3115745186805725,
+     0.3289487063884735
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-heavy-ambusher/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_heavy_ambusher.json",
+   "keys": [
+    "concept_corsair_heavy_ambusher"
+   ],
+   "triangles": 1022760,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_hidden_base",
+   "match": {
+    "url": "*/concept-corsair-hidden-base/bb4130f9d31a/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_hidden_base/concept_corsair_hidden_base/StaticMeshes/SM_concept_corsair_hidden_base.SM_concept_corsair_hidden_base",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.42026302218437195,
+     -0.2759186625480652,
+     -0.3791356086730957
+    ],
+    [
+     0.3825310468673706,
+     0.28146666288375854,
+     0.4877772629261017
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "MetalScale": 0.35,
+    "Tint": [
+     0.78,
+     0.84,
+     0.9
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-hidden-base/pixal3d_textured.glb",
+   "keys": [
+    "concept_corsair_hidden_base"
+   ],
+   "triangles": 963979,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_jammer_array",
+   "match": {
+    "url": "*/concept-corsair-jammer-array/e029774a8dd7/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_jammer_array/concept_corsair_jammer_array/StaticMeshes/SM_concept_corsair_jammer_array.SM_concept_corsair_jammer_array",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.49211549758911133,
+     -0.27779868245124817,
+     -0.3345640003681183
+    ],
+    [
+     0.46914157271385193,
+     0.30243217945098877,
+     0.2999431788921356
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "MetalScale": 0.35,
+    "Tint": [
+     0.78,
+     0.84,
+     0.9
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-jammer-array/pixal3d_textured.glb",
+   "keys": [
+    "concept_corsair_jammer_array"
+   ],
+   "triangles": 959481,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_ore_hauler",
+   "match": {
+    "url": "*/concept-corsair-ore-hauler/c4836594892e/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_ore_hauler/concept_corsair_ore_hauler/StaticMeshes/SM_concept_corsair_ore_hauler.SM_concept_corsair_ore_hauler",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.5009313821792603,
+     -0.204041987657547,
+     -0.38103756308555603
+    ],
+    [
+     0.3448297381401062,
+     0.28101199865341187,
+     0.2912827432155609
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-ore-hauler/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_ore_hauler.json",
+   "keys": [
+    "concept_corsair_ore_hauler"
+   ],
+   "triangles": 690662,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_raider",
+   "match": {
+    "url": "*/concept-corsair-raider/8d2a145d7198/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_raider/concept_corsair_raider/StaticMeshes/SM_concept_corsair_raider.SM_concept_corsair_raider",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.487709105014801,
+     -0.2576167583465576,
+     -0.3482961356639862
+    ],
+    [
+     0.395145058631897,
+     0.31826066970825195,
+     0.4292694330215454
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-raider/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_raider.json",
+   "keys": [
+    "concept_corsair_raider"
+   ],
+   "triangles": 988562,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_corsair_scout",
+   "match": {
+    "url": "*/concept-corsair-scout/f039c3c16af8/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_corsair_scout/concept_corsair_scout/StaticMeshes/SM_concept_corsair_scout.SM_concept_corsair_scout",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.5010213255882263,
+     -0.3365020453929901,
+     -0.24826021492481232
+    ],
+    [
+     0.30278491973876953,
+     0.27532172203063965,
+     0.36206886172294617
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.0423,
+     0.0648,
+     0.0844
+    ],
+    "Tint": [
+     0.304,
+     0.382,
+     0.45
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-corsair-scout/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_scout.json",
+   "keys": [
+    "concept_corsair_scout",
+    "concept_corsair_fighter_bomber"
+   ],
+   "triangles": 1011024,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_derelict_battleship_hulk",
+   "match": {
+    "url": "*/concept-derelict-battleship-hulk/6a94fc80090b/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_derelict_battleship_hulk/concept_derelict_battleship_hulk/StaticMeshes/SM_concept_derelict_battleship_hulk.SM_concept_derelict_battleship_hulk",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.5004236698150635,
+     -0.27786487340927124,
+     -0.4617658257484436
+    ],
+    [
+     0.3750428855419159,
+     0.2732592225074768,
+     0.2557584047317505
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0,
+    "LiveryPaint": [
+     0.3419,
+     0.4287,
+     0.4621
+    ],
+    "MetalScale": 0.35,
+    "Tint": [
+     0.78,
+     0.84,
+     0.9
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-derelict-battleship-hulk/pixal3d_textured.glb",
+   "keys": [
+    "concept_derelict_battleship_hulk"
+   ],
+   "triangles": 943130,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_derelict_wreck",
+   "match": {
+    "url": "*/concept-derelict-wreck/42ed61731d65/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_derelict_wreck/concept_derelict_wreck/StaticMeshes/SM_concept_derelict_wreck.SM_concept_derelict_wreck",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.49704456329345703,
+     -0.2387576848268509,
+     -0.3582276403903961
+    ],
+    [
+     0.3895937204360962,
+     0.2895493805408478,
+     0.3112199306488037
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0,
+    "LiveryPaint": [
+     0.3419,
+     0.4287,
+     0.4621
+    ],
+    "MetalScale": 0.35,
+    "Tint": [
+     0.78,
+     0.84,
+     0.9
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-derelict-wreck/pixal3d_textured.glb",
+   "keys": [
+    "concept_derelict_wreck"
+   ],
+   "triangles": 936215,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_helion_armed_mining_drone",
+   "match": {
+    "url": "*/concept-helion-armed-mining-drone/100296e1f79b/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_helion_armed_mining_drone/concept_helion_armed_mining_drone/StaticMeshes/SM_concept_helion_armed_mining_drone.SM_concept_helion_armed_mining_drone",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.47050759196281433,
+     -0.2552802860736847,
+     -0.31074070930480957
+    ],
+    [
+     0.39323294162750244,
+     0.3141743540763855,
+     0.4156181812286377
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.4735,
+     0.3564,
+     0.1946
+    ],
+    "Tint": [
+     1,
+     0.839,
+     0.617
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-armed-mining-drone/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_armed_mining_drone.json",
+   "keys": [
+    "concept_helion_armed_mining_drone"
+   ],
+   "triangles": 957932,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_helion_battleship",
+   "match": {
+    "url": "*/concept-helion-battleship/89fc76d7919c/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_helion_battleship/concept_helion_battleship/StaticMeshes/SM_concept_helion_battleship.SM_concept_helion_battleship",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.3707425892353058,
+     -0.24541684985160828,
+     -0.39112305641174316
+    ],
+    [
+     0.49853581190109253,
+     0.28524643182754517,
+     0.3077949285507202
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.4735,
+     0.3564,
+     0.1946
+    ],
+    "Tint": [
+     1,
+     0.839,
+     0.617
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-battleship/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_battleship.json",
+   "keys": [
+    "concept_helion_battleship"
+   ],
+   "triangles": 960064,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_helion_carrier",
+   "match": {
+    "url": "*/concept-helion-carrier/11a4b6fecefe/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_helion_carrier/concept_helion_carrier/StaticMeshes/SM_concept_helion_carrier.SM_concept_helion_carrier",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.3997875154018402,
+     -0.23825407028198242,
+     -0.4716595709323883
+    ],
+    [
+     0.4979773461818695,
+     0.270861953496933,
+     0.4477936327457428
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.4735,
+     0.3564,
+     0.1946
+    ],
+    "Tint": [
+     1,
+     0.839,
+     0.617
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-carrier/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_carrier.json",
+   "keys": [
+    "concept_helion_carrier"
+   ],
+   "triangles": 1009850,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_helion_colony_ship",
+   "match": {
+    "url": "*/concept-helion-colony-ship/e37f421da4cd/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_helion_colony_ship/concept_helion_colony_ship/StaticMeshes/SM_concept_helion_colony_ship.SM_concept_helion_colony_ship",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.4939637780189514,
+     -0.24886681139469147,
+     -0.3764621615409851
+    ],
+    [
+     0.394905149936676,
+     0.2973964512348175,
+     0.3871309757232666
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.4735,
+     0.3564,
+     0.1946
+    ],
+    "Tint": [
+     1,
+     0.839,
+     0.617
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-colony-ship/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_colony_ship.json",
+   "keys": [
+    "concept_helion_colony_ship"
+   ],
+   "triangles": 991104,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_helion_constructor",
+   "match": {
+    "url": "*/concept-helion-constructor/f76f9b98f188/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_helion_constructor/concept_helion_constructor/StaticMeshes/SM_concept_helion_constructor.SM_concept_helion_constructor",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.4957162141799927,
+     -0.2085283249616623,
+     -0.4084605872631073
+    ],
+    [
+     0.4633670747280121,
+     0.30488717555999756,
+     0.3161286413669586
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.4735,
+     0.3564,
+     0.1946
+    ],
+    "Tint": [
+     1,
+     0.839,
+     0.617
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-constructor/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_constructor.json",
+   "keys": [
+    "concept_helion_constructor"
+   ],
+   "triangles": 1092908,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_helion_cruiser",
+   "match": {
+    "url": "*/concept-helion-cruiser/685b8d459fb8/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_helion_cruiser/concept_helion_cruiser/StaticMeshes/SM_concept_helion_cruiser.SM_concept_helion_cruiser",
+   "fit": "bounds",
+   "bounds": [
+    [
+     -0.3937487006187439,
+     -0.2547565996646881,
+     -0.3995386064052582
+    ],
+    [
+     0.5003805160522461,
+     0.21459154784679413,
+     0.36184024810791016
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.3,
+    "LiveryWeight": 0.25,
+    "LiveryPaint": [
+     0.4735,
+     0.3564,
+     0.1946
+    ],
+    "Tint": [
+     1,
+     0.839,
+     0.617
+    ]
+   },
+   "source": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-helion-cruiser/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_cruiser.json",
+   "keys": [
+    "concept_helion_cruiser"
+   ],
+   "triangles": 1142484,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
   }
  ]
 }

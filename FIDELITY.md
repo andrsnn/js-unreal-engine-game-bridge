@@ -79,8 +79,28 @@ Planets use `Tools/fidelity/make-sphere.mjs` (a dense sphere with three.js Spher
   is the resulting table: 165 models, 96 with symmetry repairs. The two fast-attack hulls have no Pixal3D original.
 - The models in the fleet battle view keep their 4096 maps. The rest import with 2048 maps to fit the disk
   budget. Nanite keeps every source triangle (about 930,000 to 1,000,000 per hull).
+- Imported so far: 52 of the 165 models (every model in the fleet battle view, both starbases, and the first 40 of
+  the rest in name order). Each takes about 50 MB in the host project, so the other 113 need about 6 GB more than
+  the 10 GB build folder allowed. To finish, run `node Tools/fidelity/build-overrides.mjs Overrides/hardburn.sources.json
+  Overrides/hardburn.json --work <dir> --only <names> --clean` on more space. Models without a rule draw the game's own.
 - Planets use the game's own planet maps on a 260,000-triangle sphere, with normal maps for the Moon and Mars.
   Higher-resolution planet maps are requested from gen in `F:/AssetVault/hard-burn/unreal-fidelity/REQUESTS-gen.md`.
+
+## What works and what doesn't yet
+
+Works:
+- The override system: rules by glTF URL, name, texture or userData, Nanite meshes placed by the game, hide rules.
+- 52 imported Hard Burn hulls from the original Pixal3D sources with the game's symmetry repairs, at full
+  triangle counts.
+- Planets on a dense sphere with the game's maps and normal maps.
+- Lumen mode (`-JsgbLumen`): Lumen lighting, a sky light, soft sun shadows, volumetric fog.
+
+Wrong or missing:
+- Hull materials look flatter than the browser's. The game paints panels, bands and markings with a livery shader
+  that uses per-vertex weights it computes on its own lower-resolution meshes. The override material only
+  approximates that with a faction tint, so hulls lose the browser's red and black panel contrast.
+- At the battle camera's distance the extra geometry is only a few pixels, so it adds little visible detail.
+- Explosion smoke and some small effects draw less than in the browser, and drive plumes cast no light on hulls.
 
 ## Bridge fixes made along the way
 
@@ -99,7 +119,18 @@ These help every game, with or without fidelity mode:
 
 ## Frame rate
 
-FPS_TABLE
+Hard Burn's fleet battle (`?view=black`), 2560x1440, RTX 4090, JavaScript on its own thread (`--js-thread`), off
+screen, 60 s from 20 s after the loading screen closes, measured with `Tools/bench.mjs`.
+
+| Setup | Average FPS | 1% low FPS | Slowest frame (FPS) |
+| --- | ---: | ---: | ---: |
+| Game's own models, no Lumen, DLSS off | 195.9 | 99.8 | 26.1 |
+| Override models, no Lumen, DLSS off | 196.4 | 99.5 | 42.6 |
+| Override models, no Lumen, DLSS Quality | 203.0 | 60.9 | 7.8 |
+| Override models with Lumen | not measured | | |
+
+The Lumen runs were stopped before they ran. The single slowest frames come from new objects arriving during
+the battle, not from the override models.
 
 ## Film
 
