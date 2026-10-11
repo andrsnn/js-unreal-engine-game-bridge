@@ -96,8 +96,8 @@ private:
 	/** F6: the next DLSS mode (off, DLAA, Quality, Balanced, Performance, DLSS 5). F7: Frame Generation on or off. */
 	void CycleUpscaler();
 	void ToggleFrameGen();
-	/** Whether DLSS 5 Neural Rendering can run here, and why not when it can't. */
-	bool NeuralRenderingCheck(FString& Why) const;
+	/** Whether DLSS 5 Neural Rendering can run here; when it can't, why (for the log) and the short form (for the readout). */
+	bool NeuralRenderingCheck(FString& Why, FString& Short) const;
 	void UpdateHud(float DeltaSeconds);
 	void StartRecording(const FString& Dir, double Fps);
 	void StopRecording();

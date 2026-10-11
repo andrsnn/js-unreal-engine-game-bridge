@@ -776,20 +776,22 @@ static void SetCVar(const TCHAR* Name, const FString& Value)
 // DLSS 5 Neural Rendering needs an RTX 50 series GPU, GeForce driver 616.64 or newer (its launch driver), and an
 // Unreal integration from NVIDIA. NVIDIA's Unreal plugin (DLSS 4.5, plugin 8.8.0) has none, and NVIDIA has published no
 // DLSS 5 SDK or plugin for developers, so today this reports why it can't run and the host uses DLSS 4.5.
-bool AJsgbHost::NeuralRenderingCheck(FString& Why) const
+bool AJsgbHost::NeuralRenderingCheck(FString& Why, FString& Short) const
 {
-	TArray<FString> Missing;
+	TArray<FString> Missing, Needs;
 	const FString Gpu = GRHIAdapterName;
-	if (!IsRHIDeviceNVIDIA() || !Gpu.Contains(TEXT("RTX 50"))) { Missing.Add(FString::Printf(TEXT("the GPU is %s, and DLSS 5 needs an RTX 50 series GPU"), *Gpu)); }
+	if (!IsRHIDeviceNVIDIA() || !Gpu.Contains(TEXT("RTX 50"))) { Missing.Add(FString::Printf(TEXT("the GPU is %s, and DLSS 5 needs an RTX 50 series GPU"), *Gpu)); Needs.Add(TEXT("an RTX 50 GPU")); }
 	const FString Driver = GRHIAdapterUserDriverVersion;
 	FString Major, Minor;
 	const bool bParsed = Driver.Split(TEXT("."), &Major, &Minor);
 	const double Version = bParsed ? FCString::Atod(*Major) + FCString::Atod(*Minor.Left(2)) / 100.0 : 0.0;
-	if (Version < 616.64 - 1e-6) { Missing.Add(FString::Printf(TEXT("the driver is %s, and DLSS 5 needs 616.64 or newer"), Driver.IsEmpty() ? TEXT("unknown") : *Driver)); }
+	if (Version < 616.64 - 1e-6) { Missing.Add(FString::Printf(TEXT("the driver is %s, and DLSS 5 needs 616.64 or newer"), Driver.IsEmpty() ? TEXT("unknown") : *Driver)); Needs.Add(TEXT("driver 616.64")); }
 	const TSharedPtr<IPlugin> Dlss = IPluginManager::Get().FindPlugin(TEXT("DLSS"));
 	Missing.Add(FString::Printf(TEXT("NVIDIA's DLSS plugin for Unreal (%s) has no DLSS 5 Neural Rendering, and NVIDIA has released none for developers"),
 		Dlss.IsValid() ? *FString::Printf(TEXT("version %s"), *Dlss->GetDescriptor().VersionName) : TEXT("not installed")));
+	Needs.Add(TEXT("NVIDIA's DLSS 5 plugin for Unreal"));
 	Why = FString::Join(Missing, TEXT("; "));
+	Short = TEXT("DLSS 5 needs ") + FString::Join(Needs, TEXT(", ")) + TEXT(" (see the log)");
 	return false;
 }
 
@@ -837,11 +839,11 @@ void AJsgbHost::ApplyUpscaler(const FString& Mode, const FString& TsrPercent)
 	// DLSS 5: Neural Rendering where it can run; otherwise DLSS 4.5 DLAA, with the reason in the log and the readout.
 	if (Dlss == TEXT("5") || Dlss == TEXT("dlss5"))
 	{
-		FString Why;
-		if (!NeuralRenderingCheck(Why))
+		FString Why, Short;
+		if (!NeuralRenderingCheck(Why, Short))
 		{
 			UE_LOG(LogJsgbHost, Display, TEXT("DLSS 5 Neural Rendering is off: %s. Using DLSS 4.5 DLAA."), *Why);
-			NeuralNote = TEXT("DLSS 5 unavailable: ") + Why;
+			NeuralNote = Short;
 			Dlss = TEXT("dlaa");
 		}
 	}
@@ -948,7 +950,7 @@ void AJsgbHost::UpdateHud(float DeltaSeconds)
 	if (!CaptureDir.IsEmpty()) { HudText->SetText(FText::FromString(Upscaler)); return; }
 	const FString Rate = HudPresentedFps > 0 ? FString::Printf(TEXT("%.0f FPS on screen, %.0f rendered"), HudPresentedFps, HudFps) : FString::Printf(TEXT("%.0f FPS"), HudFps);
 	HudText->SetText(FText::FromString(FString::Printf(TEXT("%s\n%s  (GPU %.1f ms)%s%s"), *Upscaler, *Rate, FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles()),
-		NeuralNote.IsEmpty() ? TEXT("") : *(TEXT("\n") + NeuralNote.Replace(TEXT("; "), TEXT(";\n"))), bShowKeys ? TEXT("\nF6: DLSS mode   F7: Frame Generation") : TEXT(""))));
+		NeuralNote.IsEmpty() ? TEXT("") : *(TEXT("\n") + NeuralNote), bShowKeys ? TEXT("\nF6: DLSS mode   F7: Frame Generation") : TEXT(""))));
 }
 
 void AJsgbHost::SwapCss(double BuildMs)
