@@ -218,6 +218,7 @@ async function webglModuleDraws(esbuild, threeModule) {
 }
 
 export async function build(game) {
+  if (game.page) return buildPage(game);
   const esbuild = await import(pathToFileURL(path.join(runtime, 'node_modules/esbuild/lib/main.js')).href);
   const started = performance.now();
   const page = readPage(game);
@@ -285,6 +286,22 @@ export async function build(game) {
     bytes: bundle.length, buildMilliseconds: Math.round(performance.now() - started), publicRoots: game.publicRoots, search: game.search ?? '', title: page.title};
   fs.writeFileSync(path.join(game.out, 'publication.json'), JSON.stringify(publication, null, 1));
   console.log(`built ${game.id}: ${publication.modules} modules, ${(bundle.length / 1e6).toFixed(1)} MB, ${publication.buildMilliseconds} ms -> ${bundlePath}`);
+  return publication;
+}
+
+// A page game ("page": true in Games/<game>.json, for 2D WebGL games such as pixi.js ones) runs its own Vite build in
+// Unreal's built-in browser: the host serves <out>/web, then the game's public folders.
+async function buildPage(game) {
+  const started = performance.now();
+  const web = spawnSync(process.execPath, [path.join(bridge, 'Tools/web.mjs'), 'build', game.id], {stdio: 'inherit'});
+  if (web.status !== 0) throw Error(`the web build of ${game.id} failed`);
+  const page = readPage(game);
+  const publication = {version: 1, game: game.id, sourceCommit: git(game.repo, 'rev-parse', 'HEAD') || '0'.repeat(40),
+    sourceDirty: !!git(game.repo, 'status', '--porcelain', '--untracked-files=no'), bridgeCommit: git(bridge, 'rev-parse', 'HEAD'),
+    page: game.index ?? 'index.html', buildMilliseconds: Math.round(performance.now() - started),
+    publicRoots: [path.join(game.out, 'web'), ...(game.public ?? ['public']).map(p => path.resolve(game.repo, p))], search: game.search ?? '', title: page.title};
+  fs.writeFileSync(path.join(game.out, 'publication.json'), JSON.stringify(publication, null, 1));
+  console.log(`built ${game.id} as a page game in ${publication.buildMilliseconds} ms -> ${path.join(game.out, 'web')}`);
   return publication;
 }
 

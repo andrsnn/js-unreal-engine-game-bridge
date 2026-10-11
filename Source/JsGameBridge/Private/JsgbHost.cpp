@@ -331,10 +331,15 @@ bool AJsgbHost::LoadPublication(const FString& Dir, const FString& OverrideBundl
 	GameDir = Dir;
 	// Relative paths in publication.json are relative to the game's folder, so a copied game folder runs anywhere.
 	auto InGameDir = [&Dir](const FString& P) { return FPaths::IsRelative(P) ? FPaths::ConvertRelativePathToFull(Dir / P) : P; };
-	BundlePath = OverrideBundle.IsEmpty() ? InGameDir(Pub->GetStringField(TEXT("bundle"))) : OverrideBundle;
-	SourceCommit = Pub->GetStringField(TEXT("sourceCommit"));
+	// A page game (2D WebGL, such as pixi.js) has no bundle: its own web build runs in the built-in browser.
+	PageIndex.Reset();
+	Pub->TryGetStringField(TEXT("page"), PageIndex);
+	FString Bundle;
+	Pub->TryGetStringField(TEXT("bundle"), Bundle);
+	BundlePath = !OverrideBundle.IsEmpty() ? OverrideBundle : Bundle.IsEmpty() ? FString() : InGameDir(Bundle);
+	Pub->TryGetStringField(TEXT("sourceCommit"), SourceCommit);
 	Pub->TryGetStringField(TEXT("title"), Title);
-	BundleSHA256 = Sha256File(BundlePath);
+	BundleSHA256 = BundlePath.IsEmpty() ? FString() : Sha256File(BundlePath);
 	Search = Arg(TEXT("JsgbSearch="), Pub->HasField(TEXT("search")) ? Pub->GetStringField(TEXT("search")) : FString());
 	PublicRoots.Reset();
 	const TArray<TSharedPtr<FJsonValue>>* Roots = nullptr;
@@ -415,8 +420,41 @@ void AJsgbHost::BeginPlay()
 	if (!ScriptPath.IsEmpty()) { LoadScript(ScriptPath); }
 	if (!LoadPublication(Arg(TEXT("JsgbGame=")), FString())) { return; }
 	StartServer();
+	if (!PageIndex.IsEmpty()) { CreatePageView(); return; }
 	StartJs();
 	CreateOverlay();
+}
+
+void AJsgbHost::CreatePageView()
+{
+	if (!GEngine || !GEngine->GameViewport) { return; }
+	if (!IWebBrowserModule::Get().IsWebModuleAvailable()) { UE_LOG(LogJsgbHost, Error, TEXT("CEF is not available, so the page game can't run")); return; }
+	// Frame Generation takes the whole frame, including this page, as the image it interpolates. With the page tagged as
+	// UI, generated frames would repeat it unchanged.
+	if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Streamline.TagUIColorAlpha"))) { V->Set(0, ECVF_SetByCode); }
+	int32 PageFps = 60;
+	FParse::Value(FCommandLine::Get(), TEXT("JsgbPageFps="), PageFps);
+	const FString Url = FString::Printf(TEXT("http://127.0.0.1:%d/"), Port) + PageIndex + Search;
+	SAssignNew(Browser, SWebBrowser).InitialURL(Url)
+		.ShowControls(false).ShowAddressBar(false).ShowInitialThrobber(false)
+		.SupportsTransparency(false).BackgroundColor(FColor::Black).BrowserFrameRate(PageFps)
+		.PopupMenuMethod(EPopupMethod::UseCurrentWindow)
+		.OnLoadCompleted_Lambda([this]() { bDocumentReady = true; UE_LOG(LogJsgbHost, Display, TEXT("Page game loaded")); })
+		.OnLoadError_Lambda([Url]() { UE_LOG(LogJsgbHost, Error, TEXT("Page game failed to load from %s"), *Url); })
+		.OnConsoleMessage_Lambda([](const FString& Message, const FString& Source, int32 Line, EWebBrowserConsoleLogSeverity Severity)
+		{
+			UE_LOG(LogJsgbHost, Display, TEXT("Page console %d %s:%d %s"), static_cast<int32>(Severity), *Source, Line, *Message.Left(2048));
+		})
+		.OnBeforePopup_Lambda([](FString, FString) { return true; });
+	GEngine->GameViewport->AddViewportWidgetContent(Browser.ToSharedRef(), 100);
+	if (APlayerController* Pc = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	{
+		FInputModeUIOnly Mode;
+		Mode.SetWidgetToFocus(Browser);
+		Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		Pc->SetInputMode(Mode);
+	}
+	UE_LOG(LogJsgbHost, Display, TEXT("Page game %s at %s, drawn by the built-in browser at up to %d frames per second"), *Title, *Url, PageFps);
 }
 
 void AJsgbHost::StartJs()
@@ -704,15 +742,24 @@ void AJsgbHost::StartServer()
 			Json(O);
 			return true;
 		}
-		if (R.Verb == EHttpServerRequestVerbs::VERB_GET && !Route.StartsWith(TEXT("/bridge/")) && H->Bridge)
+		if (R.Verb == EHttpServerRequestVerbs::VERB_GET && !Route.StartsWith(TEXT("/bridge/")) && (H->Bridge || !H->PageIndex.IsEmpty()))
 		{
-			// The overlay's page loads images and fonts from the web build's site root.
-			FArrayBufferValue File = H->Bridge->ReadFile(Route);
+			// The overlay's page loads images and fonts from the web build's site root. A page game loads everything from
+			// its public roots, in order.
+			FArrayBufferValue File;
+			if (H->Bridge) { File = H->Bridge->ReadFile(Route); }
+			else if (!Route.Contains(TEXT("..")))
+			{
+				const FString Rel = Route == TEXT("/") ? H->PageIndex : Route.RightChop(1);
+				for (const FString& Root : H->PublicRoots) { if (FFileHelper::LoadFileToArray(File.Data, *(Root / Rel), FILEREAD_Silent)) { break; } }
+			}
 			if (File.Data.Num() == 0) { Done(FHttpServerResponse::Error(EHttpServerResponseCodes::NotFound)); return true; }
 			const FString Ext = FPaths::GetExtension(Route).ToLower();
 			static const TMap<FString, FString> Mime = {{TEXT("png"), TEXT("image/png")}, {TEXT("jpg"), TEXT("image/jpeg")}, {TEXT("jpeg"), TEXT("image/jpeg")}, {TEXT("webp"), TEXT("image/webp")},
 				{TEXT("gif"), TEXT("image/gif")}, {TEXT("svg"), TEXT("image/svg+xml")}, {TEXT("woff2"), TEXT("font/woff2")}, {TEXT("woff"), TEXT("font/woff")}, {TEXT("ttf"), TEXT("font/ttf")},
-				{TEXT("otf"), TEXT("font/otf")}, {TEXT("css"), TEXT("text/css")}, {TEXT("json"), TEXT("application/json")}, {TEXT("ogg"), TEXT("audio/ogg")}, {TEXT("mp3"), TEXT("audio/mpeg")}};
+				{TEXT("otf"), TEXT("font/otf")}, {TEXT("css"), TEXT("text/css")}, {TEXT("json"), TEXT("application/json")}, {TEXT("ogg"), TEXT("audio/ogg")}, {TEXT("mp3"), TEXT("audio/mpeg")},
+				{TEXT("html"), TEXT("text/html")}, {TEXT("js"), TEXT("text/javascript")}, {TEXT("mjs"), TEXT("text/javascript")}, {TEXT("wasm"), TEXT("application/wasm")},
+				{TEXT("wav"), TEXT("audio/wav")}, {TEXT("m4a"), TEXT("audio/mp4")}, {TEXT("mp4"), TEXT("video/mp4")}, {TEXT("webm"), TEXT("video/webm")}, {TEXT("ktx2"), TEXT("image/ktx2")}};
 			const FString* Type = Mime.Find(Ext);
 			Done(FHttpServerResponse::Create(MoveTemp(File.Data), Type ? *Type : TEXT("application/octet-stream")));
 			return true;
@@ -773,7 +820,8 @@ double AJsgbHost::GameSeconds() const { return Bridge ? Bridge->NowMs() / 1000.0
 //   -JsgbDLSS=dlaa|quality|balanced|performance|ultra   NVIDIA DLSS Super Resolution (DLAA renders at full resolution)
 //   -JsgbDLSS=5                                          DLSS 5 Neural Rendering where it can run, else DLSS 4.5 DLAA
 //   -JsgbTSR=<screen percentage>                         Unreal's TSR, on any GPU
-//   -JsgbFrameGen                                        DLSS Frame Generation (RTX 40 and later, needs a window)
+//   -JsgbFrameGen[=2|3|4]                                DLSS Frame Generation, 2x by default (RTX 40 and later, needs a
+//                                                        window); 3x and 4x are Multi Frame Generation on RTX 50 GPUs
 //   -JsgbVibrance=<0..1>                                 RTX Dynamic Vibrance
 // DLSS needs the NVIDIA DLSS plugin in the host project and an NVIDIA RTX GPU. Without them the same
 // render scale runs through TSR instead. With none of these, the host keeps FXAA at full resolution.
@@ -782,6 +830,9 @@ static void SetCVar(const TCHAR* Name, const FString& Value)
 	if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(Name)) { V->Set(*Value, ECVF_SetByCode); }
 	else { UE_LOG(LogJsgbHost, Warning, TEXT("Console variable %s is missing; is its plugin enabled?"), Name); }
 }
+
+// RTX 50 GPUs generate up to three frames per rendered frame (Multi Frame Generation, 4x); RTX 40 GPUs one (2x).
+static int32 MaxGeneratedFrames() { return IsRHIDeviceNVIDIA() && FString(GRHIAdapterName).Contains(TEXT("RTX 50")) ? 3 : 1; }
 
 // DLSS 5 Neural Rendering needs an RTX 50 series GPU, GeForce driver 616.64 or newer (its launch driver), and an
 // Unreal integration from NVIDIA. NVIDIA's Unreal plugin (DLSS 4.5, plugin 8.8.0) has none, and NVIDIA has published no
@@ -810,7 +861,9 @@ void AJsgbHost::SetupUpscaler()
 	FString Dlss, Tsr;
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbDLSS="), Dlss);
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbTSR="), Tsr);
-	bFrameGen = FParse::Param(FCommandLine::Get(), TEXT("JsgbFrameGen"));
+	int32 FrameGenFactor = 0;
+	bFrameGen = FParse::Param(FCommandLine::Get(), TEXT("JsgbFrameGen")) || FParse::Value(FCommandLine::Get(), TEXT("JsgbFrameGen="), FrameGenFactor);
+	FrameGenFrames = FMath::Clamp(FrameGenFactor - 1, 1, MaxGeneratedFrames());
 	UE_LOG(LogJsgbHost, Display, TEXT("GPU %s, driver %s"), *GRHIAdapterName, *GRHIAdapterUserDriverVersion);
 	ApplyUpscaler(Dlss, Tsr);
 	bShowHud = FParse::Param(FCommandLine::Get(), TEXT("JsgbHud"));
@@ -834,7 +887,10 @@ void AJsgbHost::CycleUpscaler()
 
 void AJsgbHost::ToggleFrameGen()
 {
-	bFrameGen = !bFrameGen;
+	// Off, 2x, then 3x and 4x where the GPU has Multi Frame Generation.
+	if (!bFrameGen) { bFrameGen = true; FrameGenFrames = 1; }
+	else if (FrameGenFrames < MaxGeneratedFrames()) { ++FrameGenFrames; }
+	else { bFrameGen = false; FrameGenFrames = 1; }
 	if (!bFrameGen) { SetCVar(TEXT("r.Streamline.DLSSG.Enable"), TEXT("0")); }
 	ApplyUpscaler(DlssMode, FString());
 }
@@ -900,8 +956,10 @@ void AJsgbHost::ApplyUpscaler(const FString& Mode, const FString& TsrPercent)
 	}
 	if (bFrameGen)
 	{
+		SetCVar(TEXT("r.Streamline.DLSSG.FramesToGenerate"), FString::FromInt(FrameGenFrames));
 		SetCVar(TEXT("r.Streamline.DLSSG.Enable"), TEXT("1"));
-		Upscaler += Upscaler.IsEmpty() ? TEXT("Frame Generation") : TEXT(" + Frame Generation");
+		const FString Label = FrameGenFrames > 1 ? FString::Printf(TEXT("Multi Frame Generation %dx"), FrameGenFrames + 1) : FString(TEXT("Frame Generation 2x"));
+		Upscaler += Upscaler.IsEmpty() ? Label : TEXT(" + ") + Label;
 	}
 	FString Vibrance;
 	if (FParse::Value(FCommandLine::Get(), TEXT("JsgbVibrance="), Vibrance))
@@ -1219,6 +1277,8 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		if (!PendingBundle.IsEmpty()) { LoadPublication(GameDir, PendingBundle); PendingBundle.Reset(); }
 		StartJs();
 	}
+	// A page game has no JavaScript in Unreal; only the time limit applies.
+	if (!PageIndex.IsEmpty() && MaxSeconds > 0 && FPlatformTime::Seconds() - HostStartSeconds > MaxSeconds) { FPlatformMisc::RequestExit(false); }
 	// The game's delegates belong to the JavaScript thread while it runs, so the game thread doesn't read them.
 	if (!Bridge || (!JsThread && !Bridge->OnFrame.IsBound())) { return; }
 	Audio->StartPending();

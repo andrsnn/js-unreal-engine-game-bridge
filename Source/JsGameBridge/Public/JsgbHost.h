@@ -93,9 +93,12 @@ private:
 	void SwapCss(double BuildMs);
 	void SetupUpscaler();
 	void ApplyUpscaler(const FString& Mode, const FString& TsrPercent);
-	/** F6: the next DLSS mode (off, DLAA, Quality, Balanced, Performance, DLSS 5). F7: Frame Generation on or off. */
+	/** F6: the next DLSS mode (off, DLAA, Quality, Balanced, Performance, DLSS 5). F7: Frame Generation off, 2x, and on RTX 50
+	 *  GPUs 3x and 4x (Multi Frame Generation). */
 	void CycleUpscaler();
 	void ToggleFrameGen();
+	/** Page mode: the game's own web build runs in the built-in browser (for 2D WebGL games such as pixi.js ones). */
+	void CreatePageView();
 	/** Whether DLSS 5 Neural Rendering can run here; when it can't, why (for the log) and the short form (for the readout). */
 	bool NeuralRenderingCheck(FString& Why, FString& Short) const;
 	void UpdateHud(float DeltaSeconds);
@@ -115,6 +118,8 @@ private:
 	TSharedPtr<class FJsgbInputProcessor> Input;
 	TArray<FString> PublicRoots;
 	FString Search, RegistryJson, PageCss;
+	/** The web build's page, relative to the first public root, when publication.json has "page"; empty otherwise. */
+	FString PageIndex;
 	bool bDocumentReady = false;
 	int64 PushedUIVersion = -1;
 	bool bRestart = false;
@@ -156,6 +161,8 @@ private:
 	FString DlssMode;
 	FString NeuralNote;
 	bool bFrameGen = false;
+	/** Frames generated per rendered frame: 1 (2x) to 3 (4x). */
+	int32 FrameGenFrames = 1;
 	/** -JsgbDlssKeys: F6 and F7 switch DLSS while the game runs, and the readout lists the keys. */
 	bool bShowKeys = false;
 	bool bShowHud = false;
