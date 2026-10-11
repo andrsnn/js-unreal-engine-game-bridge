@@ -33,5 +33,6 @@ renderer.setAnimationLoop(now => {
   const dt = last === null ? 0 : Math.min(0.1, (now - last) / 1000);
   last = now; time += dt;
   update?.(dt, time);
-  renderer.render(scene, update?.camera ?? camera);
+  // A case that draws for itself (render targets, an EffectComposer) sets update.skipRender.
+  if (!update?.skipRender) renderer.render(scene, update?.camera ?? camera);
 });

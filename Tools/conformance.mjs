@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Conformance check for one game: from one source commit, build the browser and Unreal targets, run
 // the same script on both (Tests/scripts/<game>.txt), and write a side-by-side film and stills.
-//   node Tools/conformance.mjs <game> [--script file] [--fps 10] [--film out.mp4] [--skip-web] [--skip-unreal]
+//   node Tools/conformance.mjs <game> [--script file] [--fps 10] [--film out.mp4] [--no-film] [--out dir] [--skip-web] [--skip-unreal]
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync, spawnSync} from 'node:child_process';
@@ -18,7 +18,8 @@ const fps = +flag('--fps', 10);
 const seed = flag('--seed', '1234');
 // A query string both sides boot with (Games/<game>.json conformanceSearch), e.g. to fix a world seed.
 const search = flag('--search', game.conformanceSearch ?? game.search ?? '');
-const root = path.join(game.out, 'conformance');
+// --out: where this run's frames, pairs, stills and report go (the suite runner gives each case its own).
+const root = path.resolve(flag('--out', path.join(game.out, 'conformance')));
 const webDir = path.join(root, 'web'), unrealDir = path.join(root, 'unreal'), pairDir = path.join(root, 'pairs');
 const film = path.resolve(flag('--film', path.join(root, `${game.id}-side-by-side.mp4`)));
 const node = process.execPath;
@@ -118,7 +119,7 @@ report.pairs = pairs;
 report.objectCheck = {pass: violations.length === 0 && checked > 0, unrealFramesChecked: checked, pairsCompared: compared, failures: violations.length, first: violations.slice(0, 20)};
 console.log(report.objectCheck.pass ? `object check passed: ${checked} Unreal frames, ${compared} compared with the browser`
   : `OBJECT CHECK FAILED on ${violations.length} of ${checked} frames; first: ${JSON.stringify(violations.slice(0, 3))}`);
-if (pairs > 1) {
+if (pairs > 1 && !has('--no-film')) {
   const font = 'C\\:/Windows/Fonts/arial.ttf';
   const label = (text, x) => `drawtext=fontfile='${font}':text='${text}':x=${x}:y=16:fontsize=26:fontcolor=white:box=1:boxcolor=black@0.55:boxborderw=8`;
   const filter = `[0:v]scale=1280:720,setsar=1,${label('Browser (Chrome, WebGL)', 16)}[a];[1:v]scale=1280:720,setsar=1,${label('Unreal Engine 5.8 (JsGameBridge)', 16)}[b];` +

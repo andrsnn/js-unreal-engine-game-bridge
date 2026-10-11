@@ -417,7 +417,54 @@ function emitInstances(im: THREE.InstancedMesh, gid: number, mat: number) {
   } else push(-1);
 }
 
+/** BatchedMesh: each geometry in the batch goes to Unreal as an instanced mesh of the instances that use it,
+ *  through a stand-in InstancedMesh kept per batch and geometry. */
+type BatchProxy = {mesh: THREE.InstancedMesh; key: string};
+const batchProxies = new WeakMap<object, Map<number, BatchProxy>>();
+const batchMatrix = new THREE.Matrix4(), batchColor = new THREE.Color();
+function emitBatched(b: THREE.BatchedMesh) {
+  const anyB = b as unknown as {_instanceInfo?: {geometryIndex: number; visible: boolean; active: boolean}[]; _colorsTexture?: unknown};
+  const infos = anyB._instanceInfo;
+  const mat = materialsOf(b)[0];
+  if (!infos || !mat?.visible) return;
+  const byGeometry = new Map<number, number[]>();
+  infos.forEach((info, id) => { if (info.active && info.visible) { const list = byGeometry.get(info.geometryIndex); if (list) list.push(id); else byGeometry.set(info.geometryIndex, [id]); } });
+  let proxies = batchProxies.get(b);
+  if (!proxies) { proxies = new Map(); batchProxies.set(b, proxies); }
+  const source = b.geometry;
+  for (const [geometryId, ids] of byGeometry) {
+    const range = b.getGeometryRangeAt(geometryId) as {vertexStart: number; vertexCount: number; indexStart: number; indexCount: number};
+    const key = `${range.vertexStart}|${range.vertexCount}|${range.indexStart}|${range.indexCount}|${source.attributes.position.version}|${source.index?.version ?? -1}`;
+    let p = proxies.get(geometryId);
+    if (!p || p.key !== key || p.mesh.instanceMatrix.count < ids.length) {
+      const sub = new THREE.BufferGeometry();
+      for (const [name, a] of Object.entries(source.attributes) as [string, THREE.BufferAttribute][]) {
+        sub.setAttribute(name, new THREE.BufferAttribute((a.array as Float32Array).slice(range.vertexStart * a.itemSize, (range.vertexStart + range.vertexCount) * a.itemSize), a.itemSize, a.normalized));
+      }
+      if (source.index && range.indexCount > 0) {
+        // Batch indices point into the whole buffer; the stand-in's start at its first vertex.
+        const idx = Array.from(source.index.array.subarray(range.indexStart, range.indexStart + range.indexCount), v => v - range.vertexStart);
+        sub.setIndex(idx);
+      }
+      p = {mesh: new THREE.InstancedMesh(sub, b.material, Math.max(ids.length, p?.mesh.instanceMatrix.count ?? 0)), key};
+      proxies.set(geometryId, p);
+    }
+    const im = p.mesh;
+    im.count = ids.length;
+    ids.forEach((id, i) => {
+      b.getMatrixAt(id, batchMatrix); im.setMatrixAt(i, batchMatrix);
+      if (anyB._colorsTexture) { b.getColorAt(id, batchColor); im.setColorAt(i, batchColor); }
+    });
+    im.instanceMatrix.needsUpdate = true;
+    if (im.instanceColor) im.instanceColor.needsUpdate = true;
+    im.matrixWorld.copy(b.matrixWorld);
+    im.castShadow = b.castShadow; im.receiveShadow = b.receiveShadow; im.frustumCulled = b.frustumCulled;
+    emitMesh(im);
+  }
+}
+
 function emitMesh(o: THREE.Mesh) {
+  if ((o as unknown as THREE.BatchedMesh).isBatchedMesh) { emitBatched(o as unknown as THREE.BatchedMesh); return; }
   const geo = o.geometry; if (!geo?.attributes?.position) return;
   const mats = materialsOf(o);
   if (!mats.length || mats.every(m => !m || !m.visible || m.colorWrite === false)) return;

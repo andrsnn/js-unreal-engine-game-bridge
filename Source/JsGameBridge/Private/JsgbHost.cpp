@@ -607,6 +607,7 @@ void AJsgbHost::StartServer()
 			O->SetNumberField(TEXT("voicesStarted"), H->Audio->StartedVoices);
 			O->SetNumberField(TEXT("voicesActive"), H->Audio->ActiveVoices());
 			O->SetNumberField(TEXT("voicesUnplayable"), H->Audio->UnplayableVoices);
+			O->SetNumberField(TEXT("memoryMB"), static_cast<double>(FPlatformMemory::GetStats().UsedPhysical) / (1024.0 * 1024.0));
 			O->SetNumberField(TEXT("jsMs"), H->TimedFrames ? H->JsMs / H->TimedFrames : 0);
 			Json(O);
 			return true;

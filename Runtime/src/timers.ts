@@ -70,6 +70,7 @@ export async function pumpFrame(budgetMs: number): Promise<void> {
   const rafStart = wallNow();
   pumpTiming.timersMs = rafStart - wallStart;
   const run = frameCallbacks; frameCallbacks = [];
+  animationFrames++;
   const ts = host.now();
   for (const [, fn] of run) { try { fn(ts); } catch (e) { report(e); } }
   await yieldJobs();
@@ -77,3 +78,5 @@ export async function pumpFrame(budgetMs: number): Promise<void> {
 }
 
 export const pendingTimers = () => timers.size;
+/** Animation frames run so far. */
+export let animationFrames = 0;

@@ -20,10 +20,13 @@ const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ?
 const game = loadGame(gameArg);
 const webOut = path.join(game.out, 'web');
 const requireFromGame = createRequire(path.join(game.repo, 'package.json'));
+// Tools a game doesn't install itself (Playwright for captures) come from the conformance suite's install.
+const requireFromSuite = createRequire(path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'Tests', 'suite', 'package.json'));
+const resolveTool = name => { try { return requireFromGame.resolve(name); } catch { return requireFromSuite.resolve(name); } };
 
 // The game's own Vite. Older versions resolve to a CommonJS wrapper that puts the API on default.
 async function loadVite() {
-  const m = await import(pathToFileURL(requireFromGame.resolve('vite')).href);
+  const m = await import(pathToFileURL(resolveTool('vite')).href);
   return m.build ? m : m.default;
 }
 
@@ -31,7 +34,9 @@ async function build() {
   const vite = await loadVite();
   const started = Date.now();
   await vite.build({root: game.repo, logLevel: 'warn', cacheDir: path.join(game.out, '.vite-cache'),
-    build: {outDir: webOut, emptyOutDir: true, copyPublicDir: false, reportCompressedSize: false}});
+    // A game whose page isn't index.html (a three.js example page) builds that page.
+    build: {outDir: webOut, emptyOutDir: true, copyPublicDir: false, reportCompressedSize: false,
+      ...(game.index && game.index !== 'index.html' ? {rollupOptions: {input: path.join(game.repo, game.index)}} : {})}});
   console.log(`web build of ${game.id} in ${Date.now() - started} ms -> ${webOut}`);
 }
 
@@ -41,7 +46,7 @@ function serve(port) {
   const roots = [webOut, ...game.publicRoots.filter(r => r !== game.out)];
   const server = http.createServer((req, res) => {
     const rel = decodeURIComponent(new URL(req.url, 'http://x').pathname);
-    const file = rel === '/' ? path.join(webOut, 'index.html') : roots.map(r => path.join(r, rel)).find(f => f.startsWith(path.resolve(path.dirname(f))) && fs.existsSync(f) && fs.statSync(f).isFile());
+    const file = rel === '/' ? path.join(webOut, game.index ?? 'index.html') : roots.map(r => path.join(r, rel)).find(f => f.startsWith(path.resolve(path.dirname(f))) && fs.existsSync(f) && fs.statSync(f).isFile());
     if (!file) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, {'Content-Type': MIME[path.extname(file).toLowerCase()] ?? 'application/octet-stream', 'Cache-Control': 'no-store'});
     fs.createReadStream(file).pipe(res);
@@ -50,7 +55,7 @@ function serve(port) {
 }
 
 async function capture() {
-  const playwright = await import(pathToFileURL(requireFromGame.resolve('playwright')).href);
+  const playwright = await import(pathToFileURL(resolveTool('playwright')).href);
   const chromium = playwright.chromium ?? playwright.default.chromium;
   const port = +flag('--port', 5391);
   const server = await serve(port);
@@ -164,7 +169,12 @@ async function capture() {
       }, unquote(s.args));
       if (box) await page.mouse.click(box.x, box.y); else errors.push('click: nothing matches ' + s.args);
       console.log(`click ${s.args} ${box ? 'ok' : 'missing'}`);
-    } else if (s.verb === 'key') await page.keyboard.press(unquote(s.args.split(',')[0]).replace(/^Key/, ''));
+    } else if (s.verb === 'key') {
+      // key 'Code' presses it; key 'Code','down' holds it until key 'Code','up'.
+      const [code, how] = s.args.split(',').map(a => unquote(a.trim()));
+      const key = code.replace(/^Key/, '');
+      if (how === 'down') await page.keyboard.down(key); else if (how === 'up') await page.keyboard.up(key); else await page.keyboard.press(key);
+    }
     else if (s.verb === 'eval') console.log('eval ->', String(await page.evaluate(s.args)).slice(0, 600));
     // Re-seed when the next click event starts (after pointer/mouse handlers), as the Unreal runtime does.
     else if (s.verb === 'seed') await page.evaluate(n => window.addEventListener('click', () => window.__jsgbSeed(n), {capture: true, once: true}), +s.args);
@@ -180,8 +190,9 @@ async function capture() {
     fs.writeFileSync(path.join(live, 'anchors.txt'), anchors.join('\n'));
   }
   if (frames) fs.writeFileSync(path.join(frames, 'times.txt'), times.join('\n'));
+  const jsHeapMB = await page.evaluate(() => performance.memory?.usedJSHeapSize / 1048576).catch(() => null);
   await browser.close(); server.close();
-  console.log(JSON.stringify({game: game.id, frames: index, errors: errors.slice(0, 20)}));
+  console.log(JSON.stringify({game: game.id, frames: index, errors: errors.slice(0, 20), jsHeapMB: jsHeapMB ? +jsHeapMB.toFixed(1) : null}));
 }
 
 // The dev server shows how long each page load took to its first frame, like the Unreal reload line.

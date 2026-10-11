@@ -47,9 +47,13 @@ function readPage(game) {
   let body = /<body\b[^>]*>([\s\S]*)<\/body>/i.exec(html)?.[1] ?? '';
   const inline = [], css = [];
   let entry = null;
+  // Module code written inline in the page (three.js's own examples and many small games) is the entry when
+  // the page has no module file.
+  const inlineModules = [];
   for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
     const src = /\bsrc="([^"]+)"/.exec(m[1])?.[1];
     if (/type="module"/.test(m[1]) && src) entry ??= src;
+    else if (/type="module"/.test(m[1])) inlineModules.push(m[2]);
     else if (!src && !/type="(?!text\/javascript)/.test(m[1])) inline.push(m[2]);
   }
   body = body.replace(/<script\b[\s\S]*?<\/script>/gi, '');
@@ -60,8 +64,11 @@ function readPage(game) {
     if (file) css.push({file, text: fs.readFileSync(file, 'utf8')});
   }
   for (const m of html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)) css.push({file: null, text: m[1]});
-  if (!entry) throw Error('index.html has no <script type="module" src>');
-  return {title, lang, htmlAttrs: attrs('html').replace(/lang="[^"]*"/, ''), bodyAttrs: attrs('body'), body, inline, css, entry: path.join(game.repo, game.entryOverride ?? entry)};
+  if (!entry && !game.entryOverride && !inlineModules.length) throw Error('the page has no <script type="module">');
+  const fromFile = !!(entry || game.entryOverride);
+  return {title, lang, htmlAttrs: attrs('html').replace(/lang="[^"]*"/, ''), bodyAttrs: attrs('body'), body, inline, css,
+    entry: fromFile ? path.join(game.repo, game.entryOverride ?? entry) : path.join(game.repo, '__page_module__.js'),
+    inlineModule: fromFile ? null : inlineModules.join('\n;\n')};
 }
 
 function threeFiles(game) {
@@ -78,7 +85,8 @@ function bridgePlugin(game, page) {
   return {
     name: 'jsgamebridge',
     setup(b) {
-      b.onResolve({filter: /^jsgb:game$/}, () => ({path: page.entry}));
+      b.onResolve({filter: /^jsgb:game$/}, () => page.inlineModule === null ? {path: page.entry} : {path: page.entry, namespace: 'jsgb-page-module'});
+      b.onLoad({filter: /.*/, namespace: 'jsgb-page-module'}, () => ({contents: page.inlineModule, resolveDir: game.repo, loader: 'js'}));
       // 'three' is the real library with WebGLRenderer replaced; the runtime reaches the real one as 'three-real'.
       b.onResolve({filter: /^three$/}, a => a.importer === path.join(src, 'three.ts') ? {path: three.core} : {path: path.join(src, 'three.ts')});
       b.onResolve({filter: /^three-real$/}, () => ({path: three.core}));

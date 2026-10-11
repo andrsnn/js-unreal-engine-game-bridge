@@ -1,0 +1,10 @@
+# three.js games_fps example: walk forward, strafe and jump.
+0 wait #container
+1 key 'KeyW','down'
+3 key 'KeyW','up'
+3.2 key 'KeyD','down'
+4.2 key 'KeyD','up'
+4.5 key 'Space'
+5 shot fps-5s
+7 shot fps-7s
+8 quit

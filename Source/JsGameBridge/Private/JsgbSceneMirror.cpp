@@ -1099,7 +1099,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			Camera->SetWorldLocationAndRotation(CameraFrom.GetLocation(), CameraFrom.Rotator());
 		}
 		else { Camera->SetWorldLocationAndRotation(CameraLocation, CameraRotation); }
-		if (D[20] > 0.5f) { Camera->SetProjectionMode(ECameraProjectionMode::Orthographic); Camera->SetOrthoWidth(D[21] * 2.f * ViewAspect * Cm); Camera->SetOrthoNearClipPlane(D[18] * Cm); Camera->SetOrthoFarClipPlane(D[19] * Cm); }
+		if (D[20] > 0.5f) { Camera->SetProjectionMode(ECameraProjectionMode::Orthographic); Camera->SetOrthoWidth(D[21] * 2.f * Cm); /* the view keeps its vertical extent (Maintain Y FOV), so this is the visible height */ Camera->SetOrthoNearClipPlane(D[18] * Cm); Camera->SetOrthoFarClipPlane(D[19] * Cm); }
 		else { Camera->SetProjectionMode(ECameraProjectionMode::Perspective); Camera->SetFieldOfView(CameraHFov); }
 		ApplyPost(D);
 	}
