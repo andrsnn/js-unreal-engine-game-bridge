@@ -1,0 +1,2 @@
+# Patches apply to files with LF line endings, so they stay LF in every checkout.
+*.patch text eol=lf
