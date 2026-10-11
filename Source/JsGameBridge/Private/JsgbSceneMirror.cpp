@@ -486,7 +486,7 @@ UStaticMesh* UJsgbSceneMirror::BuildMeshFromDescription(const FJsgbPendingGeomet
 	for (int32 S = 0; S < Slots; ++S)
 	{
 		const FName Name(*FString::Printf(TEXT("S%d"), S));
-		SM->GetStaticMaterials().Add(FStaticMaterial(nullptr, Name));
+		{ FStaticMaterial Slot(nullptr, Name); Slot.UVChannelData = FMeshUVChannelInfo(1.f); SM->GetStaticMaterials().Add(Slot); }
 	}
 	UStaticMesh::FBuildMeshDescriptionsParams Params;
 	Params.bFastBuild = true;
@@ -522,7 +522,7 @@ UStaticMesh* UJsgbSceneMirror::FinishMesh(FJsgbPreparedMesh& P, int32& OutSlots)
 	for (int32 S = 0; S < P.Slots; ++S)
 	{
 		const FName Name(*FString::Printf(TEXT("S%d"), S));
-		SM->GetStaticMaterials().Add(FStaticMaterial(nullptr, Name));
+		{ FStaticMaterial Slot(nullptr, Name); Slot.UVChannelData = FMeshUVChannelInfo(1.f); SM->GetStaticMaterials().Add(Slot); }
 	}
 	SM->SetRenderData(MoveTemp(P.RenderData));
 	SM->CalculateExtendedBounds();
