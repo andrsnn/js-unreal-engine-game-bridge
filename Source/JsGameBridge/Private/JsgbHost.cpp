@@ -327,14 +327,16 @@ bool AJsgbHost::LoadPublication(const FString& Dir, const FString& OverrideBundl
 	const TSharedPtr<FJsonObject> Pub = LoadJson(Dir / TEXT("publication.json"));
 	if (!Pub) { UE_LOG(LogJsgbHost, Error, TEXT("No publication.json in %s; build the game with Tools/jsgb.mjs build <game>"), *Dir); return false; }
 	GameDir = Dir;
-	BundlePath = OverrideBundle.IsEmpty() ? Pub->GetStringField(TEXT("bundle")) : OverrideBundle;
+	// Relative paths in publication.json are relative to the game's folder, so a copied game folder runs anywhere.
+	auto InGameDir = [&Dir](const FString& P) { return FPaths::IsRelative(P) ? FPaths::ConvertRelativePathToFull(Dir / P) : P; };
+	BundlePath = OverrideBundle.IsEmpty() ? InGameDir(Pub->GetStringField(TEXT("bundle"))) : OverrideBundle;
 	SourceCommit = Pub->GetStringField(TEXT("sourceCommit"));
 	Pub->TryGetStringField(TEXT("title"), Title);
 	BundleSHA256 = Sha256File(BundlePath);
 	Search = Arg(TEXT("JsgbSearch="), Pub->HasField(TEXT("search")) ? Pub->GetStringField(TEXT("search")) : FString());
 	PublicRoots.Reset();
 	const TArray<TSharedPtr<FJsonValue>>* Roots = nullptr;
-	if (Pub->TryGetArrayField(TEXT("publicRoots"), Roots)) { for (const TSharedPtr<FJsonValue>& R : *Roots) { PublicRoots.Add(R->AsString()); } }
+	if (Pub->TryGetArrayField(TEXT("publicRoots"), Roots)) { for (const TSharedPtr<FJsonValue>& R : *Roots) { PublicRoots.Add(InGameDir(R->AsString())); } }
 	PageCss.Reset();
 	if (const TSharedPtr<FJsonObject> Page = LoadJson(Dir / TEXT("page.json"))) { FFileHelper::LoadFileToString(PageCss, *(Dir / Page->GetStringField(TEXT("css")))); }
 	RegistryJson.Reset();

@@ -159,8 +159,8 @@ UMaterialInterface* UJsgbSceneMirror::ParentFor(int32 Variant)
 		DefaultCube = LoadObject<UTexture>(nullptr, TEXT("/Engine/EngineResources/DefaultTextureCube.DefaultTextureCube"));
 		DefaultVolume = LoadObject<UTexture>(nullptr, TEXT("/Engine/EngineResources/DefaultVolumeTexture.DefaultVolumeTexture"));
 		if (!Parents[VLit]) { UE_LOG(LogJsgbMirror, Warning, TEXT("JsGameBridge mirror materials missing; drawing with BasicShapeMaterial. Run Tools/materials/make_materials.py.")); }
-		UWorld* World = GetWorld();
-		const ERHIFeatureLevel::Type Level = World ? World->GetFeatureLevel() : GMaxRHIFeatureLevel;
+#if WITH_EDITOR
+		// In the editor the parents may still be compiling: wait for them and report any errors.
 		for (UMaterialInterface* P : Parents)
 		{
 			UMaterial* M = P ? P->GetMaterial() : nullptr;
@@ -169,6 +169,7 @@ UMaterialInterface* UJsgbSceneMirror::ParentFor(int32 Variant)
 			R->FinishCompilation();
 			for (const FString& E : R->GetCompileErrors()) { UE_LOG(LogJsgbMirror, Error, TEXT("%s: %s"), *M->GetName(), *E); }
 		}
+#endif
 	}
 	UMaterialInterface* P = Parents.IsValidIndex(Variant) ? Parents[Variant].Get() : nullptr;
 	return P ? P : (Parents[VLit] ? Parents[VLit].Get() : Fallback.Get());
@@ -485,7 +486,7 @@ UStaticMesh* UJsgbSceneMirror::BuildMeshFromDescription(const FJsgbPendingGeomet
 	for (int32 S = 0; S < Slots; ++S)
 	{
 		const FName Name(*FString::Printf(TEXT("S%d"), S));
-		SM->GetStaticMaterials().Add(FStaticMaterial(nullptr, Name, Name));
+		SM->GetStaticMaterials().Add(FStaticMaterial(nullptr, Name));
 	}
 	UStaticMesh::FBuildMeshDescriptionsParams Params;
 	Params.bFastBuild = true;
@@ -521,7 +522,7 @@ UStaticMesh* UJsgbSceneMirror::FinishMesh(FJsgbPreparedMesh& P, int32& OutSlots)
 	for (int32 S = 0; S < P.Slots; ++S)
 	{
 		const FName Name(*FString::Printf(TEXT("S%d"), S));
-		SM->GetStaticMaterials().Add(FStaticMaterial(nullptr, Name, Name));
+		SM->GetStaticMaterials().Add(FStaticMaterial(nullptr, Name));
 	}
 	SM->SetRenderData(MoveTemp(P.RenderData));
 	SM->CalculateExtendedBounds();

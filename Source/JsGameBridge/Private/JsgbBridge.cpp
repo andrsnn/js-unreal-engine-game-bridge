@@ -6,6 +6,9 @@
 #include "HAL/FileManager.h"
 #include "Misc/FileHelper.h"
 #include "Misc/Paths.h"
+#include "Misc/ScopeLock.h"
+#include "Misc/CommandLine.h"
+#include "Misc/Parse.h"
 #include "Misc/SecureHash.h"
 #include "Async/Async.h"
 #include "Dom/JsonObject.h"
@@ -17,6 +20,17 @@ THIRD_PARTY_INCLUDES_START
 THIRD_PARTY_INCLUDES_END
 
 DEFINE_LOG_CATEGORY_STATIC(LogJsgb, Log, All);
+
+// -JsgbFileLog=<file>: every game file read (from the page or a worker), one per line as "<root>\t<path>", so a
+// copy of the game for another PC can take just the files it uses.
+static void LogFileRead(const FString& Root, const FString& Rel)
+{
+	static FString FileLogPath = [] { FString P; FParse::Value(FCommandLine::Get(), TEXT("JsgbFileLog="), P); return P; }();
+	if (FileLogPath.IsEmpty()) { return; }
+	static FCriticalSection Lock;
+	FScopeLock Scope(&Lock);
+	FFileHelper::SaveStringToFile(Root + TEXT("\t") + Rel + TEXT("\n"), *FileLogPath, FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM, &IFileManager::Get(), FILEWRITE_Append);
+}
 
 int32 UJsgbBridge::WorkerCreate(const FString& Source, const FString& Url, const FString& Name)
 {
@@ -31,7 +45,7 @@ int32 UJsgbBridge::WorkerCreate(const FString& Source, const FString& Url, const
 		Rel.ReplaceInline(TEXT("\\"), TEXT("/"));
 		while (Rel.StartsWith(TEXT("/"))) { Rel.RightChopInline(1); }
 		if (Rel.Contains(TEXT("..")) || Rel.Contains(TEXT(":"))) { return Out; }
-		for (const FString& Root : Roots) { const FString Full = Root / Rel; if (FPaths::FileExists(Full) && FFileHelper::LoadFileToArray(Out, *Full, FILEREAD_Silent)) { break; } }
+		for (const FString& Root : Roots) { const FString Full = Root / Rel; if (FPaths::FileExists(Full) && FFileHelper::LoadFileToArray(Out, *Full, FILEREAD_Silent)) { LogFileRead(Root, Rel); break; } }
 		return Out;
 	}));
 	return Id;
@@ -137,7 +151,7 @@ FArrayBufferValue UJsgbBridge::ReadFile(const FString& Path)
 	for (const FString& Root : PublicRoots)
 	{
 		const FString Full = Root / Rel;
-		if (FPaths::FileExists(Full) && FFileHelper::LoadFileToArray(Out.Data, *Full, FILEREAD_Silent)) { return Out; }
+		if (FPaths::FileExists(Full) && FFileHelper::LoadFileToArray(Out.Data, *Full, FILEREAD_Silent)) { LogFileRead(Root, Rel); return Out; }
 	}
 	return Out;
 }
