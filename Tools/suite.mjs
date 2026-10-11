@@ -25,7 +25,7 @@ const index = fs.readFileSync(path.join(bridge, 'Tests/suite/src/cases/index.js'
 const allCases = (/export const cases = \{([^}]*)\}/.exec(index)?.[1] ?? '').split(',').map(s => s.trim()).filter(Boolean);
 const cases = has('--only-games') ? [] : flag('--cases') ? flag('--cases').split(',') : allCases;
 // Real games, run unchanged with their own conformance scripts (Tests/scripts/<game>.txt).
-const games = has('--only-cases') ? [] : (flag('--games') ?? 'orbit-demo,hardburn-demo,unlit').split(',').filter(Boolean);
+const games = has('--only-cases') ? [] : (flag('--games') ?? 'orbit-demo,hardburn-demo,unlit,threejs-fps,threejs-pointerlock').split(',').filter(Boolean);
 const entries = [
   // A case with its own steps (input) has Tests/scripts/suite-<case>.txt; the rest share Tests/scripts/suite.txt.
   ...cases.map(name => ({id: `case-${name}`, label: name, kind: 'case', game: 'suite', search: `?case=${name}`,

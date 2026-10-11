@@ -191,6 +191,8 @@ private:
 		AJsgbHost* H = Host.Get();
 		if (!H) { return false; }
 		for (int32 I = 0; I < 16; ++I) { if (E.GetKey() == PadButtons[I]) { Buttons[I] = bDown ? 1.f : 0.f; bPadSeen = true; return false; } }
+		// F6 and F7 (with -JsgbDlssKeys) switch DLSS modes and Frame Generation while the game runs.
+		if (bDown && !E.IsRepeat() && H->HandleDlssKey(E.GetKey())) { return true; }
 		if (H->HasOverlay()) { return false; }
 		const FString Code = DomCode(E.GetKey());
 		if (Code.IsEmpty()) { return false; }
@@ -757,6 +759,7 @@ double AJsgbHost::GameSeconds() const { return Bridge ? Bridge->NowMs() / 1000.0
 
 // Upscaling and frame generation, chosen on the command line:
 //   -JsgbDLSS=dlaa|quality|balanced|performance|ultra   NVIDIA DLSS Super Resolution (DLAA renders at full resolution)
+//   -JsgbDLSS=5                                          DLSS 5 Neural Rendering where it can run, else DLSS 4.5 DLAA
 //   -JsgbTSR=<screen percentage>                         Unreal's TSR, on any GPU
 //   -JsgbFrameGen                                        DLSS Frame Generation (RTX 40 and later, needs a window)
 //   -JsgbVibrance=<0..1>                                 RTX Dynamic Vibrance
@@ -768,20 +771,78 @@ static void SetCVar(const TCHAR* Name, const FString& Value)
 	else { UE_LOG(LogJsgbHost, Warning, TEXT("Console variable %s is missing; is its plugin enabled?"), Name); }
 }
 
+// DLSS 5 Neural Rendering needs an RTX 50 series GPU, GeForce driver 616.64 or newer (its launch driver), and an
+// Unreal integration from NVIDIA. NVIDIA's Unreal plugin (DLSS 4.5, plugin 8.8.0) has none, and NVIDIA has published no
+// DLSS 5 SDK or plugin for developers, so today this reports why it can't run and the host uses DLSS 4.5.
+bool AJsgbHost::NeuralRenderingCheck(FString& Why) const
+{
+	TArray<FString> Missing;
+	const FString Gpu = GRHIAdapterName;
+	if (!IsRHIDeviceNVIDIA() || !Gpu.Contains(TEXT("RTX 50"))) { Missing.Add(FString::Printf(TEXT("the GPU is %s, and DLSS 5 needs an RTX 50 series GPU"), *Gpu)); }
+	const FString Driver = GRHIAdapterUserDriverVersion;
+	FString Major, Minor;
+	const bool bParsed = Driver.Split(TEXT("."), &Major, &Minor);
+	const double Version = bParsed ? FCString::Atod(*Major) + FCString::Atod(*Minor.Left(2)) / 100.0 : 0.0;
+	if (Version < 616.64 - 1e-6) { Missing.Add(FString::Printf(TEXT("the driver is %s, and DLSS 5 needs 616.64 or newer"), Driver.IsEmpty() ? TEXT("unknown") : *Driver)); }
+	const TSharedPtr<IPlugin> Dlss = IPluginManager::Get().FindPlugin(TEXT("DLSS"));
+	Missing.Add(FString::Printf(TEXT("NVIDIA's DLSS plugin for Unreal (%s) has no DLSS 5 Neural Rendering, and NVIDIA has released none for developers"),
+		Dlss.IsValid() ? *FString::Printf(TEXT("version %s"), *Dlss->GetDescriptor().VersionName) : TEXT("not installed")));
+	Why = FString::Join(Missing, TEXT("; "));
+	return false;
+}
+
 void AJsgbHost::SetupUpscaler()
 {
 	FString Dlss, Tsr;
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbDLSS="), Dlss);
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbTSR="), Tsr);
+	bFrameGen = FParse::Param(FCommandLine::Get(), TEXT("JsgbFrameGen"));
+	UE_LOG(LogJsgbHost, Display, TEXT("GPU %s, driver %s"), *GRHIAdapterName, *GRHIAdapterUserDriverVersion);
 	ApplyUpscaler(Dlss, Tsr);
 	bShowHud = FParse::Param(FCommandLine::Get(), TEXT("JsgbHud"));
+	bShowKeys = FParse::Param(FCommandLine::Get(), TEXT("JsgbDlssKeys"));
+}
+
+bool AJsgbHost::HandleDlssKey(const FKey& Key)
+{
+	if (!bShowKeys || (Key != EKeys::F6 && Key != EKeys::F7)) { return false; }
+	if (Key == EKeys::F6) { CycleUpscaler(); } else { ToggleFrameGen(); }
+	return true;
+}
+
+void AJsgbHost::CycleUpscaler()
+{
+	static const TCHAR* Modes[] = {TEXT("off"), TEXT("dlaa"), TEXT("quality"), TEXT("balanced"), TEXT("performance"), TEXT("5")};
+	int32 Next = 0;
+	for (int32 I = 0; I < UE_ARRAY_COUNT(Modes); ++I) { if (DlssMode == Modes[I]) { Next = (I + 1) % UE_ARRAY_COUNT(Modes); } }
+	ApplyUpscaler(Modes[Next], FString());
+}
+
+void AJsgbHost::ToggleFrameGen()
+{
+	bFrameGen = !bFrameGen;
+	if (!bFrameGen) { SetCVar(TEXT("r.Streamline.DLSSG.Enable"), TEXT("0")); }
+	ApplyUpscaler(DlssMode, FString());
 }
 
 // Switches anti-aliasing and upscaling while the game runs (also the script step "upscaler dlaa|quality|...|off|tsr <percent>").
-void AJsgbHost::ApplyUpscaler(const FString& DlssMode, const FString& TsrPercent)
+void AJsgbHost::ApplyUpscaler(const FString& Mode, const FString& TsrPercent)
 {
-	FString Dlss = DlssMode.ToLower(), Tsr = TsrPercent;
+	FString Dlss = Mode.ToLower(), Tsr = TsrPercent;
+	DlssMode = Dlss.IsEmpty() ? FString(TEXT("off")) : Dlss;
 	Upscaler.Reset();
+	NeuralNote.Reset();
+	// DLSS 5: Neural Rendering where it can run; otherwise DLSS 4.5 DLAA, with the reason in the log and the readout.
+	if (Dlss == TEXT("5") || Dlss == TEXT("dlss5"))
+	{
+		FString Why;
+		if (!NeuralRenderingCheck(Why))
+		{
+			UE_LOG(LogJsgbHost, Display, TEXT("DLSS 5 Neural Rendering is off: %s. Using DLSS 4.5 DLAA."), *Why);
+			NeuralNote = TEXT("DLSS 5 unavailable: ") + Why;
+			Dlss = TEXT("dlaa");
+		}
+	}
 	const bool bNvidia = IsRHIDeviceNVIDIA();
 	const bool bDlssPlugin = IConsoleManager::Get().FindConsoleVariable(TEXT("r.NGX.DLSS.Enable")) != nullptr;
 	double Percent = 100;
@@ -823,7 +884,7 @@ void AJsgbHost::ApplyUpscaler(const FString& DlssMode, const FString& TsrPercent
 		SetCVar(TEXT("r.ScreenPercentage"), TEXT("100"));
 		if (bDlssPlugin) { SetCVar(TEXT("r.NGX.DLSS.Enable"), TEXT("0")); }
 	}
-	if (FParse::Param(FCommandLine::Get(), TEXT("JsgbFrameGen")))
+	if (bFrameGen)
 	{
 		SetCVar(TEXT("r.Streamline.DLSSG.Enable"), TEXT("1"));
 		Upscaler += Upscaler.IsEmpty() ? TEXT("Frame Generation") : TEXT(" + Frame Generation");
@@ -884,7 +945,8 @@ void AJsgbHost::UpdateHud(float DeltaSeconds)
 	// While a capture runs, each frame waits for its screenshot, so the frame rate means nothing: show the mode only.
 	if (!CaptureDir.IsEmpty()) { HudText->SetText(FText::FromString(Upscaler)); return; }
 	const FString Rate = HudPresentedFps > 0 ? FString::Printf(TEXT("%.0f FPS on screen, %.0f rendered"), HudPresentedFps, HudFps) : FString::Printf(TEXT("%.0f FPS"), HudFps);
-	HudText->SetText(FText::FromString(FString::Printf(TEXT("%s\n%s  (GPU %.1f ms)"), *Upscaler, *Rate, FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles()))));
+	HudText->SetText(FText::FromString(FString::Printf(TEXT("%s\n%s  (GPU %.1f ms)%s%s"), *Upscaler, *Rate, FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles()),
+		NeuralNote.IsEmpty() ? TEXT("") : *(TEXT("\n") + NeuralNote.Replace(TEXT("; "), TEXT(";\n"))), bShowKeys ? TEXT("\nF6: DLSS mode   F7: Frame Generation") : TEXT(""))));
 }
 
 void AJsgbHost::SwapCss(double BuildMs)

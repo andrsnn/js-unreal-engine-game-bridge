@@ -57,6 +57,8 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	void SendKey(const FString& Type, const FString& Code, bool bRepeat);
+	/** F6 and F7 with -JsgbDlssKeys: switch the DLSS mode or Frame Generation. True when the key was used. */
+	bool HandleDlssKey(const FKey& Key);
 	void SendMouse(const FString& Type, float X, float Y, int32 Button, int32 Buttons, float DX, float DY);
 	void SendWheel(float DeltaY);
 	void SendGamepads(const FString& Json);
@@ -90,7 +92,12 @@ private:
 	void ShowReloadBanner(const FString& Text);
 	void SwapCss(double BuildMs);
 	void SetupUpscaler();
-	void ApplyUpscaler(const FString& DlssMode, const FString& TsrPercent);
+	void ApplyUpscaler(const FString& Mode, const FString& TsrPercent);
+	/** F6: the next DLSS mode (off, DLAA, Quality, Balanced, Performance, DLSS 5). F7: Frame Generation on or off. */
+	void CycleUpscaler();
+	void ToggleFrameGen();
+	/** Whether DLSS 5 Neural Rendering can run here, and why not when it can't. */
+	bool NeuralRenderingCheck(FString& Why) const;
 	void UpdateHud(float DeltaSeconds);
 	void StartRecording(const FString& Dir, double Fps);
 	void StopRecording();
@@ -143,6 +150,12 @@ private:
 	double ReloadStart = -1, ReloadBuildMs = -1, LastReloadMs = -1, LastBuildMs = -1;
 	// Upscaling and the optional FPS readout (-JsgbHud).
 	FString Upscaler;
+	/** The DLSS mode asked for (dlaa, quality, ..., 5, or empty), and the DLSS 5 check's result for the readout. */
+	FString DlssMode;
+	FString NeuralNote;
+	bool bFrameGen = false;
+	/** -JsgbDlssKeys: F6 and F7 switch DLSS while the game runs, and the readout lists the keys. */
+	bool bShowKeys = false;
 	bool bShowHud = false;
 	int32 HudFrames = 0;
 	double HudSeconds = 0, HudFps = 0, HudPresentedFps = -1;
