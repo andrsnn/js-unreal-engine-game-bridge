@@ -999,6 +999,13 @@ void UJsgbSceneMirror::ApplyPost(const float* H)
 	FPostProcessSettings& P = Camera->PostProcessSettings;
 	// Three.js exposure multiplies linear colour; Unreal's bias is in stops.
 	P.bOverride_AutoExposureBias = true; P.AutoExposureBias = FMath::Log2(FMath::Max(1e-3f, H[35]));
+	// renderer.toneMapping: without a tone curve (NoToneMapping, LinearToneMapping) three.js only clamps and
+	// encodes to sRGB, so Unreal's filmic curve goes too; for the curves (ACES, AgX and the rest) Unreal's filmic
+	// curve is the nearest match. three.js never widens the gamut or corrects blues.
+	const int32 ToneMapping = static_cast<int32>(H[36]);
+	P.bOverride_ToneCurveAmount = true; P.ToneCurveAmount = ToneMapping <= 1 ? 0.f : 1.f;
+	P.bOverride_ExpandGamut = true; P.ExpandGamut = 0.f;
+	P.bOverride_BlueCorrection = true; P.BlueCorrection = 0.f;
 	// UnrealBloomPass strength is close to Unreal's bloom intensity; no pass means no bloom.
 	P.bOverride_BloomIntensity = true; P.BloomIntensity = H[37] > 0 ? H[37] : 0.f;
 	P.bOverride_BloomThreshold = true; P.BloomThreshold = H[37] > 0 ? H[39] : -1.f;
