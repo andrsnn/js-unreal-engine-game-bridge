@@ -1,0 +1,20 @@
+All selected assets CC0-1.0. Official Kenney licence texts accompany this bank. OGA author pages and exact original files are listed per output in bank.json.
+Tabasco: recorded firearms https://opengameart.org/content/gunshot-sounds
+SpringySpringo: recorded airsoft handling https://opengameart.org/content/gun-reload-sounds
+rubberduck: creature designs https://opengameart.org/content/80-cc0-creture-sfx-2
+SketchMan3: wind loop https://opengameart.org/content/wind-whoosh-loop
+gmason: recorded ocean-derived engine rumble https://opengameart.org/content/underwater-or-space-engine-rumble
+transitking/qubodup: waves https://opengameart.org/content/water-waves
+No Hunyuan audio generated: existing local service unavailable.
+
+Extensions (all CC0-1.0; exact source files and processing in bank.json):
+Free Firearm Sound Library, Ben Jaszczak/Brian Nelson/Kevin Heras/Matthew Nanney: https://opengameart.org/node/21826 (individual prepared Mossberg takes redistributed at pinned fps-asset-kit GitHub commit).
+Fantozzi/qubodup recorded sand footsteps: https://opengameart.org/content/fantozzis-footsteps-grasssand-stone
+rubberduck recorded mud: https://opengameart.org/content/25-cc0-mud-sfx
+OwlishMedia recorded mechanical handling clicks: https://opengameart.org/content/87-clickety-clips (dry-trigger cue proxy, not firearm discharge).
+Robin Lamb / VCSL and VSCO 2 CE recorded instrument notifications: https://opengameart.org/content/ui-sound-effects-button-clicks-user-feedback-notifications
+Iochi Glaucus recorded fabric: https://opengameart.org/content/fabric-rustling
+domasx2 motor from public-domain car recording, remade from compatible source: https://opengameart.org/content/racing-car-engine-sound-loops
+LokiF actual bubbling only, digital bugs excluded: https://opengameart.org/content/swamp-environment-audio
+AntumDeluge recorded fireplace: https://opengameart.org/content/fire-crackling
+Storm is actual wind/recorded ocean-rumble layering; volcano is fireplace/recorded rumble design, not a volcano field recording. loops.rumble intentionally reuses the original real low-rumble file, not a new sound variant.

@@ -1,0 +1,173 @@
+{
+  "licence": "CC0-1.0",
+  "files": {
+    "energy-laser-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Laser exciter clamp, falling current arc and damped electrical whine",
+      "duration": 0.9,
+      "loop": false
+    },
+    "energy-plasma-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Heavy capacitive plasma discharge with airy arc and low frame kick",
+      "duration": 0.9,
+      "loop": false
+    },
+    "pdc-mechanism-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "PDC feed servo spin and barrel-frame vibration under the report",
+      "duration": 0.42,
+      "loop": false
+    },
+    "launch-motor-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Guided motor burn winding upward after cold gas; hull coupled, no space echo",
+      "duration": 1.8,
+      "loop": false
+    },
+    "energy-laser-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Laser exciter clamp, falling current arc and damped electrical whine",
+      "duration": 0.9,
+      "loop": false
+    },
+    "energy-plasma-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Heavy capacitive plasma discharge with airy arc and low frame kick",
+      "duration": 0.9,
+      "loop": false
+    },
+    "pdc-mechanism-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "PDC feed servo spin and barrel-frame vibration under the report",
+      "duration": 0.42,
+      "loop": false
+    },
+    "launch-motor-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Guided motor burn winding upward after cold gas; hull coupled, no space echo",
+      "duration": 1.8,
+      "loop": false
+    },
+    "energy-laser-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Laser exciter clamp, falling current arc and damped electrical whine",
+      "duration": 0.9,
+      "loop": false
+    },
+    "energy-plasma-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Heavy capacitive plasma discharge with airy arc and low frame kick",
+      "duration": 0.9,
+      "loop": false
+    },
+    "pdc-mechanism-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "PDC feed servo spin and barrel-frame vibration under the report",
+      "duration": 0.42,
+      "loop": false
+    },
+    "launch-motor-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Guided motor burn winding upward after cold gas; hull coupled, no space echo",
+      "duration": 1.8,
+      "loop": false
+    },
+    "energy-laser-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Laser exciter clamp, falling current arc and damped electrical whine",
+      "duration": 0.9,
+      "loop": false
+    },
+    "energy-plasma-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Heavy capacitive plasma discharge with airy arc and low frame kick",
+      "duration": 0.9,
+      "loop": false
+    },
+    "pdc-mechanism-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "PDC feed servo spin and barrel-frame vibration under the report",
+      "duration": 0.42,
+      "loop": false
+    },
+    "launch-motor-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Guided motor burn winding upward after cold gas; hull coupled, no space echo",
+      "duration": 1.8,
+      "loop": false
+    },
+    "comms-key-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Short radio squelch comms-key; original filtered noise",
+      "duration": 0.11,
+      "loop": false
+    },
+    "comms-close-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Short radio squelch comms-close; original filtered noise",
+      "duration": 0.14,
+      "loop": false
+    },
+    "comms-key-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Short radio squelch comms-key; original filtered noise",
+      "duration": 0.11,
+      "loop": false
+    },
+    "comms-close-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Short radio squelch comms-close; original filtered noise",
+      "duration": 0.14,
+      "loop": false
+    },
+    "score-machinery.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v3.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Sparse tuned machinery motif; synchronized 16-bar 72 BPM original score stem",
+      "duration": 53.333333333333336,
+      "loop": true
+    }
+  }
+}

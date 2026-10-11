@@ -1,0 +1,769 @@
+{
+  "version": 1,
+  "game": "unlit",
+  "audioPass": 5,
+  "sourceCommit": "f56c04541e632cf6ab6ffd03b371d718753b4fdc",
+  "eventControls": {
+    "cutter:stop": {
+      "stop": [
+        "cutter-rotor",
+        "cutter-contact"
+      ],
+      "fadeSeconds": 0.035,
+      "perCue": {
+        "cutter-rotor": {
+          "gainTimeConstantSeconds": 0.12,
+          "hardStopAfterSeconds": 0.5,
+          "pitchTarget": 0.5,
+          "pitchTimeConstantSeconds": 0.13
+        },
+        "cutter-contact": {
+          "gainTimeConstantSeconds": 0.035
+        }
+      },
+      "preserveCurrentEnvelope": true,
+      "cancelPendingStopOnRestart": true
+    },
+    "cutterHum": {
+      "startOrUpdate": [
+        "cutter-rotor",
+        "cutter-contact"
+      ],
+      "expiresAfterSeconds": 0.18,
+      "parameters": [
+        "distance",
+        "pan",
+        "resistance",
+        "underwater"
+      ],
+      "cancelPendingStopOnRestart": true
+    },
+    "setEngine": {
+      "startOrUpdate": [
+        "drive-core",
+        "drive-pressure"
+      ],
+      "expiresAfterSeconds": 0.35,
+      "parameters": [
+        "ids",
+        "throttle",
+        "boost"
+      ],
+      "source": "Native space thrustCommand or planet plume burn/boosting; parked/docked/dead clears engine owner"
+    },
+    "pause/mute/hidden": {
+      "stopTransientVoices": true,
+      "silenceLoops": true,
+      "cancelPendingAutomation": true
+    },
+    "beam-loop": {
+      "expiresAfterSeconds": 0.14,
+      "loop": true,
+      "fadeSeconds": 0.035,
+      "stopAfterSeconds": 0.17
+    },
+    "structure": {
+      "oneShot": true,
+      "trigger": "actual rock_fall alongside fall recording",
+      "bus": "impacts",
+      "pitch": 0.66
+    }
+  },
+  "mix": {
+    "runtimePresence": {
+      "weapons": 2.7,
+      "impacts": 2.4,
+      "engines": 2.7,
+      "ambience": 1,
+      "ui": 1
+    },
+    "channels": "All physical layers enter existing channel sliders, effects/alert duck and master/mute/limiter. Space dry; cave/outdoor returns post-slider. Existing score/narration unchanged."
+  },
+  "limits": {
+    "physicalLoops": 4,
+    "physicalTransientVoices": 20,
+    "priorMotionLoops": 7
+  },
+  "assets": {
+    "arc": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_arc_404fcfb3.SC_arc_404fcfb3",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "armor": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_armor_d81ea159.SC_armor_d81ea159",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "beam-loop": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_beam_loop_4ae0a338.SC_beam_loop_4ae0a338",
+      "loop": true,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "blast": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_blast_982d3cec.SC_blast_982d3cec",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "blast-body-0": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_blast_body_0_9682b1e2.SC_blast_body_0_9682b1e2",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "blast-body-1": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_blast_body_1_f746be92.SC_blast_body_1_f746be92",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "blast-body-2": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_blast_body_2_ecb97202.SC_blast_body_2_ecb97202",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "body": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_body_230d8358.SC_body_230d8358",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "boost": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_boost_ca4264fa.SC_boost_ca4264fa",
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 36000
+    },
+    "charge-loop": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_charge_loop_f4a8b5d0.SC_charge_loop_f4a8b5d0",
+      "loop": true,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "chips": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_chips_d9705d8e.SC_chips_d9705d8e",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "cutter-contact": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_cutter_contact_7fe414a8.SC_cutter_contact_7fe414a8",
+      "loop": true,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "cutter-rotor": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_cutter_rotor_b1fcc96c.SC_cutter_rotor_b1fcc96c",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "drive-boost-0": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_drive_boost_0_3342a0ce.SC_drive_boost_0_3342a0ce",
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 36000
+    },
+    "drive-boost-1": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_drive_boost_1_e09987ee.SC_drive_boost_1_e09987ee",
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 36000
+    },
+    "drive-core": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_drive_core_0b4ecb9b.SC_drive_core_0b4ecb9b",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 36000
+    },
+    "drive-ignite-0": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_drive_ignite_0_774f3683.SC_drive_ignite_0_774f3683",
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 36000
+    },
+    "drive-ignite-1": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_drive_ignite_1_34c7d8de.SC_drive_ignite_1_34c7d8de",
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 36000
+    },
+    "drive-pressure": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_drive_pressure_9ba25a5d.SC_drive_pressure_9ba25a5d",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 36000
+    },
+    "engine-azure": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_engine_azure_1c17007e.SC_engine_azure_1c17007e",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 42000
+    },
+    "engine-boost": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_engine_boost_96fd6c3e.SC_engine_boost_96fd6c3e",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 42000
+    },
+    "engine-rebuilt": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_engine_rebuilt_9a50eb6a.SC_engine_rebuilt_9a50eb6a",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 42000
+    },
+    "engine-vulcan": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_engine_vulcan_cd813034.SC_engine_vulcan_cd813034",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 42000
+    },
+    "explosion": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_explosion_4e33d57d.SC_explosion_4e33d57d",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "fall": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_fall_2dc46af1.SC_fall_2dc46af1",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "fleshImpact": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_fleshImpact_18827956.SC_fleshImpact_18827956",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "gun": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_gun_3eed0f33.SC_gun_3eed0f33",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "gun-body-0": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_gun_body_0_0d7750da.SC_gun_body_0_0d7750da",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "gun-body-1": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_gun_body_1_c36af9dc.SC_gun_body_1_c36af9dc",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "gun-body-2": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_gun_body_2_c30b2e50.SC_gun_body_2_c30b2e50",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "gun-body-3": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_gun_body_3_d3dfae64.SC_gun_body_3_d3dfae64",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "gunCrack": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_gunCrack_4db45532.SC_gunCrack_4db45532",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "gunMechanism": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_gunMechanism_15526efa.SC_gunMechanism_15526efa",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "gunTail": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_gunTail_bf8ca2d8.SC_gunTail_bf8ca2d8",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "ignite": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_ignite_5b8af9e5.SC_ignite_5b8af9e5",
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 36000
+    },
+    "kick": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_kick_0db10f2c.SC_kick_0db10f2c",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "lmg": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_lmg_602c42b7.SC_lmg_602c42b7",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "metal": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_metal_03ecab66.SC_metal_03ecab66",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "metal-hit-0": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_metal_hit_0_01ac9fad.SC_metal_hit_0_01ac9fad",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "metal-hit-1": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_metal_hit_1_87916bf9.SC_metal_hit_1_87916bf9",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "metal-hit-2": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_metal_hit_2_e74864bd.SC_metal_hit_2_e74864bd",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "metalImpact": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_metalImpact_b17905fe.SC_metalImpact_b17905fe",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "missile": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_missile_3fa1d3c4.SC_missile_3fa1d3c4",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "missileCrump": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_missileCrump_aad44db4.SC_missileCrump_aad44db4",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "pistol": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_pistol_a00f2954.SC_pistol_a00f2954",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "plasma": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_plasma_0c4ac837.SC_plasma_0c4ac837",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "pulse": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_pulse_41b589ea.SC_pulse_41b589ea",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rail": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_rail_fdf0d753.SC_rail_fdf0d753",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rifle": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_rifle_6dcdffae.SC_rifle_6dcdffae",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rock-chip-0": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_rock_chip_0_ab7197cd.SC_rock_chip_0_ab7197cd",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rock-chip-1": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_rock_chip_1_2db85494.SC_rock_chip_1_2db85494",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rock-chip-2": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_rock_chip_2_d1454d64.SC_rock_chip_2_d1454d64",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rock-chip-3": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_rock_chip_3_7514fa37.SC_rock_chip_3_7514fa37",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rock-fall-0": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_rock_fall_0_750f1abc.SC_rock_fall_0_750f1abc",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rock-fall-1": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_rock_fall_1_00ae37a8.SC_rock_fall_1_00ae37a8",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rock-fall-2": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_rock_fall_2_942919cd.SC_rock_fall_2_942919cd",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rotary": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_rotary_3b764e72.SC_rotary_3b764e72",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "shotgun": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_shotgun_330a3129.SC_shotgun_330a3129",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "smg": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_smg_018b3e2b.SC_smg_018b3e2b",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "sniper": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_sniper_d1a4be19.SC_sniper_d1a4be19",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "stone": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_stone_dc3d50da.SC_stone_dc3d50da",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "structure": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_structure_520cdb56.SC_structure_520cdb56",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rock_crack": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_chips_d9705d8e.SC_chips_d9705d8e",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rock_fall": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_fall_2dc46af1.SC_fall_2dc46af1",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "impact:armor": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_metal_03ecab66.SC_metal_03ecab66",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "impact:body": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_fleshImpact_18827956.SC_fleshImpact_18827956",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "impact:stone": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_chips_d9705d8e.SC_chips_d9705d8e",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "impact:shield": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_metal_03ecab66.SC_metal_03ecab66",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "missile_impact": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_blast_982d3cec.SC_blast_982d3cec",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "boss_crash": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_blast_982d3cec.SC_blast_982d3cec",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "arc_blast": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_blast_982d3cec.SC_blast_982d3cec",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "cutterHum": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_cutter_rotor_b1fcc96c.SC_cutter_rotor_b1fcc96c",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "cutter:start": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_metal_03ecab66.SC_metal_03ecab66",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "cutter:stop": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_cutter_rotor_b1fcc96c.SC_cutter_rotor_b1fcc96c",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "setEngine": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_drive_core_0b4ecb9b.SC_drive_core_0b4ecb9b",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 36000
+    },
+    "engine": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_drive_core_0b4ecb9b.SC_drive_core_0b4ecb9b",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 36000
+    },
+    "weapon": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_gun_3eed0f33.SC_gun_3eed0f33",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "played:gunCrack": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_gunCrack_4db45532.SC_gunCrack_4db45532",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "played:gunTail": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_gunTail_bf8ca2d8.SC_gunTail_bf8ca2d8",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "played:gunMechanism": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_gunMechanism_15526efa.SC_gunMechanism_15526efa",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "played:kick": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_kick_0db10f2c.SC_kick_0db10f2c",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "played:rifle": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_rifle_6dcdffae.SC_rifle_6dcdffae",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "played:shotgun": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_shotgun_330a3129.SC_shotgun_330a3129",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "played:rail": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_rail_fdf0d753.SC_rail_fdf0d753",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "played:plasma": {
+      "sound": "/JsGameBridge/Audio/UnlitWorlds/SC_plasma_0c4ac837.SC_plasma_0c4ac837",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    }
+  }
+}

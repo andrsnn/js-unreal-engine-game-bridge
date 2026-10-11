@@ -1,0 +1,129 @@
+{
+  "licence": "Mixed CC0 original/metal layers and Sonniss licensed recorded hammer; derivatives are not wholly CC0.",
+  "recordingSources": {
+    "hammer": {
+      "file": "Spring_Powered_Hammer_Impacts_Various_Speeds_MKH8060.wav",
+      "author": "Pole Position - The Ironwork Machinery Library",
+      "licence": "Sonniss GDC Bundle EULA v2.0 (royalty-free commercial game use; not CC0)",
+      "url": "https://sonniss.com/gameaudiogdc/",
+      "licenceURL": "https://sonniss.com/gdc-bundle-license/",
+      "sha256": "e9faf0f669a05f5c3561df217b92ab1df793383841286ae24b1b90f03d17acb1"
+    },
+    "clink2.wav": {
+      "author": "Brian MacIntosh (BMacZero)",
+      "licence": "CC0-1.0",
+      "url": "https://opengameart.org/content/metal-impact-sounds",
+      "sha256": "ecbf5a221f2aff32376b8584eea875d0b7d9963d22f6c16e237f5e7b63f51dc2"
+    },
+    "clink3.wav": {
+      "author": "Brian MacIntosh (BMacZero)",
+      "licence": "CC0-1.0",
+      "url": "https://opengameart.org/content/metal-impact-sounds",
+      "sha256": "dd07516e51e9092efc36d13668de7d29d096955a437894cedeb5064933e2650f"
+    }
+  },
+  "files": {
+    "pdc-0.ogg": {
+      "source": "Processed existing shipped naval-v4 PDC; tools/generate-audio-v5.py",
+      "description": "Short physical barrel phrase; preserved bass recoil, articulated recorded hammer/casing contacts and finite feed release",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "hammer",
+        "clink2.wav",
+        "clink3.wav"
+      ],
+      "derivedFrom": "../naval-v4/pdc-0.ogg",
+      "derivedSourceSha256": "5f403c905a28c8cd84e07341c4f018e269c25bfdcbfb6c38931a3ab29ab5caa8",
+      "sha256": "8a229da01ee35a8b4214d9c8241abb33f65921ff645cad56a460f1646e666131",
+      "duration": 0.28,
+      "sampleRate": 48000,
+      "loop": false
+    },
+    "pdc-1.ogg": {
+      "source": "Processed existing shipped naval-v4 PDC; tools/generate-audio-v5.py",
+      "description": "Short physical barrel phrase; preserved bass recoil, articulated recorded hammer/casing contacts and finite feed release",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "hammer",
+        "clink2.wav",
+        "clink3.wav"
+      ],
+      "derivedFrom": "../naval-v4/pdc-1.ogg",
+      "derivedSourceSha256": "6b121dcfe9794b068d3964aef8fc96876233d8f44e64e328b372ec2bd88efc26",
+      "sha256": "b0785df8fc8f45a8c7acca7ea8fe09ea6047854e782768925c70cb3758acac74",
+      "duration": 0.292,
+      "sampleRate": 48000,
+      "loop": false
+    },
+    "pdc-2.ogg": {
+      "source": "Processed existing shipped naval-v4 PDC; tools/generate-audio-v5.py",
+      "description": "Short physical barrel phrase; preserved bass recoil, articulated recorded hammer/casing contacts and finite feed release",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "hammer",
+        "clink2.wav",
+        "clink3.wav"
+      ],
+      "derivedFrom": "../naval-v4/pdc-2.ogg",
+      "derivedSourceSha256": "6425d21bbb7e34d244d6adf5e49de2ba30fb1ff271be40386f4d9d214bed0c30",
+      "sha256": "c5bfe36c04b3a2e9b1184a2332b61552ac7c4fa04f0bea5d9910ca7f3198c404",
+      "duration": 0.3,
+      "sampleRate": 48000,
+      "loop": false
+    },
+    "pdc-3.ogg": {
+      "source": "Processed existing shipped naval-v4 PDC; tools/generate-audio-v5.py",
+      "description": "Short physical barrel phrase; preserved bass recoil, articulated recorded hammer/casing contacts and finite feed release",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "hammer",
+        "clink2.wav",
+        "clink3.wav"
+      ],
+      "derivedFrom": "../naval-v4/pdc-3.ogg",
+      "derivedSourceSha256": "99f98c1b76bf207c5506d81435e1e73ea173f1ec6ca7a7c76ddef4c0c6397758",
+      "sha256": "1e3c038bd4d7fd014d941b295ef4e8453a3e0cc02555397b4c0aaa7981f57926",
+      "duration": 0.272,
+      "sampleRate": 48000,
+      "loop": false
+    },
+    "pdc-4.ogg": {
+      "source": "Processed existing shipped naval-v4 PDC; tools/generate-audio-v5.py",
+      "description": "Short physical barrel phrase; preserved bass recoil, articulated recorded hammer/casing contacts and finite feed release",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "hammer",
+        "clink2.wav",
+        "clink3.wav"
+      ],
+      "derivedFrom": "../naval-v4/pdc-0.ogg",
+      "derivedSourceSha256": "5f403c905a28c8cd84e07341c4f018e269c25bfdcbfb6c38931a3ab29ab5caa8",
+      "sha256": "6ef1a1ac4bf5e848b2e5ad792bcd96d66c2f7151f144cba5bd41970f72e55a85",
+      "duration": 0.286,
+      "sampleRate": 48000,
+      "loop": false
+    },
+    "pdc-5.ogg": {
+      "source": "Processed existing shipped naval-v4 PDC; tools/generate-audio-v5.py",
+      "description": "Short physical barrel phrase; preserved bass recoil, articulated recorded hammer/casing contacts and finite feed release",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "hammer",
+        "clink2.wav",
+        "clink3.wav"
+      ],
+      "derivedFrom": "../naval-v4/pdc-1.ogg",
+      "derivedSourceSha256": "6b121dcfe9794b068d3964aef8fc96876233d8f44e64e328b372ec2bd88efc26",
+      "sha256": "5a59d64aacbc31d89874247114eed251663de0e4ae332dbc63a93d58892f4109",
+      "duration": 0.296,
+      "sampleRate": 48000,
+      "loop": false
+    }
+  }
+}

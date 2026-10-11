@@ -1,0 +1,31 @@
+import fs from 'node:fs/promises';import {spawnSync} from 'node:child_process';
+const game=process.argv[2],mode=process.argv[3]||'new',v=process.argv[4]||'1',out=Number(v)>=2?`G:/sfx/evidence/${game}/pass${v}/${mode}`:`G:/sfx/evidence/${game}/${mode}-v${v}`,final=`C:/UnlitWorldsCaptures/judge/${game}-audio-v${v}.mp4`;
+const ff='C:/ProgramData/chocolatey/bin/ffmpeg.exe',fp='C:/ProgramData/chocolatey/bin/ffprobe.exe';
+const run=(exe,args)=>{const r=spawnSync(exe,args,{encoding:'utf8',windowsHide:true,timeout:180000});if(r.error||r.status)throw Error(JSON.stringify({error:r.error,status:r.status,stderr:r.stderr?.slice(-3000)}));return r;};
+const report=JSON.parse(await fs.readFile(out+'/report.json','utf8'));if(report.errors.length||report.missing.length)throw Error('Capture runtime check failed');const video=(await fs.readFile(out+'/video-path.txt','utf8')).trim();
+const raw=run(ff,['-hide_banner','-i',out+'/audio.webm','-af','ebur128=peak=true','-f','null','-']);await fs.writeFile(out+'/raw-loudness.txt',raw.stderr);
+const target=game==='hardburn'&&Number(v)>=4&&Number(v)<6?-15:-16,ceiling=Number(process.argv.find(a=>a.startsWith('--tp='))?.split('=')[1]||-2);
+const normalization=run(ff,['-hide_banner','-i',out+'/audio.webm','-af',`loudnorm=I=${target}:TP=${ceiling}:LRA=11:print_format=json`,'-f','null','-']);
+const measurement=JSON.parse(normalization.stderr.slice(normalization.stderr.lastIndexOf('{')));await fs.writeFile(out+'/normalization.json',JSON.stringify({target,ceiling,measurement},null,2));
+const filter=`loudnorm=I=${target}:TP=${ceiling}:LRA=11:measured_I=${measurement.input_i}:measured_TP=${measurement.input_tp}:measured_LRA=${measurement.input_lra}:measured_thresh=${measurement.input_thresh}:offset=${measurement.target_offset}:linear=true:print_format=json`;
+let finalFilter=filter;
+if(game==='unlit'||game==='hardburn'&&Number(v)>=4){
+ const guarded=filter+',aresample=192000,alimiter=limit=0.67:attack=1:release=60:level=false:latency=true,aresample=48000';
+ run(ff,['-hide_banner','-loglevel','error','-y','-i',out+'/audio.webm','-af',guarded,'-c:a','pcm_f32le',out+'/mastered.wav']);
+ run(ff,['-hide_banner','-loglevel','error','-y','-i',out+'/mastered.wav','-c:a','aac','-b:a','160k','-ar','48000',out+'/aac-preview.m4a']);
+ const preview=run(ff,['-hide_banner','-i',out+'/aac-preview.m4a','-af','ebur128=peak=true','-f','null','-']).stderr;
+ await fs.writeFile(out+'/aac-preview-loudness.txt',preview);
+ const summary=preview.slice(preview.lastIndexOf('Summary:')),integrated=Number(summary.match(/I:\s*([-\d.]+) LUFS/)[1]),peak=Number(summary.match(/Peak:\s*([-\d.]+) dBFS/)[1]);
+ const correction=Math.min(target-integrated,-1.5-peak);
+ finalFilter=guarded+`,volume=${correction}dB`;
+ await fs.writeFile(out+'/aac-headroom.json',JSON.stringify({integrated,peak,correction,limiter:.67,oversampling:192000},null,2));
+}
+await fs.mkdir('C:/UnlitWorldsCaptures/judge',{recursive:true});
+run(ff,['-hide_banner','-loglevel','error','-y','-ss',String(report.offset),'-i',video,'-i',out+'/audio.webm','-map','0:v:0','-map','1:a:0','-t',String(Math.min(55,report.elapsed)),'-vf','fps=30','-af',finalFilter,'-c:v','libx264','-preset','fast','-threads','2','-crf','23','-maxrate','3500k','-bufsize','7000k','-pix_fmt','yuv420p','-c:a','aac','-b:a','160k','-ar','48000','-movflags','+faststart',final]);
+const probe=JSON.parse(run(fp,['-v','error','-show_format','-show_streams','-of','json',final]).stdout);await fs.writeFile(out+'/delivery.json',JSON.stringify({final,probe},null,2));
+const loud=run(ff,['-hide_banner','-i',final,'-af','ebur128=peak=true','-f','null','-']);await fs.writeFile(out+'/delivery-loudness.txt',loud.stderr);
+const deliveredSummary=loud.stderr.slice(loud.stderr.lastIndexOf('Summary:')),deliveredI=Number(deliveredSummary.match(/I:\s*([-\d.]+) LUFS/)[1]),deliveredPeak=Number(deliveredSummary.match(/Peak:\s*([-\d.]+) dBFS/)[1]);if(Math.abs(deliveredI-target)>1||deliveredPeak>=0)throw Error('Delivery audio outside loudness/headroom bounds '+JSON.stringify({deliveredI,deliveredPeak}));
+const spectrum=run(ff,['-hide_banner','-loglevel','error','-y','-i',final,'-lavfi','showspectrumpic=s=1280x720:legend=1:scale=log:color=intensity','-frames:v','1',out+'/spectrum.png']);
+for(const [name,second]of [['frame-start',3],['frame-middle',Math.min(18,report.elapsed/2)],['frame-end',report.elapsed-3]])run(ff,['-hide_banner','-loglevel','error','-y','-ss',String(second),'-i',final,'-frames:v','1',out+'/'+name+'.png']);
+if(Number(probe.format.size)>=30*1024*1024||Number(probe.format.duration)<30||Number(probe.format.duration)>60)throw Error('Delivery size or duration out of bounds');
+console.log(JSON.stringify({final,seconds:probe.format.duration,bytes:probe.format.size,rawSummary:raw.stderr.slice(-600),deliverySummary:loud.stderr.slice(-600)}));

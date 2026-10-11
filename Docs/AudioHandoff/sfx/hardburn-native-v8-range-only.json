@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "sourceCommit": "d7de2448c2f5afdb8aafa0315066ebd1f74ff891",
+  "games": {
+    "hardburn": {
+      "cues": {
+        "torpedo-burn": {
+          "loop": true,
+          "spatial": true,
+          "bus": "weapons",
+          "near": 120,
+          "far": 4800,
+          "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+          "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+          "variation": {
+            "pitchMultiplierRange": [
+              0.96,
+              1.04
+            ],
+            "gainMultiplierRange": [
+              0.92,
+              1.08
+            ],
+            "filterMultiplierRange": [
+              0.88,
+              1
+            ],
+            "startOffsetSeconds": [
+              0,
+              11.95
+            ],
+            "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+            "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+            "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+            "sizeGainRange": [
+              0.88,
+              1.15
+            ],
+            "sizePitchRange": [
+              0.94,
+              1.045
+            ],
+            "sizeFilterRange": [
+              0.9,
+              1.04
+            ]
+          },
+          "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host.",
+          "sound": "/JsGameBridge/Audio/HardBurn/SC_torpedo_burn_347f1381.SC_torpedo_burn_347f1381",
+          "variants": [
+            {
+              "source": "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-0.ogg",
+              "wave": "/JsGameBridge/Audio/HardBurn/Waves/SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_0_ogg_ae8a5953.SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_0_ogg_ae8a5953",
+              "sha256": "a2d4f3ff75ccf7e6792b6c58a05cf15180c4d2660f4dc70fa8de3c288deedd9e"
+            },
+            {
+              "source": "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-1.ogg",
+              "wave": "/JsGameBridge/Audio/HardBurn/Waves/SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_1_ogg_8c554902.SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_1_ogg_8c554902",
+              "sha256": "783087cd5767167ed3cbaa2c5f5bc6df2827242874087df9ea64d44e9a62b7f6"
+            },
+            {
+              "source": "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-2.ogg",
+              "wave": "/JsGameBridge/Audio/HardBurn/Waves/SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_2_ogg_e5a24e62.SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_2_ogg_e5a24e62",
+              "sha256": "95d5cb6bb70183e59b7ab85a9609317ea339fd874a657919bb2aaf669807203a"
+            },
+            {
+              "source": "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-3.ogg",
+              "wave": "/JsGameBridge/Audio/HardBurn/Waves/SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_3_ogg_d0ad629e.SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_3_ogg_d0ad629e",
+              "sha256": "a6f848a3a114177580f16c1a61e1b07ba5d5d36a836f8f56b256d595da61377d"
+            },
+            {
+              "source": "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-4.ogg",
+              "wave": "/JsGameBridge/Audio/HardBurn/Waves/SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_4_ogg_b9cc217d.SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_4_ogg_b9cc217d",
+              "sha256": "fd2f79b8c3b07d6b0fc4c8bff42c3cca9c62a450e31b16d986b7243d481467d8"
+            },
+            {
+              "source": "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-5.ogg",
+              "wave": "/JsGameBridge/Audio/HardBurn/Waves/SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_5_ogg_aa98f71e.SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_5_ogg_aa98f71e",
+              "sha256": "3ff24bd4655f4c6db6f43d296161506bbf94766e0fa9c9ff0194df0eaaea30ad"
+            },
+            {
+              "source": "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-6.ogg",
+              "wave": "/JsGameBridge/Audio/HardBurn/Waves/SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_6_ogg_2ba0ee3f.SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_6_ogg_2ba0ee3f",
+              "sha256": "24ff381db9109b55c555e52b4a293d1fb35e3c4cee0e997f769361fb996c3af4"
+            },
+            {
+              "source": "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-7.ogg",
+              "wave": "/JsGameBridge/Audio/HardBurn/Waves/SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_7_ogg_ae142980.SW_G__sfx_hardburn_public_audio_naval_v6_torpedo_burn_7_ogg_ae142980",
+              "sha256": "97c6b929a76c975605a6d19116e38680aba4a7c2bf146d0220cbea306df232eb"
+            }
+          ],
+          "minDistance": 12000,
+          "maxDistance": 480000,
+          "volume": 1,
+          "pitch": 1
+        }
+      }
+    }
+  }
+}

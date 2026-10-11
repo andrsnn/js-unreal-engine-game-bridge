@@ -1,0 +1,65 @@
+{
+  "ready": true,
+  "audioPass": 6,
+  "worldAudioPass": 5,
+  "sourceCommit": "aead73776046672288f853fa5df0935abbfc9fe0",
+  "includedPrimary": "71d693beceb9948ec87dc959ce87ed773a4b08bf",
+  "positionalHookMilestone": "c88de0004f80714eff016928b61244b395b0cf32",
+  "normalizedHashes": {
+    "src/world/audio.ts": "1fa6b09a8875503a3d1e6f7b40deda2fe68ee15cad548eb64153e22bf754cd51",
+    "tests/world-audio.test.ts": "44e3030c6dfb0899ccfa98aa02ed2d80cd84985e02c30372a6ef867bf46d00a9"
+  },
+  "ownedFiles": [
+    "src/world/audio.ts",
+    "tests/world-audio.test.ts"
+  ],
+  "tests": "21 focused audio tests PASS; TypeScript noEmit PASS; 88 original waveform SHA256 variants unchanged",
+  "nativeAcceptance": "PASS fresh normal-input patrol and authored Smugglers Cut, no gameplay state writes; actual deflect/pierce/slow-blade/loot/read/plate. Overload/reaction/ready not demonstrated.",
+  "outputGain": 0.8,
+  "voiceCap": 24,
+  "loopCap": 7,
+  "canonicalDirectKeys": [
+    "shield-deflect",
+    "shield-pierce",
+    "shield-overload",
+    "shield-reaction",
+    "shield-ready",
+    "slow-blade",
+    "bash",
+    "trap-plate",
+    "trap-laser",
+    "delve-lever",
+    "delve-power",
+    "delve-loot",
+    "delve-read",
+    "drone-shot"
+  ],
+  "loopSemantics": {
+    "shield": "One player guard or nearest actual live raised foe field with sh/shMax/shDown valid, never fly/dead; player guard takes priority; actual field charge scales quiet hum",
+    "room": "One original vault bed or actual subway/data/bunker/warren replacement, finite two-tap profile based actual authored room size/theme"
+  },
+  "hostContract": "Committed WorldSim.cue(name,{x,y,z?}) through app.sfx.play(name,state,position); shield reaction is emitted before source depletion and accepted as the real contact callback. No inferred attack/impact timers.",
+  "lifecycle": "Muted/map/dead/focus gates stop voices and master covers all reflection returns; windup/room/noise observers baseline while silent; restoring restarts current loops only, never missed callbacks",
+  "diagnostics": [
+    "audioPass",
+    "worldAudioPass",
+    "roomTheme",
+    "shield.owner",
+    "shield.id",
+    "shield.charge",
+    "shield.position",
+    "loops",
+    "played",
+    "peak",
+    "rms",
+    "reflectionSeconds"
+  ],
+  "newAssets": 0,
+  "licence": "Original procedural synthesis CC0-1.0; no downloads/third-party models/recordings",
+  "browserBuildPrimaryWrites": false,
+  "updatedUTC": "2026-10-11T00:41:50.136716+00:00",
+  "nativeReport": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/report.json",
+  "deliveryReceipt": "G:/sfx/saltblade-shield-delve-delivery.json",
+  "browserReleaseAuthorization": "2026-10-10T18:36:03.647308-07:00",
+  "browserClosed": true
+}

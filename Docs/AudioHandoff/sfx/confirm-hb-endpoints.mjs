@@ -1,0 +1,1 @@
+for(const host of ['127.0.0.1','100.69.252.53']){try{const response=await fetch('http://'+host+':5181/',{signal:AbortSignal.timeout(8000)}),html=await response.text();console.log(JSON.stringify({host,status:response.status,entries:[...html.matchAll(/<script[^>]*src=["']([^"']+)/g)].map(m=>m[1])}));}catch(e){console.log(JSON.stringify({host,error:e.message}))}}

@@ -1,0 +1,39 @@
+import {createRequire} from 'node:module';import fs from 'node:fs/promises';import {spawnSync} from 'node:child_process';
+const require=createRequire('C:/Users/Aidan Anderson/karvos/package.json'),{chromium}=require('playwright');const game=process.argv[2],url=process.argv[3],merge=process.argv.includes('--merge'),out=`G:/sfx/evidence/${game}/smoke-${Date.now()}`;await fs.mkdir(out,{recursive:true});
+const b=await chromium.launch({headless:true,executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',args:['--use-angle=d3d11','--ignore-gpu-blocklist','--autoplay-policy=no-user-gesture-required','--disable-background-timer-throttling','--disable-renderer-backgrounding']});const errors=[],missing=[];let p,data;
+try{const c=await b.newContext({viewport:{width:1280,height:720},reducedMotion:'reduce'});await c.addInitScript(()=>{Element.prototype.requestPointerLock=()=>Promise.resolve();Element.prototype.requestFullscreen=()=>Promise.resolve();document.exitPointerLock=()=>{};});p=await c.newPage();p.setDefaultTimeout(120000);p.on('pageerror',e=>{errors.push(e.stack);console.log('PAGEERROR',e.stack);});p.on('response',r=>{if(r.status()>=400&&!r.url().endsWith('favicon.ico'))missing.push({url:r.url(),status:r.status()});if(/\.(?:json|glb|gltf|bin)(?:\?|$)/i.test(r.url())&&r.headers()['content-type']?.includes('text/html')){missing.push({url:r.url(),status:r.status(),reason:'Asset received HTML'});console.log('ASSET_HTML',r.url());}});console.log('NAVIGATE',game,url);await p.goto(url,{waitUntil:'domcontentloaded'});
+ if(game==='hardburn'){await p.waitForFunction(()=>window.__FF_READY,null,{timeout:240000});await p.getByRole('button',{name:'NEW GAME',exact:true}).click();await p.getByRole('button',{name:'BEGIN NEW CAMPAIGN',exact:true}).click();await p.waitForFunction(()=>__FF_READY&&!document.querySelector('.hard-burn-menu'),null,{timeout:240000});await p.evaluate(async()=>{await __FF.modelsReady();await __FF.world.audio.preload;await __FF.world.audio.unlock();});await p.keyboard.down('a');await p.waitForTimeout(1200);await p.keyboard.up('a');data=await p.evaluate(()=>({ready:__FF_READY,time:__FF.world.campaign.time,audio:__FF.world.audio.stats,errors:__FF.frameLog.errors}));}
+ else if(game==='karvos'){await p.waitForFunction(()=>window.karvos?.ready,null,{timeout:240000});if(await p.locator('#newGame').isVisible()){await p.locator('#newGame').click();await p.waitForFunction(()=>window.karvos?.ready,null,{timeout:240000});}await p.locator('#beginGame').click();await p.waitForFunction(()=>karvos.state.started&&karvos.state.mode==='game',null,{timeout:120000});await p.evaluate(async()=>{await karvos.fieldAudio.audio.ready();});await p.keyboard.down('w');await p.waitForTimeout(1300);await p.keyboard.up('w');data=await p.evaluate(()=>({ready:karvos.ready,mode:karvos.state.mode,pos:karvos.state.pos.toArray(),audio:karvos.state.audioMixStatus}));}
+ else{
+  await p.waitForTimeout(3000);await p.locator('[data-new]').click({force:true});await p.locator('[data-new-form] input').fill('Published audio smoke');await p.locator('[data-begin]').click({force:true});
+  for(let attempt=0;attempt<15;attempt++){
+   if(await p.locator('[data-intro-skip]').isVisible())await p.locator('[data-intro-skip]').click();
+   try{await p.waitForFunction(()=>window.__game?.ready&&__game.sceneName!=='title',null,{timeout:20000});break;}
+   catch(e){if(attempt===14)throw e;console.log('WAITING',await p.evaluate(()=>({ready:window.__game?.ready,scene:window.__game?.sceneName,briefing:!!document.querySelector('[data-intro-skip]')})));if(await p.locator('[data-intro-skip]').isVisible())await p.locator('[data-intro-skip]').click();else if(await p.locator('[data-continue]').isVisible())await p.locator('[data-continue]').click({force:true});}
+  }
+  if(await p.locator('[data-galaxy-war]').isVisible()){await p.locator('[data-system="helios"]').click();await p.locator('[data-opening-track]').click();}await p.waitForFunction(()=>!__game.snapshot().menuPaused,null,{timeout:120000});const first=await p.evaluate(()=>__game.snapshot().hero?.pos);await p.keyboard.down('w');await p.waitForTimeout(1300);await p.keyboard.up('w');data=await p.evaluate(first=>({first,ready:__game.ready,scene:__game.sceneName,pos:__game.snapshot().hero?.pos,audio:__game.audio()}),first);const expected=Number(process.argv.find(a=>a.startsWith('--revision='))?.split('=')[1]||10);if(data.audio.revision!==expected)throw Error('Build does not include expected audio revision '+expected);
+ }
+ if(data.audio?.missing>0)throw Error('Decoded audio assets missing '+data.audio.missing);
+ const expectedPass=Number(process.argv.find(a=>a.startsWith('--pass='))?.split('=')[1]||0);if(expectedPass&&data.audio?.audioPass!==expectedPass)throw Error('Wrong audio pass '+data.audio?.audioPass+' expected '+expectedPass);
+ if(game==='hardburn'){
+  const prefs=await p.evaluate(()=>({...__FF.world.audio.prefs}));await p.locator('.audio-toggle').click();
+  const music=p.locator('[data-audio-bus="music"]');await music.press('Home');if(await p.evaluate(()=>__FF.world.audio.prefs.music)!==0)throw Error('Music slider did not reach zero');
+  await music.press('Home');for(let i=0;i<Math.round(prefs.music*100);i++)await music.press('ArrowRight');
+  await p.locator('.audio-mixer').getByRole('button',{name:'MUTE',exact:true}).click();await p.waitForTimeout(700);
+  const mute=await p.evaluate(()=>({muted:__FF.world.audio.prefs.muted,peak:__FF.world.audio.stats.peak}));if(!mute.muted||mute.peak>.00003)throw Error('Trusted mute failed '+JSON.stringify(mute));
+  await p.locator('.audio-mixer').getByRole('button',{name:'UNMUTE',exact:true}).click();await p.locator('.audio-toggle').click();
+  data.controls={musicZero:true,mute,restored:await p.evaluate(()=>({...__FF.world.audio.prefs}))};if(data.controls.restored.music!==prefs.music||data.controls.restored.muted!==prefs.muted)throw Error('Mixer restore failed');
+ }
+ if(game==='unlit'){
+  const prefs=await p.evaluate(()=>__game.audio().settings);await p.keyboard.press('Escape');await p.locator('[data-settings]').click();
+  for(const key of ['master','music','effects']){
+   const range=p.locator(`[data-volume="${key}"]`);await range.press('Home');if(await p.evaluate(key=>__game.audio().settings[key],key)!==0)throw Error(key+' UI zero failed');
+   for(let i=0;i<Math.round(prefs[key]*100);i++)await range.press('ArrowRight');
+  }
+  await p.locator('[data-mute]').check();if(!await p.evaluate(()=>__game.audio().settings.muted))throw Error('Mute UI failed');await p.locator('[data-mute]').uncheck();
+  const restored=await p.evaluate(()=>__game.audio().settings);for(const key of ['master','music','effects','muted'])if(restored[key]!==prefs[key])throw Error(key+' UI restore failed');
+  data.controls={allMainSlidersZero:true,mute:true,restored};await p.locator('[data-back]').click();await p.locator('[data-resume]').click();
+ }
+ if(errors.length||missing.length||data.errors?.length)throw Error('Runtime failure '+JSON.stringify({errors,missing,frameErrors:data.errors}));console.log('PASSED',game,JSON.stringify(game==='unlit'?{revision:data.audio.revision,scene:data.scene,motion:data.audio.motion}:data));await p.screenshot({path:out+'/new-game.png'});
+ if(merge){const r=spawnSync(process.execPath,['G:/sfx/integrate.mjs',game],{encoding:'utf8',timeout:240000,windowsHide:true});console.log(r.stdout);if(r.status)throw Error('Guarded integration failed '+r.stderr?.slice(-2000));}
+}catch(e){errors.push(e.stack);console.log('FAILED',e.stack);process.exitCode=1;await p?.screenshot({path:out+'/failed.png',timeout:20000}).catch(()=>{});}finally{await fs.writeFile(out+'/report.json',JSON.stringify({game,url,data,errors,missing,time:new Date().toISOString()},null,2));const shutdown=setTimeout(()=>process.exit(process.exitCode||0),15000);await b.close();clearTimeout(shutdown);}

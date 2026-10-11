@@ -1,0 +1,34 @@
+{
+  "sourceCommit": "9b9fbe112f044ecf7d829ee2660f7cc05d335412",
+  "primaryBase": "4ddc778e0c980db64debd370184b83f7668e9f6a",
+  "audioPass": 9,
+  "changedPaths": {
+    "src/audio.js": "41e462773ad7cdda0d24c58c3f3d22087e319097a265e8c1f5fdc0d68f0dbacb",
+    "src/audio-policy.js": "2cf627376c9340ca39d0731b9b7f2d442b4a185562cc4e505a55fb9b6eec2a08",
+    "tools/check-audio-policy.mjs": "22ac2d6095a23f5cde9abfe93a5ba7c4d093b88ebf92977cd163d4f5dfffd50c",
+    "tools/check-audio-routing.mjs": "71ba9bf68f603f2449f05c0594d1b25f44f478c6c09d032e0e678b8266d97a3a",
+    "PLAY.md": "6293f7b57644efd630de3cc0f35614b043fd0fa867ab356e12190c96e5a56e87"
+  },
+  "assetsChanged": 0,
+  "cueSpecsAliasesBankHashesUnchangedFromV8": true,
+  "immutableGunVariationAndAcousticSourceUnchanged": true,
+  "tests": [
+    "tools/check-audio-policy.mjs PASS",
+    "tools/check-audio-routing.mjs actual instrumented mixer PASS",
+    "node --check src/audio.js PASS",
+    "git diff --check PASS"
+  ],
+  "graphProof": [
+    "one ECM loop + nearest2 from40 actual powered traffic entries",
+    "steady telemetry100frames no new sources or gun voice stealing",
+    "new buses/sliders/master/mute honored",
+    "strict missing/false power/zero strength hidden remote pause coast \u226418ms stop",
+    "actual ECM highpass/disconnect and live+retiring loop disposal",
+    "prior contact scan coalescing and distant guided coast/generation tests unchanged"
+  ],
+  "scope": "CPU graph and policy evidence; root owns actual native UI playback capture + publication",
+  "nativePlan": "Existing wave/cue packages unchanged; root register metadata only with pass9 handoff, no UE import/save required",
+  "handoff": "/mnt/g/sfx/hardburn-unreal-audio-v9.json",
+  "handoffSha256": "94cecef393a58eb14b4396c55a353e4f881d68f815c19f25616c639072a3c165",
+  "syncNote": "Docs-only owner main update merged cleanly; audio/policy/test bytes identical to passing28d9155."
+}

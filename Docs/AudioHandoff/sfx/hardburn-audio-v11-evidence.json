@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "audioPass": 11,
+  "sourceCommit": "5681096da8960bf184ac3443da8b9ea0bca6a2b8",
+  "primaryBase": "e14efe05b230b6b900affa4ac71b0507c8d265f3",
+  "guardianContractCommit": "f3b77632a97eaf75d2f0177f2d7518b7977bf476",
+  "changedPaths": [
+    "src/audio-guardian.js",
+    "src/audio.js",
+    "tools/check-audio-guardian.mjs",
+    "tools/check-audio-recon-adapter.mjs",
+    "tools/check-audio-routing.mjs"
+  ],
+  "tests": {
+    "tools/check-audio-guardian.mjs": "PASS",
+    "tools/check-audio-routing.mjs": "PASS",
+    "tools/check-audio-recon-adapter.mjs": "PASS",
+    "node --check src/audio.js": "PASS",
+    "git diff --check": "PASS"
+  },
+  "evidenceScope": "CPU pure-policy, actual committed producer closures, and instrumented actual AudioContext mixer graph; no live browser/native guardian play claim",
+  "preservation": {
+    "publicAudioDiffFromAudio10": false,
+    "unchangedPolicies": [
+      "src/audio-policy.js",
+      "src/audio-combat.js",
+      "src/audio-acoustics.js"
+    ],
+    "canonicalCues": 52,
+    "aliases": 33,
+    "cueDefinitionsAliasesBankHashesUnchanged": true,
+    "outputTrim": 0.69,
+    "gunMix": "unchanged",
+    "darkMotorCoast": "unchanged"
+  },
+  "guardianPolicy": {
+    "source": "Actual committed solarIntel().guardianEvents with currently disclosed precise identified guardian bodies",
+    "sourceContractCommit": "f3b77632a97eaf75d2f0177f2d7518b7977bf476",
+    "bus": "ambience",
+    "overrideCueBus": true,
+    "outputGain": 0.69,
+    "spatial": true,
+    "maxDistance": 1800,
+    "maxEventAgeSeconds": 0.75,
+    "position": "Only actual public accepted emitter/intercept position; no raw recon/hidden wing/model access",
+    "authorization": {
+      "system": "current enabled tactical system",
+      "body": "disclosed===true, precise===true, identified===true, confidence>=.72",
+      "event": "disclosed===true, observed===true, precise===true, sourceId present, confidence>=.72, finite at/position/direction",
+      "realProducers": "Finite charged20fuel EMP, fuel-spent feeding, accepted onLaunch kinetic/flak and actual intercept; rejected fitted-weapon queries never qualify"
+    },
+    "baselines": "Initial/load/view/system/pause/map/design/clock-rewind/AudioContext resume silent",
+    "noImmediateRepeats": "Stable event-ID dedupe256; no historical or missed-mute backlog; no queue",
+    "globalCadenceSimulationSeconds": 0.75,
+    "voiceLimit": 2,
+    "voiceLimitIncludesRetiring": true,
+    "neverStealWeaponVoices": true,
+    "globalPoolLimit": 64,
+    "retirement": {
+      "revokedBodyOrSource": "cancel gain ramp,4ms time constant,stop within18ms",
+      "pauseMuteAmbienceZero": "same short stop",
+      "audioContextSuspension": "immediate zero and stop; silent resume baseline",
+      "dispose": "stop/disconnect every owned source and clear observations"
+    },
+    "recipes": {
+      "pulse": {
+        "bank": "energy-plasma",
+        "gain": 0.32,
+        "rate": 0.6,
+        "duration": 1.15,
+        "cutoff": 600,
+        "cadence": 4,
+        "priority": 5,
+        "bus": "ambience",
+        "loop": false,
+        "perGuardianCadenceSimulationSeconds": 4
+      },
+      "feeding": {
+        "bank": "hb-vent",
+        "gain": 0.2,
+        "rate": 0.7,
+        "duration": 1.3,
+        "cutoff": 700,
+        "cadence": 8,
+        "priority": 4,
+        "bus": "ambience",
+        "loop": false,
+        "perGuardianCadenceSimulationSeconds": 8
+      },
+      "mining": {
+        "bank": "impact-tail",
+        "gain": 0.09,
+        "rate": 0.72,
+        "duration": 0.7,
+        "cutoff": 750,
+        "cadence": 6,
+        "priority": 3,
+        "bus": "ambience",
+        "loop": false,
+        "perGuardianCadenceSimulationSeconds": 6
+      },
+      "warlord": {
+        "bank": "rail-tail",
+        "gain": 0.07,
+        "rate": 0.68,
+        "duration": 0.65,
+        "cutoff": 650,
+        "cadence": 6,
+        "priority": 2,
+        "bus": "ambience",
+        "loop": false,
+        "perGuardianCadenceSimulationSeconds": 6
+      },
+      "derelict": {
+        "bank": "impact-tail",
+        "gain": 0.08,
+        "rate": 0.62,
+        "duration": 0.8,
+        "cutoff": 700,
+        "cadence": 6,
+        "priority": 1,
+        "bus": "ambience",
+        "loop": false,
+        "perGuardianCadenceSimulationSeconds": 6
+      }
+    },
+    "stats": [
+      "audioPass",
+      "guardianAccents",
+      "guardianKinds",
+      "guardianVoices",
+      "guardianCulled",
+      "lastGuardianEvent"
+    ],
+    "nativeHostRequirements": "Reuse existing named SoundCues/waves. Instance override to Ambience is required despite the canonical weapon bank bus. Apply gain/rate/duration/lowpass/distance/cadence and two-background-voice cap in host; never play another full gun/blast or continuously loop these samples. Metadata registration is not native gameplay proof."
+  },
+  "nativeHandoff": {
+    "path": "G:/sfx/hardburn-unreal-audio-v11.json",
+    "sha256": "c589d7833bfee36c169efd1838648e14e12a9d3e925197a75be7bc0fbc59aadd",
+    "bytes": 122746,
+    "registration": "Root-owned metadata-only; no SoundCue/SoundWave resave or import required"
+  },
+  "publication": {
+    "audio11": "NOT integrated/published/runtime-demonstrated",
+    "officialExistingAudio10": "http://100.69.252.53:5181/assets/index-CjXxT0XO.js",
+    "officialAudio10SHA256": "d8d500111e4e13f0521595ec0ed8b870735d2348ec2cf1c41d788a0678a4774e",
+    "actualPrivateAudio10Proof": "G:/HardBurnScratch/guardian-126/first-audio-check.json",
+    "actualPrivateCounts": {
+      "discoveryReports": 1,
+      "recoveryReports": 1,
+      "ewReports": 0
+    },
+    "finalEWFilm": "ff owned; rejected distant working edit is not final delivery"
+  }
+}

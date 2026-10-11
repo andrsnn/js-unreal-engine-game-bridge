@@ -1,0 +1,231 @@
+{
+  "files": 56,
+  "bytes": 23821648,
+  "deleted": [
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/0098b08f1901a90248166f11f42f2ecb97ea14c7b1f62288c6f619f73916c16e.wav",
+      "bytes": 64846
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/0582dff2f3db8a4d2f849fbe5a2c634971e1c789a41ce556dbccfe65fd026117.wav",
+      "bytes": 268878
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/06ab2951cec0ae1e79663ea415038e9f07626cc1cc3dd84e733c7eee76b1d64b.wav",
+      "bytes": 45646
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/0dd20bdd544e46b235c7c05e4c111a5cb3f66cb2bf3b808508b785fcd8b36a2d.wav",
+      "bytes": 168526
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/12fbb625694ec06498dc4dd1e763675dde9fbb5caab705e97b8cb7fe68aa11a3.wav",
+      "bytes": 35086
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/1c76689d03e532f3eb9465c99d86802867a77973a797cc1761a3a5d63fd5a39c.wav",
+      "bytes": 45646
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/228ab63265ac897554283a3f590675cfba5e2803778c57732724615dac6a1cd1.wav",
+      "bytes": 64846
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/262f859147b356c20b81d39b2cfc97463d7a2fb046756640f9039b45937e47b3.wav",
+      "bytes": 2304078
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/2d777b6d773f3c1467f142ad5464e26c30aa1d0cb9c922791827febcdf4bff2c.wav",
+      "bytes": 64846
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/2e31982fe45f0a0d5926e577efa42a43b88d3d103e4ec9b16824cf0eb8baef85.wav",
+      "bytes": 168526
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/33c1b40a124b22d862544b927b572bf1a538774e5be5bc10b0d21beb9a2000b7.wav",
+      "bytes": 168526
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/383ee01e1ff3799a998852374d8aafcad95d5a7d6e371530ddfef6694d91e947.wav",
+      "bytes": 64846
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/3be8b2dfaa829520fb4f11498082f676dd7ba48678b10de77cd8be8dc80fae57.wav",
+      "bytes": 33166
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/463dd423754d1e164a4332cb9cdc0462fe4fdebca52e7898d30fa51b30e7d9c9.wav",
+      "bytes": 33166
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/4fae848eaf515b6357051281e19457122517f8fa4a5316ec13284d744cf7523a.wav",
+      "bytes": 45646
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/506718281eb494db1c6e58421305eb36295f16ef49c8be330addbe742f065214.wav",
+      "bytes": 2304078
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/50891b26edc350a2bd53a799749db3b8ac36579b570b588699e1fce5782a2d89.wav",
+      "bytes": 45646
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/50a784cc45127539459bc681c08b4b6b811703cc40960cd21e6c1ff27addd936.wav",
+      "bytes": 34126
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/57cb10a9633364aa0713d15d814dfc11201517235e2535e597390843a609f0fc.wav",
+      "bytes": 168526
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/5e71d223c6f8af5a66bc2b860002db92f2b538fb14790c953cdee63e8339832a.wav",
+      "bytes": 168526
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/5fac6eec9484975e5e63065d840db9d51e1766eeebbe881348fd3c76c314d8e1.wav",
+      "bytes": 268878
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/6624c98143da225825e0ac30df3bba08771953aa7f4cbd4383cc7a8082fb1e40.wav",
+      "bytes": 2304078
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/6893bddfffccd1929f00da18d71919b21b917230b071592cd60b5ccc6d6022ad.wav",
+      "bytes": 45646
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/765a137d8f8f0602c16bced8e9f1a77351d4719980561da619723af0c8bf7115.wav",
+      "bytes": 2304078
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/7b202da5d4729c861a5eaa3abab47b24d8b5758759ef58dbfbfe37e62e701f65.wav",
+      "bytes": 45646
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/7d2305cc60b272c2fad02a9d7a7fb6f954113880e194bd1247881cb7a2859508.wav",
+      "bytes": 268878
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/84d2da3396c5f40bd381010733248015ac85a3c6f1f88035a45829f73567704b.wav",
+      "bytes": 91726
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/916a533787a1f9364a0776e49b88ce92896bf2cd03a089a76d974fc1d6aa762f.wav",
+      "bytes": 91726
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/9585970ee5dc0e75d6c36f0591249520a8d85017919df138d1aaf21b9e40ce5e.wav",
+      "bytes": 268878
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/9ca2550c476300ab5da2b68a0ff4100ebf5347fb55a16d7374662543e0dfda4c.wav",
+      "bytes": 64846
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/9de4ea5ebf2daf7829ac35de81da3acd8b255826ec79f2af01f55b7bd5d34ec8.wav",
+      "bytes": 91726
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/a0088b34396d9f23d8144178cb8af876a511b592dad3a6f1b27ba01f39cbb4bc.wav",
+      "bytes": 268878
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/a388f876f9101b329e1456e7dbaa9554c2ab2b2a2bde534b190245c66c33a33c.wav",
+      "bytes": 64846
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/a8026b5562fa48af5051b4b6e000adf5eb9a6bd8ac2420191054edcf4c7c0d52.wav",
+      "bytes": 168526
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/ae8ca2f984c4cf30da986bf729b615901cb385210381a7266d7fbc47ac5dae5b.wav",
+      "bytes": 35086
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/b4c27643cdaf4ac66b0caaf96ee8e1ae2f7f81c35ea66c878abeaefb5af56120.wav",
+      "bytes": 64846
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/b4f25e933de375062c1dad5fbe12fe16d4e8fd1aedc5bdf8c64b1b216f42c0a8.wav",
+      "bytes": 2304078
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/b56c5921f923d0c35c32ffb4434e2b0890cf6f30f927fbd31fd4166868fd149a.wav",
+      "bytes": 33166
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/b67a6e0d4138b421919b45821d6a0f1567a8d9c83ab686a15987c0f8b5ca87db.wav",
+      "bytes": 2304078
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/c3bb1cc5d072f5af11b2f924165f41a11405ab955b35e82894b4749fe35da15e.wav",
+      "bytes": 2304078
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/c4679e92f3f9e9241cb685602f4af95e05b52cba564f4f17720421ccc7387f74.wav",
+      "bytes": 64846
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/c5775fa1a0ad9a5e7a593ceee8ac547b55b17e6064c897fbe2bb3b1a4e38f8ce.wav",
+      "bytes": 91726
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/ca6fe60555ade5679675729e1d92d5c0674348f082bd8c3b33295067cd4d8a6d.wav",
+      "bytes": 2304078
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/cf14efb18a4d2a91490272f757eec04e093da10ea776318cba80fc5533362478.wav",
+      "bytes": 91726
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/cf24e566005acec3e7431d655f4e194214dcdcb69b0441f5bd992da15e602668.wav",
+      "bytes": 268878
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/d52fdd71d2c93b4ece65d1bc6ae44a95480ddd0b1abb2f5153872cac954ea6f3.wav",
+      "bytes": 91726
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/db1d3afd6412e89e9bdbd34db21fd549f372cb51f8f8af6bf1dd7b73107283ec.wav",
+      "bytes": 34126
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/dd5338682da108afb79b0f520853e3f1b29f3d9a99565ce0262df78f537bca25.wav",
+      "bytes": 45646
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/deaf2ffc6fd9c29ac7952a66637f1faab3eb2991bc77134c7885abfa65fed0d4.wav",
+      "bytes": 168526
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/e3664272e3827d487a3a9551b28b022aa010d5102443df6a1993090adbf9b436.wav",
+      "bytes": 168526
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/e3a9357581e014f5585cf8383fe45c2a7d4cc5e4403abf9cda3c4a956fef22f9.wav",
+      "bytes": 45646
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/e6b1762adf6add7b6d0f4377e835aaa1997c3d1385899330ea5178a2e9d75527.wav",
+      "bytes": 91726
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/e801546d19ba68ca93ded4e0e96775ebe5383236338733715c98eff9568d6b32.wav",
+      "bytes": 268878
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/f2985e3934002dc6f0db471947f8cea628ce11d57182a0be768de5d7bbaf16aa.wav",
+      "bytes": 34126
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/f3b59b7e4f2a6ada8062a8f25aaf11c35febd24e0b8489b22706c0f8877ae2ec.wav",
+      "bytes": 268878
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/f5aedf7730c02006f9e86ead3a736fb23e457341b5d0e5ee478588c9522b5901.wav",
+      "bytes": 91726
+    }
+  ],
+  "preserved": "final native sound assets, game OGGs, acceptance/manifest/licence reports"
+}

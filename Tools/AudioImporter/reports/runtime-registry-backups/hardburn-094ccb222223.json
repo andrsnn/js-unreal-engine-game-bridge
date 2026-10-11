@@ -1,0 +1,1502 @@
+{
+  "assets": {
+    "concept_tdf_frigate": {
+      "mesh": "/Game/Ships/Published/concept-tdf-frigate/L0/SM_concept_tdf_frigate_L0.SM_concept_tdf_frigate_L0",
+      "material": "/Game/Ships/Published/concept-tdf-frigate/L0/MI_concept_tdf_frigate_L0.MI_concept_tdf_frigate_L0"
+    },
+    "concept_mrn_frigate": {
+      "mesh": "/Game/Ships/Published/concept-mrn-frigate/L0/SM_concept_mrn_frigate_L0.SM_concept_mrn_frigate_L0",
+      "material": "/Game/Ships/Published/concept-mrn-frigate/L0/MI_concept_mrn_frigate_L0.MI_concept_mrn_frigate_L0"
+    },
+    "concept_tdf_shipyard": {
+      "mesh": "/Game/Ships/Published/concept-tdf-shipyard/L0/SM_concept_tdf_shipyard_L0.SM_concept_tdf_shipyard_L0",
+      "material": "/Game/Ships/Published/concept-tdf-shipyard/L0/MI_concept_tdf_shipyard_L0.MI_concept_tdf_shipyard_L0"
+    },
+    "concept_mrn_shipyard": {
+      "mesh": "/Game/Ships/Published/concept-mrn-shipyard/L0/SM_concept_mrn_shipyard_L0.SM_concept_mrn_shipyard_L0",
+      "material": "/Game/Ships/Published/concept-mrn-shipyard/L0/MI_concept_mrn_shipyard_L0.MI_concept_mrn_shipyard_L0"
+    },
+    "concept_tdf_fighter_bomber": {
+      "mesh": "/Game/Ships/Published/concept-tdf-fighter-bomber/L0/SM_concept_tdf_fighter_bomber_L0.SM_concept_tdf_fighter_bomber_L0",
+      "material": "/Game/Ships/Published/concept-tdf-fighter-bomber/L0/MI_concept_tdf_fighter_bomber_L0.MI_concept_tdf_fighter_bomber_L0"
+    },
+    "concept_mrn_fighter_bomber": {
+      "mesh": "/Game/Ships/Published/concept-mrn-fighter-bomber/L0/SM_concept_mrn_fighter_bomber_L0.SM_concept_mrn_fighter_bomber_L0",
+      "material": "/Game/Ships/Published/concept-mrn-fighter-bomber/L0/MI_concept_mrn_fighter_bomber_L0.MI_concept_mrn_fighter_bomber_L0"
+    },
+    "concept_tdf_starbase": {
+      "mesh": "/Game/Ships/Published/concept-tdf-starbase/L0/SM_concept_tdf_starbase_L0.SM_concept_tdf_starbase_L0",
+      "material": "/Game/Ships/Published/concept-tdf-starbase/L0/MI_concept_tdf_starbase_L0.MI_concept_tdf_starbase_L0"
+    },
+    "concept_mrn_starbase": {
+      "mesh": "/Game/Ships/Published/concept-mrn-starbase/L0/SM_concept_mrn_starbase_L0.SM_concept_mrn_starbase_L0",
+      "material": "/Game/Ships/Published/concept-mrn-starbase/L0/MI_concept_mrn_starbase_L0.MI_concept_mrn_starbase_L0"
+    },
+    "concept_tdf_carrier": {
+      "mesh": "/Game/Ships/Published/concept-tdf-carrier/L0/SM_concept_tdf_carrier_L0.SM_concept_tdf_carrier_L0",
+      "material": "/Game/Ships/Published/concept-tdf-carrier/L0/MI_concept_tdf_carrier_L0.MI_concept_tdf_carrier_L0"
+    },
+    "concept_mrn_carrier": {
+      "mesh": "/Game/Ships/Published/concept-mrn-carrier/L0/SM_concept_mrn_carrier_L0.SM_concept_mrn_carrier_L0",
+      "material": "/Game/Ships/Published/concept-mrn-carrier/L0/MI_concept_mrn_carrier_L0.MI_concept_mrn_carrier_L0"
+    },
+    "concept_tdf_cruiser": {
+      "mesh": "/Game/Ships/Published/concept-tdf-cruiser/L0/SM_concept_tdf_cruiser_L0.SM_concept_tdf_cruiser_L0",
+      "material": "/Game/Ships/Published/concept-tdf-cruiser/L0/MI_concept_tdf_cruiser_L0.MI_concept_tdf_cruiser_L0"
+    },
+    "concept_mrn_cruiser": {
+      "mesh": "/Game/Ships/Published/concept-mrn-cruiser/L0/SM_concept_mrn_cruiser_L0.SM_concept_mrn_cruiser_L0",
+      "material": "/Game/Ships/Published/concept-mrn-cruiser/L0/MI_concept_mrn_cruiser_L0.MI_concept_mrn_cruiser_L0"
+    },
+    "concept_tdf_capital_titan": {
+      "mesh": "/Game/Ships/Published/concept-tdf-capital-titan/L0/SM_concept_tdf_capital_titan_L0.SM_concept_tdf_capital_titan_L0",
+      "material": "/Game/Ships/Published/concept-tdf-capital-titan/L0/MI_concept_tdf_capital_titan_L0.MI_concept_tdf_capital_titan_L0"
+    },
+    "concept_mrn_capital_titan": {
+      "mesh": "/Game/Ships/Published/concept-mrn-capital-titan/L0/SM_concept_mrn_capital_titan_L0.SM_concept_mrn_capital_titan_L0",
+      "material": "/Game/Ships/Published/concept-mrn-capital-titan/L0/MI_concept_mrn_capital_titan_L0.MI_concept_mrn_capital_titan_L0"
+    },
+    "concept_tdf_destroyer": {
+      "mesh": "/Game/Ships/Published/concept-helion-destroyer/L0/SM_concept_helion_destroyer_L0.SM_concept_helion_destroyer_L0",
+      "material": "/Game/Ships/Published/concept-helion-destroyer/L0/MI_concept_helion_destroyer_L0.MI_concept_helion_destroyer_L0"
+    },
+    "concept_mrn_destroyer": {
+      "mesh": "/Game/Ships/Published/concept-mrn-destroyer/L0/SM_concept_mrn_destroyer_L0.SM_concept_mrn_destroyer_L0",
+      "material": "/Game/Ships/Published/concept-mrn-destroyer/L0/MI_concept_mrn_destroyer_L0.MI_concept_mrn_destroyer_L0"
+    },
+    "concept_tdf_scout": {
+      "mesh": "/Game/Ships/Published/concept-tdf-scout/L0/SM_concept_tdf_scout_L0.SM_concept_tdf_scout_L0",
+      "material": "/Game/Ships/Published/concept-tdf-scout/L0/MI_concept_tdf_scout_L0.MI_concept_tdf_scout_L0"
+    },
+    "concept_tdf_corvette": {
+      "mesh": "/Game/Ships/Published/concept-tdf-corvette/L0/SM_concept_tdf_corvette_L0.SM_concept_tdf_corvette_L0",
+      "material": "/Game/Ships/Published/concept-tdf-corvette/L0/MI_concept_tdf_corvette_L0.MI_concept_tdf_corvette_L0"
+    },
+    "concept_tdf_battleship": {
+      "mesh": "/Game/Ships/Published/concept-tdf-battleship/L0/SM_concept_tdf_battleship_L0.SM_concept_tdf_battleship_L0",
+      "material": "/Game/Ships/Published/concept-tdf-battleship/L0/MI_concept_tdf_battleship_L0.MI_concept_tdf_battleship_L0"
+    },
+    "concept_tdf_colony_ship": {
+      "mesh": "/Game/Ships/Published/concept-tdf-colony-ship/L0/SM_concept_tdf_colony_ship_L0.SM_concept_tdf_colony_ship_L0",
+      "material": "/Game/Ships/Published/concept-tdf-colony-ship/L0/MI_concept_tdf_colony_ship_L0.MI_concept_tdf_colony_ship_L0"
+    },
+    "concept_tdf_constructor": {
+      "mesh": "/Game/Ships/Published/concept-tdf-constructor/L0/SM_concept_tdf_constructor_L0.SM_concept_tdf_constructor_L0",
+      "material": "/Game/Ships/Published/concept-tdf-constructor/L0/MI_concept_tdf_constructor_L0.MI_concept_tdf_constructor_L0"
+    },
+    "concept_tdf_mining_ship": {
+      "mesh": "/Game/Ships/Published/concept-tdf-mining-ship/L0/SM_concept_tdf_mining_ship_L0.SM_concept_tdf_mining_ship_L0",
+      "material": "/Game/Ships/Published/concept-tdf-mining-ship/L0/MI_concept_tdf_mining_ship_L0.MI_concept_tdf_mining_ship_L0"
+    },
+    "concept_tdf_ore_hauler": {
+      "mesh": "/Game/Ships/Published/concept-tdf-ore-hauler/L0/SM_concept_tdf_ore_hauler_L0.SM_concept_tdf_ore_hauler_L0",
+      "material": "/Game/Ships/Published/concept-tdf-ore-hauler/L0/MI_concept_tdf_ore_hauler_L0.MI_concept_tdf_ore_hauler_L0"
+    },
+    "concept_tdf_troop_transport": {
+      "mesh": "/Game/Ships/Published/concept-tdf-troop-transport/L0/SM_concept_tdf_troop_transport_L0.SM_concept_tdf_troop_transport_L0",
+      "material": "/Game/Ships/Published/concept-tdf-troop-transport/L0/MI_concept_tdf_troop_transport_L0.MI_concept_tdf_troop_transport_L0"
+    },
+    "concept_tdf_defence_platform": {
+      "mesh": "/Game/Ships/Published/concept-tdf-defence-platform/L0/SM_concept_tdf_defence_platform_L0.SM_concept_tdf_defence_platform_L0",
+      "material": "/Game/Ships/Published/concept-tdf-defence-platform/L0/MI_concept_tdf_defence_platform_L0.MI_concept_tdf_defence_platform_L0"
+    },
+    "concept_tdf_gun_turret": {
+      "mesh": "/Game/Ships/Published/concept-tdf-gun-turret/L0/SM_concept_tdf_gun_turret_L0.SM_concept_tdf_gun_turret_L0",
+      "material": "/Game/Ships/Published/concept-tdf-gun-turret/L0/MI_concept_tdf_gun_turret_L0.MI_concept_tdf_gun_turret_L0"
+    },
+    "concept_tdf_missile_battery": {
+      "mesh": "/Game/Ships/Published/concept-tdf-missile-battery/L0/SM_concept_tdf_missile_battery_L0.SM_concept_tdf_missile_battery_L0",
+      "material": "/Game/Ships/Published/concept-tdf-missile-battery/L0/MI_concept_tdf_missile_battery_L0.MI_concept_tdf_missile_battery_L0"
+    },
+    "concept_tdf_shield_generator": {
+      "mesh": "/Game/Ships/Published/concept-tdf-shield-generator/L0/SM_concept_tdf_shield_generator_L0.SM_concept_tdf_shield_generator_L0",
+      "material": "/Game/Ships/Published/concept-tdf-shield-generator/L0/MI_concept_tdf_shield_generator_L0.MI_concept_tdf_shield_generator_L0"
+    },
+    "concept_tdf_research_station": {
+      "mesh": "/Game/Ships/Published/concept-tdf-research-station/L0/SM_concept_tdf_research_station_L0.SM_concept_tdf_research_station_L0",
+      "material": "/Game/Ships/Published/concept-tdf-research-station/L0/MI_concept_tdf_research_station_L0.MI_concept_tdf_research_station_L0"
+    },
+    "concept_tdf_trade_refinery": {
+      "mesh": "/Game/Ships/Published/concept-tdf-trade-refinery/L0/SM_concept_tdf_trade_refinery_L0.SM_concept_tdf_trade_refinery_L0",
+      "material": "/Game/Ships/Published/concept-tdf-trade-refinery/L0/MI_concept_tdf_trade_refinery_L0.MI_concept_tdf_trade_refinery_L0"
+    },
+    "concept_tdf_orbital_habitat": {
+      "mesh": "/Game/Ships/Published/concept-tdf-orbital-habitat/L0/SM_concept_tdf_orbital_habitat_L0.SM_concept_tdf_orbital_habitat_L0",
+      "material": "/Game/Ships/Published/concept-tdf-orbital-habitat/L0/MI_concept_tdf_orbital_habitat_L0.MI_concept_tdf_orbital_habitat_L0"
+    },
+    "concept_tdf_mining_outpost": {
+      "mesh": "/Game/Ships/Published/concept-tdf-mining-outpost/L0/SM_concept_tdf_mining_outpost_L0.SM_concept_tdf_mining_outpost_L0",
+      "material": "/Game/Ships/Published/concept-tdf-mining-outpost/L0/MI_concept_tdf_mining_outpost_L0.MI_concept_tdf_mining_outpost_L0"
+    },
+    "concept_tdf_surface_colony": {
+      "mesh": "/Game/Ships/Published/concept-tdf-surface-colony/L0/SM_concept_tdf_surface_colony_L0.SM_concept_tdf_surface_colony_L0",
+      "material": "/Game/Ships/Published/concept-tdf-surface-colony/L0/MI_concept_tdf_surface_colony_L0.MI_concept_tdf_surface_colony_L0"
+    },
+    "concept_mrn_scout": {
+      "mesh": "/Game/Ships/Published/concept-mrn-scout/L0/SM_concept_mrn_scout_L0.SM_concept_mrn_scout_L0",
+      "material": "/Game/Ships/Published/concept-mrn-scout/L0/MI_concept_mrn_scout_L0.MI_concept_mrn_scout_L0"
+    },
+    "concept_mrn_corvette": {
+      "mesh": "/Game/Ships/Published/concept-mrn-corvette/L0/SM_concept_mrn_corvette_L0.SM_concept_mrn_corvette_L0",
+      "material": "/Game/Ships/Published/concept-mrn-corvette/L0/MI_concept_mrn_corvette_L0.MI_concept_mrn_corvette_L0"
+    },
+    "concept_mrn_battleship": {
+      "mesh": "/Game/Ships/Published/concept-mrn-battleship/L0/SM_concept_mrn_battleship_L0.SM_concept_mrn_battleship_L0",
+      "material": "/Game/Ships/Published/concept-mrn-battleship/L0/MI_concept_mrn_battleship_L0.MI_concept_mrn_battleship_L0"
+    },
+    "concept_mrn_colony_ship": {
+      "mesh": "/Game/Ships/Published/concept-mrn-colony-ship/L0/SM_concept_mrn_colony_ship_L0.SM_concept_mrn_colony_ship_L0",
+      "material": "/Game/Ships/Published/concept-mrn-colony-ship/L0/MI_concept_mrn_colony_ship_L0.MI_concept_mrn_colony_ship_L0"
+    },
+    "concept_mrn_constructor": {
+      "mesh": "/Game/Ships/Published/concept-mrn-constructor/L0/SM_concept_mrn_constructor_L0.SM_concept_mrn_constructor_L0",
+      "material": "/Game/Ships/Published/concept-mrn-constructor/L0/MI_concept_mrn_constructor_L0.MI_concept_mrn_constructor_L0"
+    },
+    "concept_mrn_mining_ship": {
+      "mesh": "/Game/Ships/Published/concept-mrn-mining-ship/L0/SM_concept_mrn_mining_ship_L0.SM_concept_mrn_mining_ship_L0",
+      "material": "/Game/Ships/Published/concept-mrn-mining-ship/L0/MI_concept_mrn_mining_ship_L0.MI_concept_mrn_mining_ship_L0"
+    },
+    "concept_mrn_ore_hauler": {
+      "mesh": "/Game/Ships/Published/concept-mrn-ore-hauler/L0/SM_concept_mrn_ore_hauler_L0.SM_concept_mrn_ore_hauler_L0",
+      "material": "/Game/Ships/Published/concept-mrn-ore-hauler/L0/MI_concept_mrn_ore_hauler_L0.MI_concept_mrn_ore_hauler_L0"
+    },
+    "concept_mrn_troop_transport": {
+      "mesh": "/Game/Ships/Published/concept-mrn-troop-transport/L0/SM_concept_mrn_troop_transport_L0.SM_concept_mrn_troop_transport_L0",
+      "material": "/Game/Ships/Published/concept-mrn-troop-transport/L0/MI_concept_mrn_troop_transport_L0.MI_concept_mrn_troop_transport_L0"
+    },
+    "concept_mrn_defence_platform": {
+      "mesh": "/Game/Ships/Published/concept-mrn-defence-platform/L0/SM_concept_mrn_defence_platform_L0.SM_concept_mrn_defence_platform_L0",
+      "material": "/Game/Ships/Published/concept-mrn-defence-platform/L0/MI_concept_mrn_defence_platform_L0.MI_concept_mrn_defence_platform_L0"
+    },
+    "concept_mrn_gun_turret": {
+      "mesh": "/Game/Ships/Published/concept-mrn-gun-turret/L0/SM_concept_mrn_gun_turret_L0.SM_concept_mrn_gun_turret_L0",
+      "material": "/Game/Ships/Published/concept-mrn-gun-turret/L0/MI_concept_mrn_gun_turret_L0.MI_concept_mrn_gun_turret_L0"
+    },
+    "concept_mrn_missile_battery": {
+      "mesh": "/Game/Ships/Published/concept-mrn-missile-battery/L0/SM_concept_mrn_missile_battery_L0.SM_concept_mrn_missile_battery_L0",
+      "material": "/Game/Ships/Published/concept-mrn-missile-battery/L0/MI_concept_mrn_missile_battery_L0.MI_concept_mrn_missile_battery_L0"
+    },
+    "concept_mrn_shield_generator": {
+      "mesh": "/Game/Ships/Published/concept-mrn-shield-generator/L0/SM_concept_mrn_shield_generator_L0.SM_concept_mrn_shield_generator_L0",
+      "material": "/Game/Ships/Published/concept-mrn-shield-generator/L0/MI_concept_mrn_shield_generator_L0.MI_concept_mrn_shield_generator_L0"
+    },
+    "concept_mrn_research_station": {
+      "mesh": "/Game/Ships/Published/concept-mrn-research-station/L0/SM_concept_mrn_research_station_L0.SM_concept_mrn_research_station_L0",
+      "material": "/Game/Ships/Published/concept-mrn-research-station/L0/MI_concept_mrn_research_station_L0.MI_concept_mrn_research_station_L0"
+    },
+    "concept_mrn_trade_refinery": {
+      "mesh": "/Game/Ships/Published/concept-mrn-trade-refinery/L0/SM_concept_mrn_trade_refinery_L0.SM_concept_mrn_trade_refinery_L0",
+      "material": "/Game/Ships/Published/concept-mrn-trade-refinery/L0/MI_concept_mrn_trade_refinery_L0.MI_concept_mrn_trade_refinery_L0"
+    },
+    "concept_mrn_orbital_habitat": {
+      "mesh": "/Game/Ships/Published/concept-mrn-orbital-habitat/L0/SM_concept_mrn_orbital_habitat_L0.SM_concept_mrn_orbital_habitat_L0",
+      "material": "/Game/Ships/Published/concept-mrn-orbital-habitat/L0/MI_concept_mrn_orbital_habitat_L0.MI_concept_mrn_orbital_habitat_L0"
+    },
+    "concept_mrn_mining_outpost": {
+      "mesh": "/Game/Ships/Published/concept-mrn-mining-outpost/L0/SM_concept_mrn_mining_outpost_L0.SM_concept_mrn_mining_outpost_L0",
+      "material": "/Game/Ships/Published/concept-mrn-mining-outpost/L0/MI_concept_mrn_mining_outpost_L0.MI_concept_mrn_mining_outpost_L0"
+    },
+    "concept_mrn_surface_colony": {
+      "mesh": "/Game/Ships/Published/concept-mrn-surface-colony/L0/SM_concept_mrn_surface_colony_L0.SM_concept_mrn_surface_colony_L0",
+      "material": "/Game/Ships/Published/concept-mrn-surface-colony/L0/MI_concept_mrn_surface_colony_L0.MI_concept_mrn_surface_colony_L0"
+    },
+    "concept_derelict_wreck": {
+      "mesh": "/Game/Ships/Published/concept-derelict-wreck/L0/SM_concept_derelict_wreck_L0.SM_concept_derelict_wreck_L0",
+      "material": "/Game/Ships/Published/concept-derelict-wreck/L0/MI_concept_derelict_wreck_L0.MI_concept_derelict_wreck_L0"
+    },
+    "concept_pirate_base": {
+      "mesh": "/Game/Ships/Published/concept-pirate-base/L0/SM_concept_pirate_base_L0.SM_concept_pirate_base_L0",
+      "material": "/Game/Ships/Published/concept-pirate-base/L0/MI_concept_pirate_base_L0.MI_concept_pirate_base_L0"
+    },
+    "concept_hero_asteroid_fortress": {
+      "mesh": "/Game/Ships/Published/concept-hero-asteroid-fortress/L0/SM_concept_hero_asteroid_fortress_L0.SM_concept_hero_asteroid_fortress_L0",
+      "material": "/Game/Ships/Published/concept-hero-asteroid-fortress/L0/MI_concept_hero_asteroid_fortress_L0.MI_concept_hero_asteroid_fortress_L0"
+    },
+    "concept_hero_moon_observatory": {
+      "mesh": "/Game/Ships/Published/concept-hero-moon-observatory/L0/SM_concept_hero_moon_observatory_L0.SM_concept_hero_moon_observatory_L0",
+      "material": "/Game/Ships/Published/concept-hero-moon-observatory/L0/MI_concept_hero_moon_observatory_L0.MI_concept_hero_moon_observatory_L0"
+    },
+    "concept_cartel_scout": {
+      "mesh": "/Game/Ships/Published/concept-cartel-scout/L0/SM_concept_cartel_scout_L0.SM_concept_cartel_scout_L0",
+      "material": "/Game/Ships/Published/concept-cartel-scout/L0/MI_concept_cartel_scout_L0.MI_concept_cartel_scout_L0"
+    },
+    "concept_cartel_fighter_bomber": {
+      "mesh": "/Game/Ships/Published/concept-cartel-fighter-bomber/L0/SM_concept_cartel_fighter_bomber_L0.SM_concept_cartel_fighter_bomber_L0",
+      "material": "/Game/Ships/Published/concept-cartel-fighter-bomber/L0/MI_concept_cartel_fighter_bomber_L0.MI_concept_cartel_fighter_bomber_L0"
+    },
+    "concept_cartel_frigate": {
+      "mesh": "/Game/Ships/Published/concept-cartel-frigate/L0/SM_concept_cartel_frigate_L0.SM_concept_cartel_frigate_L0",
+      "material": "/Game/Ships/Published/concept-cartel-frigate/L0/MI_concept_cartel_frigate_L0.MI_concept_cartel_frigate_L0"
+    },
+    "concept_cartel_destroyer": {
+      "mesh": "/Game/Ships/Published/concept-cartel-destroyer/L0/SM_concept_cartel_destroyer_L0.SM_concept_cartel_destroyer_L0",
+      "material": "/Game/Ships/Published/concept-cartel-destroyer/L0/MI_concept_cartel_destroyer_L0.MI_concept_cartel_destroyer_L0"
+    },
+    "concept_cartel_cruiser": {
+      "mesh": "/Game/Ships/Published/concept-cartel-cruiser/L0/SM_concept_cartel_cruiser_L0.SM_concept_cartel_cruiser_L0",
+      "material": "/Game/Ships/Published/concept-cartel-cruiser/L0/MI_concept_cartel_cruiser_L0.MI_concept_cartel_cruiser_L0"
+    },
+    "concept_cartel_carrier": {
+      "mesh": "/Game/Ships/Published/concept-cartel-carrier/L0/SM_concept_cartel_carrier_L0.SM_concept_cartel_carrier_L0",
+      "material": "/Game/Ships/Published/concept-cartel-carrier/L0/MI_concept_cartel_carrier_L0.MI_concept_cartel_carrier_L0"
+    },
+    "concept_cartel_battleship": {
+      "mesh": "/Game/Ships/Published/concept-cartel-battleship/L0/SM_concept_cartel_battleship_L0.SM_concept_cartel_battleship_L0",
+      "material": "/Game/Ships/Published/concept-cartel-battleship/L0/MI_concept_cartel_battleship_L0.MI_concept_cartel_battleship_L0"
+    },
+    "concept_cartel_flagship": {
+      "mesh": "/Game/Ships/Published/concept-cartel-flagship/L0/SM_concept_cartel_flagship_L0.SM_concept_cartel_flagship_L0",
+      "material": "/Game/Ships/Published/concept-cartel-flagship/L0/MI_concept_cartel_flagship_L0.MI_concept_cartel_flagship_L0"
+    },
+    "concept_cartel_station": {
+      "mesh": "/Game/Ships/Published/concept-cartel-station/L0/SM_concept_cartel_station_L0.SM_concept_cartel_station_L0",
+      "material": "/Game/Ships/Published/concept-cartel-station/L0/MI_concept_cartel_station_L0.MI_concept_cartel_station_L0"
+    },
+    "concept_cartel_signature_unit": {
+      "mesh": "/Game/Ships/Published/concept-cartel-signature-unit/L0/SM_concept_cartel_signature_unit_L0.SM_concept_cartel_signature_unit_L0",
+      "material": "/Game/Ships/Published/concept-cartel-signature-unit/L0/MI_concept_cartel_signature_unit_L0.MI_concept_cartel_signature_unit_L0"
+    },
+    "concept_helion_scout": {
+      "mesh": "/Game/Ships/Published/concept-helion-scout/L0/SM_concept_helion_scout_L0.SM_concept_helion_scout_L0",
+      "material": "/Game/Ships/Published/concept-helion-scout/L0/MI_concept_helion_scout_L0.MI_concept_helion_scout_L0"
+    },
+    "concept_helion_fighter_bomber": {
+      "mesh": "/Game/Ships/Published/concept-helion-fighter-bomber/L0/SM_concept_helion_fighter_bomber_L0.SM_concept_helion_fighter_bomber_L0",
+      "material": "/Game/Ships/Published/concept-helion-fighter-bomber/L0/MI_concept_helion_fighter_bomber_L0.MI_concept_helion_fighter_bomber_L0"
+    },
+    "concept_helion_frigate": {
+      "mesh": "/Game/Ships/Published/concept-helion-frigate/L0/SM_concept_helion_frigate_L0.SM_concept_helion_frigate_L0",
+      "material": "/Game/Ships/Published/concept-helion-frigate/L0/MI_concept_helion_frigate_L0.MI_concept_helion_frigate_L0"
+    },
+    "concept_helion_destroyer": {
+      "mesh": "/Game/Ships/Published/concept-helion-destroyer/L0/SM_concept_helion_destroyer_L0.SM_concept_helion_destroyer_L0",
+      "material": "/Game/Ships/Published/concept-helion-destroyer/L0/MI_concept_helion_destroyer_L0.MI_concept_helion_destroyer_L0"
+    },
+    "concept_helion_cruiser": {
+      "mesh": "/Game/Ships/Published/concept-helion-cruiser/L0/SM_concept_helion_cruiser_L0.SM_concept_helion_cruiser_L0",
+      "material": "/Game/Ships/Published/concept-helion-cruiser/L0/MI_concept_helion_cruiser_L0.MI_concept_helion_cruiser_L0"
+    },
+    "concept_helion_carrier": {
+      "mesh": "/Game/Ships/Published/concept-helion-carrier/L0/SM_concept_helion_carrier_L0.SM_concept_helion_carrier_L0",
+      "material": "/Game/Ships/Published/concept-helion-carrier/L0/MI_concept_helion_carrier_L0.MI_concept_helion_carrier_L0"
+    },
+    "concept_helion_battleship": {
+      "mesh": "/Game/Ships/Published/concept-helion-battleship/L0/SM_concept_helion_battleship_L0.SM_concept_helion_battleship_L0",
+      "material": "/Game/Ships/Published/concept-helion-battleship/L0/MI_concept_helion_battleship_L0.MI_concept_helion_battleship_L0"
+    },
+    "concept_helion_flagship": {
+      "mesh": "/Game/Ships/Published/concept-helion-flagship/L0/SM_concept_helion_flagship_L0.SM_concept_helion_flagship_L0",
+      "material": "/Game/Ships/Published/concept-helion-flagship/L0/MI_concept_helion_flagship_L0.MI_concept_helion_flagship_L0"
+    },
+    "concept_helion_station": {
+      "mesh": "/Game/Ships/Published/concept-helion-station/L0/SM_concept_helion_station_L0.SM_concept_helion_station_L0",
+      "material": "/Game/Ships/Published/concept-helion-station/L0/MI_concept_helion_station_L0.MI_concept_helion_station_L0"
+    },
+    "concept_helion_signature_unit": {
+      "mesh": "/Game/Ships/Published/concept-helion-signature-unit/L0/SM_concept_helion_signature_unit_L0.SM_concept_helion_signature_unit_L0",
+      "material": "/Game/Ships/Published/concept-helion-signature-unit/L0/MI_concept_helion_signature_unit_L0.MI_concept_helion_signature_unit_L0"
+    },
+    "concept_ueg_scout": {
+      "mesh": "/Game/Ships/Published/concept-ueg-scout/L0/SM_concept_ueg_scout_L0.SM_concept_ueg_scout_L0",
+      "material": "/Game/Ships/Published/concept-ueg-scout/L0/MI_concept_ueg_scout_L0.MI_concept_ueg_scout_L0"
+    },
+    "concept_ueg_fighter_bomber": {
+      "mesh": "/Game/Ships/Published/concept-ueg-fighter-bomber/L0/SM_concept_ueg_fighter_bomber_L0.SM_concept_ueg_fighter_bomber_L0",
+      "material": "/Game/Ships/Published/concept-ueg-fighter-bomber/L0/MI_concept_ueg_fighter_bomber_L0.MI_concept_ueg_fighter_bomber_L0"
+    },
+    "concept_ueg_frigate": {
+      "mesh": "/Game/Ships/Published/concept-ueg-frigate/L0/SM_concept_ueg_frigate_L0.SM_concept_ueg_frigate_L0",
+      "material": "/Game/Ships/Published/concept-ueg-frigate/L0/MI_concept_ueg_frigate_L0.MI_concept_ueg_frigate_L0"
+    },
+    "concept_ueg_destroyer": {
+      "mesh": "/Game/Ships/Published/concept-ueg-destroyer/L0/SM_concept_ueg_destroyer_L0.SM_concept_ueg_destroyer_L0",
+      "material": "/Game/Ships/Published/concept-ueg-destroyer/L0/MI_concept_ueg_destroyer_L0.MI_concept_ueg_destroyer_L0"
+    },
+    "concept_ueg_cruiser": {
+      "mesh": "/Game/Ships/Published/concept-ueg-cruiser/L0/SM_concept_ueg_cruiser_L0.SM_concept_ueg_cruiser_L0",
+      "material": "/Game/Ships/Published/concept-ueg-cruiser/L0/MI_concept_ueg_cruiser_L0.MI_concept_ueg_cruiser_L0"
+    },
+    "concept_ueg_carrier": {
+      "mesh": "/Game/Ships/Published/concept-ueg-carrier/L0/SM_concept_ueg_carrier_L0.SM_concept_ueg_carrier_L0",
+      "material": "/Game/Ships/Published/concept-ueg-carrier/L0/MI_concept_ueg_carrier_L0.MI_concept_ueg_carrier_L0"
+    },
+    "concept_ueg_battleship": {
+      "mesh": "/Game/Ships/Published/concept-ueg-battleship/L0/SM_concept_ueg_battleship_L0.SM_concept_ueg_battleship_L0",
+      "material": "/Game/Ships/Published/concept-ueg-battleship/L0/MI_concept_ueg_battleship_L0.MI_concept_ueg_battleship_L0"
+    },
+    "concept_ueg_flagship": {
+      "mesh": "/Game/Ships/Published/concept-ueg-flagship/L0/SM_concept_ueg_flagship_L0.SM_concept_ueg_flagship_L0",
+      "material": "/Game/Ships/Published/concept-ueg-flagship/L0/MI_concept_ueg_flagship_L0.MI_concept_ueg_flagship_L0"
+    },
+    "concept_ueg_station": {
+      "mesh": "/Game/Ships/Published/concept-ueg-station/L0/SM_concept_ueg_station_L0.SM_concept_ueg_station_L0",
+      "material": "/Game/Ships/Published/concept-ueg-station/L0/MI_concept_ueg_station_L0.MI_concept_ueg_station_L0"
+    },
+    "concept_ueg_signature_unit": {
+      "mesh": "/Game/Ships/Published/concept-ueg-signature-unit/L0/SM_concept_ueg_signature_unit_L0.SM_concept_ueg_signature_unit_L0",
+      "material": "/Game/Ships/Published/concept-ueg-signature-unit/L0/MI_concept_ueg_signature_unit_L0.MI_concept_ueg_signature_unit_L0"
+    },
+    "concept_veil_scout": {
+      "mesh": "/Game/Ships/Published/concept-veil-scout/L0/SM_concept_veil_scout_L0.SM_concept_veil_scout_L0",
+      "material": "/Game/Ships/Published/concept-veil-scout/L0/MI_concept_veil_scout_L0.MI_concept_veil_scout_L0"
+    },
+    "concept_veil_fighter_bomber": {
+      "mesh": "/Game/Ships/Published/concept-veil-fighter-bomber/L0/SM_concept_veil_fighter_bomber_L0.SM_concept_veil_fighter_bomber_L0",
+      "material": "/Game/Ships/Published/concept-veil-fighter-bomber/L0/MI_concept_veil_fighter_bomber_L0.MI_concept_veil_fighter_bomber_L0"
+    },
+    "concept_veil_frigate": {
+      "mesh": "/Game/Ships/Published/concept-veil-frigate/L0/SM_concept_veil_frigate_L0.SM_concept_veil_frigate_L0",
+      "material": "/Game/Ships/Published/concept-veil-frigate/L0/MI_concept_veil_frigate_L0.MI_concept_veil_frigate_L0"
+    },
+    "concept_veil_destroyer": {
+      "mesh": "/Game/Ships/Published/concept-veil-destroyer/L0/SM_concept_veil_destroyer_L0.SM_concept_veil_destroyer_L0",
+      "material": "/Game/Ships/Published/concept-veil-destroyer/L0/MI_concept_veil_destroyer_L0.MI_concept_veil_destroyer_L0"
+    },
+    "concept_veil_cruiser": {
+      "mesh": "/Game/Ships/Published/concept-veil-cruiser/L0/SM_concept_veil_cruiser_L0.SM_concept_veil_cruiser_L0",
+      "material": "/Game/Ships/Published/concept-veil-cruiser/L0/MI_concept_veil_cruiser_L0.MI_concept_veil_cruiser_L0"
+    },
+    "concept_veil_carrier": {
+      "mesh": "/Game/Ships/Published/concept-veil-carrier/L0/SM_concept_veil_carrier_L0.SM_concept_veil_carrier_L0",
+      "material": "/Game/Ships/Published/concept-veil-carrier/L0/MI_concept_veil_carrier_L0.MI_concept_veil_carrier_L0"
+    },
+    "concept_veil_battleship": {
+      "mesh": "/Game/Ships/Published/concept-veil-battleship/L0/SM_concept_veil_battleship_L0.SM_concept_veil_battleship_L0",
+      "material": "/Game/Ships/Published/concept-veil-battleship/L0/MI_concept_veil_battleship_L0.MI_concept_veil_battleship_L0"
+    },
+    "concept_veil_flagship": {
+      "mesh": "/Game/Ships/Published/concept-veil-flagship/L0/SM_concept_veil_flagship_L0.SM_concept_veil_flagship_L0",
+      "material": "/Game/Ships/Published/concept-veil-flagship/L0/MI_concept_veil_flagship_L0.MI_concept_veil_flagship_L0"
+    },
+    "concept_veil_station": {
+      "mesh": "/Game/Ships/Published/concept-veil-station/L0/SM_concept_veil_station_L0.SM_concept_veil_station_L0",
+      "material": "/Game/Ships/Published/concept-veil-station/L0/MI_concept_veil_station_L0.MI_concept_veil_station_L0"
+    },
+    "concept_veil_signature_unit": {
+      "mesh": "/Game/Ships/Published/concept-veil-signature-unit/L0/SM_concept_veil_signature_unit_L0.SM_concept_veil_signature_unit_L0",
+      "material": "/Game/Ships/Published/concept-veil-signature-unit/L0/MI_concept_veil_signature_unit_L0.MI_concept_veil_signature_unit_L0"
+    },
+    "concept_module_light_railgun": {
+      "mesh": "/Game/Ships/Published/concept-module-light-railgun/L0/SM_concept_module_light_railgun_L0.SM_concept_module_light_railgun_L0",
+      "material": "/Game/Ships/Published/concept-module-light-railgun/L0/MI_concept_module_light_railgun_L0.MI_concept_module_light_railgun_L0"
+    },
+    "concept_module_heavy_railgun": {
+      "mesh": "/Game/Ships/Published/concept-module-heavy-railgun/L0/SM_concept_module_heavy_railgun_L0.SM_concept_module_heavy_railgun_L0",
+      "material": "/Game/Ships/Published/concept-module-heavy-railgun/L0/MI_concept_module_heavy_railgun_L0.MI_concept_module_heavy_railgun_L0"
+    },
+    "concept_module_point_defence": {
+      "mesh": "/Game/Ships/Published/concept-module-point-defence/L0/SM_concept_module_point_defence_L0.SM_concept_module_point_defence_L0",
+      "material": "/Game/Ships/Published/concept-module-point-defence/L0/MI_concept_module_point_defence_L0.MI_concept_module_point_defence_L0"
+    },
+    "concept_module_vls_bank": {
+      "mesh": "/Game/Ships/Published/concept-module-vls-bank/L0/SM_concept_module_vls_bank_L0.SM_concept_module_vls_bank_L0",
+      "material": "/Game/Ships/Published/concept-module-vls-bank/L0/MI_concept_module_vls_bank_L0.MI_concept_module_vls_bank_L0"
+    },
+    "concept_module_missile_pod": {
+      "mesh": "/Game/Ships/Published/concept-module-missile-pod/L0/SM_concept_module_missile_pod_L0.SM_concept_module_missile_pod_L0",
+      "material": "/Game/Ships/Published/concept-module-missile-pod/L0/MI_concept_module_missile_pod_L0.MI_concept_module_missile_pod_L0"
+    },
+    "concept_module_beam_lance": {
+      "mesh": "/Game/Ships/Published/concept-module-beam-lance/L0/SM_concept_module_beam_lance_L0.SM_concept_module_beam_lance_L0",
+      "material": "/Game/Ships/Published/concept-module-beam-lance/L0/MI_concept_module_beam_lance_L0.MI_concept_module_beam_lance_L0"
+    },
+    "concept_module_torpedo_tubes": {
+      "mesh": "/Game/Ships/Published/concept-module-torpedo-tubes/L0/SM_concept_module_torpedo_tubes_L0.SM_concept_module_torpedo_tubes_L0",
+      "material": "/Game/Ships/Published/concept-module-torpedo-tubes/L0/MI_concept_module_torpedo_tubes_L0.MI_concept_module_torpedo_tubes_L0"
+    },
+    "concept_module_spinal_mount": {
+      "mesh": "/Game/Ships/Published/concept-module-spinal-mount/L0/SM_concept_module_spinal_mount_L0.SM_concept_module_spinal_mount_L0",
+      "material": "/Game/Ships/Published/concept-module-spinal-mount/L0/MI_concept_module_spinal_mount_L0.MI_concept_module_spinal_mount_L0"
+    },
+    "concept_module_flak_battery": {
+      "mesh": "/Game/Ships/Published/concept-module-flak-battery/L0/SM_concept_module_flak_battery_L0.SM_concept_module_flak_battery_L0",
+      "material": "/Game/Ships/Published/concept-module-flak-battery/L0/MI_concept_module_flak_battery_L0.MI_concept_module_flak_battery_L0"
+    },
+    "concept_module_heavy_kinetic_turret": {
+      "mesh": "/Game/Ships/Published/concept-module-heavy-kinetic-turret/L0/SM_concept_module_heavy_kinetic_turret_L0.SM_concept_module_heavy_kinetic_turret_L0",
+      "material": "/Game/Ships/Published/concept-module-heavy-kinetic-turret/L0/MI_concept_module_heavy_kinetic_turret_L0.MI_concept_module_heavy_kinetic_turret_L0"
+    },
+    "concept_module_hangar_launch_tube": {
+      "mesh": "/Game/Ships/Published/concept-module-hangar-launch-tube/L0/SM_concept_module_hangar_launch_tube_L0.SM_concept_module_hangar_launch_tube_L0",
+      "material": "/Game/Ships/Published/concept-module-hangar-launch-tube/L0/MI_concept_module_hangar_launch_tube_L0.MI_concept_module_hangar_launch_tube_L0"
+    },
+    "concept_module_reactor": {
+      "mesh": "/Game/Ships/Published/concept-module-reactor/L0/SM_concept_module_reactor_L0.SM_concept_module_reactor_L0",
+      "material": "/Game/Ships/Published/concept-module-reactor/L0/MI_concept_module_reactor_L0.MI_concept_module_reactor_L0"
+    },
+    "concept_module_shield_generator": {
+      "mesh": "/Game/Ships/Published/concept-module-shield-generator/L0/SM_concept_module_shield_generator_L0.SM_concept_module_shield_generator_L0",
+      "material": "/Game/Ships/Published/concept-module-shield-generator/L0/MI_concept_module_shield_generator_L0.MI_concept_module_shield_generator_L0"
+    },
+    "concept_module_sensor_array": {
+      "mesh": "/Game/Ships/Published/concept-module-sensor-array/L0/SM_concept_module_sensor_array_L0.SM_concept_module_sensor_array_L0",
+      "material": "/Game/Ships/Published/concept-module-sensor-array/L0/MI_concept_module_sensor_array_L0.MI_concept_module_sensor_array_L0"
+    },
+    "concept_module_armour_plate_set": {
+      "mesh": "/Game/Ships/Published/concept-module-armour-plate-set/L0/SM_concept_module_armour_plate_set_L0.SM_concept_module_armour_plate_set_L0",
+      "material": "/Game/Ships/Published/concept-module-armour-plate-set/L0/MI_concept_module_armour_plate_set_L0.MI_concept_module_armour_plate_set_L0"
+    },
+    "concept_module_engine_small": {
+      "mesh": "/Game/Ships/Published/concept-module-engine-small/L0/SM_concept_module_engine_small_L0.SM_concept_module_engine_small_L0",
+      "material": "/Game/Ships/Published/concept-module-engine-small/L0/MI_concept_module_engine_small_L0.MI_concept_module_engine_small_L0"
+    },
+    "concept_module_engine_medium": {
+      "mesh": "/Game/Ships/Published/concept-module-engine-medium/L0/SM_concept_module_engine_medium_L0.SM_concept_module_engine_medium_L0",
+      "material": "/Game/Ships/Published/concept-module-engine-medium/L0/MI_concept_module_engine_medium_L0.MI_concept_module_engine_medium_L0"
+    },
+    "concept_module_engine_large": {
+      "mesh": "/Game/Ships/Published/concept-module-engine-large/L0/SM_concept_module_engine_large_L0.SM_concept_module_engine_large_L0",
+      "material": "/Game/Ships/Published/concept-module-engine-large/L0/MI_concept_module_engine_large_L0.MI_concept_module_engine_large_L0"
+    },
+    "concept_module_cargo_pod": {
+      "mesh": "/Game/Ships/Published/concept-module-cargo-pod/L0/SM_concept_module_cargo_pod_L0.SM_concept_module_cargo_pod_L0",
+      "material": "/Game/Ships/Published/concept-module-cargo-pod/L0/MI_concept_module_cargo_pod_L0.MI_concept_module_cargo_pod_L0"
+    },
+    "concept_module_docking_arm": {
+      "mesh": "/Game/Ships/Published/concept-module-docking-arm/L0/SM_concept_module_docking_arm_L0.SM_concept_module_docking_arm_L0",
+      "material": "/Game/Ships/Published/concept-module-docking-arm/L0/MI_concept_module_docking_arm_L0.MI_concept_module_docking_arm_L0"
+    },
+    "concept_module_habitat_ring": {
+      "mesh": "/Game/Ships/Published/concept-module-habitat-ring/L0/SM_concept_module_habitat_ring_L0.SM_concept_module_habitat_ring_L0",
+      "material": "/Game/Ships/Published/concept-module-habitat-ring/L0/MI_concept_module_habitat_ring_L0.MI_concept_module_habitat_ring_L0"
+    },
+    "concept_module_refinery": {
+      "mesh": "/Game/Ships/Published/concept-module-refinery/L0/SM_concept_module_refinery_L0.SM_concept_module_refinery_L0",
+      "material": "/Game/Ships/Published/concept-module-refinery/L0/MI_concept_module_refinery_L0.MI_concept_module_refinery_L0"
+    },
+    "concept_module_fabrication_bay": {
+      "mesh": "/Game/Ships/Published/concept-module-fabrication-bay/L0/SM_concept_module_fabrication_bay_L0.SM_concept_module_fabrication_bay_L0",
+      "material": "/Game/Ships/Published/concept-module-fabrication-bay/L0/MI_concept_module_fabrication_bay_L0.MI_concept_module_fabrication_bay_L0"
+    },
+    "concept_module_comms_mast": {
+      "mesh": "/Game/Ships/Published/concept-module-comms-mast/L0/SM_concept_module_comms_mast_L0.SM_concept_module_comms_mast_L0",
+      "material": "/Game/Ships/Published/concept-module-comms-mast/L0/MI_concept_module_comms_mast_L0.MI_concept_module_comms_mast_L0"
+    },
+    "concept_derelict_battleship_hulk": {
+      "mesh": "/Game/Ships/Published/concept-derelict-battleship-hulk/L0/SM_concept_derelict_battleship_hulk_L0.SM_concept_derelict_battleship_hulk_L0",
+      "material": "/Game/Ships/Published/concept-derelict-battleship-hulk/L0/MI_concept_derelict_battleship_hulk_L0.MI_concept_derelict_battleship_hulk_L0"
+    },
+    "concept_asteroid_shipyard": {
+      "mesh": "/Game/Ships/Published/concept-asteroid-shipyard/L0/SM_concept_asteroid_shipyard_L0.SM_concept_asteroid_shipyard_L0",
+      "material": "/Game/Ships/Published/concept-asteroid-shipyard/L0/MI_concept_asteroid_shipyard_L0.MI_concept_asteroid_shipyard_L0"
+    },
+    "concept_corsair_scout": {
+      "mesh": "/Game/Ships/Published/concept-corsair-scout/L0/SM_concept_corsair_scout_L0.SM_concept_corsair_scout_L0",
+      "material": "/Game/Ships/Published/concept-corsair-scout/L0/MI_concept_corsair_scout_L0.MI_concept_corsair_scout_L0"
+    },
+    "concept_corsair_raider": {
+      "mesh": "/Game/Ships/Published/concept-corsair-raider/L0/SM_concept_corsair_raider_L0.SM_concept_corsair_raider_L0",
+      "material": "/Game/Ships/Published/concept-corsair-raider/L0/MI_concept_corsair_raider_L0.MI_concept_corsair_raider_L0"
+    },
+    "concept_corsair_ew_ship": {
+      "mesh": "/Game/Ships/Published/concept-corsair-ew-ship/L0/SM_concept_corsair_ew_ship_L0.SM_concept_corsair_ew_ship_L0",
+      "material": "/Game/Ships/Published/concept-corsair-ew-ship/L0/MI_concept_corsair_ew_ship_L0.MI_concept_corsair_ew_ship_L0"
+    },
+    "concept_corsair_decoy_drone": {
+      "mesh": "/Game/Ships/Published/concept-corsair-decoy-drone/L0/SM_concept_corsair_decoy_drone_L0.SM_concept_corsair_decoy_drone_L0",
+      "material": "/Game/Ships/Published/concept-corsair-decoy-drone/L0/MI_concept_corsair_decoy_drone_L0.MI_concept_corsair_decoy_drone_L0"
+    },
+    "concept_corsair_boarding_craft": {
+      "mesh": "/Game/Ships/Published/concept-corsair-boarding-craft/L0/SM_concept_corsair_boarding_craft_L0.SM_concept_corsair_boarding_craft_L0",
+      "material": "/Game/Ships/Published/concept-corsair-boarding-craft/L0/MI_concept_corsair_boarding_craft_L0.MI_concept_corsair_boarding_craft_L0"
+    },
+    "concept_corsair_heavy_ambusher": {
+      "mesh": "/Game/Ships/Published/concept-corsair-heavy-ambusher/L0/SM_concept_corsair_heavy_ambusher_L0.SM_concept_corsair_heavy_ambusher_L0",
+      "material": "/Game/Ships/Published/concept-corsair-heavy-ambusher/L0/MI_concept_corsair_heavy_ambusher_L0.MI_concept_corsair_heavy_ambusher_L0"
+    },
+    "concept_corsair_hidden_base": {
+      "mesh": "/Game/Ships/Published/concept-corsair-hidden-base/L0/SM_concept_corsair_hidden_base_L0.SM_concept_corsair_hidden_base_L0",
+      "material": "/Game/Ships/Published/concept-corsair-hidden-base/L0/MI_concept_corsair_hidden_base_L0.MI_concept_corsair_hidden_base_L0"
+    },
+    "concept_veil_crisis_mothership": {
+      "mesh": "/Game/Ships/Published/concept-veil-crisis-mothership/L0/SM_concept_veil_crisis_mothership_L0.SM_concept_veil_crisis_mothership_L0",
+      "material": "/Game/Ships/Published/concept-veil-crisis-mothership/L0/MI_concept_veil_crisis_mothership_L0.MI_concept_veil_crisis_mothership_L0"
+    },
+    "concept_tdf_boarding_pod": {
+      "mesh": "/Game/Ships/Published/concept-tdf-boarding-pod/L0/SM_concept_tdf_boarding_pod_L0.SM_concept_tdf_boarding_pod_L0",
+      "material": "/Game/Ships/Published/concept-tdf-boarding-pod/L0/MI_concept_tdf_boarding_pod_L0.MI_concept_tdf_boarding_pod_L0"
+    },
+    "concept_mrn_torpedo_launcher": {
+      "mesh": "/Game/Ships/Published/concept-mrn-torpedo-launcher/L0/SM_concept_mrn_torpedo_launcher_L0.SM_concept_mrn_torpedo_launcher_L0",
+      "material": "/Game/Ships/Published/concept-mrn-torpedo-launcher/L0/MI_concept_mrn_torpedo_launcher_L0.MI_concept_mrn_torpedo_launcher_L0"
+    },
+    "concept_tdf_marine_shuttle": {
+      "mesh": "/Game/Ships/Published/concept-tdf-marine-shuttle/L0/SM_concept_tdf_marine_shuttle_L0.SM_concept_tdf_marine_shuttle_L0",
+      "material": "/Game/Ships/Published/concept-tdf-marine-shuttle/L0/MI_concept_tdf_marine_shuttle_L0.MI_concept_tdf_marine_shuttle_L0"
+    },
+    "concept_corsair_boarding_pod": {
+      "mesh": "/Game/Ships/Published/concept-corsair-boarding-pod/L0/SM_concept_corsair_boarding_pod_L0.SM_concept_corsair_boarding_pod_L0",
+      "material": "/Game/Ships/Published/concept-corsair-boarding-pod/L0/MI_concept_corsair_boarding_pod_L0.MI_concept_corsair_boarding_pod_L0"
+    },
+    "concept_tdf_coilgun_pdc_grid": {
+      "mesh": "/Game/Ships/Published/concept-tdf-coilgun-pdc-grid/L0/SM_concept_tdf_coilgun_pdc_grid_L0.SM_concept_tdf_coilgun_pdc_grid_L0",
+      "material": "/Game/Ships/Published/concept-tdf-coilgun-pdc-grid/L0/MI_concept_tdf_coilgun_pdc_grid_L0.MI_concept_tdf_coilgun_pdc_grid_L0"
+    },
+    "concept_mrn_heavy_vls_bank": {
+      "mesh": "/Game/Ships/Published/concept-mrn-heavy-vls-bank/L0/SM_concept_mrn_heavy_vls_bank_L0.SM_concept_mrn_heavy_vls_bank_L0",
+      "material": "/Game/Ships/Published/concept-mrn-heavy-vls-bank/L0/MI_concept_mrn_heavy_vls_bank_L0.MI_concept_mrn_heavy_vls_bank_L0"
+    },
+    "concept_cartel_kinetic_harpoon": {
+      "mesh": "/Game/Ships/Published/concept-cartel-kinetic-harpoon/L0/SM_concept_cartel_kinetic_harpoon_L0.SM_concept_cartel_kinetic_harpoon_L0",
+      "material": "/Game/Ships/Published/concept-cartel-kinetic-harpoon/L0/MI_concept_cartel_kinetic_harpoon_L0.MI_concept_cartel_kinetic_harpoon_L0"
+    },
+    "concept_helion_mining_laser": {
+      "mesh": "/Game/Ships/Published/concept-helion-mining-laser/L0/SM_concept_helion_mining_laser_L0.SM_concept_helion_mining_laser_L0",
+      "material": "/Game/Ships/Published/concept-helion-mining-laser/L0/MI_concept_helion_mining_laser_L0.MI_concept_helion_mining_laser_L0"
+    },
+    "concept_ueg_spinal_flak_battery": {
+      "mesh": "/Game/Ships/Published/concept-ueg-spinal-flak-battery/L0/SM_concept_ueg_spinal_flak_battery_L0.SM_concept_ueg_spinal_flak_battery_L0",
+      "material": "/Game/Ships/Published/concept-ueg-spinal-flak-battery/L0/MI_concept_ueg_spinal_flak_battery_L0.MI_concept_ueg_spinal_flak_battery_L0"
+    },
+    "concept_corsair_jammer_array": {
+      "mesh": "/Game/Ships/Published/concept-corsair-jammer-array/L0/SM_concept_corsair_jammer_array_L0.SM_concept_corsair_jammer_array_L0",
+      "material": "/Game/Ships/Published/concept-corsair-jammer-array/L0/MI_concept_corsair_jammer_array_L0.MI_concept_corsair_jammer_array_L0"
+    },
+    "concept_veil_plasma_arc_emitter": {
+      "mesh": "/Game/Ships/Published/concept-veil-plasma-arc-emitter/L0/SM_concept_veil_plasma_arc_emitter_L0.SM_concept_veil_plasma_arc_emitter_L0",
+      "material": "/Game/Ships/Published/concept-veil-plasma-arc-emitter/L0/MI_concept_veil_plasma_arc_emitter_L0.MI_concept_veil_plasma_arc_emitter_L0"
+    },
+    "concept_helion_ore_hauler": {
+      "mesh": "/Game/Ships/Published/concept-helion-ore-hauler/L0/SM_concept_helion_ore_hauler_L0.SM_concept_helion_ore_hauler_L0",
+      "material": "/Game/Ships/Published/concept-helion-ore-hauler/L0/MI_concept_helion_ore_hauler_L0.MI_concept_helion_ore_hauler_L0"
+    },
+    "concept_cartel_missile_barge": {
+      "mesh": "/Game/Ships/Published/concept-cartel-missile-barge/L0/SM_concept_cartel_missile_barge_L0.SM_concept_cartel_missile_barge_L0",
+      "material": "/Game/Ships/Published/concept-cartel-missile-barge/L0/MI_concept_cartel_missile_barge_L0.MI_concept_cartel_missile_barge_L0"
+    },
+    "concept_mrn_marine_shuttle": {
+      "mesh": "/Game/Ships/Published/concept-mrn-marine-shuttle/L0/SM_concept_mrn_marine_shuttle_L0.SM_concept_mrn_marine_shuttle_L0",
+      "material": "/Game/Ships/Published/concept-mrn-marine-shuttle/L0/MI_concept_mrn_marine_shuttle_L0.MI_concept_mrn_marine_shuttle_L0"
+    },
+    "concept_helion_mining_ship": {
+      "mesh": "/Game/Ships/Published/concept-helion-mining-ship/L0/SM_concept_helion_mining_ship_L0.SM_concept_helion_mining_ship_L0",
+      "material": "/Game/Ships/Published/concept-helion-mining-ship/L0/MI_concept_helion_mining_ship_L0.MI_concept_helion_mining_ship_L0"
+    },
+    "concept_helion_constructor": {
+      "mesh": "/Game/Ships/Published/concept-helion-constructor/L0/SM_concept_helion_constructor_L0.SM_concept_helion_constructor_L0",
+      "material": "/Game/Ships/Published/concept-helion-constructor/L0/MI_concept_helion_constructor_L0.MI_concept_helion_constructor_L0"
+    },
+    "concept_cartel_boarding_craft": {
+      "mesh": "/Game/Ships/Published/concept-cartel-boarding-craft/L0/SM_concept_cartel_boarding_craft_L0.SM_concept_cartel_boarding_craft_L0",
+      "material": "/Game/Ships/Published/concept-cartel-boarding-craft/L0/MI_concept_cartel_boarding_craft_L0.MI_concept_cartel_boarding_craft_L0"
+    },
+    "concept_cartel_corvette": {
+      "mesh": "/Game/Ships/Published/concept-cartel-corvette/L0/SM_concept_cartel_corvette_L0.SM_concept_cartel_corvette_L0",
+      "material": "/Game/Ships/Published/concept-cartel-corvette/L0/MI_concept_cartel_corvette_L0.MI_concept_cartel_corvette_L0"
+    },
+    "concept_helion_marine_shuttle": {
+      "mesh": "/Game/Ships/Published/concept-helion-marine-shuttle/L0/SM_concept_helion_marine_shuttle_L0.SM_concept_helion_marine_shuttle_L0",
+      "material": "/Game/Ships/Published/concept-helion-marine-shuttle/L0/MI_concept_helion_marine_shuttle_L0.MI_concept_helion_marine_shuttle_L0"
+    },
+    "concept_ueg_marine_shuttle": {
+      "mesh": "/Game/Ships/Published/concept-ueg-marine-shuttle/L0/SM_concept_ueg_marine_shuttle_L0.SM_concept_ueg_marine_shuttle_L0",
+      "material": "/Game/Ships/Published/concept-ueg-marine-shuttle/L0/MI_concept_ueg_marine_shuttle_L0.MI_concept_ueg_marine_shuttle_L0"
+    },
+    "concept_tdf_repair_tender": {
+      "mesh": "/Game/Ships/Published/concept-tdf-repair-tender/L0/SM_concept_tdf_repair_tender_L0.SM_concept_tdf_repair_tender_L0",
+      "material": "/Game/Ships/Published/concept-tdf-repair-tender/L0/MI_concept_tdf_repair_tender_L0.MI_concept_tdf_repair_tender_L0"
+    },
+    "concept_tdf_sensor_frigate": {
+      "mesh": "/Game/Ships/Published/concept-tdf-sensor-frigate/L0/SM_concept_tdf_sensor_frigate_L0.SM_concept_tdf_sensor_frigate_L0",
+      "material": "/Game/Ships/Published/concept-tdf-sensor-frigate/L0/MI_concept_tdf_sensor_frigate_L0.MI_concept_tdf_sensor_frigate_L0"
+    },
+    "concept_tdf_assault_transport": {
+      "mesh": "/Game/Ships/Published/concept-tdf-assault-transport/L0/SM_concept_tdf_assault_transport_L0.SM_concept_tdf_assault_transport_L0",
+      "material": "/Game/Ships/Published/concept-tdf-assault-transport/L0/MI_concept_tdf_assault_transport_L0.MI_concept_tdf_assault_transport_L0"
+    },
+    "concept_mrn_torpedo_bomber": {
+      "mesh": "/Game/Ships/Published/concept-mrn-torpedo-bomber/L0/SM_concept_mrn_torpedo_bomber_L0.SM_concept_mrn_torpedo_bomber_L0",
+      "material": "/Game/Ships/Published/concept-mrn-torpedo-bomber/L0/MI_concept_mrn_torpedo_bomber_L0.MI_concept_mrn_torpedo_bomber_L0"
+    },
+    "concept_helion_armed_mining_drone": {
+      "mesh": "/Game/Ships/Published/concept-helion-armed-mining-drone/L0/SM_concept_helion_armed_mining_drone_L0.SM_concept_helion_armed_mining_drone_L0",
+      "material": "/Game/Ships/Published/concept-helion-armed-mining-drone/L0/MI_concept_helion_armed_mining_drone_L0.MI_concept_helion_armed_mining_drone_L0"
+    },
+    "concept_ueg_gun_monitor": {
+      "mesh": "/Game/Ships/Published/concept-ueg-gun-monitor/L0/SM_concept_ueg_gun_monitor_L0.SM_concept_ueg_gun_monitor_L0",
+      "material": "/Game/Ships/Published/concept-ueg-gun-monitor/L0/MI_concept_ueg_gun_monitor_L0.MI_concept_ueg_gun_monitor_L0"
+    },
+    "concept_corsair_boarding_tender": {
+      "mesh": "/Game/Ships/Published/concept-corsair-boarding-tender/L0/SM_concept_corsair_boarding_tender_L0.SM_concept_corsair_boarding_tender_L0",
+      "material": "/Game/Ships/Published/concept-corsair-boarding-tender/L0/MI_concept_corsair_boarding_tender_L0.MI_concept_corsair_boarding_tender_L0"
+    },
+    "concept_cartel_ransom_freighter": {
+      "mesh": "/Game/Ships/Published/concept-cartel-ransom-freighter/L0/SM_concept_cartel_ransom_freighter_L0.SM_concept_cartel_ransom_freighter_L0",
+      "material": "/Game/Ships/Published/concept-cartel-ransom-freighter/L0/MI_concept_cartel_ransom_freighter_L0.MI_concept_cartel_ransom_freighter_L0"
+    },
+    "concept_corsair_frigate": {
+      "mesh": "/Game/Ships/Published/concept-corsair-frigate/L0/SM_concept_corsair_frigate_L0.SM_concept_corsair_frigate_L0",
+      "material": "/Game/Ships/Published/concept-corsair-frigate/L0/MI_concept_corsair_frigate_L0.MI_concept_corsair_frigate_L0"
+    },
+    "concept_corsair_destroyer": {
+      "mesh": "/Game/Ships/Published/concept-corsair-destroyer/L0/SM_concept_corsair_destroyer_L0.SM_concept_corsair_destroyer_L0",
+      "material": "/Game/Ships/Published/concept-corsair-destroyer/L0/MI_concept_corsair_destroyer_L0.MI_concept_corsair_destroyer_L0"
+    },
+    "concept_corsair_cruiser": {
+      "mesh": "/Game/Ships/Published/concept-corsair-cruiser/L0/SM_concept_corsair_cruiser_L0.SM_concept_corsair_cruiser_L0",
+      "material": "/Game/Ships/Published/concept-corsair-cruiser/L0/MI_concept_corsair_cruiser_L0.MI_concept_corsair_cruiser_L0"
+    },
+    "concept_corsair_carrier": {
+      "mesh": "/Game/Ships/Published/concept-corsair-carrier/L0/SM_concept_corsair_carrier_L0.SM_concept_corsair_carrier_L0",
+      "material": "/Game/Ships/Published/concept-corsair-carrier/L0/MI_concept_corsair_carrier_L0.MI_concept_corsair_carrier_L0"
+    },
+    "concept_corsair_battleship": {
+      "mesh": "/Game/Ships/Published/concept-corsair-battleship/L0/SM_concept_corsair_battleship_L0.SM_concept_corsair_battleship_L0",
+      "material": "/Game/Ships/Published/concept-corsair-battleship/L0/MI_concept_corsair_battleship_L0.MI_concept_corsair_battleship_L0"
+    },
+    "concept_corsair_ore_hauler": {
+      "mesh": "/Game/Ships/Published/concept-corsair-ore-hauler/L0/SM_concept_corsair_ore_hauler_L0.SM_concept_corsair_ore_hauler_L0",
+      "material": "/Game/Ships/Published/concept-corsair-ore-hauler/L0/MI_concept_corsair_ore_hauler_L0.MI_concept_corsair_ore_hauler_L0"
+    },
+    "concept_helion_colony_ship": {
+      "mesh": "/Game/Ships/Published/concept-helion-colony-ship/L0/SM_concept_helion_colony_ship_L0.SM_concept_helion_colony_ship_L0",
+      "material": "/Game/Ships/Published/concept-helion-colony-ship/L0/MI_concept_helion_colony_ship_L0.MI_concept_helion_colony_ship_L0"
+    },
+    "concept_ueg_troop_transport": {
+      "mesh": "/Game/Ships/Published/concept-ueg-troop-transport/L0/SM_concept_ueg_troop_transport_L0.SM_concept_ueg_troop_transport_L0",
+      "material": "/Game/Ships/Published/concept-ueg-troop-transport/L0/MI_concept_ueg_troop_transport_L0.MI_concept_ueg_troop_transport_L0"
+    },
+    "concept_helion_shipyard": {
+      "mesh": "/Game/Ships/Published/concept-helion-shipyard/L0/SM_concept_helion_shipyard_L0.SM_concept_helion_shipyard_L0",
+      "material": "/Game/Ships/Published/concept-helion-shipyard/L0/MI_concept_helion_shipyard_L0.MI_concept_helion_shipyard_L0"
+    },
+    "concept_ueg_starbase": {
+      "mesh": "/Game/Ships/Published/concept-ueg-starbase/L0/SM_concept_ueg_starbase_L0.SM_concept_ueg_starbase_L0",
+      "material": "/Game/Ships/Published/concept-ueg-starbase/L0/MI_concept_ueg_starbase_L0.MI_concept_ueg_starbase_L0"
+    },
+    "concept_corsair_fighter_bomber": {
+      "mesh": "/Game/Ships/Published/concept-corsair-scout/L0/SM_concept_corsair_scout_L0.SM_concept_corsair_scout_L0",
+      "material": "/Game/Ships/Published/concept-corsair-scout/L0/MI_concept_corsair_scout_L0.MI_concept_corsair_scout_L0"
+    },
+    "concept_tdf_peregrine": {
+      "mesh": "/Game/Ships/Published/hb-roci-corvette/L0/SM_hb_roci_corvette_L0.SM_hb_roci_corvette_L0",
+      "material": "/Game/Ships/Published/hb-roci-corvette/L0/MI_hb_roci_corvette_L0.MI_hb_roci_corvette_L0"
+    },
+    "weapon.rail": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_rail.NS_weapon_rail",
+      "vfxProfile": {
+        "key": "weapon.rail",
+        "category": "weapon",
+        "webKind": "rail",
+        "widthPx": 2.5,
+        "lengthPx": 24,
+        "life": 0.22,
+        "color": [
+          0.65,
+          1.2,
+          2.4
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "weapon.coilgun": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_coilgun.NS_weapon_coilgun",
+      "vfxProfile": {
+        "key": "weapon.coilgun",
+        "category": "weapon",
+        "webKind": "coilgun",
+        "widthPx": 3,
+        "lengthPx": 16,
+        "life": 0.22,
+        "color": [
+          1.5,
+          1,
+          0.5
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "weapon.mac": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_mac.NS_weapon_mac",
+      "vfxProfile": {
+        "key": "weapon.mac",
+        "category": "weapon",
+        "webKind": "mac",
+        "widthPx": 4,
+        "lengthPx": 32,
+        "life": 0.22,
+        "color": [
+          1.6,
+          1,
+          0.4
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "weapon.spinal": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_spinal.NS_weapon_spinal",
+      "vfxProfile": {
+        "key": "weapon.spinal",
+        "category": "weapon",
+        "webKind": "spinal",
+        "widthPx": 4,
+        "lengthPx": 36,
+        "life": 0.22,
+        "color": [
+          1.6,
+          1,
+          0.4
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "weapon.pdc": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_pdc.NS_weapon_pdc",
+      "vfxProfile": {
+        "key": "weapon.pdc",
+        "category": "weapon",
+        "webKind": "pdc",
+        "widthPx": 2.5,
+        "lengthPx": 14,
+        "life": 0.22,
+        "color": [
+          1.8,
+          1.3,
+          0.7
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "weapon.laser": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_laser.NS_weapon_laser",
+      "vfxProfile": {
+        "key": "weapon.laser",
+        "category": "weapon",
+        "webKind": "laser",
+        "widthPx": 2.8,
+        "lengthPx": 36,
+        "life": 0.16,
+        "color": [
+          2.2,
+          0.15,
+          0.08
+        ]
+      },
+      "finiteLifeSeconds": 0.16
+    },
+    "weapon.plasma": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_plasma.NS_weapon_plasma",
+      "vfxProfile": {
+        "key": "weapon.plasma",
+        "category": "weapon",
+        "webKind": "plasma",
+        "widthPx": 6,
+        "lengthPx": 18,
+        "life": 0.22,
+        "color": [
+          0.4,
+          1.4,
+          2.2
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "weapon.missile": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_missile.NS_weapon_missile",
+      "vfxProfile": {
+        "key": "weapon.missile",
+        "category": "weapon",
+        "webKind": "missile",
+        "widthPx": 3,
+        "lengthPx": 22,
+        "life": 0.22,
+        "color": [
+          1.5,
+          0.6,
+          0.2
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "weapon.torpedo": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_torpedo.NS_weapon_torpedo",
+      "vfxProfile": {
+        "key": "weapon.torpedo",
+        "category": "weapon",
+        "webKind": "torpedo",
+        "widthPx": 4,
+        "lengthPx": 26,
+        "life": 0.22,
+        "color": [
+          1.5,
+          0.7,
+          0.25
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "weapon.swarm": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_swarm.NS_weapon_swarm",
+      "vfxProfile": {
+        "key": "weapon.swarm",
+        "category": "weapon",
+        "webKind": "swarm",
+        "widthPx": 2.5,
+        "lengthPx": 14,
+        "life": 0.22,
+        "color": [
+          1.8,
+          1.2,
+          0.5
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "weapon.flak": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_flak.NS_weapon_flak",
+      "vfxProfile": {
+        "key": "weapon.flak",
+        "category": "weapon",
+        "webKind": "flak",
+        "widthPx": 3,
+        "lengthPx": 18,
+        "life": 0.22,
+        "color": [
+          1.3,
+          1.1,
+          0.7
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "impact.impact": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_impact.NS_impact_impact",
+      "vfxProfile": {
+        "key": "impact.impact",
+        "category": "impact",
+        "webKind": "impact",
+        "life": 3.5,
+        "lobes": 3,
+        "sparks": 12,
+        "sparkLife": 2,
+        "expand": 1.8,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          1
+        ],
+        "widthPx": 28,
+        "heavy": false,
+        "fireLife": 0.65
+      },
+      "finiteLifeSeconds": 3.5
+    },
+    "explosion.missile": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_missile.NS_explosion_missile",
+      "vfxProfile": {
+        "key": "explosion.missile",
+        "category": "explosion",
+        "webKind": "missile",
+        "life": 1.6,
+        "lobes": 3,
+        "sparks": 8,
+        "sparkLife": 0.8,
+        "expand": 1.4,
+        "shape": [
+          1,
+          0.75,
+          1.15
+        ],
+        "color": [
+          1,
+          1,
+          0.85
+        ],
+        "widthPx": 32,
+        "heavy": false,
+        "fireLife": 0.65
+      },
+      "finiteLifeSeconds": 1.6
+    },
+    "explosion.torpedo": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_torpedo.NS_explosion_torpedo",
+      "vfxProfile": {
+        "key": "explosion.torpedo",
+        "category": "explosion",
+        "webKind": "torpedo",
+        "life": 2.5,
+        "lobes": 4,
+        "sparks": 14,
+        "sparkLife": 1.5,
+        "expand": 2,
+        "shape": [
+          0.85,
+          1.3,
+          0.9
+        ],
+        "color": [
+          1,
+          0.85,
+          0.65
+        ],
+        "widthPx": 46,
+        "heavy": false,
+        "fireLife": 0.65
+      },
+      "finiteLifeSeconds": 2.5
+    },
+    "impact.rail": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_rail.NS_impact_rail",
+      "vfxProfile": {
+        "key": "impact.rail",
+        "category": "impact",
+        "webKind": "rail",
+        "life": 0.7,
+        "lobes": 1,
+        "sparks": 7,
+        "sparkLife": 0.55,
+        "expand": 0.5,
+        "shape": [
+          0.48,
+          0.6,
+          1.5
+        ],
+        "color": [
+          0.75,
+          1.2,
+          1.65
+        ],
+        "widthPx": 22,
+        "heavy": false,
+        "fireLife": 0.65
+      },
+      "finiteLifeSeconds": 0.7
+    },
+    "impact.laser": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_laser.NS_impact_laser",
+      "vfxProfile": {
+        "key": "impact.laser",
+        "category": "impact",
+        "webKind": "laser",
+        "life": 0.8,
+        "lobes": 1,
+        "sparks": 4,
+        "sparkLife": 0.4,
+        "expand": 0.4,
+        "shape": [
+          0.5,
+          0.6,
+          1
+        ],
+        "color": [
+          1.2,
+          0.6,
+          0.4
+        ],
+        "widthPx": 22,
+        "heavy": false,
+        "fireLife": 0.65
+      },
+      "finiteLifeSeconds": 0.8
+    },
+    "impact.coilgun": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_coilgun.NS_impact_coilgun",
+      "vfxProfile": {
+        "key": "impact.coilgun",
+        "category": "impact",
+        "webKind": "coilgun",
+        "life": 1.2,
+        "lobes": 2,
+        "sparks": 10,
+        "sparkLife": 0.8,
+        "expand": 0.8,
+        "shape": [
+          0.7,
+          0.75,
+          1.2
+        ],
+        "color": [
+          1.2,
+          0.9,
+          0.6
+        ],
+        "widthPx": 24,
+        "heavy": false,
+        "fireLife": 0.65
+      },
+      "finiteLifeSeconds": 1.2
+    },
+    "impact.spinal": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_spinal.NS_impact_spinal",
+      "vfxProfile": {
+        "key": "impact.spinal",
+        "category": "impact",
+        "webKind": "spinal",
+        "life": 1.5,
+        "lobes": 2,
+        "sparks": 13,
+        "sparkLife": 1,
+        "expand": 1,
+        "shape": [
+          0.8,
+          0.7,
+          1.4
+        ],
+        "color": [
+          1.2,
+          0.85,
+          0.45
+        ],
+        "widthPx": 36,
+        "heavy": false,
+        "fireLife": 0.65
+      },
+      "finiteLifeSeconds": 1.5
+    },
+    "impact.mac": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_mac.NS_impact_mac",
+      "vfxProfile": {
+        "key": "impact.mac",
+        "category": "impact",
+        "webKind": "mac",
+        "life": 1.5,
+        "lobes": 2,
+        "sparks": 13,
+        "sparkLife": 1,
+        "expand": 1,
+        "shape": [
+          0.8,
+          0.7,
+          1.4
+        ],
+        "color": [
+          1.2,
+          0.85,
+          0.45
+        ],
+        "widthPx": 32,
+        "heavy": false,
+        "fireLife": 0.65
+      },
+      "finiteLifeSeconds": 1.5
+    },
+    "explosion.flak": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_flak.NS_explosion_flak",
+      "vfxProfile": {
+        "key": "explosion.flak",
+        "category": "explosion",
+        "webKind": "flak",
+        "life": 1.4,
+        "lobes": 2,
+        "sparks": 5,
+        "sparkLife": 0.6,
+        "expand": 2.1,
+        "shape": [
+          1.2,
+          0.65,
+          1.2
+        ],
+        "color": [
+          0.85,
+          0.9,
+          0.7
+        ],
+        "widthPx": 26,
+        "heavy": false,
+        "fireLife": 0.65
+      },
+      "finiteLifeSeconds": 1.4
+    },
+    "impact.plasma": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_plasma.NS_impact_plasma",
+      "vfxProfile": {
+        "key": "impact.plasma",
+        "category": "impact",
+        "webKind": "plasma",
+        "life": 2.6,
+        "lobes": 3,
+        "sparks": 8,
+        "sparkLife": 1.2,
+        "expand": 1.2,
+        "shape": [
+          0.7,
+          1.3,
+          0.75
+        ],
+        "color": [
+          0.5,
+          1.35,
+          1.5
+        ],
+        "widthPx": 36,
+        "heavy": false,
+        "fireLife": 0.65
+      },
+      "finiteLifeSeconds": 2.6
+    },
+    "explosion.magazine": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_magazine.NS_explosion_magazine",
+      "vfxProfile": {
+        "key": "explosion.magazine",
+        "category": "explosion",
+        "webKind": "magazine",
+        "life": 4.8,
+        "lobes": 6,
+        "sparks": 26,
+        "sparkLife": 3,
+        "expand": 1.9,
+        "shape": [
+          1.25,
+          0.75,
+          0.85
+        ],
+        "color": [
+          1.25,
+          0.6,
+          0.35
+        ],
+        "widthPx": 108,
+        "heavy": true,
+        "fireLife": 2.8
+      },
+      "finiteLifeSeconds": 4.8
+    },
+    "explosion.reactor": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_reactor.NS_explosion_reactor",
+      "vfxProfile": {
+        "key": "explosion.reactor",
+        "category": "explosion",
+        "webKind": "reactor",
+        "life": 7.5,
+        "lobes": 7,
+        "sparks": 32,
+        "sparkLife": 5,
+        "expand": 2.1,
+        "shape": [
+          1.1,
+          1.1,
+          1.1
+        ],
+        "color": [
+          0.55,
+          1.1,
+          1.8
+        ],
+        "widthPx": 124,
+        "heavy": true,
+        "fireLife": 3.3
+      },
+      "finiteLifeSeconds": 7.5
+    },
+    "explosion.fuel": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_fuel.NS_explosion_fuel",
+      "vfxProfile": {
+        "key": "explosion.fuel",
+        "category": "explosion",
+        "webKind": "fuel",
+        "life": 4.2,
+        "lobes": 3,
+        "sparks": 4,
+        "sparkLife": 1.4,
+        "expand": 1.2,
+        "shape": [
+          0.55,
+          1.9,
+          0.6
+        ],
+        "color": [
+          0.45,
+          1.3,
+          1.65
+        ],
+        "widthPx": 64,
+        "heavy": true,
+        "fireLife": 1.5
+      },
+      "finiteLifeSeconds": 4.2
+    },
+    "explosion.fighter": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_fighter.NS_explosion_fighter",
+      "vfxProfile": {
+        "key": "explosion.fighter",
+        "category": "explosion",
+        "webKind": "fighter",
+        "life": 2.1,
+        "lobes": 2,
+        "sparks": 10,
+        "sparkLife": 1.1,
+        "expand": 1.6,
+        "shape": [
+          0.85,
+          0.9,
+          1.2
+        ],
+        "color": [
+          1.1,
+          0.85,
+          0.5
+        ],
+        "widthPx": 48,
+        "heavy": false,
+        "fireLife": 0.65
+      },
+      "finiteLifeSeconds": 2.1
+    },
+    "explosion.capital": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_capital.NS_explosion_capital",
+      "vfxProfile": {
+        "key": "explosion.capital",
+        "category": "explosion",
+        "webKind": "capital",
+        "life": 6.4,
+        "lobes": 6,
+        "sparks": 24,
+        "sparkLife": 3.4,
+        "expand": 1.5,
+        "shape": [
+          1.35,
+          0.8,
+          1.05
+        ],
+        "color": [
+          1.15,
+          0.8,
+          0.55
+        ],
+        "widthPx": 96,
+        "heavy": true,
+        "fireLife": 2.6
+      },
+      "finiteLifeSeconds": 6.4
+    },
+    "explosion.structure": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_structure.NS_explosion_structure",
+      "vfxProfile": {
+        "key": "explosion.structure",
+        "category": "explosion",
+        "webKind": "structure",
+        "life": 4.2,
+        "lobes": 4,
+        "sparks": 18,
+        "sparkLife": 2.8,
+        "expand": 1.3,
+        "shape": [
+          1,
+          0.85,
+          1.15
+        ],
+        "color": [
+          1,
+          0.7,
+          0.45
+        ],
+        "widthPx": 64,
+        "heavy": true,
+        "fireLife": 1.5
+      },
+      "finiteLifeSeconds": 4.2
+    },
+    "nuclear": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_nuclear.NS_nuclear",
+      "vfxProfile": {
+        "key": "nuclear",
+        "category": "nuclear",
+        "webKind": "nuclear",
+        "life": 8,
+        "lobes": 7,
+        "sparks": 32,
+        "sparkLife": 5,
+        "expand": 1.8,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          1
+        ],
+        "widthPx": 156,
+        "heavy": true,
+        "fireLife": 3.5
+      },
+      "finiteLifeSeconds": 8
+    },
+    "plume.main": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_plume_main.NS_plume_main",
+      "vfxProfile": {
+        "key": "plume.main",
+        "category": "plume",
+        "webKind": "main",
+        "life": 0.22,
+        "widthPx": 3,
+        "lengthPx": 22,
+        "color": [
+          1.8,
+          0.6,
+          0.2
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "plume.rcs": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_plume_rcs.NS_plume_rcs",
+      "vfxProfile": {
+        "key": "plume.rcs",
+        "category": "plume",
+        "webKind": "rcs",
+        "life": 0.12,
+        "widthPx": 3,
+        "lengthPx": 12,
+        "color": [
+          0.5,
+          1.2,
+          2
+        ]
+      },
+      "finiteLifeSeconds": 0.12
+    },
+    "plume.missile": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_plume_missile.NS_plume_missile",
+      "vfxProfile": {
+        "key": "plume.missile",
+        "category": "plume",
+        "webKind": "missile",
+        "life": 0.22,
+        "widthPx": 3,
+        "lengthPx": 22,
+        "color": [
+          1.8,
+          0.6,
+          0.2
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "plume.torpedo": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_plume_torpedo.NS_plume_torpedo",
+      "vfxProfile": {
+        "key": "plume.torpedo",
+        "category": "plume",
+        "webKind": "torpedo",
+        "life": 0.22,
+        "widthPx": 4,
+        "lengthPx": 26,
+        "color": [
+          1.8,
+          0.65,
+          0.2
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "venting.hull": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_venting_hull.NS_venting_hull",
+      "vfxProfile": {
+        "key": "venting.hull",
+        "category": "venting",
+        "webKind": "hull",
+        "life": 1.2,
+        "widthPx": 24,
+        "lengthPx": 24,
+        "color": [
+          0.8,
+          1,
+          1.2
+        ]
+      },
+      "finiteLifeSeconds": 1.2
+    },
+    "venting.gas": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_venting_gas.NS_venting_gas",
+      "vfxProfile": {
+        "key": "venting.gas",
+        "category": "venting",
+        "webKind": "gas",
+        "life": 2,
+        "widthPx": 24,
+        "lengthPx": 24,
+        "color": [
+          0.6,
+          0.8,
+          1
+        ]
+      },
+      "finiteLifeSeconds": 2
+    },
+    "venting.wreck": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_venting_wreck.NS_venting_wreck",
+      "vfxProfile": {
+        "key": "venting.wreck",
+        "category": "venting",
+        "webKind": "wreck",
+        "life": 3,
+        "widthPx": 24,
+        "lengthPx": 24,
+        "color": [
+          0.7,
+          0.8,
+          0.9
+        ]
+      },
+      "finiteLifeSeconds": 3
+    },
+    "weapon.nuclear": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_nuclear.NS_weapon_nuclear",
+      "vfxProfile": {
+        "key": "weapon.nuclear",
+        "category": "weapon",
+        "webKind": "nuclear",
+        "widthPx": 4,
+        "lengthPx": 26,
+        "life": 0.22,
+        "color": [
+          0.65,
+          1.25,
+          2.25
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "weapon.emp": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_emp.NS_weapon_emp",
+      "vfxProfile": {
+        "key": "weapon.emp",
+        "category": "weapon",
+        "webKind": "emp",
+        "widthPx": 6,
+        "lengthPx": 18,
+        "life": 0.22,
+        "color": [
+          0.35,
+          1.4,
+          2.5
+        ]
+      },
+      "finiteLifeSeconds": 0.22
+    },
+    "impact.intercept": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_intercept.NS_impact_intercept",
+      "vfxProfile": {
+        "key": "impact.intercept",
+        "category": "impact",
+        "webKind": "intercept",
+        "life": 3.5,
+        "lobes": 3,
+        "sparks": 12,
+        "sparkLife": 2,
+        "expand": 1.8,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1.1,
+          0.8,
+          0.4
+        ],
+        "widthPx": 28,
+        "heavy": false,
+        "fireLife": 0.65
+      },
+      "finiteLifeSeconds": 3.5
+    }
+  }
+}

@@ -1,0 +1,176 @@
+{
+  "version": 1,
+  "audioPass": 12,
+  "sourceCommit": "4ce89d2b87ad81c5ab7d06aace932b311988d744",
+  "primaryBase": "7d2afd510795e93fba29bf090a19a99bd3e074dd",
+  "changedPaths": [
+    "src/audio-boarding.js",
+    "src/audio.js",
+    "tools/check-audio-boarding.mjs",
+    "tools/check-audio-routing.mjs"
+  ],
+  "tests": {
+    "check-audio-boarding.mjs": "PASS actual finite marine costs/rejections/no transfer combat/transfer-assault contest/result plus pure canonical policy",
+    "check-audio-routing.mjs": "PASS actual mixer graph finite two-voice cap/no weapon steals/categories/mute/pause/context/dispose plus existing guns/coasts/EW/guardian",
+    "node --check src/audio.js": "PASS",
+    "git diff --check": "PASS"
+  },
+  "scope": "CPU tests only; no browser/build/capture/native editor/publication; no actual physical pod seat/PDC or live boarding event callback claim",
+  "eventContract": {
+    "status": "review-ready isolated audio adapter; authoritative public boardingEvents producer milestone pending; registration held by root",
+    "source": "world.solarIntel().boardingEvents",
+    "coreCommit": "7d2afd510795e93fba29bf090a19a99bd3e074dd",
+    "authoritativeEventBridgeCommit": null,
+    "required": [
+      "id",
+      "partyId",
+      "systemId",
+      "kind",
+      "at",
+      "disclosed:true",
+      "observed:true"
+    ],
+    "kinds": [
+      "pod-launch",
+      "hull-breach",
+      "marine-exchange",
+      "section-secured",
+      "casualty",
+      "captured",
+      "repelled",
+      "withdrawn",
+      "lost"
+    ],
+    "authorisation": "Producer exposes only actual accepted paid physical pod launch, actual dock/breach assault boundary, actual marine contest/casualty/section control loss and actual outcomes. Enemy-on-enemy silent unless genuinely observed. Enemy launch requires identified current source confidence>=.72; intrusion on own hull may use known hull without revealing launcher.",
+    "precision": "Weapons require precise:true finite actual position and confidence>=.72. Non-positional comms require own:true (player party or intrusion on player hull) and remain centred; never pan unobserved enemy position.",
+    "clock": "Finite actual simulation timestamps; max event age .6s; no time-inferred transfer or marine shooting",
+    "baseline": "Silent first/load/system/map/design/pause/rewind/AudioContext resume; consume mute/category-disabled/cooldown/cap events, no missed replay",
+    "range": 1800,
+    "maxEvents": 64,
+    "seenCapacity": 256,
+    "cooldownCapacity": 96,
+    "maxVoicesIncludingRetiring": 2,
+    "globalVoiceBudget": 64,
+    "noWeaponStealing": true,
+    "globalCadence": 0.12,
+    "recipes": {
+      "pod-launch": {
+        "bank": "hb-launch",
+        "gain": 0.5,
+        "rate": 0.82,
+        "duration": 0.65,
+        "cutoff": 850,
+        "bus": "weapons",
+        "cadence": 0.6,
+        "priority": 8
+      },
+      "hull-breach": {
+        "bank": "hb-breach",
+        "gain": 0.44,
+        "rate": 0.76,
+        "duration": 0.95,
+        "cutoff": 650,
+        "bus": "weapons",
+        "cadence": 0.6,
+        "priority": 7
+      },
+      "marine-exchange": {
+        "bank": "hb-pdc",
+        "gain": 0.14,
+        "rate": 0.86,
+        "duration": 0.18,
+        "cutoff": 750,
+        "bus": "ambience",
+        "cadence": 2.5,
+        "priority": 1
+      },
+      "section-secured": {
+        "bank": "comms-key",
+        "gain": 0.16,
+        "rate": 0.84,
+        "duration": 0.22,
+        "cutoff": 850,
+        "bus": "alerts",
+        "cadence": 1.2,
+        "priority": 3
+      },
+      "casualty": {
+        "bank": "comms-key",
+        "gain": 0.16,
+        "rate": 0.7,
+        "duration": 0.18,
+        "cutoff": 650,
+        "bus": "alerts",
+        "cadence": 3,
+        "priority": 2
+      },
+      "captured": {
+        "bank": "comms-close",
+        "gain": 0.2,
+        "rate": 0.85,
+        "duration": 0.34,
+        "cutoff": 850,
+        "bus": "alerts",
+        "cadence": 0.6,
+        "priority": 4
+      },
+      "repelled": {
+        "bank": "comms-close",
+        "gain": 0.16,
+        "rate": 0.64,
+        "duration": 0.28,
+        "cutoff": 650,
+        "bus": "alerts",
+        "cadence": 0.6,
+        "priority": 4
+      },
+      "withdrawn": {
+        "bank": "comms-key",
+        "gain": 0.12,
+        "rate": 0.72,
+        "duration": 0.22,
+        "cutoff": 650,
+        "bus": "alerts",
+        "cadence": 0.6,
+        "priority": 4
+      },
+      "lost": {
+        "bank": "comms-close",
+        "gain": 0.16,
+        "rate": 0.6,
+        "duration": 0.3,
+        "cutoff": 600,
+        "bus": "alerts",
+        "cadence": 0.6,
+        "priority": 4
+      }
+    },
+    "resultPriority": "Actual result outranks same-frame marine exchange/section cue; all suppressed events consumed, no queue",
+    "routing": "Per-event Weapons launch/breach, Ambience muffled actual marine exchange, Alerts marine comms/result. All after existing master limiter/outputTrim.69.",
+    "overrideCueBus": true,
+    "lifetime": "Finite<=.95s source recipes, no loops or timers. Pause/map/mute/category loss stops owned accent within18ms (4ms gain decay); background immediate zero; dispose stops/disconnects.",
+    "diagnostics": [
+      "stats.audioPass=12",
+      "boardingAccents",
+      "boardingKinds",
+      "boardingVoices",
+      "boardingCulled",
+      "lastBoardingEvent"
+    ],
+    "nativeContract": "Host mirrors event authorization/precision, lifetime, gain/rate/filter/bus overrides, no-repeat existing bank selector, cap/cadence/priority. Metadata only; unchanged SoundCue/SoundWave packages, no native playback claim."
+  },
+  "preservation": {
+    "samples": 321,
+    "cues": 52,
+    "aliases": 33,
+    "bankHashesIdentical": true,
+    "outputTrim": 0.69,
+    "publicAudioDiff": false
+  },
+  "nativeHandoff": {
+    "path": "G:/sfx/hardburn-unreal-audio-v12.json",
+    "sha256": "c27830f45e39990bb6e523cf7337ee8a5da35af68908aa642584a3730aa87837",
+    "bytes": 128298,
+    "registrationHeld": true
+  }
+}

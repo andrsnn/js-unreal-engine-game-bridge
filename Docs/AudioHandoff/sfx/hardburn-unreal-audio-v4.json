@@ -1,0 +1,570 @@
+{
+  "version": 1,
+  "game": "hardburn",
+  "sourceCommit": "049999d2a6c7601a568d3711f10d73882624d7d5",
+  "audioPass": 4,
+  "unitsToCentimeters": 100,
+  "cues": {
+    "hb-rail": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/rail-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/rail-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/rail-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/rail-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hb-mac": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/mac-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/mac-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/mac-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/mac-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hb-pdc": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/pdc-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/pdc-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/pdc-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/pdc-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hb-flak": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/flak-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/flak-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/flak-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/flak-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hb-launch": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/launch-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/launch-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/launch-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/launch-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hb-impact": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/impact-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/impact-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/impact-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/impact-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hb-small-blast": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/small-blast-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/small-blast-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/small-blast-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/small-blast-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hb-large-blast": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/large-blast-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/large-blast-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/large-blast-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/large-blast-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "rail-tail": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/rail-tail-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/rail-tail-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/rail-tail-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/rail-tail-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "impact-tail": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/impact-tail-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/impact-tail-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/impact-tail-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/impact-tail-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "energy-laser": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/laser-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/laser-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/laser-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/laser-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "energy-plasma": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/plasma-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/plasma-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/plasma-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/plasma-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hb-drive-small": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/drive-small.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hb-drive-medium": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/drive-medium.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hb-drive-heavy": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/drive-heavy.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "torpedo-burn": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/torpedo-burn.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 1000,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "shipboard": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/shipboard.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "ambience",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "score-bed": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/score-bed.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "score-motif": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/score-motif.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "score-pulse": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/score-pulse.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "score-combat": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/score-combat.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "score-danger": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/score-danger.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "score-machinery": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/score-machinery.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "ui-select": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-select-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-select-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-select-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "ui-cancel": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-cancel-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-cancel-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-cancel-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "ui-nav": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-nav-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-nav-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-nav-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "click": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/click-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/click-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/click-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "confirm": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/confirm-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/confirm-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/confirm-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "contact": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/contact-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/contact-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/contact-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "alert": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/alert-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/alert-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/alert-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hostile": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/hostile-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/hostile-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/hostile-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "critical": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/critical-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/critical-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/critical-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "comms-key": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v3/comms-key-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v3/comms-key-1.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0 original procedural radio squelch; HARD BURN original audio",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v3/sources.json"
+    },
+    "comms-close": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v3/comms-close-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v3/comms-close-1.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0 original procedural radio squelch; HARD BURN original audio",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v3/sources.json"
+    },
+    "radio-incoming": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-incoming-0.ogg",
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-incoming-1.ogg",
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-incoming-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "Original game dialogue generated locally with installed Windows System.Speech voice; separate from Kenney and not identified as CC0 recordings. See AUDIO-CREDITS.md and ASSETS.md.",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/AUDIO-CREDITS.md"
+    },
+    "radio-breach": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-breach-0.ogg",
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-breach-1.ogg",
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-breach-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "Original game dialogue generated locally with installed Windows System.Speech voice; separate from Kenney and not identified as CC0 recordings. See AUDIO-CREDITS.md and ASSETS.md.",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/AUDIO-CREDITS.md"
+    },
+    "radio-intercept": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-intercept-0.ogg",
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-intercept-1.ogg",
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-intercept-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "Original game dialogue generated locally with installed Windows System.Speech voice; separate from Kenney and not identified as CC0 recordings. See AUDIO-CREDITS.md and ASSETS.md.",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/AUDIO-CREDITS.md"
+    }
+  },
+  "aliases": {
+    "rail": "hb-rail",
+    "mac": "hb-mac",
+    "pdc": "hb-pdc",
+    "flak": "hb-flak",
+    "missile": "hb-launch",
+    "torpedo": "hb-launch",
+    "nuclear": "hb-launch",
+    "swarm": "hb-launch",
+    "nuclear-impact": "hb-large-blast",
+    "laser": "energy-laser",
+    "plasma": "energy-plasma",
+    "emp": "energy-plasma",
+    "veil-arc": "energy-plasma",
+    "impact": "hb-impact",
+    "armour": "hb-impact",
+    "shield": "hb-impact",
+    "explosion": "hb-small-blast",
+    "explosion-small": "hb-small-blast",
+    "explosion-large": "hb-large-blast",
+    "intercept": "hb-impact",
+    "proj": "hb-rail",
+    "light": "energy-plasma"
+  },
+  "mixerMetadata": {
+    "outputTrim": 0.69,
+    "defaults": {
+      "master": 0.72,
+      "weapons": 0.52,
+      "impacts": 0.6,
+      "engines": 0.25,
+      "ambience": 0.16,
+      "music": 0.38,
+      "interface": 0.5,
+      "alerts": 0.66
+    },
+    "musicTempo": 72,
+    "phaseAlignedScoreFrames": 2560000,
+    "sampleRate": 48000,
+    "weaponMusicDuck": 0.32,
+    "largeBlastMusicDuck": 0.18,
+    "source": "G:/sfx/hardburn/src/audio.js",
+    "note": "Cue assets remain unity gain/pitch. These are existing browser mixer settings for a port adapter, not DSP baked into imported Unreal assets."
+  },
+  "sourceDocuments": [
+    "G:/sfx/hardburn/public/audio/AUDIO-CREDITS.md",
+    "G:/sfx/hardburn/public/audio/naval-v4/sources.json",
+    "G:/sfx/hardburn/public/audio/naval-v3/sources.json"
+  ],
+  "notes": [
+    "Only banks actually referenced by pass-four recipes, loops or tails are included. Unused older preload banks are excluded.",
+    "Spatial near/far are source game units; generator converts to centimeters. Non-positional cues use a valid dummy range with attenuation disabled.",
+    "radio-intercept is the speech bank; intercept alias is the physical interception impact event.",
+    "Runtime aliases identify banks; category/recipe gain, pitch, layered squelch and conditional hull tails remain runtime mixer behavior."
+  ]
+}

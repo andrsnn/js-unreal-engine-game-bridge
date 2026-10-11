@@ -1,0 +1,940 @@
+{
+  "version": 1,
+  "game": "unlit",
+  "browserRevision": 13,
+  "audioPass": 4,
+  "cues": {
+    "drive-core": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/drive-core.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 360,
+      "licence": "CC-BY-3.0 (Michael Brigida/students, Richard Boulanger, Diane Douglas, Colman OReilly) + original CC0 authored layers; attribution/edits in CREDITS.md",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json",
+      "control": "active ship heartbeat; throttle0..1 changes gain/pitch; boost adds pressure; heartbeat expires350ms"
+    },
+    "drive-pressure": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/drive-pressure.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 360,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json",
+      "control": "active drive; throttle gain and boost pressure; brake/release fades120-160ms"
+    },
+    "cutter-rotor": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/cutter-rotor.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 100,
+      "licence": "CC-BY-3.0 (Michael Brigida/students, Richard Boulanger, Diane Douglas, Colman OReilly) + original CC0 authored layers; attribution/edits in CREDITS.md",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json",
+      "control": "native contact heartbeat; expires180ms; resistance actual hardness0.2..2.2 loads motor pitch; fade35ms"
+    },
+    "cutter-contact": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/cutter-contact.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC-BY-3.0 (Michael Brigida/students, Richard Boulanger, Diane Douglas, Colman OReilly) + original CC0 authored layers; attribution/edits in CREDITS.md",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json",
+      "control": "same cutter heartbeat; resistance raises contact/grit; impact slider independent of motor"
+    },
+    "drive-ignite-0": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/drive-ignite-0.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 360,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "drive-ignite-1": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/drive-ignite-1.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 360,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "drive-boost-0": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/drive-boost-0.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 360,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "drive-boost-1": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/drive-boost-1.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 360,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "rock-chip-0": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/rock-chip-0.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC-BY-3.0 (Michael Brigida/students, Richard Boulanger, Diane Douglas, Colman OReilly) + original CC0 authored layers; attribution/edits in CREDITS.md",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "rock-chip-1": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/rock-chip-1.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC-BY-3.0 (Michael Brigida/students, Richard Boulanger, Diane Douglas, Colman OReilly) + original CC0 authored layers; attribution/edits in CREDITS.md",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "rock-chip-2": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/rock-chip-2.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC-BY-3.0 (Michael Brigida/students, Richard Boulanger, Diane Douglas, Colman OReilly) + original CC0 authored layers; attribution/edits in CREDITS.md",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "rock-chip-3": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/rock-chip-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC-BY-3.0 (Michael Brigida/students, Richard Boulanger, Diane Douglas, Colman OReilly) + original CC0 authored layers; attribution/edits in CREDITS.md",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "rock-fall-0": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/rock-fall-0.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "rock-fall-1": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/rock-fall-1.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "rock-fall-2": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/rock-fall-2.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "gun-body-0": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/gun-body-0.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 140,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "gun-body-1": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/gun-body-1.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 140,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "gun-body-2": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/gun-body-2.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 140,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "gun-body-3": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/gun-body-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 140,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "blast-body-0": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/blast-body-0.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "blast-body-1": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/blast-body-1.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "blast-body-2": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/blast-body-2.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "metal-hit-0": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/metal-hit-0.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "metal-hit-1": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/metal-hit-1.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "metal-hit-2": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/metal-hit-2.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0 (Brian MacIntosh/BMacZero) + original CC0 authored layers",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json"
+    },
+    "ignite": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/drive-ignite-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/drive-ignite-1.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 360,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json",
+      "variation": "No immediate repeated take; playback rate .97..1.03 with event-specific weighting"
+    },
+    "boost": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/drive-boost-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/drive-boost-1.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 360,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json",
+      "variation": "No immediate repeated take; playback rate .97..1.03 with event-specific weighting"
+    },
+    "chips": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/rock-chip-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/rock-chip-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/rock-chip-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/rock-chip-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC-BY-3.0 (Michael Brigida/students, Richard Boulanger, Diane Douglas, Colman OReilly) + original CC0 authored layers; attribution/edits in CREDITS.md",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json",
+      "variation": "No immediate repeated take; playback rate .97..1.03 with event-specific weighting"
+    },
+    "fall": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/rock-fall-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/rock-fall-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/rock-fall-2.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json",
+      "variation": "No immediate repeated take; playback rate .97..1.03 with event-specific weighting"
+    },
+    "gun": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/gun-body-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/gun-body-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/gun-body-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/gun-body-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 140,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json",
+      "variation": "No immediate repeated take; playback rate .97..1.03 with event-specific weighting"
+    },
+    "blast": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/blast-body-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/blast-body-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/blast-body-2.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json",
+      "variation": "No immediate repeated take; playback rate .97..1.03 with event-specific weighting"
+    },
+    "metal": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/metal-hit-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/metal-hit-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/metal-hit-2.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0; CC0-1.0 (Brian MacIntosh/BMacZero) + original CC0 authored layers",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json",
+      "variation": "No immediate repeated take; playback rate .97..1.03 with event-specific weighting"
+    },
+    "engine-rebuilt": {
+      "files": [
+        "G:/sfx/unlit/public/audio/field-v2/engine-rebuilt.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 420,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/field-v2/sources.json"
+    },
+    "engine-azure": {
+      "files": [
+        "G:/sfx/unlit/public/audio/field-v2/engine-azure.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 420,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/field-v2/sources.json"
+    },
+    "engine-vulcan": {
+      "files": [
+        "G:/sfx/unlit/public/audio/field-v2/engine-vulcan.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 420,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/field-v2/sources.json"
+    },
+    "engine-boost": {
+      "files": [
+        "G:/sfx/unlit/public/audio/field-v2/engine-boost.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 420,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/field-v2/sources.json"
+    },
+    "beam-loop": {
+      "files": [
+        "G:/sfx/unlit/public/audio/production/beam-loop.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "Existing generated original game bank; model provenance and recording fallbacks in CREDITS.md; do not relabel external sources",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "charge-loop": {
+      "files": [
+        "G:/sfx/unlit/public/audio/production/charge-loop.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "Existing generated original game bank; model provenance and recording fallbacks in CREDITS.md; do not relabel external sources",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "rifle": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/rifle-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/rifle-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/rifle-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/rifle-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "smg": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/smg-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/smg-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/smg-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/smg-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "lmg": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/lmg-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/lmg-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/lmg-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/lmg-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "shotgun": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/shotgun-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/shotgun-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/shotgun-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/shotgun-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "sniper": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/sniper-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/sniper-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/sniper-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/sniper-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "pistol": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/pistol-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/pistol-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/pistol-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/pistol-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "pulse": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/pulse-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/pulse-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/pulse-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/pulse-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "arc": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/arc-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/arc-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/arc-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/arc-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "plasma": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/plasma-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/plasma-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/plasma-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/plasma-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "rail": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/rail-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/rail-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/rail-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/rail-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "rotary": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/rotary-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/rotary-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/rotary-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/rotary-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "missile": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/missile-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/missile-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/missile-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/missile-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "kick": {
+      "files": [
+        "G:/sfx/unlit/public/audio/field-v2/kick-0.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/kick-1.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/kick-2.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/kick-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/field-v2/sources.json"
+    },
+    "gunCrack": {
+      "files": [
+        "G:/sfx/unlit/public/audio/field-v2/gunCrack-0.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/gunCrack-1.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/gunCrack-2.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/gunCrack-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/field-v2/sources.json"
+    },
+    "gunMechanism": {
+      "files": [
+        "G:/sfx/unlit/public/audio/field-v2/gunMechanism-0.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/gunMechanism-1.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/gunMechanism-2.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/gunMechanism-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/field-v2/sources.json"
+    },
+    "gunTail": {
+      "files": [
+        "G:/sfx/unlit/public/audio/field-v2/gunTail-0.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/gunTail-1.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/gunTail-2.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/gunTail-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/field-v2/sources.json"
+    },
+    "armor": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/armor-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/armor-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/armor-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/armor-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "body": {
+      "files": [
+        "G:/sfx/unlit/public/audio/field-v2/body-0.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/body-1.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/body-2.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/body-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/field-v2/sources.json"
+    },
+    "stone": {
+      "files": [
+        "G:/sfx/unlit/public/audio/field-v2/stone-0.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/stone-1.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/stone-2.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/stone-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/field-v2/sources.json"
+    },
+    "metalImpact": {
+      "files": [
+        "G:/sfx/unlit/public/audio/field-v2/metalImpact-0.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/metalImpact-1.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/metalImpact-2.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/metalImpact-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/field-v2/sources.json"
+    },
+    "fleshImpact": {
+      "files": [
+        "G:/sfx/unlit/public/audio/field-v2/fleshImpact-0.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/fleshImpact-1.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/fleshImpact-2.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/fleshImpact-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/field-v2/sources.json"
+    },
+    "explosion": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v1/explosion-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/explosion-1.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/explosion-2.ogg",
+        "G:/sfx/unlit/public/audio/physical-v1/explosion-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/CREDITS.md"
+    },
+    "missileCrump": {
+      "files": [
+        "G:/sfx/unlit/public/audio/field-v2/missileCrump-0.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/missileCrump-1.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/missileCrump-2.ogg",
+        "G:/sfx/unlit/public/audio/field-v2/missileCrump-3.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/field-v2/sources.json"
+    },
+    "structure": {
+      "files": [
+        "G:/sfx/unlit/public/audio/physical-v4/drive-boost-0.ogg",
+        "G:/sfx/unlit/public/audio/physical-v4/drive-boost-1.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Sonniss GameAudioGDC bundle licence v2 royalty-free commercial game use; NOT CC0; modified recordings retain that licence; original authored layers CC0",
+      "sourceManifest": "G:/sfx/unlit/public/audio/physical-v4/edits.json",
+      "variation": "No immediate repeated take; playback rate .97..1.03 with event-specific weighting"
+    }
+  },
+  "aliases": {
+    "rock_crack": "chips",
+    "rock_fall": "fall",
+    "impact:armor": "metal",
+    "impact:body": "fleshImpact",
+    "impact:stone": "chips",
+    "impact:shield": "metal",
+    "missile_impact": "blast",
+    "boss_crash": "blast",
+    "arc_blast": "blast",
+    "cutterHum": "cutter-rotor",
+    "cutter:start": "metal",
+    "cutter:stop": "cutter-rotor",
+    "setEngine": "drive-core",
+    "engine": "drive-core",
+    "weapon": "gun",
+    "played:gunCrack": "gunCrack",
+    "played:gunTail": "gunTail",
+    "played:gunMechanism": "gunMechanism",
+    "played:kick": "kick",
+    "played:rifle": "rifle",
+    "played:shotgun": "shotgun",
+    "played:rail": "rail",
+    "played:plasma": "plasma"
+  },
+  "eventControls": {
+    "cutter:stop": {
+      "stop": [
+        "cutter-rotor",
+        "cutter-contact"
+      ],
+      "fadeSeconds": 0.035
+    },
+    "cutterHum": {
+      "startOrUpdate": [
+        "cutter-rotor",
+        "cutter-contact"
+      ],
+      "expiresAfterSeconds": 0.18,
+      "parameters": [
+        "distance",
+        "pan",
+        "resistance",
+        "underwater"
+      ]
+    },
+    "setEngine": {
+      "startOrUpdate": [
+        "drive-core",
+        "drive-pressure"
+      ],
+      "expiresAfterSeconds": 0.35,
+      "parameters": [
+        "ids",
+        "throttle",
+        "boost"
+      ]
+    },
+    "pause/mute/hidden": {
+      "stopTransientVoices": true,
+      "silenceLoops": true
+    },
+    "beam-loop": {
+      "expiresAfterSeconds": 0.14,
+      "loop": true,
+      "fadeSeconds": 0.035,
+      "stopAfterSeconds": 0.17
+    },
+    "structure": {
+      "oneShot": true,
+      "trigger": "actual rock_fall alongside fall recording",
+      "bus": "impacts",
+      "pitch": 0.66
+    }
+  },
+  "mix": {
+    "runtimePresence": {
+      "weapons": 2.7,
+      "impacts": 2.4,
+      "engines": 2.7,
+      "ambience": 1,
+      "ui": 1
+    },
+    "channels": "All physical layers enter existing channel sliders, effects/alert duck and master/mute/limiter. Space dry; cave/outdoor returns post-slider. Existing score/narration unchanged."
+  },
+  "limits": {
+    "physicalLoops": 4,
+    "physicalTransientVoices": 20,
+    "priorMotionLoops": 7
+  },
+  "notes": "Browser units; root converts metres to centimetres. Do not start a loop for a stop event. Per-variant files preserve recorded licences. Primary credit/provenance in linked manifests.",
+  "sourceCommit": "0ec607ac977b48686ad898edb3c98e243ee603e2"
+}

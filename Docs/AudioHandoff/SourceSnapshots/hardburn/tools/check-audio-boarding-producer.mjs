@@ -1,0 +1,42 @@
+// Executes the committed campaign producer slices, not a mirror implementation.
+// CPU fixtures only: no browser, host construction or live boarding claim.
+import assert from 'node:assert/strict';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {execFileSync} from 'node:child_process';
+import vm from 'node:vm';
+import {advanceBoardingPods} from '../src/game/boarding-transfers.js';
+import {tickBoarding} from '../src/game/boarding.js';
+const source=readFileSync(new URL('../src/game/galactic-campaign.js',import.meta.url),'utf8');
+const extract=(start,end)=>{const a=source.indexOf(start),b=source.indexOf(end,a);assert(a>=0&&b>a,'Actual producer slice must exist');return source.slice(a,b);};
+const disclosureStart=source.includes('  const boardingTargets=new Map(')?'  const boardingTargets=new Map(':'  frame.boardingEvents=';
+const disclosure=extract(disclosureStart,'\n  if(frame.sensorOverlay)');
+const recorder=extract(' function boardingEvent(','\n\n const solarEffects');
+const snapshot=extract('  const before=new Map(','\n  for(const b of state.boardings??[]){if(b.phase');
+const emission=extract('  for(const b of state.boardings??[]){const previous=before.get(b.id)', '\n  physicalBoardingPods.update');
+const results=[];
+function check(name,fn){try{fn();results.push({name,ok:true});}catch(e){results.push({name,ok:false,error:e.message});}}
+const point=p=>Array.isArray(p)&&p.length===3&&p.every(Number.isFinite);
+const base=()=>({time:100,contacts:{},boardingEvents:[],boardings:[],systems:[],factions:{player:{research:{}},enemy:{research:{}}}});
+const target=(id='target',faction='enemy')=>({id,faction,pos:{toArray:()=>[10,20,0]}});
+const record=(kind,extra={})=>({id:kind,partyId:'b1',targetId:'target',sourceId:'launcher',faction:'enemy',systemId:'s0',at:100,kind,position:[-500,20,0],...extra});
+const disclose=(state,targets=[])=>{const frame={};vm.runInNewContext(disclosure,{state,frame,systemId:'s0',boardableEntities:()=>targets,boardingIdentity:t=>t.id});return frame.boardingEvents;};
+const party=()=>({id:'b1',sourceId:'launcher',targetId:'target',faction:'player',previousOwner:'enemy',systemId:'s0',phase:'fighting',stage:'transfer',marines:12,initialMarines:12,defenders:8,initialDefenders:8,capturedSections:[],sectionIds:['bow','bridge'],transferElapsed:0,transferTotal:6,pods:[{id:'pod',sourceId:'launcher',marines:6,lost:false}]});
+const takeBefore=(state,lose=false)=>{const context={state,physicalBoardingPods:{collectLosses:()=>{if(lose)state.boardings[0].pods[0].lost=true;}}};vm.runInNewContext(snapshot+';globalThis.beforeValue=before;',context);return context.beforeValue;};
+const emit=(state,before,targets=[target()])=>{vm.runInNewContext(recorder+'\n'+emission,{state,before,targets,boardingIdentity:t=>t.id});return state.boardingEvents;};
+check('hidden enemy launcher towards own hull emits no launch origin',()=>{const s=base();s.boardingEvents=[record('pod-launch')];const es=disclose(s,[target('target','player')]);assert(!es.some(e=>e.kind==='pod-launch'&&e.precise&&point(e.position)),'Known own target must not authorize unseen launcher position');});
+check('identified target alone cannot disclose enemy-on-enemy launch origin',()=>{const s=base();s.contacts.target={systemId:'s0',identified:true,confidence:.9};s.boardingEvents=[record('pod-launch')];assert.equal(disclose(s,[target()]).length,0,'Launcher needs its own current identified contact');});
+check('genuine identified launcher produces precise release and source ID',()=>{const s=base();s.contacts.launcher={systemId:'s0',identified:true,confidence:.9};s.boardingEvents=[record('pod-launch')];const e=disclose(s,[target()])[0];assert(e?.precise&&e.sourceId==='launcher');assert.deepEqual(Array.from(e.position),[-500,20,0]);});
+check('identified launcher in another system cannot disclose a launch',()=>{const s=base();s.contacts.launcher={systemId:'remote',identified:true,confidence:.9};s.boardingEvents=[record('pod-launch')];assert.equal(disclose(s,[target()]).length,0,'Launcher contact must belong to the active event system');});
+check('own missing-position result is centred authorized comms',()=>{const s=base();s.boardingEvents=[record('captured',{faction:'player',position:undefined})];const e=disclose(s,[])[0];assert(e?.own===true&&e.precise===false&&!e.position,'Missing actual seat cannot be declared precise');});
+check('hidden own-assault target cannot supply a precise enemy hull bearing',()=>{const s=base();s.boardingEvents=[record('marine-exchange',{faction:'player'})];const e=disclose(s,[target()])[0];assert(!e?.precise&&e?.own===true&&!e.position,'Own marines may report without exposing lost target coordinate');});
+check('remote, old and future receiver events omitted',()=>{const s=base();s.boardingEvents=[record('captured',{faction:'player',systemId:'elsewhere'}),record('lost',{faction:'player',at:90}),record('withdrawn',{faction:'player',at:101})];assert.equal(disclose(s,[target()]).length,0);});
+check('physical transfer loss emits casualty without invented marine fighting',()=>{const s=base(),b=party();b.pods[0].phase='transfer';b.pods[0].position=[5,20,0];s.boardings=[b];const before=takeBefore(s,true);tickBoarding(s,.1,{target:()=>({faction:'enemy',systemId:'s0',x:10,z:0}),event(){},capture(){}});const es=emit(s,before);assert(es.some(e=>e.kind==='casualty'),'Snapshot must precede actual loss collection');assert(!es.some(e=>e.kind==='marine-exchange'),'Transfer pod casualty is not marine assault exchange');});
+const sameStepDock=()=>{const s=base(),b=party();s.boardings=[b];const before=takeBefore(s);advanceBoardingPods(b,.1,{sourceFrame:()=>({position:[0,20,0],velocity:[0,0,0],forward:[1,0,0]}),dockFrame:()=>({position:[1,20,0],velocity:[0,0,0],normal:[-1,0,0],localPoint:[0,0,0],localNormal:[-1,0,0]})});assert.equal(b.pods[0].phase,'docked');tickBoarding(s,.1,{target:()=>({faction:'enemy',systemId:'s0',x:10,z:0}),event(){},capture(){}});return emit(s,before);};
+check('accepted physical launch retains actual pod source ID',()=>{const launch=sameStepDock().find(e=>e.kind==='pod-launch');assert(launch&&launch.sourceId==='launcher','Ledger must retain actual pod launcher');});
+check('accepted physical launch records saved release seat before motion',()=>{const launch=sameStepDock().find(e=>e.kind==='pod-launch');assert.deepEqual(Array.from(launch.position),[0,20,0],'Release uses saved actual launch seat');});
+check('accepted same-step physical launch+dock emits breach',()=>{assert(sameStepDock().some(e=>e.kind==='hull-breach'),'Newly initialized and physically docked pod needs breach transition');});
+check('unchanged paused or loaded transfer never manufactures fresh events',()=>{const s=base(),b=party();b.pods[0].phase='transfer';b.pods[0].position=[1,20,0];s.boardings=[b];const before=takeBefore(s);advanceBoardingPods(b,0,{sourceFrame(){throw Error('Paused launch');},dockFrame(){throw Error('Paused docking');}});assert.equal(emit(s,before).length,0);});
+check('real assault defender exchange and section control emit canonical records',()=>{const s=base(),b=party();b.stage='assault';b.assaultElapsed=3;b.pods=[];s.boardings=[b];const before=takeBefore(s);tickBoarding(s,4,{target:()=>({faction:'enemy',systemId:'s0',x:10,z:0}),event(){},capture(){}});const es=emit(s,before);assert(es.some(e=>e.kind==='marine-exchange'));assert(!es.some(e=>e.kind==='pod-launch'));if(b.capturedSections.length)assert(es.some(e=>e.kind==='section-secured'));});
+const report={sourceCommit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8',timeout:10000}).trim(),scope:'Actual committed solarIntel disclosure expression, campaign event recorder/emission, real physical pod transfer and marine contest kernels under CPU fixtures; no browser/live/movie claim',ok:results.every(r=>r.ok),results};
+if(process.env.HB_BOARDING_PRODUCER_REPORT)writeFileSync(process.env.HB_BOARDING_PRODUCER_REPORT,JSON.stringify(report,null,2)+'\n');
+console.log(JSON.stringify(report,null,2));if(!report.ok)process.exitCode=1;

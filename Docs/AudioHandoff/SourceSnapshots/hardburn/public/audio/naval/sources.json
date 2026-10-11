@@ -1,0 +1,308 @@
+{
+  "licence": "CC0-1.0",
+  "author": "HARD BURN original audio",
+  "score": {
+    "bpm": 72,
+    "bars": 16,
+    "seconds": 53.333333333333336
+  },
+  "files": {
+    "rail-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Rail discharge: sharp current arc, deep recoil, damped hull modes",
+      "duration": 0.75,
+      "loop": false,
+      "peak": 0.82
+    },
+    "mac-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Heavy mass driver: breech slam, concussion and resonant frame",
+      "duration": 1.05,
+      "loop": false,
+      "peak": 0.82
+    },
+    "impact-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Armour strike: puncture impulse and damped structure",
+      "duration": 0.95,
+      "loop": false,
+      "peak": 0.82
+    },
+    "flak-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Flak battery: clustered thumps and short barrel report",
+      "duration": 0.65,
+      "loop": false,
+      "peak": 0.82
+    },
+    "large-blast-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Hull breakup: pressure release, structural snaps, reactor rumble",
+      "duration": 3.4,
+      "loop": false,
+      "peak": 0.82
+    },
+    "pdc-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Seven-round rotary PDC buzz with distinct tiny transients",
+      "duration": 0.42,
+      "loop": false,
+      "peak": 0.82
+    },
+    "launch-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Launch clamp, cold-gas piston, accelerating motor burn",
+      "duration": 1.55,
+      "loop": false,
+      "peak": 0.82
+    },
+    "rail-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Rail discharge: sharp current arc, deep recoil, damped hull modes",
+      "duration": 0.75,
+      "loop": false,
+      "peak": 0.82
+    },
+    "mac-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Heavy mass driver: breech slam, concussion and resonant frame",
+      "duration": 1.05,
+      "loop": false,
+      "peak": 0.82
+    },
+    "impact-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Armour strike: puncture impulse and damped structure",
+      "duration": 0.95,
+      "loop": false,
+      "peak": 0.82
+    },
+    "flak-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Flak battery: clustered thumps and short barrel report",
+      "duration": 0.65,
+      "loop": false,
+      "peak": 0.82
+    },
+    "large-blast-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Hull breakup: pressure release, structural snaps, reactor rumble",
+      "duration": 3.4,
+      "loop": false,
+      "peak": 0.82
+    },
+    "pdc-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Seven-round rotary PDC buzz with distinct tiny transients",
+      "duration": 0.42,
+      "loop": false,
+      "peak": 0.82
+    },
+    "launch-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Launch clamp, cold-gas piston, accelerating motor burn",
+      "duration": 1.55,
+      "loop": false,
+      "peak": 0.82
+    },
+    "rail-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Rail discharge: sharp current arc, deep recoil, damped hull modes",
+      "duration": 0.75,
+      "loop": false,
+      "peak": 0.82
+    },
+    "mac-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Heavy mass driver: breech slam, concussion and resonant frame",
+      "duration": 1.05,
+      "loop": false,
+      "peak": 0.82
+    },
+    "impact-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Armour strike: puncture impulse and damped structure",
+      "duration": 0.95,
+      "loop": false,
+      "peak": 0.82
+    },
+    "flak-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Flak battery: clustered thumps and short barrel report",
+      "duration": 0.65,
+      "loop": false,
+      "peak": 0.82
+    },
+    "large-blast-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Hull breakup: pressure release, structural snaps, reactor rumble",
+      "duration": 3.4,
+      "loop": false,
+      "peak": 0.7431
+    },
+    "pdc-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Seven-round rotary PDC buzz with distinct tiny transients",
+      "duration": 0.42,
+      "loop": false,
+      "peak": 0.82
+    },
+    "launch-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Launch clamp, cold-gas piston, accelerating motor burn",
+      "duration": 1.55,
+      "loop": false,
+      "peak": 0.82
+    },
+    "rail-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Rail discharge: sharp current arc, deep recoil, damped hull modes",
+      "duration": 0.75,
+      "loop": false,
+      "peak": 0.82
+    },
+    "mac-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Heavy mass driver: breech slam, concussion and resonant frame",
+      "duration": 1.05,
+      "loop": false,
+      "peak": 0.82
+    },
+    "impact-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Armour strike: puncture impulse and damped structure",
+      "duration": 0.95,
+      "loop": false,
+      "peak": 0.82
+    },
+    "flak-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Flak battery: clustered thumps and short barrel report",
+      "duration": 0.65,
+      "loop": false,
+      "peak": 0.82
+    },
+    "large-blast-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Hull breakup: pressure release, structural snaps, reactor rumble",
+      "duration": 3.4,
+      "loop": false,
+      "peak": 0.8001
+    },
+    "pdc-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Seven-round rotary PDC buzz with distinct tiny transients",
+      "duration": 0.42,
+      "loop": false,
+      "peak": 0.82
+    },
+    "launch-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Launch clamp, cold-gas piston, accelerating motor burn",
+      "duration": 1.55,
+      "loop": false,
+      "peak": 0.82
+    },
+    "shipboard.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Quiet shipboard air circulation, transformer vibration and distant machinery",
+      "duration": 12.0,
+      "loop": true,
+      "peak": 0.1672
+    },
+    "score-bed.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "D minor naval exploration score: slowly shifting bowed synthesis",
+      "duration": 53.333333333333336,
+      "loop": true,
+      "peak": 0.5143
+    },
+    "score-motif.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Sparse original sonar-bell navigation motif",
+      "duration": 53.333333333333336,
+      "loop": true,
+      "peak": 0.412
+    },
+    "score-pulse.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Adaptive low mechanical ostinato; 72 BPM tension stem",
+      "duration": 53.333333333333336,
+      "loop": true,
+      "peak": 0.5023
+    },
+    "score-combat.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v1.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Adaptive hull percussion; synchronized 72 BPM combat stem",
+      "duration": 53.333333333333336,
+      "loop": true,
+      "peak": 0.8127
+    }
+  }
+}

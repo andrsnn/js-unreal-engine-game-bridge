@@ -1,0 +1,30 @@
+{
+  "ok": true,
+  "timeUTC": "2026-10-10T22:39:46.079681+00:00",
+  "catalogSha256": "d40104059c66f9f5caeabf25589b5598b275fb9a6db29f0a1857710ba534cf3f",
+  "subsetSha256": "f7578f5d985077c732cf5cb89016d3056d90ad44c57a423b0e5173bc344c2d82",
+  "canonicalCueChanges": {
+    "karvos": [],
+    "unlit": [],
+    "hardburn": [
+      "torpedo-burn"
+    ]
+  },
+  "unchangedWaves": 8,
+  "newWaves": 0,
+  "updatedCue": "/JsGameBridge/Audio/HardBurn/SC_torpedo_burn_347f1381.SC_torpedo_burn_347f1381",
+  "farUnits": 4800,
+  "maxDistanceCm": 480000,
+  "freshIndependentReload": true,
+  "reports": {
+    "import": "G:/JsGameBridge/Tools/AudioImporter/reports/hardburn-native-v8-range-only-import.json",
+    "verify": "G:/JsGameBridge/Tools/AudioImporter/reports/hardburn-native-v8-range-only-verify.json"
+  },
+  "scope": "One existing owned cue imported/reloaded with unchanged eight waves. Other cue graphs retain prior verification; no native game build or playback claimed.",
+  "finalMetadata": {
+    "sourceCommit": "60043f513689b61dbebf428d3f5b432b1af73a96",
+    "catalogSha256": "fde06dcd6fc9350711e969ce4c3f0e8b658d94e3f7924acffc311d849c16f6e9",
+    "registrationProof": "G:/sfx/hardburn-native-v8-registration.json",
+    "cueDefinitionsUnchangedSinceImport": true
+  }
+}

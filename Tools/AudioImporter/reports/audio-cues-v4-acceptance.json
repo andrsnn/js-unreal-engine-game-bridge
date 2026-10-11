@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "engine": "Unreal 5.8.2",
+  "manifest": "/mnt/g/JsGameBridge/Registry/audio-cues-v4.json",
+  "manifestSha256": "fe0e31bfc6863546c01fe45958e315f0538b86a5adcb8a9bfcc7b352d79794c9",
+  "ok": true,
+  "games": {
+    "karvos": {
+      "canonicalCues": 92,
+      "aliases": 13,
+      "registeredKeys": 105,
+      "sourceCommit": "b0bb677b5de4898f91acc77d57f111283ac26370",
+      "loopCues": 14,
+      "registrySha256": "c0479cca8c9c150e97d22b31af960bec029c031ef7dd409bcd25359d8518dd3c",
+      "registryPath": "/mnt/g/JsGameBridge/Registry/karvos-sounds.json",
+      "registryKeysVerified": 105
+    },
+    "unlit": {
+      "canonicalCues": 62,
+      "aliases": 23,
+      "registeredKeys": 85,
+      "sourceCommit": null,
+      "loopCues": 10,
+      "registrySha256": "c1c860d8f44afc0dc98a7f4931d54ab4545c6954a5b6d26cefcdae5daf824f7c",
+      "registryPath": "/mnt/g/JsGameBridge/Registry/unlit-sounds.json",
+      "registryKeysVerified": 85
+    },
+    "hardburn": {
+      "canonicalCues": 37,
+      "aliases": 22,
+      "registeredKeys": 59,
+      "sourceCommit": "049999d2a6c7601a568d3711f10d73882624d7d5",
+      "loopCues": 11,
+      "registrySha256": "d551f7c9d58e9218275219d88e671ee50d27af4793d85d5a83589c3f91314f64",
+      "registryPath": "/mnt/g/JsGameBridge/Registry/hardburn-sounds.json",
+      "registryKeysVerified": 59
+    }
+  },
+  "freshProcessVerified": true,
+  "nativeGameplayExecuted": false,
+  "gameCookOrPackageExecuted": false,
+  "waveAssets": 507,
+  "cueAssets": 191,
+  "variantReferences": 530,
+  "smokeAssetsExcludedFromRegistry": 7,
+  "loopUseContract": "Spawn once per live emitter, retain AudioComponent, adjust gain/location, stop when emitter ends. Start phase-aligned score stems on one audio clock with unity pitch; never retrigger loops every update.",
+  "cookContract": "Cue-to-wave package dependencies verified. Include /JsGameBridge/Audio in packaging via asset manager/cook-directory configuration; registry JSON alone is not a cooker root. No game cook/package performed."
+}

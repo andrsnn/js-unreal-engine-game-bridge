@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "sourceCommit": "5681096da8960bf184ac3443da8b9ea0bca6a2b8",
+  "audioPass": 11,
+  "cueChanges": [],
+  "canonicalCueCount": 52,
+  "aliasCount": 33,
+  "otherGamesPreserved": true,
+  "waveHashesPreserved": true,
+  "foreignRuntimeFieldsPreserved": true,
+  "runtimeKeys": 286,
+  "outputs": {
+    "/mnt/g/JsGameBridge/Registry/audio-cues-v11.json": {
+      "sha256": "bacd7d15f8fdc70573e2df7f603d76f1939bbc513a38b0463450aefc047ce091",
+      "bytes": 1540850
+    },
+    "/mnt/g/JsGameBridge/Registry/hardburn-sounds.json": {
+      "sha256": "aa9bae85e80851df65494b7715845c840673c8126d030c1e6b2e5260184da02a",
+      "bytes": 71572
+    },
+    "/mnt/g/JsGameBridge/JavaScript/hardburn-assets.json": {
+      "sha256": "c3ffe325244000c8ea501edc90dd775752a76e87b6d51f241d151373e09649df",
+      "bytes": 144451
+    }
+  }
+}

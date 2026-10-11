@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "mode": "import",
+  "ok": true,
+  "importedWaves": [],
+  "createdCues": [],
+  "skippedWaves": [
+    "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail",
+    "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail_1",
+    "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail_2",
+    "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail_3",
+    "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_drive"
+  ],
+  "skippedCues": [
+    "/JsGameBridge/Audio/ImporterSmoke/SC_rail",
+    "/JsGameBridge/Audio/ImporterSmoke/SC_drive"
+  ],
+  "verified": [
+    {
+      "game": "smoke",
+      "key": "rail",
+      "sound": "/JsGameBridge/Audio/ImporterSmoke/SC_rail.SC_rail",
+      "package": "/JsGameBridge/Audio/ImporterSmoke/SC_rail",
+      "variants": 4,
+      "loop": false,
+      "spatial": true,
+      "references": [
+        "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail.SW_rail",
+        "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail_1.SW_rail_1",
+        "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail_2.SW_rail_2",
+        "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail_3.SW_rail_3"
+      ],
+      "packageDependencies": [
+        "/Script/AudioEditor",
+        "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail",
+        "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail_1",
+        "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail_2",
+        "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail_3"
+      ]
+    },
+    {
+      "game": "smoke",
+      "key": "drive",
+      "sound": "/JsGameBridge/Audio/ImporterSmoke/SC_drive.SC_drive",
+      "package": "/JsGameBridge/Audio/ImporterSmoke/SC_drive",
+      "variants": 1,
+      "loop": true,
+      "spatial": true,
+      "references": [
+        "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_drive.SW_drive"
+      ],
+      "packageDependencies": [
+        "/Script/AudioEditor",
+        "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_drive"
+      ]
+    }
+  ],
+  "errors": [],
+  "manifest": "G:\\JsGameBridge\\Tools\\AudioImporter\\smoke-manifest.json",
+  "manifestSha256": "ae5ef067078d8cc9c9caed07c91734559557506ffccbc8fd19f96deea7b6e00e"
+}

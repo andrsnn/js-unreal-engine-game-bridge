@@ -1,0 +1,34 @@
+{
+  "sourceCommit": "60043f513689b61dbebf428d3f5b432b1af73a96",
+  "primaryBase": "3ffc8927635a66511b479b6111f03d58c740e887",
+  "audioPass": 8,
+  "checks": [
+    "actual mixer routing/controls/lifecycle/64 protected gun voices/dark40-swarm PASS",
+    "radar confidence/uncertainty/actual activated scan secrecy/coalescing/finite clocks PASS",
+    "syntax PASS",
+    "diff whitespace PASS",
+    "Actual successful ACTIVE PING notify + INBOUND DRIVE CONTACT sensor-log coalescing, full64-gun pool preservation, real1400m solar uncertainty PASS"
+  ],
+  "changedPaths": [
+    "PLAY.md",
+    "src/audio-policy.js",
+    "src/audio.js",
+    "tools/check-audio-policy.mjs",
+    "tools/check-audio-routing.mjs"
+  ],
+  "gunRecipesAndPrefsByteIdentical": true,
+  "compressedAssetsChanged": 0,
+  "canonicalCueCount": 52,
+  "aliasCount": 33,
+  "unchangedUniqueNativeSamples": 266,
+  "nativeSampleSetSha256": "a743e9d2cf345710c277be9f6b58a29182a575ea513a2c208d4198451268fa29",
+  "fileHashes": {
+    "PLAY.md": "9d2cc3fe1e2dcd923216775da22d51858dc99ee945e6267a7bf92c6138bdddf9",
+    "src/audio-policy.js": "57cbbdd9986853cc7a2ae9849f458cd294203e681e6f3ef59a10800a10c1489b",
+    "src/audio.js": "f42c9aec086e873c9ef5cb1bd6f10254d1c247a23b7cf2bc9d5f79c84ab35af8",
+    "tools/check-audio-policy.mjs": "9545ab133c903784f736a1acd3c093846a68ee4517807081960b650fe07ad10a",
+    "tools/check-audio-routing.mjs": "0033780afbdc15a0eb48327aa73897840574c1047ad55d8a7be5f02a0af97b91"
+  },
+  "nativeIncrementalManifest": "G:/sfx/hardburn-native-v8-range-only.json",
+  "nativeRequiredChange": "Only existing torpedo-burn SoundCue attenuation100000cm\u2192480000cm;8 existing waves/hash unchanged. Host mixer/event metadata separately retained in v8 handoff; no new keys."
+}

@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "games": {
+    "smoke": {
+      "cues": {
+        "rail": {
+          "sound": "/JsGameBridge/Audio/ImporterSmoke/SC_rail.SC_rail",
+          "variants": [
+            {
+              "source": "G:/sfx/hardburn/public/audio/naval-v4/rail-0.ogg",
+              "wave": "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail.SW_rail",
+              "sha256": "408a9ad6c36530772f60af367991abdcf89b72db1732ff730bcfbac95cad49c1"
+            },
+            {
+              "source": "G:/sfx/hardburn/public/audio/naval-v4/rail-1.ogg",
+              "wave": "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail_1.SW_rail_1",
+              "sha256": "5d440579b5b2bfa70b3c5adc0dfcd2751ca82e701b6dde28420506a3a7901444"
+            },
+            {
+              "source": "G:/sfx/hardburn/public/audio/naval-v4/rail-2.ogg",
+              "wave": "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail_2.SW_rail_2",
+              "sha256": "d9b4dfd7c80ac12bec16454ed0b8cc47bac6f020f003a4311d0de6b3a2720bd5"
+            },
+            {
+              "source": "G:/sfx/hardburn/public/audio/naval-v4/rail-3.ogg",
+              "wave": "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_rail_3.SW_rail_3",
+              "sha256": "0221437d519a79c858c6f21291bbaface430f4f059895ba366a2f640a89fb82b"
+            }
+          ],
+          "loop": false,
+          "spatial": true,
+          "bus": "combat",
+          "maxDistance": 200000,
+          "licence": "Sonniss GDC EULA v2.0 and original/CC0 layers; see source bank manifest",
+          "provenance": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+        },
+        "drive": {
+          "sound": "/JsGameBridge/Audio/ImporterSmoke/SC_drive.SC_drive",
+          "variants": [
+            {
+              "source": "G:/sfx/hardburn/public/audio/naval-v4/drive-heavy.ogg",
+              "wave": "/JsGameBridge/Audio/ImporterSmoke/Waves/SW_drive.SW_drive",
+              "sha256": "46b35a7d4aba2ab1437f5403e8423bb61f5a53909aeb94769b55a70a308996b8"
+            }
+          ],
+          "loop": true,
+          "spatial": true,
+          "bus": "engines",
+          "maxDistance": 200000,
+          "licence": "Sonniss GDC EULA v2.0 and original/CC0 layers; see source bank manifest",
+          "provenance": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+        }
+      }
+    }
+  }
+}

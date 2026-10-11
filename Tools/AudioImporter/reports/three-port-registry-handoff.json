@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "games": {
+    "karvos": {
+      "registeredKeys": 105,
+      "canonicalCues": 92,
+      "waves": 285,
+      "runtimeRegistry": "JavaScript/karvos-assets.json",
+      "sourceCommit": "648d813acaf62d6123153ba48e9896afb58bb572",
+      "nativeAssetFilesPresent": true
+    },
+    "unlit": {
+      "registeredKeys": 85,
+      "canonicalCues": 62,
+      "waves": 123,
+      "runtimeRegistry": "JavaScript/unlit-assets.json",
+      "sourceCommit": "0ec607ac977b48686ad898edb3c98e243ee603e2",
+      "nativeAssetFilesPresent": true
+    },
+    "hardburn": {
+      "registeredKeys": 59,
+      "canonicalCues": 37,
+      "waves": 99,
+      "runtimeRegistry": "JavaScript/hardburn-assets.json",
+      "sourceCommit": "049999d2a6c7601a568d3711f10d73882624d7d5",
+      "nativeAssetFilesPresent": true
+    }
+  },
+  "nativeAssetGraphVerification": "audio-cues-v4-acceptance.json",
+  "metadataProof": "audio-cues-v4-final-metadata.json",
+  "runtimeAudioPlaybackVerified": false
+}

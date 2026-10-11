@@ -1,0 +1,28 @@
+{
+  "tip": "847483ceeda36fb881b7acb212dff5010135f333",
+  "primaryIncluded": "0ec607ac977b48686ad898edb3c98e243ee603e2",
+  "revision": 14,
+  "audioPass": 5,
+  "scope": "Cutter release only: contact fast; rotor momentum/pitch decay; cancellation on recut and immediate silence",
+  "checks": [
+    "physical pass4 asset/route/headroom/distance/bound/mute regression PASS",
+    "physical pass5 evaluated envelopes/restart/cancellation/finite tail/four-source bound PASS",
+    "integrated tsc --noEmit PASS",
+    "git staged diff --check PASS with cr-at-eol",
+    "final primary merge Already up to date"
+  ],
+  "assets": "Same25 physical-v4 files and licences, no generated/downloaded assets",
+  "mixPresence": {
+    "weapons": 2.7,
+    "impacts": 2.4,
+    "engines": 2.7,
+    "ambience": 1,
+    "ui": 1
+  },
+  "unrealMapping": "G:/sfx/unlit-unreal-audio-v5.json",
+  "cueKeys": 62,
+  "aliases": 23,
+  "rootOwnedPending": "NewGame/browser/capture/publication/build",
+  "cleanup": "No visual preview junctions; sparse checkout reapplied; committed files and node_modules retained",
+  "completedUtc": "2026-10-10T14:09:42.963496+00:00"
+}

@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "delivery": "C:/UnlitWorldsCaptures/judge/saltblade-audio-v5.mp4",
+  "bytes": 16123235,
+  "sha256": "e861150c1452075e798683c5e406a5c62a92af21b208d20b6bfe3431d7575e35",
+  "capture": "G:/sfx/evidence/saltblade/desert-weather-1791677597072/report.json",
+  "originalInputOnly": true,
+  "weatherProof": false,
+  "weatherReportOK": false,
+  "playbackSpeed": 1,
+  "sourceDuration": 32.77799987792969,
+  "fullDecode": true,
+  "loudnessLUFS": -15.87,
+  "truePeakDBTP": -3.55,
+  "lra": 20.2,
+  "frames": [
+    "G:/sfx/evidence/saltblade/desert-weather-1791677597072/camp.png",
+    "G:/sfx/evidence/saltblade/desert-weather-1791677597072/boarding.png",
+    "G:/sfx/evidence/saltblade/desert-weather-1791677597072/desert.png",
+    "G:/sfx/evidence/saltblade/desert-weather-1791677597072/landing.png",
+    "G:/sfx/evidence/saltblade/desert-weather-1791677597072/giant.png"
+  ],
+  "spectrum": "G:/sfx/evidence/saltblade/desert-weather-1791677597072/spectrum.png",
+  "framesReviewed": true,
+  "alignment": "CDP screencast epoch and page Date.now epoch, actual wall intervals, no respeed",
+  "spectrumReviewed": true,
+  "durationSeconds": 32.778,
+  "sourceAudioCommit": "ee7f5633f02d01a6a4fa6a024bbf39b504617bf4",
+  "audioNormalizedSHA256": "3e9ff8f9e3698ae746ef8cb2753e2ab668d3b8ef8eb816ad51ad5867b356f8ce",
+  "nativeWeatherProof": "G:/sfx/evidence/saltblade/weather-native-1791677706613/report.json",
+  "nativeWeatherAudioAcceptance": true,
+  "nativeWeatherOverallHarnessOK": false,
+  "rawLoudnessLUFS": -14.86,
+  "rawTruePeakDBTP": -6.49,
+  "captureScope": "Fresh native camp boarding, actual flight/desert landing, real giant tracking/tremor/breach, defeat and normal respawn. No scripted drive/state/time/health changes. This 32.778s movie contains no moving storm; a separate ordinary-speed quiet-camp campaign proves real storm warning/local intensity/native mute/restore, with four unrelated draft delve-art404s honestly retained.",
+  "frameLabels": {
+    "camp": "Fresh native camp",
+    "boarding": "Native flight",
+    "desert": "Actual giant warning on sand",
+    "giant": "Real breach/defeat",
+    "landing": "Camp after normal death/respawn"
+  },
+  "cleanup": {
+    "bytesReclaimed": 330780065,
+    "removedFrameCount": 870,
+    "removedAudioWebm": true,
+    "removedOwnFailedSizeEncode": true,
+    "preserved": "Final MP4, reviewed PNGs/spectrum, reports/logs/hashes/ffconcat evidence, all scripts/source/committed assets and all foreign work"
+  }
+}

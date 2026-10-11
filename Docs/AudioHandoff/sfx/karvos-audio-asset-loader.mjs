@@ -1,0 +1,1 @@
+export async function load(url,context,next){if(/\.(glb|ogg|png|jpg|webp)(\?|$)/.test(url))return {format:'module',source:'export default '+JSON.stringify(url)+';',shortCircuit:true};return next(url,context);}

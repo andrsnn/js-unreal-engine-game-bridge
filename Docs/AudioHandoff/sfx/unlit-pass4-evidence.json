@@ -1,0 +1,62 @@
+{
+  "tip": "0ec607ac977b48686ad898edb3c98e243ee603e2",
+  "primary": "e7e428a82e98ca5b945f5ab7e818a44eb5620596",
+  "revision": 13,
+  "audioPass": 4,
+  "checks": [
+    "test-audio-v1 PASS",
+    "test-audio-pass2 PASS",
+    "test-audio-pass3 PASS",
+    "test-audio-pass4 PASS",
+    "final tsc --noEmit PASS with read-only preview assets restored",
+    "git diff --check PASS with cr-at-eol for repository CRLF PLAY",
+    "owned tracked paths clean"
+  ],
+  "assets": {
+    "files": 25,
+    "oggBytes": 454407,
+    "maximumDecodedPeak": 0.748967707157135,
+    "folder": "G:/sfx/unlit/public/audio/physical-v4"
+  },
+  "runtimeMixPresence": {
+    "weapons": 2.7,
+    "impacts": 2.4,
+    "engines": 2.7,
+    "ambience": 1,
+    "ui": 1
+  },
+  "runtimeLUFS": {
+    "integrated": -15.5,
+    "truePeakDbTP": -1.0,
+    "source": "Root authentic mixed gameplay capture"
+  },
+  "unrealMapping": "G:/sfx/unlit-unreal-audio-v4.json",
+  "productionBuild": "Root production code-only build PASS: 886 modules; merged and published on port5336 at0ec607ac977b48686ad898edb3c98e243ee603e2",
+  "preview": "Removed only11 exact-target read-only public visual junctions; sparse checkout reapplied; public/audio and node_modules retained",
+  "delivery": {
+    "path": "C:/UnlitWorldsCaptures/judge/unlit-audio-v4.mp4",
+    "durationSeconds": 39.666667,
+    "bytes": 12672361,
+    "integratedLUFS": -16.0,
+    "truePeakDbTP": -2.2
+  },
+  "runtimeValidation": {
+    "freshNewGame": "PASS",
+    "nativeUI": "PASS",
+    "physicalDecoded": 25,
+    "mining": {
+      "bites": 12,
+      "cells": 873,
+      "blasts": 1,
+      "slabs": 1,
+      "landings": 1
+    },
+    "guardian": {
+      "shots": 35,
+      "killed": true,
+      "enemyVoices": true
+    }
+  },
+  "completedUtc": "2026-10-10T13:41:09.393153+00:00",
+  "cleanupValidation": "All11 junction paths absent; all11 original directories intact;25physical-v4 OGGs/credits/manifests/node_modules retained; tracked status clean (retained untracked node_modules junction only)"
+}

@@ -1,0 +1,4 @@
+import {build} from 'file:///C:/Users/Aidan%20Anderson/space-game/node_modules/vite/dist/node/index.js';
+import fs from 'node:fs/promises';import path from 'node:path';
+const root='G:/sfx/unlit',primary='C:/Users/Aidan Anderson/space-game';process.chdir(root);
+await build({root,plugins:[{name:'sparse-imported-public-data',async resolveId(source,importer){if(!importer||!source.startsWith('.'))return null;const requested=path.resolve(path.dirname(importer),source),prefix=path.resolve(root,'public')+path.sep;if(!requested.startsWith(prefix))return null;try{await fs.access(requested);return null;}catch{}const fallback=path.resolve(primary,'public',path.relative(path.resolve(root,'public'),requested));try{await fs.access(fallback);return fallback;}catch{return null;}}}],build:{outDir:'G:/sfx/builds/unlit-audio-v1',emptyOutDir:false,copyPublicDir:false}});

@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "ok": true,
+  "engine": "Unreal 5.8.2",
+  "manifest": "Registry/audio-cues-v6.json",
+  "manifestSha256": "0b619e01219b2ed968a24b2d5f89654594de78470682c23a596057ba00f916cf",
+  "games": {
+    "karvos": {
+      "audioPass": 5,
+      "canonicalCues": 92,
+      "aliases": 13,
+      "registeredKeys": 105,
+      "sourceCommit": "e8f9f023a745ab0656e0b05d36217ac3f679bb53",
+      "registryKeysVerified": 105,
+      "runtimeRegistry": "JavaScript/karvos-assets.json",
+      "mixerMetadataAvailable": true
+    },
+    "unlit": {
+      "audioPass": 5,
+      "canonicalCues": 62,
+      "aliases": 23,
+      "registeredKeys": 85,
+      "sourceCommit": "847483ceeda36fb881b7acb212dff5010135f333",
+      "registryKeysVerified": 85,
+      "runtimeRegistry": "JavaScript/unlit-assets.json",
+      "mixerMetadataAvailable": true
+    },
+    "hardburn": {
+      "audioPass": 6,
+      "canonicalCues": 45,
+      "aliases": 27,
+      "registeredKeys": 72,
+      "sourceCommit": "988a77f79dc7593a703d6e0f6c731da91ecb0061",
+      "registryKeysVerified": 72,
+      "runtimeRegistry": "JavaScript/hardburn-assets.json",
+      "mixerMetadataAvailable": true
+    }
+  },
+  "freshProcessVerified": true,
+  "waveAssetsInManifest": 618,
+  "cueAssets": 199,
+  "variantReferences": 649,
+  "loops": 36,
+  "spatialCues": 167,
+  "incrementalImportedWaves": 160,
+  "incrementalCreatedCues": 21,
+  "nativeGameplayExecuted": false,
+  "gameCookOrPackageExecuted": false,
+  "previousAssetPathsDeleted": false
+}

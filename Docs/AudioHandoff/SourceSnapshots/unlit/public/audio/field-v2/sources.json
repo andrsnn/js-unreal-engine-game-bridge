@@ -1,0 +1,2975 @@
+{
+  "revision": "field-v2",
+  "sampleRate": 48000,
+  "channels": 1,
+  "clips": {
+    "uiTick-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGeneric_light_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiTick-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGeneric_light_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiTick-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGeneric_light_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiTick-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGeneric_light_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiConfirm-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "open_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiConfirm-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "open_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiConfirm-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "open_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiConfirm-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "open_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiPurchase-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "drop_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_light_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "open_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiPurchase-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "drop_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_light_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "open_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiPurchase-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "drop_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_light_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "open_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiPurchase-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "drop_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_light_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "open_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiReveal-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_medium_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "click_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiReveal-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_medium_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "click_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiReveal-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_medium_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "click_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiReveal-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_medium_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "click_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiCapture-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_light_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiCapture-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_light_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiCapture-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_light_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "uiCapture-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_light_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "lampClick-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactTin_medium_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "lampClick-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactTin_medium_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "lampClick-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactTin_medium_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "lampClick-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "click_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactTin_medium_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "pickup-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "drop_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "open_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "pickup-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "drop_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "open_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "pickup-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "drop_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "open_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "pickup-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "drop_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "open_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "read-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "click_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "read-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "click_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "read-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "click_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "read-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "click_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "chest-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "doorOpen_000.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_medium_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "chest-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "doorOpen_001.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_medium_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "chest-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "doorOpen_002.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_medium_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "chest-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "doorOpen_000.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_medium_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "refit-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMetal_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "doorClose_000.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "refit-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMetal_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "doorClose_001.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "refit-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMetal_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "doorClose_002.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "refit-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMetal_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "doorClose_000.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "body-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactPunch_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "body-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactPunch_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "body-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactPunch_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "body-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactPunch_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "fleshImpact-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactSoft_medium_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactPunch_medium_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "fleshImpact-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactSoft_medium_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactPunch_medium_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "fleshImpact-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactSoft_medium_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactPunch_medium_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "fleshImpact-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactSoft_medium_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactPunch_medium_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "fleshDeath-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactSoft_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "footstep_concrete_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_medium_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "fleshDeath-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactSoft_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "footstep_concrete_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_medium_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "fleshDeath-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactSoft_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "footstep_concrete_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_medium_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "fleshDeath-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactSoft_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "footstep_concrete_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_medium_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stone-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMining_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGeneric_light_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stone-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMining_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGeneric_light_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stone-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMining_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGeneric_light_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stone-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMining_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGeneric_light_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "metalImpact-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMetal_light_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactPlate_light_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "metalImpact-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMetal_light_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactPlate_light_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "metalImpact-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMetal_light_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactPlate_light_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "metalImpact-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMetal_light_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactPlate_light_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "metalDeath-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMetal_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactPlate_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_medium_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "metalDeath-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMetal_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactPlate_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_medium_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "metalDeath-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMetal_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactPlate_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_medium_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "metalDeath-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactMetal_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactPlate_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_medium_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "shield-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "forceField_000.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_light_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "shield-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "forceField_001.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_light_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "shield-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "forceField_002.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_light_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "shield-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "forceField_003.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_light_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "landThud-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactSoft_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "footstep_concrete_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "landThud-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactSoft_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "footstep_concrete_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "landThud-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactSoft_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "footstep_concrete_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "landThud-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactSoft_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "footstep_concrete_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stepDeck-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_wood_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_light_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stepDeck-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_wood_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_light_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stepDeck-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_wood_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_light_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stepDeck-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_wood_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_light_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stepStone-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_concrete_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMining_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stepStone-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_concrete_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMining_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stepStone-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_concrete_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMining_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stepStone-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_concrete_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMining_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stepSnow-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_snow_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_medium_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stepSnow-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_snow_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_medium_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stepSnow-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_snow_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_medium_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "stepSnow-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_snow_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_medium_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "step-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_grass_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_medium_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "step-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_grass_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_medium_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "step-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_grass_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_medium_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "step-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "footstep_grass_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactSoft_medium_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "gunMechanism-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "bolt.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "gunMechanism-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "bolt.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "gunMechanism-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "bolt.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "gunMechanism-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "bolt.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "eject-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "reload.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0.14
+        },
+        {
+          "file": "impactMetal_light_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "eject-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "reload.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0.14
+        },
+        {
+          "file": "impactMetal_light_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "eject-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "reload.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0.14
+        },
+        {
+          "file": "impactMetal_light_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "eject-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "reload.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0.14
+        },
+        {
+          "file": "impactMetal_light_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "insert-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "reload.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 1.03
+        },
+        {
+          "file": "impactMetal_medium_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "insert-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "reload.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 1.03
+        },
+        {
+          "file": "impactMetal_medium_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "insert-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "reload.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 1.03
+        },
+        {
+          "file": "impactMetal_medium_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "insert-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "reload.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 1.03
+        },
+        {
+          "file": "impactMetal_medium_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "bolt-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "bolt.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "bolt-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "bolt.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "bolt-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "bolt.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "bolt-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "bolt.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "shellRack-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "bolt.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactTin_medium_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "shellRack-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "bolt.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactTin_medium_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "shellRack-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "bolt.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactTin_medium_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "shellRack-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "bolt.wav",
+          "url": "https://opengameart.org/content/gun-reload-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactTin_medium_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "gunCrack-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "rifle-0.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "gunCrack-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "rifle-1.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "gunCrack-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "rifle-2.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "gunCrack-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "rifle-3.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "gunTail-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "sniper-0.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0.04
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "gunTail-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "sniper-1.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0.04
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "gunTail-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "sniper-2.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0.04
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "gunTail-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "sniper-3.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0.04
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "kick-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "shotgun-0.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "kick-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "shotgun-1.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "kick-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "shotgun-2.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "kick-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "shotgun-3.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "launchThump-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "missile-0.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_medium_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "launchThump-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "missile-1.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_medium_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "launchThump-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "missile-2.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_medium_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "launchThump-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "missile-3.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_medium_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "missileCrump-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "explosion-0.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "missileCrump-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "explosion-1.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "missileCrump-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "explosion-2.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "missileCrump-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "explosion-3.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "deathCrash-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "explosion-0.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "deathCrash-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "explosion-1.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "deathCrash-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "explosion-2.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "deathCrash-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "explosion-3.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "bossDeath-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "explosion-0.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "explosion-1.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMining_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "bossDeath-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "explosion-1.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "explosion-2.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMining_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "bossDeath-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "explosion-2.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "explosion-3.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMining_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "bossDeath-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "explosion-3.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "explosion-0.ogg",
+          "url": "https://opengameart.org/content/the-free-firearm-sound-library",
+          "editedSource": "physical-v1; source cuts in existing weapon credits",
+          "start": 0
+        },
+        {
+          "file": "impactMining_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "chargeRumble-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLow_000.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "forceField_000.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "chargeRumble-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLow_001.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "forceField_001.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "chargeRumble-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLow_002.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "forceField_002.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "chargeRumble-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLow_003.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "forceField_003.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "warnNest-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLow_000.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMining_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMining_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "warnNest-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLow_001.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMining_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMining_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "warnNest-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLow_002.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMining_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMining_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "warnNest-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLow_003.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMining_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMining_004.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "warnFoundry-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "engineCircular_000.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "warnFoundry-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "engineCircular_001.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "warnFoundry-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "engineCircular_002.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "warnFoundry-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "engineCircular_003.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "warnSettlement-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactBell_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "warnSettlement-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactBell_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "warnSettlement-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactBell_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "warnSettlement-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactBell_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_004.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "contactHorn-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLarge_000.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "contactHorn-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLarge_001.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "contactHorn-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLarge_002.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "contactHorn-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLarge_003.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "missileAlert-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactBell_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "missileAlert-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactBell_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "missileAlert-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactBell_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "missileAlert-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactBell_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_004.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "provokeAlarm-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactBell_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "provokeAlarm-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactBell_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "provokeAlarm-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactBell_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "provokeAlarm-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "impactBell_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactMetal_heavy_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactBell_heavy_004.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "objectiveDone-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_light_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "drop_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "objectiveDone-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_light_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "drop_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "objectiveDone-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_light_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "drop_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "objectiveDone-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_light_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "drop_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "level-0": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_medium_000.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "drop_001.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "level-1": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_medium_001.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "drop_002.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "level-2": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_medium_002.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "drop_003.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "level-3": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "open_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        },
+        {
+          "file": "impactGlass_medium_003.ogg",
+          "url": "https://kenney.nl/assets/impact-sounds",
+          "start": 0
+        },
+        {
+          "file": "drop_004.ogg",
+          "url": "https://kenney.nl/assets/interface-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, trimmed, filtered, faded; -2.85 dB source headroom"
+    },
+    "engine-rebuilt": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLow_000.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "engineCircular_000.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "thrusterFire_000.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, filtered, crossfaded loop"
+    },
+    "engine-azure": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLow_001.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "engineCircular_001.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "thrusterFire_001.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, filtered, crossfaded loop"
+    },
+    "engine-vulcan": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLow_002.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "engineCircular_002.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "thrusterFire_002.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, filtered, crossfaded loop"
+    },
+    "engine-boost": {
+      "licence": "CC0-1.0",
+      "sources": [
+        {
+          "file": "spaceEngineLow_003.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "engineCircular_003.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        },
+        {
+          "file": "thrusterFire_003.ogg",
+          "url": "https://kenney.nl/assets/sci-fi-sounds",
+          "start": 0
+        }
+      ],
+      "edit": "layered, filtered, crossfaded loop"
+    }
+  }
+}

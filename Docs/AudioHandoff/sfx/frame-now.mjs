@@ -1,0 +1,1 @@
+import {spawnSync} from 'node:child_process'; const r=spawnSync('C:/ProgramData/chocolatey/bin/ffmpeg.exe',['-hide_banner','-loglevel','error','-y','-ss','80','-i','G:/sfx/evidence/unlit/new-v0/page@fcefb22ded3b8360376634b0e7a1a260.webm','-frames:v','1','G:/sfx/unlit-now.png'],{encoding:'utf8',timeout:30000,windowsHide:true});console.log(r.status,r.stderr);

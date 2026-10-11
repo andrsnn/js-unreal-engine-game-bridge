@@ -1,0 +1,72 @@
+import {combatCutoff,physicalOutputCurve,PHYSICAL_CALIBRATION} from './audio-physical.js';
+import {AUDIO_PRIORITIES,voiceToReplace} from './audio-voices.js';
+import {createAcousticSpace,reverbSendLevel} from './audio-reverb.js';
+const instances=new WeakMap(),clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+export const AUDIO_BUS_LEVELS=Object.freeze({weapons:.88,impacts:.46,explosions:.66,engines:PHYSICAL_CALIBRATION.engineBus,ambience:PHYSICAL_CALIBRATION.ambienceBus,foley:PHYSICAL_CALIBRATION.foleyBus,creatures:.48,ui:.26,alerts:.32,music:.42,reflections:.32});
+export function soundPlacement(position,listener,right={x:1,y:0,z:0},{near=3,far=100}={}){
+ if(!position||!listener)return {gain:1,pan:0};const x=position.x-listener.x,y=(position.y||0)-(listener.y||0),z=position.z-listener.z,d=Math.hypot(x,y,z);
+ return {gain:d>=far?0:(1-clamp((d-far*.7)/(far*.3)))/(1+(Math.max(0,d-near)/18)**1.5),pan:d?clamp((x*right.x+y*right.y+z*right.z)/d,-.9,.9):0};
+}
+export function gameAudio(state,camera){if(instances.has(state)){const audio=instances.get(state);audio.setCamera(camera);return audio;}const audio=createGameAudio(state,camera);instances.set(state,audio);return audio;}
+function createGameAudio(state,camera){
+ let context=null,master,limiter,output,analyser,bank=null,ready=null,focused=true,disposed=false,duckUntil=0,frame=0,tap=null,loading=false,retries=0,retryAt=0,acoustics=null,hoverAt=-Infinity,tickAt=-Infinity,voiceSteals=0,voiceDrops=0;
+ const syncStarts=new Map(),buses={},reverbBuses={},variantBags=new Map(),buffers=new Map(),voices=new Set(),loops=new Map(),lastVariants=new Map(),counts={},samples=new Float32Array(256),right={x:1,y:0,z:0};
+ const events=globalThis.window||globalThis;
+ function setup(){if(context||disposed)return context;const Audio=globalThis.AudioContext||globalThis.webkitAudioContext;if(!Audio)return null;
+  context=new Audio({latencyHint:'interactive'});master=context.createGain();const subFloor=context.createBiquadFilter();subFloor.type='highpass';subFloor.frequency.value=24;subFloor.Q.value=.6;limiter=context.createDynamicsCompressor();limiter.threshold.value=PHYSICAL_CALIBRATION.threshold;limiter.knee.value=PHYSICAL_CALIBRATION.knee;limiter.ratio.value=PHYSICAL_CALIBRATION.ratio;limiter.attack.value=PHYSICAL_CALIBRATION.attack;limiter.release.value=PHYSICAL_CALIBRATION.release;const recovery=context.createGain();recovery.gain.value=PHYSICAL_CALIBRATION.makeup;
+  const saturation=context.createWaveShaper();saturation.curve=physicalOutputCurve();saturation.oversample='2x';output=context.createGain();output.gain.value=PHYSICAL_CALIBRATION.outputGain;
+  analyser=context.createAnalyser();analyser.fftSize=256;master.connect(subFloor).connect(limiter).connect(recovery).connect(saturation).connect(output);output.connect(context.destination);output.connect(analyser);
+  acoustics=createAcousticSpace(context,master);
+  for(const [name,level]of Object.entries(AUDIO_BUS_LEVELS)){const bus=context.createGain();bus.gain.value=level;bus.connect(master);buses[name]=bus;if(reverbSendLevel(name)>0){const wet=context.createGain();wet.gain.value=level;wet.connect(acoustics.input);reverbBuses[name]=wet;}}
+  ready=loadBank();return context;
+ }
+ async function loadBank(){loading=true;try{const response=await fetch('/audio/bank.json');if(!response.ok)throw Error('Sound bank unavailable');bank=await response.json();const files=[...new Set([...Object.values(bank.sounds||{}).flat(),...Object.values(bank.loops||{}).flat()])];let next=0;
+   await Promise.all(Array.from({length:4},async()=>{while(next<files.length){const file=files[next++];if(typeof file!=='string'||file.includes('..'))continue;try{const r=await fetch('/audio/'+file);if(r.ok)buffers.set(file,await context.decodeAudioData(await r.arrayBuffer()));}catch{}}}));return true;
+  }catch{bank=null;retryAt=context.currentTime+5;return false;}finally{loading=false;}}
+ function unlock(event){if(disposed||!event.isTrusted||event.repeat)return;if(!setup())return;if(context.state==='suspended')void context.resume().catch(()=>{});}
+ events.addEventListener?.('pointerdown',unlock,{passive:true});events.addEventListener?.('keydown',unlock);
+ function choice(key,files){
+  const loaded=(Array.isArray(files)?files:[files]).filter(file=>buffers.has(file));if(!loaded.length)return null;
+  let bag=variantBags.get(key);if(!bag?.length||bag.some(file=>!loaded.includes(file))){
+   bag=[...loaded];for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];}
+   if(bag.length>1&&bag.at(-1)===lastVariants.get(key))[bag[0],bag[bag.length-1]]=[bag.at(-1),bag[0]];
+   variantBags.set(key,bag);
+  }
+  const file=bag.pop();lastVariants.set(key,file);return file;
+ }
+ function placement(position,options){if(camera?.matrixWorld){const e=camera.matrixWorld.elements;right.x=e[0];right.y=e[1];right.z=e[2];}return soundPlacement(position,state.pos,right,options);}
+ function play(key,{bus='foley',volume=1,event,position,near=3,far=100,pitch=1,variation=.045,pan:explicitPan,delay=0,cutoff,maxDuration,tail=true,priority=['reloadStart','reloadEnd','dry'].includes(key)?55:AUDIO_PRIORITIES[bus]||25}={}){
+  if(!context||context.state!=='running'||disposed||!focused||state.audioMuted||globalThis.document?.hidden)return false;
+  const sampleKey=key==='click'?'uiSelect':key==='confirm'?'uiAccept':key;const file=choice(key,bank?.sounds?.[sampleKey]||bank?.sounds?.[key]);if(!file)return false;
+  // The fabricator's existing success cue covers both keyboard and pointer crafting.
+  if(key==='confirm'&&bus==='ui'&&state.mode==='crafting'){play('craft',{bus:'foley',volume:.8,variation:.06});volume*=.47;delay+=.42;}
+  const location=placement(position,{near,far});if(location.gain<.002)return false;
+  const victim=voiceToReplace(voices,bus,priority);
+  if(victim===null){voiceDrops++;return false;}
+  if(victim){victim.gain.gain.setTargetAtTime(0,context.currentTime,.008);try{victim.source.stop(context.currentTime+.03);}catch{}voices.delete(victim);voiceSteals++;}
+  const source=context.createBufferSource(),gain=context.createGain(),pan=context.createStereoPanner(),filter=context.createBiquadFilter();source.buffer=buffers.get(file);source.playbackRate.value=pitch*(1+(Math.random()*2-1)*variation);
+  const distance=position&&state.pos?Math.hypot(position.x-state.pos.x,(position.y||0)-(state.pos.y||0),position.z-state.pos.z):0;filter.type='lowpass';filter.frequency.value=cutoff??Math.min(combatCutoff(key,bus),Math.max(1000,17000/(1+distance/28)));
+  gain.gain.value=clamp(volume,0,1.5)*location.gain*(.92+Math.random()*.16);pan.pan.value=explicitPan??location.pan;source.connect(filter).connect(gain).connect(pan).connect(buses[bus]||buses.foley);
+  const wet=reverbBuses[bus]?context.createGain():null;if(wet){wet.gain.value=reverbSendLevel(bus,distance);pan.connect(wet).connect(reverbBuses[bus]);}
+  const voice={source,bus,gain,priority};voices.add(voice);source.onended=()=>{voices.delete(voice);source.disconnect();gain.disconnect();pan.disconnect();filter.disconnect();wet?.disconnect();};const startAt=context.currentTime+Math.max(0,delay);source.start(startAt);if(Number.isFinite(maxDuration)&&maxDuration>0){const span=clamp(maxDuration,.035,3);gain.gain.setTargetAtTime(0,startAt+span-.025,.005);source.stop(startAt+span);}const eventKey=event==='weaponCycle'&&key==='reloadLatch'?event:key;counts[eventKey]=(counts[eventKey]||0)+1;
+  if((bus==='weapons'&&event!=='weaponCycle')||bus==='explosions'||bus==='alerts')duckUntil=context.currentTime+(key==='rocket'||key==='explosion'?.85:key==='heavy'?.55:.35);
+  if(tail&&bus==='weapons'&&['rifle','heavy','pistol','shotgun','rocket','energy'].includes(key)){const space=state.audioEnvironment?.space||'open',tailKey=space==='room'?'tailRoom':space==='canyon'?'tailCanyon':'tailOpen';play(tailKey,{bus:'reflections',volume:volume*(space==='open'?.15:.26),position,near,far,pitch,variation:.08,delay:delay+(space==='canyon'?.065:.022),tail:false,cutoff:space==='room'?6000:3800});const body={rifle:'punchRifle',heavy:'punchHeavy',pistol:'punchPistol',shotgun:'punchShotgun',energy:'punchEnergy',rocket:'punchRocket'}[key];if(body)play(body,{bus:'impacts',volume:volume*.24,position,near,far,pitch,cutoff:1600,variation:.025,delay,tail:false,priority:40});}
+  if(bus==='foley'&&['reloadStart','reloadEnd'].includes(key))play('reloadLatch',{bus:'foley',volume:volume*.46,pitch:key==='reloadEnd'?1:.82,variation:.05,delay:delay+(key==='reloadEnd'?.015:.09),priority:45,tail:false});
+  return true;
+ }
+ function loop(name,key,{bus='ambience',volume=0,position,pitch=1,cutoff=18000,near=3,far=140,sync,smoothing=.18}={}){
+  if(!context||disposed)return false;let voice=loops.get(name);if(voice&&voice.key!==key){voice.gain.gain.setTargetAtTime(0,context.currentTime,.04);voice.source.stop(context.currentTime+.25);loops.delete(name);voice=null;}
+  if(!voice&&volume>.0005){const file=choice('loop:'+name,bank?.loops?.[key]);if(!file)return false;const source=context.createBufferSource(),gain=context.createGain(),filter=context.createBiquadFilter(),pan=context.createStereoPanner();source.buffer=buffers.get(file);source.loop=true;filter.type='lowpass';filter.frequency.value=cutoff;gain.gain.value=0;source.connect(filter).connect(gain).connect(pan).connect(buses[bus]||buses.ambience);const wet=reverbBuses[bus]?context.createGain():null;if(wet){wet.gain.value=reverbSendLevel(bus);pan.connect(wet).connect(reverbBuses[bus]);}source.onended=()=>{source.disconnect();gain.disconnect();filter.disconnect();pan.disconnect();wet?.disconnect();};if(sync&&!syncStarts.has(sync))syncStarts.set(sync,context.currentTime);const offset=sync?(context.currentTime-syncStarts.get(sync))%source.buffer.duration:Math.random()*Math.min(1,source.buffer.duration*.1);source.start(context.currentTime,offset);voice={source,gain,filter,pan,wet,key,bus};loops.set(name,voice);}
+  if(!voice)return false;const location=placement(position,{near,far});voice.gain.gain.setTargetAtTime(clamp(volume,0,1)*location.gain,context.currentTime,smoothing);if(voice.wet){const distance=position&&state.pos?Math.hypot(position.x-state.pos.x,position.z-state.pos.z):0;voice.wet.gain.setTargetAtTime(reverbSendLevel(bus,distance),context.currentTime,.18);}voice.pan.pan.setTargetAtTime(location.pan,context.currentTime,.12);voice.source.playbackRate.setTargetAtTime(clamp(pitch,.4,2),context.currentTime,.12);voice.filter.frequency.setTargetAtTime(cutoff,context.currentTime,.16);return true;
+ }
+ function update(){if(!context||disposed)return;const now=context.currentTime;if(!bank&&!loading&&retries<3&&now>=retryAt){retries++;ready=loadBank();}const enabled=focused&&!globalThis.document?.hidden&&!state.audioMuted;master.gain.setTargetAtTime(enabled?clamp(state.audioVolume??.8):0,now,.025);
+  const active=!!state.started&&state.mode==='game'&&!state.dead;acoustics.update(state.audioEnvironment?.space,active,state.audioEnvironment?.blend);for(const [bus,level]of Object.entries(AUDIO_BUS_LEVELS)){const preference=clamp(state.audioMix?.[bus]??1,0,1.5),duck=now<duckUntil?(bus==='ambience'||bus==='engines')?.4:bus==='music'?.40:bus==='creatures'?.75:1:1;const gain=level*preference*(active||bus==='ui'||(state.mode==='crafting'&&bus==='foley')?1:0)*duck;buses[bus].gain.setTargetAtTime(gain,now,.06);reverbBuses[bus]?.gain.setTargetAtTime(gain,now,.06);}
+  if(++frame%30===0){analyser.getFloatTimeDomainData(samples);let peak=0;for(const value of samples)peak=Math.max(peak,Math.abs(value));state.audioMixStatus={ready:!!bank,loaded:buffers.size,voices:voices.size,peak,reduction:limiter.reduction,events:{...counts},loops:loops.size,environment:state.audioEnvironment?.space||'open',revision:5,audioPass:5,outputGain:PHYSICAL_CALIBRATION.outputGain,physical:{recordedBank:'karvos-physical-v4',subFloorHz:24,compressionRatio:PHYSICAL_CALIBRATION.ratio,makeup:PHYSICAL_CALIBRATION.makeup,calibration:1},reverb:acoustics.space,reverbBlend:acoustics.weights,priority:{stolen:voiceSteals,dropped:voiceDrops},variants:Object.fromEntries(lastVariants)};}
+ }
+ function click(event){const button=event.target?.closest?.('button');if(!button||button.disabled)return;const back=button.matches?.('[data-tab="home"],#resumeGame,[data-close],#keepSave'),accept=button.matches?.('#beginGame,#continueGame,#confirmNew,[data-recipe]');play(back?'uiBack':accept?'uiAccept':'click',{bus:'ui',volume:back?.65:.8,variation:.025});}
+ function hover(event){const button=event.target?.closest?.('button');if(!event.isTrusted||!button||button.disabled||button.contains?.(event.relatedTarget))return;const now=globalThis.performance?.now()||Date.now();if(now-hoverAt<110)return;hoverAt=now;play('uiHover',{bus:'ui',volume:.2,variation:.02});}
+ function rangeTick(event){const input=event.target;if(!event.isTrusted||input?.type!=='range')return;const now=globalThis.performance?.now()||Date.now();if(now-tickAt<65)return;tickAt=now;const low=Number(input.min)||0,high=Number(input.max)||1,value=clamp((Number(input.value)-low)/(high-low));play('uiTick',{bus:'ui',volume:.3,pitch:.86+value*.28,variation:.012,priority:15});}
+ events.addEventListener?.('input',rangeTick,{passive:true});events.addEventListener?.('pointerover',hover,{passive:true});
+ events.addEventListener?.('click',click,{passive:true});const blur=()=>{focused=false;update();},focus=()=>{focused=true;};events.addEventListener?.('blur',blur);events.addEventListener?.('focus',focus);const visibility=()=>update();globalThis.document?.addEventListener?.('visibilitychange',visibility);
+ return {play,loop,update,setCamera(value){if(value)camera=value;},ready:()=>ready||Promise.resolve(false),recordingStream(){if(!context)return null;if(!tap){tap=context.createMediaStreamDestination();output.connect(tap);}return tap.stream;},dispose(){if(disposed)return;disposed=true;events.removeEventListener?.('pointerdown',unlock);events.removeEventListener?.('keydown',unlock);events.removeEventListener?.('click',click);events.removeEventListener?.('pointerover',hover);events.removeEventListener?.('input',rangeTick);events.removeEventListener?.('blur',blur);events.removeEventListener?.('focus',focus);globalThis.document?.removeEventListener?.('visibilitychange',visibility);for(const v of voices)try{v.source.stop();}catch{}for(const v of loops.values())try{v.source.stop();}catch{}voices.clear();loops.clear();acoustics?.dispose();for(const bus of Object.values(reverbBuses))bus.disconnect();void context?.close().catch(()=>{});}};
+}

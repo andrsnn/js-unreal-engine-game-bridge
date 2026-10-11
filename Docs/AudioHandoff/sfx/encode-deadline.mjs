@@ -1,0 +1,33 @@
+import fs from 'node:fs/promises';import {spawnSync} from 'node:child_process';import {createHash} from 'node:crypto';
+const unlit=JSON.parse(await fs.readFile(process.argv[2],'utf8')),salt=JSON.parse(await fs.readFile(process.argv[3],'utf8'));
+for(const r of [unlit,salt])if(!r.ok||r.errors.length||r.missing.length||!r.originalInputOnly||(r.game==='saltblade'&&r.elapsed<30))throw Error('Gameplay receipt is not accepted: '+r.game);
+const out='G:/sfx/evidence/deadline-film';await fs.mkdir(out,{recursive:true});
+const ff='C:/ProgramData/chocolatey/bin/ffmpeg.exe',fp='C:/ProgramData/chocolatey/bin/ffprobe.exe';
+const run=(exe,args)=>{const r=spawnSync(exe,args,{encoding:'utf8',windowsHide:true,timeout:180000});if(r.error||r.status)throw Error(JSON.stringify({args,error:r.error,status:r.status,stderr:r.stderr?.slice(-2500)}));return r;};
+const missile='C:/UnlitWorldsCaptures/judge/hardburn-missiles-dark.mp4';
+if(unlit.after?.audio?.revision!==14||unlit.after?.audio?.audioPass!==5||unlit.after?.audio?.physical?.loaded!==25||unlit.mutePeak>.00003)throw Error('Fresh published Unlit playback receipt missing');
+const unlitFilm='C:/UnlitWorldsCaptures/judge/unlit-audio-v5.mp4',unlitPriorReport='G:/sfx/evidence/unlit/pass5/fixture/report.json',prior=JSON.parse(await fs.readFile(unlitPriorReport,'utf8'));
+if(prior.errors.length||prior.missing.length||prior.segments.length!==3||!prior.segments[0].name.includes('Native saved space')||!prior.segments[1].name.includes('Native Sirocco'))throw Error('Accepted native flight/mining source receipt invalid');
+const unlitFilmSha256=createHash('sha256').update(await fs.readFile(unlitFilm)).digest('hex');
+const clips=[{game:'HARD BURN',video:missile,audio:missile,start:0,length:7},{game:'HARD BURN',video:missile,audio:missile,start:18,length:6},{game:'UNLIT WORLDS',video:unlitFilm,audio:unlitFilm,start:0,length:9},{game:'UNLIT WORLDS',video:unlitFilm,audio:unlitFilm,start:10.218,length:8},{game:'SALTBLADE',video:salt.video,audio:salt.out+'/audio.webm',offset:salt.offset,start:3,length:17}];
+const measurements=[];
+for(let i=0;i<clips.length;i++){
+ const c=clips[i],audioStart=c.start,videoStart=c.start+(c.offset??0),pcm=out+`/part-${i}.wav`,segment=out+`/part-${i}.mp4`;
+ const measurement=run(ff,['-hide_banner','-ss',String(audioStart),'-t',String(c.length),'-i',c.audio,'-af','loudnorm=I=-16:TP=-2:LRA=11:print_format=json','-f','null','-']).stderr;
+ const m=JSON.parse(measurement.slice(measurement.lastIndexOf('{')));measurements.push({game:c.game,...m});
+ const norm=`loudnorm=I=-16:TP=-2:LRA=11:measured_I=${m.input_i}:measured_TP=${m.input_tp}:measured_LRA=${m.input_lra}:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true,aresample=192000,alimiter=limit=.67:attack=1:release=60:level=false:latency=true,aresample=48000`;
+ run(ff,['-hide_banner','-loglevel','error','-y','-ss',String(audioStart),'-t',String(c.length),'-i',c.audio,'-af',norm,'-c:a','pcm_f32le',pcm]);
+ const caption=`drawtext=fontfile='C\\:/Windows/Fonts/arial.ttf':text='${c.game}':x=24:y=h-th-24:fontsize=24:fontcolor=white:shadowcolor=black:shadowx=2:shadowy=2`;
+ run(ff,['-hide_banner','-loglevel','error','-y','-ss',String(videoStart),'-i',c.video,'-i',pcm,'-map','0:v:0','-map','1:a:0','-t',String(c.length),'-vf','scale=1280:720,fps=30,'+caption,'-c:v','libx264','-preset','fast','-threads','2','-crf','23','-maxrate','3500k','-bufsize','7000k','-pix_fmt','yuv420p','-c:a','aac','-b:a','160k','-ar','48000',segment]);
+}
+await fs.writeFile(out+'/concat.txt',clips.map((_,i)=>`file 'part-${i}.mp4'`).join('\n')+'\n');
+const final='C:/UnlitWorldsCaptures/judge/games-audio-deadline.mp4';
+run(ff,['-hide_banner','-loglevel','error','-y','-f','concat','-safe','0','-i',out+'/concat.txt','-c','copy','-movflags','+faststart',final]);
+const probe=JSON.parse(run(fp,['-v','error','-show_format','-show_streams','-of','json',final]).stdout),loud=run(ff,['-hide_banner','-i',final,'-af','ebur128=peak=true','-f','null','-']).stderr,summary=loud.slice(loud.lastIndexOf('Summary:')),integrated=Number(summary.match(/I:\s*([-\d.]+) LUFS/)[1]),peak=Number(summary.match(/Peak:\s*([-\d.]+) dBFS/)[1]);
+await fs.writeFile(out+'/loudness.txt',loud);if(Math.abs(integrated+16)>1||peak>=0)throw Error('Final loudness/headroom failed '+JSON.stringify({integrated,peak}));
+if(Number(probe.format.size)>=30*1024*1024||Number(probe.format.duration)<30||Number(probe.format.duration)>60)throw Error('Final duration/size failed');
+run(ff,['-hide_banner','-loglevel','error','-i',final,'-f','null','-']);
+run(ff,['-hide_banner','-loglevel','error','-y','-i',final,'-lavfi','showspectrumpic=s=1280x720:legend=1:scale=log:color=intensity','-frames:v','1',out+'/spectrum.png']);
+for(const [name,second]of [['hardburn',4],['unlit',21],['saltblade',39]])run(ff,['-hide_banner','-loglevel','error','-y','-ss',String(second),'-i',final,'-frames:v','1',out+'/'+name+'.png']);
+const proof={final,integratedLUFS:integrated,truePeakDBTP:peak,probe,measurements,sha256:createHash('sha256').update(await fs.readFile(final)).digest('hex'),clips,sourceReceipts:[process.argv[2],process.argv[3]],hardburnReceipt:'C:/UnlitWorldsCaptures/judge/hardburn-missiles-dark-review/acceptance.json',fullDecodePassed:true,unlitReusedNativeFilm:{path:unlitFilm,sha256:unlitFilmSha256,receipt:unlitPriorReport,note:'Existing accepted original-input flight/mining footage; same physical-v5 bank/mix. New atmospheric hook independently native-input tested and compiled publication verified; fresh published NG/cutter/mute verified in current playback receipt. No rerecord or gameplay progress injection.'}};
+await fs.writeFile(out+'/delivery.json',JSON.stringify(proof,null,2));console.log(JSON.stringify({final,seconds:probe.format.duration,bytes:probe.format.size,integrated,peak,sha256:proof.sha256}));

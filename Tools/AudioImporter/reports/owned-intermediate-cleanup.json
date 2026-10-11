@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "timeUTC": "2026-10-10T13:36:43.197089+00:00",
+  "scope": "owned AudioImporter regenerated intermediates only",
+  "deleted": [
+    {
+      "path": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm",
+      "regularFiles": 507,
+      "regularFileBytes": 256537566
+    },
+    {
+      "path": "/mnt/g/JsGameBridge/Tools/AudioImporter/__pycache__",
+      "regularFiles": 1,
+      "regularFileBytes": 24683
+    },
+    {
+      "path": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Saved",
+      "regularFiles": 24,
+      "regularFileBytes": 294246
+    },
+    {
+      "path": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Intermediate",
+      "regularFiles": 5,
+      "regularFileBytes": 318
+    }
+  ],
+  "actualRegularFileBytesUnlinked": 256856813,
+  "regularFilesUnlinked": 537,
+  "preserved": [
+    "Content/Audio final and smoke SoundWave/SoundCue packages",
+    "all manifests, source, launcher, project/plugin configuration",
+    "all reports, verification receipts, licence/provenance metadata",
+    "ContentOnlyProject/Plugins/JsGameBridge/Content junction",
+    "shared/unowned DDC and root-owned G:/sfx cleanup scopes"
+  ]
+}

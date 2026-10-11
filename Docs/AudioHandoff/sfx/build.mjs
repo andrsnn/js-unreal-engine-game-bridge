@@ -1,0 +1,7 @@
+import fs from 'node:fs/promises';import {spawnSync} from 'node:child_process';
+const game=process.argv[2],roots={karvos:'C:/Users/Aidan Anderson/karvos',hardburn:'C:/Users/Aidan Anderson/falling-frontier-clone',unlit:'G:/sfx/unlit'},root=roots[game];if(!root)throw Error('Unknown game');
+const args=game==='karvos'?['node_modules/vite/bin/vite.js','build','--config','scripts/vite-owner-fixes.config.mjs']:game==='hardburn'?['tools/build-fixed.mjs']:['G:/sfx/build-unlit.mjs'];
+if(game==='unlit'){const test=spawnSync(process.execPath,['node_modules/typescript/bin/tsc','--noEmit'],{cwd:root,encoding:'utf8',windowsHide:true,timeout:180000});await fs.writeFile('G:/sfx/unlit-integrated-typecheck.txt',test.stdout+'\n'+test.stderr);if(test.status)throw Error('Unlit typecheck failed '+test.stdout?.slice(-1500));}
+// Publish compressed combat banks before the compiled entry switches.
+if(game==='hardburn')for(const bank of ['naval-v4','naval-v5','naval-v6']){try{await fs.access(root+'/public/audio/'+bank);await fs.cp(root+'/public/audio/'+bank,root+'/dist-fix/audio/'+bank,{recursive:true});}catch(e){if(e.code!=='ENOENT')throw e;}}
+const result=spawnSync(process.execPath,args,{cwd:root,encoding:'utf8',windowsHide:true,timeout:300000,maxBuffer:8*1024*1024});await fs.writeFile(`G:/sfx/${game}-integrated-build.txt`,result.stdout+'\n'+result.stderr);console.log(JSON.stringify({game,status:result.status,error:result.error,summary:result.stdout?.slice(-900),warnings:result.stderr?.slice(-900)}));if(result.error||result.status)process.exitCode=1;

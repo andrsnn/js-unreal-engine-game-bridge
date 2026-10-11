@@ -1,0 +1,4 @@
+import './browser-safety.cjs';
+import {chromium} from 'playwright';
+import {readFileSync} from 'node:fs';
+const b=await chromium.launch(); const p=await b.newPage(); await p.goto('http://localhost:5198');await p.waitForFunction(()=>window.__game?.ready); const s=JSON.parse(readFileSync('shots/earned-route-r117-final/earned-save.json','utf8'));await p.evaluate(s=>localStorage.setItem('starweave_save_v1',JSON.stringify(s)),s);await p.reload();await p.waitForFunction(()=>window.__game?.ready);await p.evaluate(()=>window.__game.pause(true));await p.keyboard.down('KeyE');await p.evaluate(()=>window.__game.step(1/60,1));await p.keyboard.up('KeyE');await p.evaluate(()=>window.__game.step(1/60,220));await p.locator('[data-port-audio]').click();console.log(await p.locator('button,input').evaluateAll(es=>es.map(e=>e.outerHTML)));await b.close();

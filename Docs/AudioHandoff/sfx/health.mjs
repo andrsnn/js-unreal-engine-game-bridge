@@ -1,0 +1,1 @@
+await Promise.all([5190,5191,5192].map(async port=>{try{const r=await fetch(`http://127.0.0.1:${port}/`,{signal:AbortSignal.timeout(5000)});const html=await r.text();console.log(JSON.stringify({port,status:r.status,title:html.match(/<title>([^<]+)/)?.[1]}));}catch(e){console.log(JSON.stringify({port,error:e.message}));}}));

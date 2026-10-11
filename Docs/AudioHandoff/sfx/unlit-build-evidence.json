@@ -1,0 +1,31 @@
+{
+  "commit": "dd0d21e8",
+  "command": "npm run build",
+  "passed": true,
+  "prebuild": "WebGPU stages/hooks checks passed",
+  "typescript": "passed",
+  "modules": 867,
+  "viteSeconds": 62,
+  "postbuild": "pruned 101.7MiB old source comparisons and audio",
+  "warnings": [
+    "existing large chunks",
+    "existing simultaneous static/dynamic shipMesh and voxelChar imports"
+  ],
+  "artifactsBeforeCleanup": [
+    {
+      "file": "dist/index.html",
+      "bytes": 1118,
+      "sha256": "b2aa3bd532fbf94df2cf12dabff26b4c237c677f2cf34650c400a37ffd644e84"
+    },
+    {
+      "file": "dist/assets/index-CMASCHss.js",
+      "bytes": 2822044,
+      "sha256": "f80e1b3c9bbef3355e332d86fd5f0956679947e168c7543050a2da2371e54c76"
+    },
+    {
+      "file": "dist/assets/dungeonScene-zCQ5SuxK.js",
+      "bytes": 6517821,
+      "sha256": "21b95e1605c388499b2746677f0ee0758e3e636a425574222ad17596a3478f9c"
+    }
+  ]
+}

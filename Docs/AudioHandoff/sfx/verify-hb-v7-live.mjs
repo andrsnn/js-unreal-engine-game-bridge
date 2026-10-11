@@ -1,0 +1,11 @@
+import fs from 'node:fs/promises';import crypto from 'node:crypto';
+const base='http://100.69.252.53:5181';
+const htmlResponse=await fetch(base+'/',{signal:AbortSignal.timeout(15000)});if(!htmlResponse.ok)throw Error('Live index HTTP'+htmlResponse.status);
+const html=await htmlResponse.text(),entry=html.match(/src="([^"\n]*\/assets\/index-[^"\n]+\.js)"/)?.[1]??html.match(/src="(\/assets\/index-[^"\n]+\.js)"/)?.[1];if(!entry)throw Error('Compiled entry missing');
+const response=await fetch(new URL(entry,base),{signal:AbortSignal.timeout(15000)});if(!response.ok)throw Error('Live entry HTTP'+response.status);
+const code=Buffer.from(await response.arrayBuffer()),source=code.toString('utf8');
+for(const marker of [/audioPass\s*:\s*7/,/guidedProjectile/,/phaseCold/,/phaseIgnition/])if(!marker.test(source))throw Error('Live source misses '+marker);
+const entrySha256=crypto.createHash('sha256').update(code).digest('hex');if(entrySha256!=='b39311a643fa4304650351f7d240f4ce1c64f5f2e2c940e41d06f03afcd7adb9')throw Error('Entry differs from HBVFX combined-build receipt '+entrySha256);
+const root='G:/sfx/hardburn/public/audio',files=(await Promise.all(['naval-v6','naval-v7'].map(async bank=>(await fs.readdir(root+'/'+bank)).filter(n=>n.endsWith('.ogg')).map(n=>bank+'/'+n)))).flat(),results=[];
+for(let start=0;start<files.length;start+=8)results.push(...await Promise.all(files.slice(start,start+8).map(async name=>{const expected=await fs.readFile(root+'/'+name),r=await fetch('http://100.69.252.53:5181/audio/'+name,{signal:AbortSignal.timeout(15000)});if(!r.ok)throw Error(name+' HTTP'+r.status);const data=Buffer.from(await r.arrayBuffer());if(!data.equals(expected))throw Error('Live audio differs '+name);return {name,bytes:data.length,sha256:crypto.createHash('sha256').update(data).digest('hex')};})));
+await fs.writeFile('G:/sfx/hardburn-v7-live-samples.json',JSON.stringify({entry,entrySha256,combinedBuildSourceCommit:'e497a0d8eea002d00c170281e8938921a115fb6b',audioSourceCommit:'3ff7dec68f14ef9ead6fc249558f86288d90cad7',count:results.length,bytes:results.reduce((n,r)=>n+r.bytes,0),results},null,2));console.log(JSON.stringify({entry,entrySha256,count:results.length,bytes:results.reduce((n,r)=>n+r.bytes,0)}));

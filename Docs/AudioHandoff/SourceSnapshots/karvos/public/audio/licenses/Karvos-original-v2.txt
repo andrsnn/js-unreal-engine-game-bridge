@@ -1,0 +1,3 @@
+Karvos audio pass two
+All v2-*.ogg assets and procedural acousticImpulse in src/audio-reverb.js are original synthesis/composition dedicated to the public domain under CC0 1.0 Universal. No third-party voice, melody, game/film or model samples are used. Reproducible generator: scripts/build-audio-v2.py.
+https://creativecommons.org/publicdomain/zero/1.0/

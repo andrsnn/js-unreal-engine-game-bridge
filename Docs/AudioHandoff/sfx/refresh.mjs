@@ -1,0 +1,1 @@
+const game=process.argv[2],port={hardburn:5190,karvos:5191,unlit:5192}[game];if(!port)throw Error('game');const r=await fetch(`http://127.0.0.1:${port}/__audio_refresh`,{signal:AbortSignal.timeout(10000)});const body=await r.text();if(!r.ok||body!=='ok')throw Error('Refresh failed '+body);console.log(game+' source cache refreshed');

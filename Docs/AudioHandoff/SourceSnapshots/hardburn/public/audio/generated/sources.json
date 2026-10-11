@@ -1,0 +1,175 @@
+{
+  "licence": "CC0-1.0",
+  "author": "HARD BURN original sound design",
+  "files": {
+    "rail-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Coil discharge: fast crack, hull-transmitted resonance",
+      "duration": 0.35
+    },
+    "mac-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Heavy mass-driver concussion and sliding breech",
+      "duration": 0.65
+    },
+    "flak-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Broadside flak mechanical thump",
+      "duration": 0.46
+    },
+    "impact-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Armour puncture with resonant metal tail",
+      "duration": 0.7
+    },
+    "small-blast-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Small ordnance: short muffled pressure impulse",
+      "duration": 0.75
+    },
+    "large-blast-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Reactor/hull breakup: deep layered structural collapse",
+      "duration": 2.5
+    },
+    "pdc-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Five-round mechanical PDC rattle; short softened crack",
+      "duration": 0.32
+    },
+    "launch-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Cold-launch piston, gas hiss and brief motor rumble",
+      "duration": 0.7
+    },
+    "rail-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Coil discharge: fast crack, hull-transmitted resonance",
+      "duration": 0.35
+    },
+    "mac-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Heavy mass-driver concussion and sliding breech",
+      "duration": 0.65
+    },
+    "flak-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Broadside flak mechanical thump",
+      "duration": 0.46
+    },
+    "impact-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Armour puncture with resonant metal tail",
+      "duration": 0.7
+    },
+    "small-blast-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Small ordnance: short muffled pressure impulse",
+      "duration": 0.75
+    },
+    "large-blast-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Reactor/hull breakup: deep layered structural collapse",
+      "duration": 2.5
+    },
+    "pdc-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Five-round mechanical PDC rattle; short softened crack",
+      "duration": 0.32
+    },
+    "launch-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Cold-launch piston, gas hiss and brief motor rumble",
+      "duration": 0.7
+    },
+    "rail-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Coil discharge: fast crack, hull-transmitted resonance",
+      "duration": 0.35
+    },
+    "mac-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Heavy mass-driver concussion and sliding breech",
+      "duration": 0.65
+    },
+    "flak-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Broadside flak mechanical thump",
+      "duration": 0.46
+    },
+    "impact-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Armour puncture with resonant metal tail",
+      "duration": 0.7
+    },
+    "small-blast-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Small ordnance: short muffled pressure impulse",
+      "duration": 0.75
+    },
+    "large-blast-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Reactor/hull breakup: deep layered structural collapse",
+      "duration": 2.5
+    },
+    "pdc-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Five-round mechanical PDC rattle; short softened crack",
+      "duration": 0.32
+    },
+    "launch-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Cold-launch piston, gas hiss and brief motor rumble",
+      "duration": 0.7
+    },
+    "drive-small.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Class-specific low fusion-drive vibration loop",
+      "duration": 12.0
+    },
+    "drive-medium.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Class-specific low fusion-drive vibration loop",
+      "duration": 12.0
+    },
+    "drive-heavy.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Class-specific low fusion-drive vibration loop",
+      "duration": 12.0
+    },
+    "tension-bed.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-shipboard-audio-25.py",
+      "licence": "CC0-1.0",
+      "description": "Original restrained minor/suspended ambient bed, raised during combat",
+      "duration": 48.0
+    }
+  },
+  "encoding": "Vorbis quality 5; original synthesis is unchanged"
+}

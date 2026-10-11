@@ -1,0 +1,29 @@
+{
+  "sourceTip": "d83be0ee16dd87c42c07d20090080a07b9d7e74c",
+  "primaryBase": "69e11ecdabd72d4f1b6ada43a7966e001a9f5fa3",
+  "compiledTip": "e9c069964d28a0e0c6390ceda81507960acb7859",
+  "compiledPrimaryBase": "b7f6c77a24e90f0175cb5fb640d3687ffb77dd13",
+  "audioRevision": 11,
+  "passed": true,
+  "typed": true,
+  "tests": [
+    "test-audio-v1",
+    "test-audio-pass2"
+  ],
+  "modules": 876,
+  "viteSeconds": 78,
+  "copyPublicDir": false,
+  "warnings": [
+    "existing large chunks",
+    "existing static/dynamic imports"
+  ],
+  "artifacts": [
+    {
+      "file": "index-VmHdCmRr.js",
+      "bytes": 2854104,
+      "sha256": "f2701ce9cf3cc9f3c8dc1f1c223beac6955ab9231faecc6ed3306ca9c61caded"
+    }
+  ],
+  "artifactRoot": "/mnt/g/sfx/unlit-code-pass2-resumed",
+  "note": "Primary advanced during build; final source includes unrelated mining changes. Audio unchanged. No repeated whole-game build per standing speed order; root uses source preview and final publication build if needed."
+}

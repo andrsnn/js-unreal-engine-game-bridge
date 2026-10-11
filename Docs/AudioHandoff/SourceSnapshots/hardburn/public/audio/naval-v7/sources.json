@@ -1,0 +1,2170 @@
+{
+  "licence": "Mixed CC0 and Sonniss; see individual files and recording sources.",
+  "phaseContract": "Cold releases are unpowered tube/metal reports; ignition occurs only at the real first motor activation. Loop survives only active local burn; no atmospheric sound propagation.",
+  "recordingSources": {
+    "hammer": {
+      "file": "Spring_Powered_Hammer_Impacts_Various_Speeds_MKH8060.wav",
+      "author": "Pole Position - The Ironwork Machinery Library",
+      "licence": "Sonniss GDC Bundle EULA v2.0 (royalty-free commercial game use; not CC0)",
+      "url": "https://sonniss.com/gameaudiogdc/",
+      "licenceURL": "https://sonniss.com/gdc-bundle-license/",
+      "sha256": "e9faf0f669a05f5c3561df217b92ab1df793383841286ae24b1b90f03d17acb1"
+    },
+    "clink2.wav": {
+      "author": "Brian MacIntosh (BMacZero)",
+      "licence": "CC0-1.0",
+      "url": "https://opengameart.org/content/metal-impact-sounds",
+      "sha256": "ecbf5a221f2aff32376b8584eea875d0b7d9963d22f6c16e237f5e7b63f51dc2"
+    },
+    "clink3.wav": {
+      "author": "Brian MacIntosh (BMacZero)",
+      "licence": "CC0-1.0",
+      "url": "https://opengameart.org/content/metal-impact-sounds",
+      "sha256": "dd07516e51e9092efc36d13668de7d29d096955a437894cedeb5064933e2650f"
+    },
+    "thud2.wav": {
+      "author": "Brian MacIntosh (BMacZero)",
+      "licence": "CC0-1.0",
+      "url": "https://opengameart.org/content/metal-impact-sounds",
+      "sha256": "5fb5c1b37a95cb6716d0bb529a0b9fe1ae9f3e2228b8f30c5c3dcbb1b570a3af"
+    },
+    "bong1.wav": {
+      "author": "Brian MacIntosh (BMacZero)",
+      "licence": "CC0-1.0",
+      "url": "https://opengameart.org/content/metal-impact-sounds",
+      "sha256": "a6558d186f2843aefa212d567963b0ad79a6f78614bcf650f519620fc1549a6d"
+    },
+    "tank": {
+      "file": "Metal_Rocking_Diesel_Tank_Pulses_A_DPA4061.wav",
+      "author": "Pole Position - The Junkyard Metal Library",
+      "licence": "Sonniss GDC Bundle EULA v2.0 (royalty-free commercial game use; not CC0)",
+      "url": "https://sonniss.com/gameaudiogdc/",
+      "licenceURL": "https://sonniss.com/gdc-bundle-license/",
+      "sha256": "74481e833505a06365a9b3f3d7b6b7fccb6bd9832e294b14f3b41df68cecfc2f"
+    },
+    "creak": {
+      "file": "Metal_Creak_Van_Door_Back_and_Forth_Various_CO100k.wav",
+      "author": "Pole Position - The Junkyard Metal Library",
+      "licence": "Sonniss GDC Bundle EULA v2.0 (royalty-free commercial game use; not CC0)",
+      "url": "https://sonniss.com/gameaudiogdc/",
+      "licenceURL": "https://sonniss.com/gdc-bundle-license/",
+      "sha256": "8df4fc977d36d7e4a03f8b4de42660145751f7b4e73e26f46f098f67da986908"
+    },
+    "thud3.wav": {
+      "author": "Brian MacIntosh (BMacZero)",
+      "licence": "CC0-1.0",
+      "url": "https://opengameart.org/content/metal-impact-sounds",
+      "sha256": "3aa636679ffdc9602d27655ca59a7c7342ae137b68e54c61aad0fb3c414506ca"
+    }
+  },
+  "files": {
+    "swarm-cold-0.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-cold: separately timed, layered and filtered physical performance 1/8",
+      "layerChoice": [
+        "../naval-v5/pdc-0.ogg",
+        "../naval-v4/launch-1.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "clink2.wav",
+        "clink3.wav",
+        "hammer",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v5/pdc-0.ogg",
+          "sha256": "8a229da01ee35a8b4214d9c8241abb33f65921ff645cad56a460f1646e666131",
+          "gain": 0.57,
+          "speed": 1.09312,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/launch-1.ogg",
+          "sha256": "28d67e2fc67f2e5c440168bfbbe2dd689dce5240e1f4f618eeaafd3837f68fc0",
+          "gain": 0.3,
+          "speed": 1.18,
+          "layerDelay": 0.009,
+          "sourceOffset": 0
+        }
+      ],
+      "duration": 0.175,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "463dd423754d1e164a4332cb9cdc0462fe4fdebca52e7898d30fa51b30e7d9c9"
+    },
+    "missile-cold-0.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-cold: separately timed, layered and filtered physical performance 1/8",
+      "layerChoice": [
+        "../naval-v4/launch-0.ogg",
+        "../naval-v4/impact-tail-1.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-0.ogg",
+          "sha256": "2a825fca78b9ca0687e6db516ca5ca8ac7e9df40924d8a21624ab908f2547285",
+          "gain": 0.8,
+          "speed": 1.09312,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-tail-1.ogg",
+          "sha256": "bf533690d91a0657376903565021bcf6f01fbc2a00e03e3874bf943b15579415",
+          "gain": 0.09,
+          "speed": 1.1,
+          "layerDelay": 0.013,
+          "sourceOffset": 0.02
+        }
+      ],
+      "duration": 0.24,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "4fae848eaf515b6357051281e19457122517f8fa4a5316ec13284d744cf7523a"
+    },
+    "torpedo-cold-0.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-cold: separately timed, layered and filtered physical performance 1/8",
+      "layerChoice": [
+        "../naval-v4/launch-0.ogg",
+        "../naval-v4/impact-1.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "hammer",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-0.ogg",
+          "sha256": "2a825fca78b9ca0687e6db516ca5ca8ac7e9df40924d8a21624ab908f2547285",
+          "gain": 0.94,
+          "speed": 0.84912,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-1.ogg",
+          "sha256": "7713dd0bbae58aacc7da8d42e45a819827cb14b41b367550f481867795a3b806",
+          "gain": 0.11,
+          "speed": 0.86,
+          "layerDelay": 0.026,
+          "sourceOffset": 0.016
+        }
+      ],
+      "duration": 0.34,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "9ca2550c476300ab5da2b68a0ff4100ebf5347fb55a16d7374662543e0dfda4c"
+    },
+    "swarm-ignition-0.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-ignition: separately timed, layered and filtered physical performance 1/8",
+      "layerChoice": [
+        "../naval-v4/launch-0.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-0.ogg",
+          "sha256": "2a825fca78b9ca0687e6db516ca5ca8ac7e9df40924d8a21624ab908f2547285",
+          "gain": 0.68,
+          "speed": 1.16144,
+          "layerDelay": 0,
+          "sourceOffset": 0.22
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.35,
+          "speed": 1,
+          "layerDelay": 0.015,
+          "sourceOffset": 0.5
+        }
+      ],
+      "duration": 0.48,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "cf14efb18a4d2a91490272f757eec04e093da10ea776318cba80fc5533362478"
+    },
+    "missile-ignition-0.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-ignition: separately timed, layered and filtered physical performance 1/8",
+      "layerChoice": [
+        "../naval-v4/launch-0.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-0.ogg",
+          "sha256": "2a825fca78b9ca0687e6db516ca5ca8ac7e9df40924d8a21624ab908f2547285",
+          "gain": 0.9,
+          "speed": 1.0248,
+          "layerDelay": 0,
+          "sourceOffset": 0.22
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.28,
+          "speed": 1,
+          "layerDelay": 0.015,
+          "sourceOffset": 0.5
+        }
+      ],
+      "duration": 0.88,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "e3664272e3827d487a3a9551b28b022aa010d5102443df6a1993090adbf9b436"
+    },
+    "torpedo-ignition-0.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-ignition: separately timed, layered and filtered physical performance 1/8",
+      "layerChoice": [
+        "../naval-v4/launch-0.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-0.ogg",
+          "sha256": "2a825fca78b9ca0687e6db516ca5ca8ac7e9df40924d8a21624ab908f2547285",
+          "gain": 0.98,
+          "speed": 0.8198399999999999,
+          "layerDelay": 0,
+          "sourceOffset": 0.22
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.4,
+          "speed": 1,
+          "layerDelay": 0.015,
+          "sourceOffset": 0.5
+        }
+      ],
+      "duration": 1.4,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "0582dff2f3db8a4d2f849fbe5a2c634971e1c789a41ce556dbccfe65fd026117"
+    },
+    "swarm-burn-0.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-burn: separately timed, layered and filtered physical performance 1/8",
+      "layerChoice": [
+        "../naval-v4/torpedo-burn.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "tank"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/torpedo-burn.ogg",
+          "sha256": "409a71a28c2a714c79f794f11d5f77c3f98eeed19e88626917baf58260880e61",
+          "gain": 0.46,
+          "speed": 1.08,
+          "layerDelay": 0,
+          "sourceOffset": 0.0
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.45,
+          "speed": 1.04,
+          "layerDelay": 0,
+          "sourceOffset": 0.4
+        }
+      ],
+      "duration": 12,
+      "sampleRate": 48000,
+      "loop": true,
+      "sha256": "c3bb1cc5d072f5af11b2f924165f41a11405ab955b35e82894b4749fe35da15e"
+    },
+    "swarm-cold-1.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-cold: separately timed, layered and filtered physical performance 2/8",
+      "layerChoice": [
+        "../naval-v5/pdc-1.ogg",
+        "../naval-v4/launch-0.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "clink2.wav",
+        "clink3.wav",
+        "hammer",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v5/pdc-1.ogg",
+          "sha256": "b0785df8fc8f45a8c7acca7ea8fe09ea6047854e782768925c70cb3758acac74",
+          "gain": 0.57,
+          "speed": 1.14016,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/launch-0.ogg",
+          "sha256": "2a825fca78b9ca0687e6db516ca5ca8ac7e9df40924d8a21624ab908f2547285",
+          "gain": 0.3,
+          "speed": 1.18,
+          "layerDelay": 0.012,
+          "sourceOffset": 0
+        }
+      ],
+      "duration": 0.18,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "f2985e3934002dc6f0db471947f8cea628ce11d57182a0be768de5d7bbaf16aa"
+    },
+    "missile-cold-1.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-cold: separately timed, layered and filtered physical performance 2/8",
+      "layerChoice": [
+        "../naval-v4/launch-1.ogg",
+        "../naval-v4/impact-tail-0.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-1.ogg",
+          "sha256": "28d67e2fc67f2e5c440168bfbbe2dd689dce5240e1f4f618eeaafd3837f68fc0",
+          "gain": 0.8,
+          "speed": 1.14016,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-tail-0.ogg",
+          "sha256": "fbc68998c6e57645267a383e3845f85b3e8ff6492b55d9ee1ecd3c6c334329df",
+          "gain": 0.09,
+          "speed": 1.1,
+          "layerDelay": 0.017,
+          "sourceOffset": 0.02
+        }
+      ],
+      "duration": 0.24,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "7b202da5d4729c861a5eaa3abab47b24d8b5758759ef58dbfbfe37e62e701f65"
+    },
+    "torpedo-cold-1.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-cold: separately timed, layered and filtered physical performance 2/8",
+      "layerChoice": [
+        "../naval-v4/launch-1.ogg",
+        "../naval-v4/impact-0.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "hammer",
+        "tank",
+        "thud2.wav",
+        "thud3.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-1.ogg",
+          "sha256": "28d67e2fc67f2e5c440168bfbbe2dd689dce5240e1f4f618eeaafd3837f68fc0",
+          "gain": 0.94,
+          "speed": 0.88566,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-0.ogg",
+          "sha256": "f02066ca9d6e3083dec569b94fcea82c088464a8dcb8b6e244b20091205491ce",
+          "gain": 0.11,
+          "speed": 0.86,
+          "layerDelay": 0.034,
+          "sourceOffset": 0.016
+        }
+      ],
+      "duration": 0.34,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "c4679e92f3f9e9241cb685602f4af95e05b52cba564f4f17720421ccc7387f74"
+    },
+    "swarm-ignition-1.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-ignition: separately timed, layered and filtered physical performance 2/8",
+      "layerChoice": [
+        "../naval-v4/launch-1.ogg",
+        "../naval-v4/drive-small.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-1.ogg",
+          "sha256": "28d67e2fc67f2e5c440168bfbbe2dd689dce5240e1f4f618eeaafd3837f68fc0",
+          "gain": 0.68,
+          "speed": 1.21142,
+          "layerDelay": 0,
+          "sourceOffset": 0.236
+        },
+        {
+          "file": "../naval-v4/drive-small.ogg",
+          "sha256": "797699f1cfda3a9fcf8520407e33c0203d5caaa7b09cf3756c3f8a17d0c853b1",
+          "gain": 0.35,
+          "speed": 1,
+          "layerDelay": 0.026,
+          "sourceOffset": 1.0699999999999998
+        }
+      ],
+      "duration": 0.48,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "d52fdd71d2c93b4ece65d1bc6ae44a95480ddd0b1abb2f5153872cac954ea6f3"
+    },
+    "missile-ignition-1.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-ignition: separately timed, layered and filtered physical performance 2/8",
+      "layerChoice": [
+        "../naval-v4/launch-1.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-1.ogg",
+          "sha256": "28d67e2fc67f2e5c440168bfbbe2dd689dce5240e1f4f618eeaafd3837f68fc0",
+          "gain": 0.9,
+          "speed": 1.0689,
+          "layerDelay": 0,
+          "sourceOffset": 0.236
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.28,
+          "speed": 1,
+          "layerDelay": 0.026,
+          "sourceOffset": 1.0699999999999998
+        }
+      ],
+      "duration": 0.88,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "a8026b5562fa48af5051b4b6e000adf5eb9a6bd8ac2420191054edcf4c7c0d52"
+    },
+    "torpedo-ignition-1.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-ignition: separately timed, layered and filtered physical performance 2/8",
+      "layerChoice": [
+        "../naval-v4/launch-1.ogg",
+        "../naval-v4/drive-heavy.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-1.ogg",
+          "sha256": "28d67e2fc67f2e5c440168bfbbe2dd689dce5240e1f4f618eeaafd3837f68fc0",
+          "gain": 0.98,
+          "speed": 0.85512,
+          "layerDelay": 0,
+          "sourceOffset": 0.236
+        },
+        {
+          "file": "../naval-v4/drive-heavy.ogg",
+          "sha256": "46b35a7d4aba2ab1437f5403e8423bb61f5a53909aeb94769b55a70a308996b8",
+          "gain": 0.4,
+          "speed": 1,
+          "layerDelay": 0.026,
+          "sourceOffset": 1.0699999999999998
+        }
+      ],
+      "duration": 1.4,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "5fac6eec9484975e5e63065d840db9d51e1766eeebbe881348fd3c76c314d8e1"
+    },
+    "swarm-burn-1.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-burn: separately timed, layered and filtered physical performance 2/8",
+      "layerChoice": [
+        "../naval-v4/torpedo-burn.ogg",
+        "../naval-v4/drive-small.ogg"
+      ],
+      "recordingComponents": [
+        "tank"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/torpedo-burn.ogg",
+          "sha256": "409a71a28c2a714c79f794f11d5f77c3f98eeed19e88626917baf58260880e61",
+          "gain": 0.46,
+          "speed": 1.08,
+          "layerDelay": 0,
+          "sourceOffset": 0.791
+        },
+        {
+          "file": "../naval-v4/drive-small.ogg",
+          "sha256": "797699f1cfda3a9fcf8520407e33c0203d5caaa7b09cf3756c3f8a17d0c853b1",
+          "gain": 0.45,
+          "speed": 1.04,
+          "layerDelay": 0,
+          "sourceOffset": 1.471
+        }
+      ],
+      "duration": 12,
+      "sampleRate": 48000,
+      "loop": true,
+      "sha256": "765a137d8f8f0602c16bced8e9f1a77351d4719980561da619723af0c8bf7115"
+    },
+    "swarm-cold-2.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-cold: separately timed, layered and filtered physical performance 3/8",
+      "layerChoice": [
+        "../naval-v5/pdc-2.ogg",
+        "../naval-v4/launch-3.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "clink2.wav",
+        "clink3.wav",
+        "hammer",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v5/pdc-2.ogg",
+          "sha256": "c5bfe36c04b3a2e9b1184a2332b61552ac7c4fa04f0bea5d9910ca7f3198c404",
+          "gain": 0.57,
+          "speed": 1.10992,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/launch-3.ogg",
+          "sha256": "2662be39b2fd2deec4d3ba0713167e5817bb101dc0ff87edc5db3aacebeac567",
+          "gain": 0.3,
+          "speed": 1.18,
+          "layerDelay": 0.015,
+          "sourceOffset": 0
+        }
+      ],
+      "duration": 0.185,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "ae8ca2f984c4cf30da986bf729b615901cb385210381a7266d7fbc47ac5dae5b"
+    },
+    "missile-cold-2.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-cold: separately timed, layered and filtered physical performance 3/8",
+      "layerChoice": [
+        "../naval-v4/launch-2.ogg",
+        "../naval-v4/impact-tail-3.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-2.ogg",
+          "sha256": "7a646554ce55580ff8883f0c64a6516d720b73eb3c4416a81225f8f85bce7c74",
+          "gain": 0.8,
+          "speed": 1.10992,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-tail-3.ogg",
+          "sha256": "b1b0b7ec64343646f312c51559064220a58fc5d43fbe5705796a879188be43ce",
+          "gain": 0.09,
+          "speed": 1.1,
+          "layerDelay": 0.020999999999999998,
+          "sourceOffset": 0.02
+        }
+      ],
+      "duration": 0.24,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "50891b26edc350a2bd53a799749db3b8ac36579b570b588699e1fce5782a2d89"
+    },
+    "torpedo-cold-2.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-cold: separately timed, layered and filtered physical performance 3/8",
+      "layerChoice": [
+        "../naval-v4/launch-2.ogg",
+        "../naval-v4/impact-3.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "hammer",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-2.ogg",
+          "sha256": "7a646554ce55580ff8883f0c64a6516d720b73eb3c4416a81225f8f85bce7c74",
+          "gain": 0.94,
+          "speed": 0.86217,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-3.ogg",
+          "sha256": "15ece2c5f612126cfe42a799238dbd6c7f99872b063ce17d52b254dbbb6ad197",
+          "gain": 0.11,
+          "speed": 0.86,
+          "layerDelay": 0.041999999999999996,
+          "sourceOffset": 0.016
+        }
+      ],
+      "duration": 0.34,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "a388f876f9101b329e1456e7dbaa9554c2ab2b2a2bde534b190245c66c33a33c"
+    },
+    "swarm-ignition-2.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-ignition: separately timed, layered and filtered physical performance 3/8",
+      "layerChoice": [
+        "../naval-v4/launch-2.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-2.ogg",
+          "sha256": "7a646554ce55580ff8883f0c64a6516d720b73eb3c4416a81225f8f85bce7c74",
+          "gain": 0.68,
+          "speed": 1.17929,
+          "layerDelay": 0,
+          "sourceOffset": 0.252
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.35,
+          "speed": 1,
+          "layerDelay": 0.037,
+          "sourceOffset": 1.64
+        }
+      ],
+      "duration": 0.48,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "9de4ea5ebf2daf7829ac35de81da3acd8b255826ec79f2af01f55b7bd5d34ec8"
+    },
+    "missile-ignition-2.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-ignition: separately timed, layered and filtered physical performance 3/8",
+      "layerChoice": [
+        "../naval-v4/launch-2.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-2.ogg",
+          "sha256": "7a646554ce55580ff8883f0c64a6516d720b73eb3c4416a81225f8f85bce7c74",
+          "gain": 0.9,
+          "speed": 1.04055,
+          "layerDelay": 0,
+          "sourceOffset": 0.252
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.28,
+          "speed": 1,
+          "layerDelay": 0.037,
+          "sourceOffset": 1.64
+        }
+      ],
+      "duration": 0.88,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "deaf2ffc6fd9c29ac7952a66637f1faab3eb2991bc77134c7885abfa65fed0d4"
+    },
+    "torpedo-ignition-2.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-ignition: separately timed, layered and filtered physical performance 3/8",
+      "layerChoice": [
+        "../naval-v4/launch-2.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-2.ogg",
+          "sha256": "7a646554ce55580ff8883f0c64a6516d720b73eb3c4416a81225f8f85bce7c74",
+          "gain": 0.98,
+          "speed": 0.83244,
+          "layerDelay": 0,
+          "sourceOffset": 0.252
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.4,
+          "speed": 1,
+          "layerDelay": 0.037,
+          "sourceOffset": 1.64
+        }
+      ],
+      "duration": 1.4,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "9585970ee5dc0e75d6c36f0591249520a8d85017919df138d1aaf21b9e40ce5e"
+    },
+    "swarm-burn-2.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-burn: separately timed, layered and filtered physical performance 3/8",
+      "layerChoice": [
+        "../naval-v4/torpedo-burn.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "tank"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/torpedo-burn.ogg",
+          "sha256": "409a71a28c2a714c79f794f11d5f77c3f98eeed19e88626917baf58260880e61",
+          "gain": 0.46,
+          "speed": 1.08,
+          "layerDelay": 0,
+          "sourceOffset": 1.582
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.45,
+          "speed": 1.04,
+          "layerDelay": 0,
+          "sourceOffset": 2.542
+        }
+      ],
+      "duration": 12,
+      "sampleRate": 48000,
+      "loop": true,
+      "sha256": "b67a6e0d4138b421919b45821d6a0f1567a8d9c83ab686a15987c0f8b5ca87db"
+    },
+    "swarm-cold-3.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-cold: separately timed, layered and filtered physical performance 4/8",
+      "layerChoice": [
+        "../naval-v5/pdc-3.ogg",
+        "../naval-v4/launch-2.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "clink2.wav",
+        "clink3.wav",
+        "hammer",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v5/pdc-3.ogg",
+          "sha256": "1e3c038bd4d7fd014d941b295ef4e8453a3e0cc02555397b4c0aaa7981f57926",
+          "gain": 0.57,
+          "speed": 1.15024,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/launch-2.ogg",
+          "sha256": "7a646554ce55580ff8883f0c64a6516d720b73eb3c4416a81225f8f85bce7c74",
+          "gain": 0.3,
+          "speed": 1.18,
+          "layerDelay": 0.009,
+          "sourceOffset": 0
+        }
+      ],
+      "duration": 0.175,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "b56c5921f923d0c35c32ffb4434e2b0890cf6f30f927fbd31fd4166868fd149a"
+    },
+    "missile-cold-3.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-cold: separately timed, layered and filtered physical performance 4/8",
+      "layerChoice": [
+        "../naval-v4/launch-3.ogg",
+        "../naval-v4/impact-tail-2.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-3.ogg",
+          "sha256": "2662be39b2fd2deec4d3ba0713167e5817bb101dc0ff87edc5db3aacebeac567",
+          "gain": 0.8,
+          "speed": 1.15024,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-tail-2.ogg",
+          "sha256": "a9aeee41f42518349fa611e6e64bab9172a01fcc6eaa07e1e0c75f35a879e4a4",
+          "gain": 0.09,
+          "speed": 1.1,
+          "layerDelay": 0.013,
+          "sourceOffset": 0.02
+        }
+      ],
+      "duration": 0.24,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "e3a9357581e014f5585cf8383fe45c2a7d4cc5e4403abf9cda3c4a956fef22f9"
+    },
+    "torpedo-cold-3.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-cold: separately timed, layered and filtered physical performance 4/8",
+      "layerChoice": [
+        "../naval-v4/launch-3.ogg",
+        "../naval-v4/impact-2.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "hammer",
+        "tank",
+        "thud2.wav",
+        "thud3.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-3.ogg",
+          "sha256": "2662be39b2fd2deec4d3ba0713167e5817bb101dc0ff87edc5db3aacebeac567",
+          "gain": 0.94,
+          "speed": 0.8934899999999999,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-2.ogg",
+          "sha256": "8e43cc230c4434979e0364b4e9b063a1b1d71aaba99765c3057df30fc3fc0516",
+          "gain": 0.11,
+          "speed": 0.86,
+          "layerDelay": 0.026,
+          "sourceOffset": 0.016
+        }
+      ],
+      "duration": 0.34,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "228ab63265ac897554283a3f590675cfba5e2803778c57732724615dac6a1cd1"
+    },
+    "swarm-ignition-3.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-ignition: separately timed, layered and filtered physical performance 4/8",
+      "layerChoice": [
+        "../naval-v4/launch-3.ogg",
+        "../naval-v4/drive-small.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-3.ogg",
+          "sha256": "2662be39b2fd2deec4d3ba0713167e5817bb101dc0ff87edc5db3aacebeac567",
+          "gain": 0.68,
+          "speed": 1.22213,
+          "layerDelay": 0,
+          "sourceOffset": 0.22
+        },
+        {
+          "file": "../naval-v4/drive-small.ogg",
+          "sha256": "797699f1cfda3a9fcf8520407e33c0203d5caaa7b09cf3756c3f8a17d0c853b1",
+          "gain": 0.35,
+          "speed": 1,
+          "layerDelay": 0.015,
+          "sourceOffset": 2.21
+        }
+      ],
+      "duration": 0.48,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "f5aedf7730c02006f9e86ead3a736fb23e457341b5d0e5ee478588c9522b5901"
+    },
+    "missile-ignition-3.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-ignition: separately timed, layered and filtered physical performance 4/8",
+      "layerChoice": [
+        "../naval-v4/launch-3.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-3.ogg",
+          "sha256": "2662be39b2fd2deec4d3ba0713167e5817bb101dc0ff87edc5db3aacebeac567",
+          "gain": 0.9,
+          "speed": 1.07835,
+          "layerDelay": 0,
+          "sourceOffset": 0.22
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.28,
+          "speed": 1,
+          "layerDelay": 0.015,
+          "sourceOffset": 2.21
+        }
+      ],
+      "duration": 0.88,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "2e31982fe45f0a0d5926e577efa42a43b88d3d103e4ec9b16824cf0eb8baef85"
+    },
+    "torpedo-ignition-3.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-ignition: separately timed, layered and filtered physical performance 4/8",
+      "layerChoice": [
+        "../naval-v4/launch-3.ogg",
+        "../naval-v4/drive-heavy.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-3.ogg",
+          "sha256": "2662be39b2fd2deec4d3ba0713167e5817bb101dc0ff87edc5db3aacebeac567",
+          "gain": 0.98,
+          "speed": 0.8626799999999999,
+          "layerDelay": 0,
+          "sourceOffset": 0.22
+        },
+        {
+          "file": "../naval-v4/drive-heavy.ogg",
+          "sha256": "46b35a7d4aba2ab1437f5403e8423bb61f5a53909aeb94769b55a70a308996b8",
+          "gain": 0.4,
+          "speed": 1,
+          "layerDelay": 0.015,
+          "sourceOffset": 2.21
+        }
+      ],
+      "duration": 1.4,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "cf24e566005acec3e7431d655f4e194214dcdcb69b0441f5bd992da15e602668"
+    },
+    "swarm-burn-3.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-burn: separately timed, layered and filtered physical performance 4/8",
+      "layerChoice": [
+        "../naval-v4/torpedo-burn.ogg",
+        "../naval-v4/drive-small.ogg"
+      ],
+      "recordingComponents": [
+        "tank"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/torpedo-burn.ogg",
+          "sha256": "409a71a28c2a714c79f794f11d5f77c3f98eeed19e88626917baf58260880e61",
+          "gain": 0.46,
+          "speed": 1.08,
+          "layerDelay": 0,
+          "sourceOffset": 2.373
+        },
+        {
+          "file": "../naval-v4/drive-small.ogg",
+          "sha256": "797699f1cfda3a9fcf8520407e33c0203d5caaa7b09cf3756c3f8a17d0c853b1",
+          "gain": 0.45,
+          "speed": 1.04,
+          "layerDelay": 0,
+          "sourceOffset": 3.613
+        }
+      ],
+      "duration": 12,
+      "sampleRate": 48000,
+      "loop": true,
+      "sha256": "6624c98143da225825e0ac30df3bba08771953aa7f4cbd4383cc7a8082fb1e40"
+    },
+    "swarm-cold-4.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-cold: separately timed, layered and filtered physical performance 5/8",
+      "layerChoice": [
+        "../naval-v5/pdc-4.ogg",
+        "../naval-v4/launch-1.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "clink2.wav",
+        "clink3.wav",
+        "hammer",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v5/pdc-4.ogg",
+          "sha256": "6ef1a1ac4bf5e848b2e5ad792bcd96d66c2f7151f144cba5bd41970f72e55a85",
+          "gain": 0.57,
+          "speed": 1.1256,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/launch-1.ogg",
+          "sha256": "28d67e2fc67f2e5c440168bfbbe2dd689dce5240e1f4f618eeaafd3837f68fc0",
+          "gain": 0.3,
+          "speed": 1.18,
+          "layerDelay": 0.012,
+          "sourceOffset": 0
+        }
+      ],
+      "duration": 0.18,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "50a784cc45127539459bc681c08b4b6b811703cc40960cd21e6c1ff27addd936"
+    },
+    "missile-cold-4.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-cold: separately timed, layered and filtered physical performance 5/8",
+      "layerChoice": [
+        "../naval-v4/launch-0.ogg",
+        "../naval-v4/impact-tail-1.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-0.ogg",
+          "sha256": "2a825fca78b9ca0687e6db516ca5ca8ac7e9df40924d8a21624ab908f2547285",
+          "gain": 0.8,
+          "speed": 1.1256,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-tail-1.ogg",
+          "sha256": "bf533690d91a0657376903565021bcf6f01fbc2a00e03e3874bf943b15579415",
+          "gain": 0.09,
+          "speed": 1.1,
+          "layerDelay": 0.017,
+          "sourceOffset": 0.02
+        }
+      ],
+      "duration": 0.24,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "6893bddfffccd1929f00da18d71919b21b917230b071592cd60b5ccc6d6022ad"
+    },
+    "torpedo-cold-4.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-cold: separately timed, layered and filtered physical performance 5/8",
+      "layerChoice": [
+        "../naval-v4/launch-0.ogg",
+        "../naval-v4/impact-1.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "hammer",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-0.ogg",
+          "sha256": "2a825fca78b9ca0687e6db516ca5ca8ac7e9df40924d8a21624ab908f2547285",
+          "gain": 0.94,
+          "speed": 0.8743499999999998,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-1.ogg",
+          "sha256": "7713dd0bbae58aacc7da8d42e45a819827cb14b41b367550f481867795a3b806",
+          "gain": 0.11,
+          "speed": 0.86,
+          "layerDelay": 0.034,
+          "sourceOffset": 0.016
+        }
+      ],
+      "duration": 0.34,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "b4c27643cdaf4ac66b0caaf96ee8e1ae2f7f81c35ea66c878abeaefb5af56120"
+    },
+    "swarm-ignition-4.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-ignition: separately timed, layered and filtered physical performance 5/8",
+      "layerChoice": [
+        "../naval-v4/launch-0.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-0.ogg",
+          "sha256": "2a825fca78b9ca0687e6db516ca5ca8ac7e9df40924d8a21624ab908f2547285",
+          "gain": 0.68,
+          "speed": 1.1959499999999998,
+          "layerDelay": 0,
+          "sourceOffset": 0.236
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.35,
+          "speed": 1,
+          "layerDelay": 0.026,
+          "sourceOffset": 2.78
+        }
+      ],
+      "duration": 0.48,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "916a533787a1f9364a0776e49b88ce92896bf2cd03a089a76d974fc1d6aa762f"
+    },
+    "missile-ignition-4.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-ignition: separately timed, layered and filtered physical performance 5/8",
+      "layerChoice": [
+        "../naval-v4/launch-0.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-0.ogg",
+          "sha256": "2a825fca78b9ca0687e6db516ca5ca8ac7e9df40924d8a21624ab908f2547285",
+          "gain": 0.9,
+          "speed": 1.05525,
+          "layerDelay": 0,
+          "sourceOffset": 0.236
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.28,
+          "speed": 1,
+          "layerDelay": 0.026,
+          "sourceOffset": 2.78
+        }
+      ],
+      "duration": 0.88,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "57cb10a9633364aa0713d15d814dfc11201517235e2535e597390843a609f0fc"
+    },
+    "torpedo-ignition-4.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-ignition: separately timed, layered and filtered physical performance 5/8",
+      "layerChoice": [
+        "../naval-v4/launch-0.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-0.ogg",
+          "sha256": "2a825fca78b9ca0687e6db516ca5ca8ac7e9df40924d8a21624ab908f2547285",
+          "gain": 0.98,
+          "speed": 0.8441999999999998,
+          "layerDelay": 0,
+          "sourceOffset": 0.236
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.4,
+          "speed": 1,
+          "layerDelay": 0.026,
+          "sourceOffset": 2.78
+        }
+      ],
+      "duration": 1.4,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "7d2305cc60b272c2fad02a9d7a7fb6f954113880e194bd1247881cb7a2859508"
+    },
+    "swarm-burn-4.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-burn: separately timed, layered and filtered physical performance 5/8",
+      "layerChoice": [
+        "../naval-v4/torpedo-burn.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "tank"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/torpedo-burn.ogg",
+          "sha256": "409a71a28c2a714c79f794f11d5f77c3f98eeed19e88626917baf58260880e61",
+          "gain": 0.46,
+          "speed": 1.08,
+          "layerDelay": 0,
+          "sourceOffset": 3.164
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.45,
+          "speed": 1.04,
+          "layerDelay": 0,
+          "sourceOffset": 4.684
+        }
+      ],
+      "duration": 12,
+      "sampleRate": 48000,
+      "loop": true,
+      "sha256": "506718281eb494db1c6e58421305eb36295f16ef49c8be330addbe742f065214"
+    },
+    "swarm-cold-5.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-cold: separately timed, layered and filtered physical performance 6/8",
+      "layerChoice": [
+        "../naval-v5/pdc-5.ogg",
+        "../naval-v4/launch-0.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "clink2.wav",
+        "clink3.wav",
+        "hammer",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v5/pdc-5.ogg",
+          "sha256": "5a59d64aacbc31d89874247114eed251663de0e4ae332dbc63a93d58892f4109",
+          "gain": 0.57,
+          "speed": 1.1020800000000002,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/launch-0.ogg",
+          "sha256": "2a825fca78b9ca0687e6db516ca5ca8ac7e9df40924d8a21624ab908f2547285",
+          "gain": 0.3,
+          "speed": 1.18,
+          "layerDelay": 0.015,
+          "sourceOffset": 0
+        }
+      ],
+      "duration": 0.185,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "12fbb625694ec06498dc4dd1e763675dde9fbb5caab705e97b8cb7fe68aa11a3"
+    },
+    "missile-cold-5.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-cold: separately timed, layered and filtered physical performance 6/8",
+      "layerChoice": [
+        "../naval-v4/launch-1.ogg",
+        "../naval-v4/impact-tail-0.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-1.ogg",
+          "sha256": "28d67e2fc67f2e5c440168bfbbe2dd689dce5240e1f4f618eeaafd3837f68fc0",
+          "gain": 0.8,
+          "speed": 1.1020800000000002,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-tail-0.ogg",
+          "sha256": "fbc68998c6e57645267a383e3845f85b3e8ff6492b55d9ee1ecd3c6c334329df",
+          "gain": 0.09,
+          "speed": 1.1,
+          "layerDelay": 0.020999999999999998,
+          "sourceOffset": 0.02
+        }
+      ],
+      "duration": 0.24,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "06ab2951cec0ae1e79663ea415038e9f07626cc1cc3dd84e733c7eee76b1d64b"
+    },
+    "torpedo-cold-5.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-cold: separately timed, layered and filtered physical performance 6/8",
+      "layerChoice": [
+        "../naval-v4/launch-1.ogg",
+        "../naval-v4/impact-0.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "hammer",
+        "tank",
+        "thud2.wav",
+        "thud3.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-1.ogg",
+          "sha256": "28d67e2fc67f2e5c440168bfbbe2dd689dce5240e1f4f618eeaafd3837f68fc0",
+          "gain": 0.94,
+          "speed": 0.85608,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-0.ogg",
+          "sha256": "f02066ca9d6e3083dec569b94fcea82c088464a8dcb8b6e244b20091205491ce",
+          "gain": 0.11,
+          "speed": 0.86,
+          "layerDelay": 0.041999999999999996,
+          "sourceOffset": 0.016
+        }
+      ],
+      "duration": 0.34,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "0098b08f1901a90248166f11f42f2ecb97ea14c7b1f62288c6f619f73916c16e"
+    },
+    "swarm-ignition-5.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-ignition: separately timed, layered and filtered physical performance 6/8",
+      "layerChoice": [
+        "../naval-v4/launch-1.ogg",
+        "../naval-v4/drive-small.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-1.ogg",
+          "sha256": "28d67e2fc67f2e5c440168bfbbe2dd689dce5240e1f4f618eeaafd3837f68fc0",
+          "gain": 0.68,
+          "speed": 1.17096,
+          "layerDelay": 0,
+          "sourceOffset": 0.252
+        },
+        {
+          "file": "../naval-v4/drive-small.ogg",
+          "sha256": "797699f1cfda3a9fcf8520407e33c0203d5caaa7b09cf3756c3f8a17d0c853b1",
+          "gain": 0.35,
+          "speed": 1,
+          "layerDelay": 0.037,
+          "sourceOffset": 3.3499999999999996
+        }
+      ],
+      "duration": 0.48,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "84d2da3396c5f40bd381010733248015ac85a3c6f1f88035a45829f73567704b"
+    },
+    "missile-ignition-5.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-ignition: separately timed, layered and filtered physical performance 6/8",
+      "layerChoice": [
+        "../naval-v4/launch-1.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-1.ogg",
+          "sha256": "28d67e2fc67f2e5c440168bfbbe2dd689dce5240e1f4f618eeaafd3837f68fc0",
+          "gain": 0.9,
+          "speed": 1.0332000000000001,
+          "layerDelay": 0,
+          "sourceOffset": 0.252
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.28,
+          "speed": 1,
+          "layerDelay": 0.037,
+          "sourceOffset": 3.3499999999999996
+        }
+      ],
+      "duration": 0.88,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "5e71d223c6f8af5a66bc2b860002db92f2b538fb14790c953cdee63e8339832a"
+    },
+    "torpedo-ignition-5.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-ignition: separately timed, layered and filtered physical performance 6/8",
+      "layerChoice": [
+        "../naval-v4/launch-1.ogg",
+        "../naval-v4/drive-heavy.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-1.ogg",
+          "sha256": "28d67e2fc67f2e5c440168bfbbe2dd689dce5240e1f4f618eeaafd3837f68fc0",
+          "gain": 0.98,
+          "speed": 0.82656,
+          "layerDelay": 0,
+          "sourceOffset": 0.252
+        },
+        {
+          "file": "../naval-v4/drive-heavy.ogg",
+          "sha256": "46b35a7d4aba2ab1437f5403e8423bb61f5a53909aeb94769b55a70a308996b8",
+          "gain": 0.4,
+          "speed": 1,
+          "layerDelay": 0.037,
+          "sourceOffset": 3.3499999999999996
+        }
+      ],
+      "duration": 1.4,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "e801546d19ba68ca93ded4e0e96775ebe5383236338733715c98eff9568d6b32"
+    },
+    "swarm-burn-5.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-burn: separately timed, layered and filtered physical performance 6/8",
+      "layerChoice": [
+        "../naval-v4/torpedo-burn.ogg",
+        "../naval-v4/drive-small.ogg"
+      ],
+      "recordingComponents": [
+        "tank"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/torpedo-burn.ogg",
+          "sha256": "409a71a28c2a714c79f794f11d5f77c3f98eeed19e88626917baf58260880e61",
+          "gain": 0.46,
+          "speed": 1.08,
+          "layerDelay": 0,
+          "sourceOffset": 3.955
+        },
+        {
+          "file": "../naval-v4/drive-small.ogg",
+          "sha256": "797699f1cfda3a9fcf8520407e33c0203d5caaa7b09cf3756c3f8a17d0c853b1",
+          "gain": 0.45,
+          "speed": 1.04,
+          "layerDelay": 0,
+          "sourceOffset": 5.755
+        }
+      ],
+      "duration": 12,
+      "sampleRate": 48000,
+      "loop": true,
+      "sha256": "b4f25e933de375062c1dad5fbe12fe16d4e8fd1aedc5bdf8c64b1b216f42c0a8"
+    },
+    "swarm-cold-6.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-cold: separately timed, layered and filtered physical performance 7/8",
+      "layerChoice": [
+        "../naval-v5/pdc-0.ogg",
+        "../naval-v4/launch-3.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "clink2.wav",
+        "clink3.wav",
+        "hammer",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v5/pdc-0.ogg",
+          "sha256": "8a229da01ee35a8b4214d9c8241abb33f65921ff645cad56a460f1646e666131",
+          "gain": 0.57,
+          "speed": 1.14464,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/launch-3.ogg",
+          "sha256": "2662be39b2fd2deec4d3ba0713167e5817bb101dc0ff87edc5db3aacebeac567",
+          "gain": 0.3,
+          "speed": 1.18,
+          "layerDelay": 0.009,
+          "sourceOffset": 0
+        }
+      ],
+      "duration": 0.175,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "3be8b2dfaa829520fb4f11498082f676dd7ba48678b10de77cd8be8dc80fae57"
+    },
+    "missile-cold-6.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-cold: separately timed, layered and filtered physical performance 7/8",
+      "layerChoice": [
+        "../naval-v4/launch-2.ogg",
+        "../naval-v4/impact-tail-3.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-2.ogg",
+          "sha256": "7a646554ce55580ff8883f0c64a6516d720b73eb3c4416a81225f8f85bce7c74",
+          "gain": 0.8,
+          "speed": 1.14464,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-tail-3.ogg",
+          "sha256": "b1b0b7ec64343646f312c51559064220a58fc5d43fbe5705796a879188be43ce",
+          "gain": 0.09,
+          "speed": 1.1,
+          "layerDelay": 0.013,
+          "sourceOffset": 0.02
+        }
+      ],
+      "duration": 0.24,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "dd5338682da108afb79b0f520853e3f1b29f3d9a99565ce0262df78f537bca25"
+    },
+    "torpedo-cold-6.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-cold: separately timed, layered and filtered physical performance 7/8",
+      "layerChoice": [
+        "../naval-v4/launch-2.ogg",
+        "../naval-v4/impact-3.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "hammer",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-2.ogg",
+          "sha256": "7a646554ce55580ff8883f0c64a6516d720b73eb3c4416a81225f8f85bce7c74",
+          "gain": 0.94,
+          "speed": 0.88914,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-3.ogg",
+          "sha256": "15ece2c5f612126cfe42a799238dbd6c7f99872b063ce17d52b254dbbb6ad197",
+          "gain": 0.11,
+          "speed": 0.86,
+          "layerDelay": 0.026,
+          "sourceOffset": 0.016
+        }
+      ],
+      "duration": 0.34,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "2d777b6d773f3c1467f142ad5464e26c30aa1d0cb9c922791827febcdf4bff2c"
+    },
+    "swarm-ignition-6.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-ignition: separately timed, layered and filtered physical performance 7/8",
+      "layerChoice": [
+        "../naval-v4/launch-2.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-2.ogg",
+          "sha256": "7a646554ce55580ff8883f0c64a6516d720b73eb3c4416a81225f8f85bce7c74",
+          "gain": 0.68,
+          "speed": 1.21618,
+          "layerDelay": 0,
+          "sourceOffset": 0.22
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.35,
+          "speed": 1,
+          "layerDelay": 0.015,
+          "sourceOffset": 3.92
+        }
+      ],
+      "duration": 0.48,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "c5775fa1a0ad9a5e7a593ceee8ac547b55b17e6064c897fbe2bb3b1a4e38f8ce"
+    },
+    "missile-ignition-6.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-ignition: separately timed, layered and filtered physical performance 7/8",
+      "layerChoice": [
+        "../naval-v4/launch-2.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-2.ogg",
+          "sha256": "7a646554ce55580ff8883f0c64a6516d720b73eb3c4416a81225f8f85bce7c74",
+          "gain": 0.9,
+          "speed": 1.0731000000000002,
+          "layerDelay": 0,
+          "sourceOffset": 0.22
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.28,
+          "speed": 1,
+          "layerDelay": 0.015,
+          "sourceOffset": 3.92
+        }
+      ],
+      "duration": 0.88,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "0dd20bdd544e46b235c7c05e4c111a5cb3f66cb2bf3b808508b785fcd8b36a2d"
+    },
+    "torpedo-ignition-6.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-ignition: separately timed, layered and filtered physical performance 7/8",
+      "layerChoice": [
+        "../naval-v4/launch-2.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-2.ogg",
+          "sha256": "7a646554ce55580ff8883f0c64a6516d720b73eb3c4416a81225f8f85bce7c74",
+          "gain": 0.98,
+          "speed": 0.85848,
+          "layerDelay": 0,
+          "sourceOffset": 0.22
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.4,
+          "speed": 1,
+          "layerDelay": 0.015,
+          "sourceOffset": 3.92
+        }
+      ],
+      "duration": 1.4,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "a0088b34396d9f23d8144178cb8af876a511b592dad3a6f1b27ba01f39cbb4bc"
+    },
+    "swarm-burn-6.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-burn: separately timed, layered and filtered physical performance 7/8",
+      "layerChoice": [
+        "../naval-v4/torpedo-burn.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "tank"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/torpedo-burn.ogg",
+          "sha256": "409a71a28c2a714c79f794f11d5f77c3f98eeed19e88626917baf58260880e61",
+          "gain": 0.46,
+          "speed": 1.08,
+          "layerDelay": 0,
+          "sourceOffset": 4.746
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.45,
+          "speed": 1.04,
+          "layerDelay": 0,
+          "sourceOffset": 6.8260000000000005
+        }
+      ],
+      "duration": 12,
+      "sampleRate": 48000,
+      "loop": true,
+      "sha256": "262f859147b356c20b81d39b2cfc97463d7a2fb046756640f9039b45937e47b3"
+    },
+    "swarm-cold-7.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-cold: separately timed, layered and filtered physical performance 8/8",
+      "layerChoice": [
+        "../naval-v5/pdc-1.ogg",
+        "../naval-v4/launch-2.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "clink2.wav",
+        "clink3.wav",
+        "hammer",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v5/pdc-1.ogg",
+          "sha256": "b0785df8fc8f45a8c7acca7ea8fe09ea6047854e782768925c70cb3758acac74",
+          "gain": 0.57,
+          "speed": 1.11552,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/launch-2.ogg",
+          "sha256": "7a646554ce55580ff8883f0c64a6516d720b73eb3c4416a81225f8f85bce7c74",
+          "gain": 0.3,
+          "speed": 1.18,
+          "layerDelay": 0.012,
+          "sourceOffset": 0
+        }
+      ],
+      "duration": 0.18,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "db1d3afd6412e89e9bdbd34db21fd549f372cb51f8f8af6bf1dd7b73107283ec"
+    },
+    "missile-cold-7.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-cold: separately timed, layered and filtered physical performance 8/8",
+      "layerChoice": [
+        "../naval-v4/launch-3.ogg",
+        "../naval-v4/impact-tail-2.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-3.ogg",
+          "sha256": "2662be39b2fd2deec4d3ba0713167e5817bb101dc0ff87edc5db3aacebeac567",
+          "gain": 0.8,
+          "speed": 1.11552,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-tail-2.ogg",
+          "sha256": "a9aeee41f42518349fa611e6e64bab9172a01fcc6eaa07e1e0c75f35a879e4a4",
+          "gain": 0.09,
+          "speed": 1.1,
+          "layerDelay": 0.017,
+          "sourceOffset": 0.02
+        }
+      ],
+      "duration": 0.24,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "1c76689d03e532f3eb9465c99d86802867a77973a797cc1761a3a5d63fd5a39c"
+    },
+    "torpedo-cold-7.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-cold: separately timed, layered and filtered physical performance 8/8",
+      "layerChoice": [
+        "../naval-v4/launch-3.ogg",
+        "../naval-v4/impact-2.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "creak",
+        "hammer",
+        "tank",
+        "thud2.wav",
+        "thud3.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-3.ogg",
+          "sha256": "2662be39b2fd2deec4d3ba0713167e5817bb101dc0ff87edc5db3aacebeac567",
+          "gain": 0.94,
+          "speed": 0.86652,
+          "layerDelay": 0,
+          "sourceOffset": 0
+        },
+        {
+          "file": "../naval-v4/impact-2.ogg",
+          "sha256": "8e43cc230c4434979e0364b4e9b063a1b1d71aaba99765c3057df30fc3fc0516",
+          "gain": 0.11,
+          "speed": 0.86,
+          "layerDelay": 0.034,
+          "sourceOffset": 0.016
+        }
+      ],
+      "duration": 0.34,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "383ee01e1ff3799a998852374d8aafcad95d5a7d6e371530ddfef6694d91e947"
+    },
+    "swarm-ignition-7.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-ignition: separately timed, layered and filtered physical performance 8/8",
+      "layerChoice": [
+        "../naval-v4/launch-3.ogg",
+        "../naval-v4/drive-small.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-3.ogg",
+          "sha256": "2662be39b2fd2deec4d3ba0713167e5817bb101dc0ff87edc5db3aacebeac567",
+          "gain": 0.68,
+          "speed": 1.1852399999999998,
+          "layerDelay": 0,
+          "sourceOffset": 0.236
+        },
+        {
+          "file": "../naval-v4/drive-small.ogg",
+          "sha256": "797699f1cfda3a9fcf8520407e33c0203d5caaa7b09cf3756c3f8a17d0c853b1",
+          "gain": 0.35,
+          "speed": 1,
+          "layerDelay": 0.026,
+          "sourceOffset": 4.49
+        }
+      ],
+      "duration": 0.48,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "e6b1762adf6add7b6d0f4377e835aaa1997c3d1385899330ea5178a2e9d75527"
+    },
+    "missile-ignition-7.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "missile-ignition: separately timed, layered and filtered physical performance 8/8",
+      "layerChoice": [
+        "../naval-v4/launch-3.ogg",
+        "../naval-v4/drive-medium.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-3.ogg",
+          "sha256": "2662be39b2fd2deec4d3ba0713167e5817bb101dc0ff87edc5db3aacebeac567",
+          "gain": 0.9,
+          "speed": 1.0458,
+          "layerDelay": 0,
+          "sourceOffset": 0.236
+        },
+        {
+          "file": "../naval-v4/drive-medium.ogg",
+          "sha256": "2958e8acde34c2f3102ef114d34ffacc5df4a5faa51af42dd121d39f49294288",
+          "gain": 0.28,
+          "speed": 1,
+          "layerDelay": 0.026,
+          "sourceOffset": 4.49
+        }
+      ],
+      "duration": 0.88,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "33c1b40a124b22d862544b927b572bf1a538774e5be5bc10b0d21beb9a2000b7"
+    },
+    "torpedo-ignition-7.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "torpedo-ignition: separately timed, layered and filtered physical performance 8/8",
+      "layerChoice": [
+        "../naval-v4/launch-3.ogg",
+        "../naval-v4/drive-heavy.ogg"
+      ],
+      "recordingComponents": [
+        "bong1.wav",
+        "tank",
+        "thud2.wav"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/launch-3.ogg",
+          "sha256": "2662be39b2fd2deec4d3ba0713167e5817bb101dc0ff87edc5db3aacebeac567",
+          "gain": 0.98,
+          "speed": 0.8366399999999999,
+          "layerDelay": 0,
+          "sourceOffset": 0.236
+        },
+        {
+          "file": "../naval-v4/drive-heavy.ogg",
+          "sha256": "46b35a7d4aba2ab1437f5403e8423bb61f5a53909aeb94769b55a70a308996b8",
+          "gain": 0.4,
+          "speed": 1,
+          "layerDelay": 0.026,
+          "sourceOffset": 4.49
+        }
+      ],
+      "duration": 1.4,
+      "sampleRate": 48000,
+      "loop": false,
+      "sha256": "f3b59b7e4f2a6ada8062a8f25aaf11c35febd24e0b8489b22706c0f8877ae2ec"
+    },
+    "swarm-burn-7.ogg": {
+      "source": "Committed physical game cues; tools/generate-audio-v7.py",
+      "author": "HARD BURN original processing; recorded authors listed below",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "description": "swarm-burn: separately timed, layered and filtered physical performance 8/8",
+      "layerChoice": [
+        "../naval-v4/torpedo-burn.ogg",
+        "../naval-v4/drive-small.ogg"
+      ],
+      "recordingComponents": [
+        "tank"
+      ],
+      "derivedSources": [
+        {
+          "file": "../naval-v4/torpedo-burn.ogg",
+          "sha256": "409a71a28c2a714c79f794f11d5f77c3f98eeed19e88626917baf58260880e61",
+          "gain": 0.46,
+          "speed": 1.08,
+          "layerDelay": 0,
+          "sourceOffset": 5.537
+        },
+        {
+          "file": "../naval-v4/drive-small.ogg",
+          "sha256": "797699f1cfda3a9fcf8520407e33c0203d5caaa7b09cf3756c3f8a17d0c853b1",
+          "gain": 0.45,
+          "speed": 1.04,
+          "layerDelay": 0,
+          "sourceOffset": 7.897
+        }
+      ],
+      "duration": 12,
+      "sampleRate": 48000,
+      "loop": true,
+      "sha256": "ca6fe60555ade5679675729e1d92d5c0674348f082bd8c3b33295067cd4d8a6d"
+    }
+  }
+}

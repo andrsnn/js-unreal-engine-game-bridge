@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "time": "2026-10-10",
+  "importedManifestSha256": "0b619e01219b2ed968a24b2d5f89654594de78470682c23a596057ba00f916cf",
+  "finalManifestSha256": "4cbc88333f456c613e05aa58f7e6df49137813c210eb08318e9bedc734c2e4c5",
+  "cueDefinitionsUnchanged": true,
+  "assetBytesUnchanged": true,
+  "finalSourceCommit": "74f3a723498954bf27e2700273e92b7e256e45d3",
+  "nativeAssetsRequireReimport": false,
+  "note": "Final source commit follows tested audio unchanged across documentation/capture-tool merge; eventControls/mix are host JSON metadata."
+}

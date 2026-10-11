@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "nativeVerification": "audio-cues-v5-acceptance.json",
+  "importedManifest": "audio-cues-v5-imported-manifest.json",
+  "finalManifestSha256": "3c11244db2ca85f2be046e7c4f0010e23bc37600ae3ad76a7884efa5b94ee6c8",
+  "games": {
+    "karvos": {
+      "metadataChanges": [],
+      "sourceCommit": "e8f9f023a745ab0656e0b05d36217ac3f679bb53",
+      "cueAndSourceHashesUnchanged": true
+    },
+    "unlit": {
+      "metadataChanges": [],
+      "sourceCommit": "847483ceeda36fb881b7acb212dff5010135f333",
+      "cueAndSourceHashesUnchanged": true
+    },
+    "hardburn": {
+      "metadataChanges": [
+        "sourceCommit"
+      ],
+      "sourceCommit": "0f52b557972d3879b14718052de1e737c949c051",
+      "cueAndSourceHashesUnchanged": true
+    }
+  }
+}

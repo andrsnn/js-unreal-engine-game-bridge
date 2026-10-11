@@ -1,0 +1,11 @@
+{
+  "utc": "2026-10-11T02:04:04.864059+00:00",
+  "scope": "One published HTTP entry/hash acceptance against official ff receipt. Existing 321 wave banks unchanged; no repeated bank loop or browser. Guardian kind coverage is recorded separately.",
+  "sourceCommit": "68a93d7fedf7add1d59a4c5be150e0d64c7fa1e4",
+  "url": "http://100.69.252.53:5181/",
+  "entry": "assets/index-BhbDyhSf.js",
+  "sha256": "ddce7cf13b4a6ec778f19d1747990fd76bd0467f03b29765637c58b99f88a51f",
+  "bytes": 2824462,
+  "audioPass": 11,
+  "officialReceipt": "G:/HardBurnScratch/guardian-127/publication.json"
+}

@@ -1,0 +1,1 @@
+import fs from'node:fs/promises';import{foreignBrowserOwners}from'./deadline-slot.mjs';const owners=foreignBrowserOwners();await fs.writeFile('G:/sfx/browser-ownership.json',JSON.stringify({timeUTC:new Date().toISOString(),owners},null,2));console.log(JSON.stringify(owners.map(({ProcessId,ParentProcessId,Name})=>({pid:ProcessId,parent:ParentProcessId,name:Name}))));

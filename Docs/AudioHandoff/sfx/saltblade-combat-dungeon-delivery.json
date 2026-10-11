@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "delivery": "C:/UnlitWorldsCaptures/judge/saltblade-audio-v3.mp4",
+  "bytes": 12188108,
+  "sha256": "154b722c46040ead6d2cb304b060916f4f169b71d6346169e0a4586c9171449b",
+  "capture": "G:/sfx/evidence/saltblade/combat-dungeon-1791674154155/report.json",
+  "originalInputOnly": true,
+  "playbackSpeed": 1,
+  "sourceDuration": 36.03999996185303,
+  "fullDecode": true,
+  "loudnessLUFS": -15.92,
+  "truePeakDBTP": -4.35,
+  "lra": 7.2,
+  "frames": [
+    "G:/sfx/evidence/saltblade/combat-dungeon-1791674154155/descent.png",
+    "G:/sfx/evidence/saltblade/combat-dungeon-1791674154155/first-room.png",
+    "G:/sfx/evidence/saltblade/combat-dungeon-1791674154155/parry.png",
+    "G:/sfx/evidence/saltblade/combat-dungeon-1791674154155/third-room.png"
+  ],
+  "spectrum": "G:/sfx/evidence/saltblade/combat-dungeon-1791674154155/spectrum.png",
+  "framesReviewed": true,
+  "alignment": "CDP screencast epoch and page Date.now epoch, actual wall intervals, no respeed",
+  "trimLeadingSeconds": 1.8,
+  "durationSeconds": 34.23999996185303,
+  "captureScope": "Real native vault entry and first three dungeon rooms: two room clears, parries, ripostes, heavy contacts, crawler voices and room reflections; no boss encounter claimed. Leading camera travel trimmed from original capture; normal speed and synchronized actual post-master audio."
+}

@@ -1,0 +1,40 @@
+{
+  "utc": "2026-10-11T00:42:17.013823+00:00",
+  "scope": "HTTP transformed live source and the four formerly missing delve JSON assets only; native gameplay and audio6 clip pending explicit browser release",
+  "sourceCommit": "aead73776046672288f853fa5df0935abbfc9fe0",
+  "url": "http://100.69.252.53:5203/",
+  "assets": [
+    {
+      "key": "delve-subway",
+      "status": 200,
+      "bytes": 517,
+      "sha256": "8da1f8f577cc2fde77f2d4653ab597718f4163e00fa1da00e96377f8ea8d8ad9"
+    },
+    {
+      "key": "delve-data",
+      "status": 200,
+      "bytes": 520,
+      "sha256": "745ec165ac6c4a5ca536e5c163006e3c594cca3caed8df76971be1b640912a0f"
+    },
+    {
+      "key": "delve-bunker",
+      "status": 200,
+      "bytes": 524,
+      "sha256": "68afe53efa31b1ecbac39d9f63ee555c94b1c4eec48c61cc87eb447ba0db20a8"
+    },
+    {
+      "key": "delve-lore",
+      "status": 200,
+      "bytes": 507,
+      "sha256": "c545d270752c70a3cb844766080af92802a5c693c65e858363ecf0177896f5ef"
+    }
+  ],
+  "audio.ts": {
+    "bytes": 173468,
+    "sha256": "f086145dca8ef9f1a22f7e3b01b9b7260d4b0ac64cf31af00e8f2a09cfae14f1"
+  },
+  "app.ts": {
+    "bytes": 72020,
+    "sha256": "a4d72088e6b1e13d415ec721f14694accace47037781496f610d312bdfc75b1a"
+  }
+}

@@ -1,0 +1,664 @@
+{
+  "updatedUTC": "2026-10-11T02:20:34.674625+00:00",
+  "complete": false,
+  "hardburn": {
+    "audioPass": 9,
+    "audioCommit": "9b9fbe112f044ecf7d829ee2660f7cc05d335412",
+    "merged": true,
+    "mergeReceipt": "G:/sfx/integration/hardburn-new-sound-1791673284007/receipt.json",
+    "focusedEvidence": "G:/sfx/hardburn-audio-v9-evidence.json",
+    "nativeMetadata": "G:/sfx/hardburn-native-v9-registration.json",
+    "newSamples": 0,
+    "newNativeCuePackages": 0,
+    "publishedNativeInputPass": true,
+    "status": "Solar pass9 live and receiver plus actual powered supply accepted. EW secrecy fix merged; pass10 follows committed5939/f1aff gameplay contract.",
+    "publishedRuntimeCommit": "17cbd3dec285c12f59c5210bf4e7eb67fdf81f37",
+    "entry": "/assets/index-DE-A0cyL.js",
+    "entrySHA256": "6ec8f18574f2995f38869a16444acaf68510bb180420b0ee366cf70b594f2e0a",
+    "movie": {
+      "ok": true,
+      "delivery": "C:/UnlitWorldsCaptures/judge/hardburn-audio-v9.mp4",
+      "bytes": 1223852,
+      "sha256": "24ba510ae52e282c766c35e537e414ec968543dde76bec7ec99aa836a08c2dad",
+      "capture": "G:/sfx/evidence/hardburn/solar-audio-1791673754724/report.json",
+      "originalInputOnly": true,
+      "playbackSpeed": 1,
+      "sourceDuration": 30.4469997882843,
+      "fullDecode": true,
+      "loudnessLUFS": -16.08,
+      "truePeakDBTP": -1.36,
+      "lra": 5.4,
+      "frames": [
+        "G:/sfx/evidence/hardburn/solar-audio-1791673754724/ecm.png",
+        "G:/sfx/evidence/hardburn/solar-audio-1791673754724/ping.png",
+        "G:/sfx/evidence/hardburn/solar-audio-1791673754724/cold-order.png",
+        "G:/sfx/evidence/hardburn/solar-audio-1791673754724/quiet-bed.png"
+      ],
+      "spectrum": "G:/sfx/evidence/hardburn/solar-audio-1791673754724/spectrum.png",
+      "framesReviewed": true,
+      "alignment": "CDP screencast metadata epoch and page Date.now epoch, actual wall intervals, no respeed",
+      "captureScope": "Fresh native Quietwake: actual paid ECM burst, active PING, cold navigation order and quiet bed; traffic and distant torpedo burns are not demonstrated by this movie."
+    },
+    "nativeSupplyScope": "Unmodified genuine ff saved checkpoint, native paid dispatch and actual RMB navigation; coast0 then real powered tanker motorActive true/throttle1, trafficLoops1, postmaster peak .05795,321loaded/missing0/errors0. Browser closed.",
+    "nativeSupplyReport": "G:/sfx/evidence/hardburn/solar-traffic-rendezvous-1791674498881/report.json",
+    "sourceAudioPass": 10,
+    "sourceAudioCommit": "c025d94ee7b9a254d3e411e1b869562e95778e1a",
+    "currentPublishedHTTP": {
+      "utc": "2026-10-11T00:11:13.649958+00:00",
+      "url": "http://100.69.252.53:5181/",
+      "entry": "/assets/index-CjXxT0XO.js",
+      "entrySHA256": "d8d500111e4e13f0521595ec0ed8b870735d2348ec2cf1c41d788a0678a4774e",
+      "audioPass": 10,
+      "runtimeSamples": 321,
+      "missingOrChanged": 0,
+      "sampleBytes": 11214966,
+      "sameWaveHashes": true,
+      "evidence": "G:/sfx/hardburn-audio10-http-acceptance.json",
+      "scope": "Read-only usual published HTTP entry/code and sample bytes. Actual new receiver event playback requires owner gameplay diagnostics; not implied by markers."
+    },
+    "publishedCommit": "4f56f3e",
+    "publishedEntry": "/assets/index-CjXxT0XO.js",
+    "publishedEntrySHA256": "d8d500111e4e13f0521595ec0ed8b870735d2348ec2cf1c41d788a0678a4774e",
+    "publishedAudioCodePass": 11,
+    "guardianAudio11": {
+      "sourceCommit": "5681096da8960bf184ac3443da8b9ea0bca6a2b8",
+      "merged": true,
+      "mergeReceipt": "G:/sfx/integration/hardburn-new-sound-1791679553158/receipt.json",
+      "nativeMetadata": "G:/sfx/hardburn-native-v11-registration.json",
+      "focusedEvidence": "G:/sfx/hardburn-audio-v11-evidence.json",
+      "canonicalCues": 52,
+      "aliases": 33,
+      "samplesUnchanged": 321,
+      "outputTrim": 0.69,
+      "sourceWorkComplete": true,
+      "actualAudio11RuntimeDemonstrated": true,
+      "publicationAcceptancePending": false,
+      "movieOwner": "ff",
+      "status": "Audio11 source confirmed in published5181; actual startup321/missing0/errors0. Guardian-specific accent playback not demonstrated. Existing normal gameplay guardian/EW films delivered and audio-only mastered.",
+      "privateRuntime": {
+        "proof": "G:/sfx/hardburn-audio11-private-runtime-acceptance.json",
+        "scope": "Actual ff private paid campaign; public publication pending; no guardian kind playback demonstrated",
+        "entry": "http://100.69.252.53:5192/assets/index-DsSZ31R4.js",
+        "seed": 924825,
+        "time": 1403.6699400001355,
+        "audioPass": 11,
+        "loaded": 321,
+        "missing": 0,
+        "errors": [],
+        "outputTrim": 0.69,
+        "peak": 0.030228814110159874,
+        "peakMax": 0.08823080360889435,
+        "guardianAccents": 0,
+        "guardianKinds": {}
+      },
+      "guardianKindPlaybackDemonstrated": false,
+      "published11": true,
+      "publishedCommit": "68a93d7fedf7add1d59a4c5be150e0d64c7fa1e4",
+      "publishedEntry": "assets/index-BhbDyhSf.js",
+      "publishedEntrySHA256": "ddce7cf13b4a6ec778f19d1747990fd76bd0467f03b29765637c58b99f88a51f",
+      "publishedAcceptance": "G:/sfx/hardburn-audio11-published-acceptance.json"
+    },
+    "boardingAudio12": {
+      "audioPass": 12,
+      "sourceCommit": "4ce89d2b87ad81c5ab7d06aace932b311988d744",
+      "merged": true,
+      "mergeReceipt": "G:/sfx/integration/hardburn-new-sound-1791684467695/receipt.json",
+      "evidence": "G:/sfx/hardburn-audio-v12-evidence.json",
+      "handoff": "G:/sfx/hardburn-unreal-audio-v12.json",
+      "authoritativeEventBridgeCommit": null,
+      "nativeRegistered": false,
+      "published": false,
+      "focusedChecksPassed": true,
+      "status": "Audio12 merged and policy/mixer checks passed. Actual691 producer improved to8 passing/5 failing focused checks; ff owns five precise hook fixes and combined build/runtime. Reviewed bridge/native12 registration/publication pending; no boarding-live-playback claim.",
+      "candidateEventBridgeCommit": "69151765749698413f2492130ca8cae3f3f8c6a5",
+      "producerTestCommit": "2c2210ffbb163ff1c021247fb0c0f457bd59bbf5",
+      "producerTestEvidence": "G:/sfx/hardburn-audio12-producer-6915176.json",
+      "producerChecks": {
+        "passed": 8,
+        "failed": 5
+      },
+      "sourceOwnerFixHandoff": "G:/sfx/boarding-producer-final-review.txt"
+    }
+  },
+  "saltblade": {
+    "currentAudioCommit": "ee7f5633f02d01a6a4fa6a024bbf39b504617bf4",
+    "leadNotes": "G:/saltblade/opus/NOTES.md",
+    "status": "Audio5 actual native wind/flight/giant/death clip delivered and reviewed. Separate real150s storm warning/local intensity/native mute/restore AUDIO PASS. Overall weather harness FAIL solely four new draft delve-art404s, retained honestly; no injected gameplay or new build. Both owned software browsers closed; raw owned media cleaned.",
+    "leadMilestones": [
+      "8741fa5",
+      "a197890"
+    ],
+    "focusedTests": "11 focused tests and TypeScript PASS; actual Combat6shots/1reloadstart/1ready,no drygun or knifegun",
+    "nativeInputPass": true,
+    "movie": {
+      "ok": true,
+      "delivery": "C:/UnlitWorldsCaptures/judge/saltblade-audio-v5.mp4",
+      "bytes": 16123235,
+      "sha256": "e861150c1452075e798683c5e406a5c62a92af21b208d20b6bfe3431d7575e35",
+      "capture": "G:/sfx/evidence/saltblade/desert-weather-1791677597072/report.json",
+      "originalInputOnly": true,
+      "weatherProof": false,
+      "weatherReportOK": false,
+      "playbackSpeed": 1,
+      "sourceDuration": 32.77799987792969,
+      "fullDecode": true,
+      "loudnessLUFS": -15.87,
+      "truePeakDBTP": -3.55,
+      "lra": 20.2,
+      "frames": [
+        "G:/sfx/evidence/saltblade/desert-weather-1791677597072/camp.png",
+        "G:/sfx/evidence/saltblade/desert-weather-1791677597072/boarding.png",
+        "G:/sfx/evidence/saltblade/desert-weather-1791677597072/desert.png",
+        "G:/sfx/evidence/saltblade/desert-weather-1791677597072/landing.png",
+        "G:/sfx/evidence/saltblade/desert-weather-1791677597072/giant.png"
+      ],
+      "spectrum": "G:/sfx/evidence/saltblade/desert-weather-1791677597072/spectrum.png",
+      "framesReviewed": true,
+      "alignment": "CDP screencast epoch and page Date.now epoch, actual wall intervals, no respeed",
+      "spectrumReviewed": true,
+      "durationSeconds": 32.778,
+      "sourceAudioCommit": "ee7f5633f02d01a6a4fa6a024bbf39b504617bf4",
+      "audioNormalizedSHA256": "3e9ff8f9e3698ae746ef8cb2753e2ab668d3b8ef8eb816ad51ad5867b356f8ce",
+      "nativeWeatherProof": "G:/sfx/evidence/saltblade/weather-native-1791677706613/report.json",
+      "nativeWeatherAudioAcceptance": true,
+      "nativeWeatherOverallHarnessOK": false,
+      "rawLoudnessLUFS": -14.86,
+      "rawTruePeakDBTP": -6.49,
+      "captureScope": "Fresh native camp boarding, actual flight/desert landing, real giant tracking/tremor/breach, defeat and normal respawn. No scripted drive/state/time/health changes. This 32.778s movie contains no moving storm; a separate ordinary-speed quiet-camp campaign proves real storm warning/local intensity/native mute/restore, with four unrelated draft delve-art404s honestly retained.",
+      "frameLabels": {
+        "camp": "Fresh native camp",
+        "boarding": "Native flight",
+        "desert": "Actual giant warning on sand",
+        "giant": "Real breach/defeat",
+        "landing": "Camp after normal death/respawn"
+      },
+      "cleanup": {
+        "bytesReclaimed": 330780065,
+        "removedFrameCount": 870,
+        "removedAudioWebm": true,
+        "removedOwnFailedSizeEncode": true,
+        "preserved": "Final MP4, reviewed PNGs/spectrum, reports/logs/hashes/ffconcat evidence, all scripts/source/committed assets and all foreign work"
+      }
+    },
+    "leadFixesSourceConfirmed": {
+      "soundToggle": "bottom92px/right16px avoids inventory",
+      "camera": "wasRoom transition snaps camera to actual player/room position"
+    },
+    "audioPass": 5,
+    "worldAudioPass": 4,
+    "progressionMergeReceipt": "G:/sfx/integration/saltblade-new-sound-1791674833945/receipt.json",
+    "nativeProgressionReport": "G:/sfx/evidence/saltblade/progression-1791674854070/report.json",
+    "nativeProgressionScope": "Original inputs, real finite harvested reeds3 to rope2fibre, actual loom craft-loom cue, real well drink, gear retains real ambience and actual inventory/toggle no overlap; no fresh pistol unlock or boss capture claimed",
+    "duneOrderReadInFull": true,
+    "expectedDuneMovie": "C:/UnlitWorldsCaptures/judge/saltblade-openworld-3.mp4",
+    "duneMergeReceipt": "G:/sfx/integration/saltblade-new-sound-1791675545490/receipt.json",
+    "duneFocusedTests": "15 focused audio tests plus TypeScript pass, including actual committed WorldSim.step weather spawn/motion/single direct warning unit producer",
+    "rollingWeatherMergeReceipt": "G:/sfx/integration/saltblade-new-sound-1791675825905/receipt.json",
+    "rollingWeatherMilestone": "e9e256783c7a85d0e26ea6d8da2d505984d7102f",
+    "previousMovies": [
+      {
+        "ok": true,
+        "delivery": "C:/UnlitWorldsCaptures/judge/saltblade-audio-v3.mp4",
+        "bytes": 12188108,
+        "sha256": "154b722c46040ead6d2cb304b060916f4f169b71d6346169e0a4586c9171449b",
+        "capture": "G:/sfx/evidence/saltblade/combat-dungeon-1791674154155/report.json",
+        "originalInputOnly": true,
+        "playbackSpeed": 1,
+        "sourceDuration": 36.03999996185303,
+        "fullDecode": true,
+        "loudnessLUFS": -15.92,
+        "truePeakDBTP": -4.35,
+        "lra": 7.2,
+        "frames": [
+          "G:/sfx/evidence/saltblade/combat-dungeon-1791674154155/descent.png",
+          "G:/sfx/evidence/saltblade/combat-dungeon-1791674154155/first-room.png",
+          "G:/sfx/evidence/saltblade/combat-dungeon-1791674154155/parry.png",
+          "G:/sfx/evidence/saltblade/combat-dungeon-1791674154155/third-room.png"
+        ],
+        "spectrum": "G:/sfx/evidence/saltblade/combat-dungeon-1791674154155/spectrum.png",
+        "framesReviewed": true,
+        "alignment": "CDP screencast epoch and page Date.now epoch, actual wall intervals, no respeed",
+        "trimLeadingSeconds": 1.8,
+        "durationSeconds": 34.23999996185303,
+        "captureScope": "Real native vault entry and first three dungeon rooms: two room clears, parries, ripostes, heavy contacts, crawler voices and room reflections; no boss encounter claimed. Leading camera travel trimmed from original capture; normal speed and synchronized actual post-master audio."
+      }
+    ],
+    "nativeWeatherAudioAcceptance": {
+      "ok": true,
+      "overallHarnessOK": false,
+      "sourceCommit": "ee7f5633f02d01a6a4fa6a024bbf39b504617bf4",
+      "audioNormalizedSHA256": "3e9ff8f9e3698ae746ef8cb2753e2ab668d3b8ef8eb816ad51ad5867b356f8ce",
+      "report": "G:/sfx/evidence/saltblade/weather-native-1791677706613/report.json",
+      "warningTime": 150.2500000000117,
+      "warningCount": 1,
+      "stormTime": 192.58333333337873,
+      "stormLevel": 0.26984661526708276,
+      "nativeMutePeak": 0,
+      "nativeMuteRMS": 0,
+      "nativeRestorePeak": 0.07086282968521118,
+      "nativeRestoreRMS": 0.02851443089591425,
+      "health": 10,
+      "pageErrors": [],
+      "unrelatedMissingArt": [
+        {
+          "url": "http://100.69.252.53:5203/sprites/world/delve-subway.json",
+          "status": 404
+        },
+        {
+          "url": "http://100.69.252.53:5203/sprites/world/delve-data.json",
+          "status": 404
+        },
+        {
+          "url": "http://100.69.252.53:5203/sprites/world/delve-bunker.json",
+          "status": 404
+        },
+        {
+          "url": "http://100.69.252.53:5203/sprites/world/delve-lore.json",
+          "status": 404
+        }
+      ],
+      "originalInputOnly": true,
+      "stateInjection": false,
+      "hmrDisabled": true,
+      "browserClosed": true,
+      "framesReviewed": true
+    },
+    "nativeWeatherOverallHarnessOK": false,
+    "nativeWeatherReport": "G:/sfx/evidence/saltblade/weather-native-1791677706613/report.json",
+    "ownedBrowserRunning": false,
+    "cleanup": {
+      "bytesReclaimed": 330780065,
+      "removedFrameCount": 870,
+      "removedAudioWebm": true,
+      "removedOwnFailedSizeEncode": true,
+      "preserved": "Final MP4, reviewed PNGs/spectrum, reports/logs/hashes/ffconcat evidence, all scripts/source/committed assets and all foreign work"
+    },
+    "updatedUTC": "2026-10-11T00:19:40.031319+00:00",
+    "shieldDelveAudio6": {
+      "ok": true,
+      "delivery": "C:/UnlitWorldsCaptures/judge/saltblade-audio-v6.mp4",
+      "capture": "G:/sfx/saltblade-shield-delve-film.json",
+      "originalInputOnly": true,
+      "gameplayStateInjection": false,
+      "playbackSpeed": 1,
+      "sourceDuration": 46.62100005149841,
+      "observed": {
+        "shield-deflect": 1,
+        "shield-pierce": 1,
+        "shield-overload": 0,
+        "shield-ready": 0,
+        "shield-reaction": 0,
+        "slow-blade": 6,
+        "bash": 0,
+        "parry": 3,
+        "hit": 3,
+        "heavy-hit": 7,
+        "kill": 3,
+        "descend": 1,
+        "delve-read": 1,
+        "delve-loot": 1,
+        "trap-plate": 2,
+        "trap-laser": 0,
+        "delve-lever": 0,
+        "delve-power": 0
+      },
+      "shieldObserved": [
+        "shield-deflect",
+        "shield-pierce"
+      ],
+      "shieldNotObserved": [
+        "shield-overload",
+        "shield-ready",
+        "shield-reaction"
+      ],
+      "nativeAcceptance": {
+        "audioPass": 6,
+        "maxLoops": 7,
+        "maxVoice": 24,
+        "buffers": 74,
+        "context": "running",
+        "mutePeak": 0,
+        "restorePeak": 0.013716858811676502,
+        "observedDeflect": true,
+        "observedPierce": true,
+        "authoredDescent": true,
+        "actualContact": true,
+        "gameplayElapsed": 82.13333333332996,
+        "actualKills": 5
+      },
+      "framesReviewed": true,
+      "spectrumReviewed": true,
+      "alignment": "CDP frame epochs and page Date.now epochs; each segment at actual wall speed. Encode separately then join with concat demuxer.",
+      "segments": [
+        {
+          "label": "01-shield-patrol",
+          "source": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/01-shield-patrol",
+          "seconds": 18.08400011062622,
+          "intermediate": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/segment-0.mkv",
+          "played": {
+            "shield-deflect": 1,
+            "shield-pierce": 1,
+            "shield-overload": 0,
+            "shield-ready": 0,
+            "shield-reaction": 0,
+            "slow-blade": 2,
+            "bash": 0,
+            "parry": 0,
+            "hit": 3,
+            "heavy-hit": 2,
+            "kill": 1,
+            "descend": 0,
+            "delve-read": 0,
+            "delve-loot": 0,
+            "trap-plate": 0,
+            "trap-laser": 0,
+            "delve-lever": 0,
+            "delve-power": 0
+          }
+        },
+        {
+          "label": "02-authored-delve",
+          "source": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/02-authored-delve",
+          "seconds": 28.536999940872192,
+          "intermediate": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/segment-1.mkv",
+          "played": {
+            "shield-deflect": 0,
+            "shield-pierce": 0,
+            "shield-overload": 0,
+            "shield-ready": 0,
+            "shield-reaction": 0,
+            "slow-blade": 4,
+            "bash": 0,
+            "parry": 3,
+            "hit": 0,
+            "heavy-hit": 5,
+            "kill": 2,
+            "descend": 1,
+            "delve-read": 1,
+            "delve-loot": 1,
+            "trap-plate": 2,
+            "trap-laser": 0,
+            "delve-lever": 0,
+            "delve-power": 0
+          }
+        }
+      ],
+      "errors": [],
+      "inputLUFS": -21.01,
+      "inputDBTP": -6.02,
+      "loudnessLUFS": -16.27,
+      "truePeakDBTP": -1.7,
+      "lra": 21,
+      "fullDecode": true,
+      "media": {
+        "programs": [],
+        "streams": [
+          {
+            "codec_name": "h264",
+            "codec_type": "video",
+            "width": 1280,
+            "height": 720
+          },
+          {
+            "codec_name": "aac",
+            "codec_type": "audio"
+          }
+        ],
+        "format": {
+          "duration": "46.633000"
+        }
+      },
+      "duration": 46.633,
+      "bytes": 15368489,
+      "frames": [
+        {
+          "file": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/01-shield-patrol-20.png",
+          "time": 3.6168000221252443
+        },
+        {
+          "file": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/01-shield-patrol-65.png",
+          "time": 11.754600071907044
+        },
+        {
+          "file": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/01-shield-patrol-90.png",
+          "time": 16.2756000995636
+        },
+        {
+          "file": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/02-authored-delve-20.png",
+          "time": 23.791400098800658
+        },
+        {
+          "file": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/02-authored-delve-65.png",
+          "time": 36.63305007219314
+        },
+        {
+          "file": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/02-authored-delve-90.png",
+          "time": 43.76730005741119
+        }
+      ],
+      "spectrum": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/spectrum.png",
+      "sha256": "f448a8fbd6d1396f06853c2faba77904bc00121a00137fcfe6ddbb358af23ba0",
+      "reviewedUTC": "2026-10-11T02:06:58.403494+00:00",
+      "sourceCommit": "aead73776046672288f853fa5df0935abbfc9fe0",
+      "browserReleaseAuthorization": "2026-10-10T18:36:03.647308-07:00",
+      "browserClosed": true,
+      "nativeReport": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/report.json",
+      "coverage": "Actual fresh patrol: deflect1/pierce1/slow-blade2/contact/kill1; real Smugglers Cut: descent1/slow-blade4/parry3/kill2/loot1/read1/plate2. Quiet warren bed and finite room echoes. No overload, ready, reaction, laser or lever/power playback demonstrated.",
+      "reviewNotes": "Six extracted frames and full spectrum viewed; actual scene geometry/combat/UI visible, no invalid/blank frame. Full H264/AAC decode passed. Normal wall-rate actual postmaster soundtrack, measured two-pass film loudness mastering only; runtime .80 unchanged.",
+      "cleanup": {
+        "freedBytes": 572356921,
+        "removedOwnedRawOnly": [
+          {
+            "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684184470/01-shield-patrol/frames",
+            "bytes": 112615025
+          },
+          {
+            "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684184470/01-shield-patrol/audio.webm",
+            "bytes": 437805
+          },
+          {
+            "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/01-shield-patrol/frames",
+            "bytes": 123375252
+          },
+          {
+            "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/02-authored-delve/frames",
+            "bytes": 272769204
+          },
+          {
+            "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/01-shield-patrol/audio.webm",
+            "bytes": 437805
+          },
+          {
+            "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/02-authored-delve/audio.webm",
+            "bytes": 690801
+          },
+          {
+            "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/segment-0.mkv",
+            "bytes": 11680190
+          },
+          {
+            "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/segment-1.mkv",
+            "bytes": 11651313
+          },
+          {
+            "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/joined-native.mkv",
+            "bytes": 23331037
+          },
+          {
+            "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/delivery-pending.mp4",
+            "bytes": 15368489
+          }
+        ],
+        "retained": "Final v6/v5 films, seven reviewed images, native and failure reports, logs, scripts and all source/committed assets"
+      }
+    }
+  },
+  "ownedBrowserRunning": false,
+  "ew": {
+    "orderReadInFull": true,
+    "status": "Pass10 publication/source/sample checks passed. Existing ff46s working edit fully decodes with actualAAC audio, -30.9LUFS/-5.3TP; final normalized judge movie and specific receiver audio diagnostics pending. Early passive-discovery audio was9; no10newcue playback claim.",
+    "secrecyFixMerged": "e9ca68b234375d64e1d6951c6ca61e8fb5e8eb13",
+    "secrecyFixEvidence": "G:/sfx/hardburn-ew-audio-secrecy-evidence.json",
+    "coordination": "G:/JsGameBridge/NOTES.md",
+    "standaloneBuilds": 0,
+    "reviewReadyAudioCommit": "c025d94ee7b9a254d3e411e1b869562e95778e1a",
+    "focusedTests": "Actual mixer/receiver policy passed",
+    "gameplayMilestone": "5939c4ec0f7758889e63c5ad52d924d11f61cecc",
+    "visualMilestone": "f1afff7fceb3cd40935369a1a8b873b56058ebfc",
+    "audioMerged": true,
+    "mergeReceipt": "G:/sfx/integration/hardburn-new-sound-1791675151773/receipt.json",
+    "focusedEvidence": "G:/sfx/hardburn-audio-v10-evidence.json",
+    "nativeMetadata": "G:/sfx/hardburn-native-v10-registration.json",
+    "canonicalCueCount": 52,
+    "aliasCount": 33,
+    "waveHashesPreserved": true,
+    "actualGameplayFilmOwner": "ff",
+    "expectedMovie": "C:/UnlitWorldsCaptures/judge/hardburn-ew.mp4",
+    "producerFixCommit": "86e548a",
+    "producerFindingResolved": true,
+    "sourceWorkComplete": true,
+    "sourceBankAcceptance": "G:/sfx/hardburn-audio10-source-bank-acceptance.json",
+    "sourceBankAcceptanceScope": "Local merged primary audio sources match isolated audio10; all321 shipped samples byte-identical (11214966 bytes). Final published/runtime acceptance pending.",
+    "lastPublicationCheck": {
+      "utc": "2026-10-11T00:00:41.968721+00:00",
+      "url": "http://100.69.252.53:5181/",
+      "entry": "/assets/index-DE-A0cyL.js",
+      "audioPass": 9,
+      "scope": "HTTP entry only; no browser/gameplay opened"
+    },
+    "actualCandidateProgressScope": "ff real campaign924825 reports paid relic recovery439.0 and physical observed fleet decoy diversion745.024; audio stats not yet supplied, so these events do not independently prove new pass10 cues audible.",
+    "publishedStaticAcceptance": {
+      "utc": "2026-10-11T00:11:13.649958+00:00",
+      "url": "http://100.69.252.53:5181/",
+      "entry": "/assets/index-CjXxT0XO.js",
+      "entrySHA256": "d8d500111e4e13f0521595ec0ed8b870735d2348ec2cf1c41d788a0678a4774e",
+      "audioPass": 10,
+      "runtimeSamples": 321,
+      "missingOrChanged": 0,
+      "sampleBytes": 11214966,
+      "sameWaveHashes": true,
+      "evidence": "G:/sfx/hardburn-audio10-http-acceptance.json",
+      "scope": "Read-only usual published HTTP entry/code and sample bytes. Actual new receiver event playback requires owner gameplay diagnostics; not implied by markers."
+    },
+    "published": true,
+    "publicationReceipt": "G:/HardBurnScratch/ew-122/publication.json",
+    "publishedSourceCommit": "4f56f3e",
+    "publishedEntry": "/assets/index-CjXxT0XO.js",
+    "publishedEntrySHA256": "d8d500111e4e13f0521595ec0ed8b870735d2348ec2cf1c41d788a0678a4774e",
+    "publicationAcceptedScope": "Official ff publication receipt matches usual5181 JS and all321 retained sample hashes. Actual newreceiver cue playback scope awaits ff diagnostics/movie.",
+    "finalNewGameReport": "G:/HardBurnScratch/ew-122/fresh-newgame.json",
+    "workingMovieAudioAudit": {
+      "scope": "Existing ff working movie CPU validation only. No new export/capture; final judge delivery and newreceiver runtime statistics pending. Early passive segment predates audio10.",
+      "ownerManifest": "G:/HardBurnScratch/ew-122/ew-film.json",
+      "movie": "G:/HardBurnScratch/ew-122/hardburn-ew.mp4",
+      "bytes": 3949589,
+      "sha256": "8e7214ca5e181b0b3f4cbf66de444366025109fbccf8f0cc7f1a55cb5a9a53b1",
+      "durationSeconds": 46.034333,
+      "audioCodec": "aac",
+      "sampleRate": 48000,
+      "channels": 2,
+      "fullDecode": true,
+      "loudnessLUFS": -30.9,
+      "truePeakDBTP": -5.3,
+      "finalLoudnessTargetMet": false,
+      "playbackSpeed": 1,
+      "eventAudioStats": null,
+      "cuts": [
+        {
+          "start": 202.5,
+          "duration": 7,
+          "name": "Genuine passive reports during quiet watch",
+          "file": "G:/HardBurnScratch/ew-122/ew-edit/part-0.mp4",
+          "actualAudio": true
+        },
+        {
+          "start": 275,
+          "duration": 5,
+          "name": "Board with no earned additions",
+          "file": "G:/HardBurnScratch/ew-122/ew-edit/part-1.mp4",
+          "actualAudio": true
+        },
+        {
+          "start": 1182.4,
+          "duration": 8,
+          "name": "Actual recovered lattice node and paid funding",
+          "file": "G:/HardBurnScratch/ew-122/ew-edit/part-2.mp4",
+          "actualAudio": true
+        },
+        {
+          "start": 1535.6,
+          "duration": 8,
+          "name": "Actual guardian torpedo exchange",
+          "file": "G:/HardBurnScratch/ew-122/ew-edit/part-3.mp4",
+          "actualAudio": true
+        },
+        {
+          "start": 1695.7,
+          "duration": 10,
+          "name": "Paid decoy draws accepted guardian target",
+          "file": "G:/HardBurnScratch/ew-122/ew-edit/part-4.mp4",
+          "actualAudio": true
+        },
+        {
+          "start": 1858.1,
+          "duration": 8,
+          "name": "Surviving escort cold torpedo salvo",
+          "file": "G:/HardBurnScratch/ew-122/ew-edit/part-5.mp4",
+          "actualAudio": true
+        }
+      ],
+      "ownerMeaning": "Real normal-speed campaign cuts. No accelerated footage or state injection. Some shots are silent because audio was exported before reload.",
+      "evidence": "G:/sfx/hardburn-ew-audio-acceptance/acceptance.json"
+    },
+    "actualOwnerProof": "G:/sfx/hardburn-audio10-actual-owner-proof.json",
+    "actualCandidateAudioProof": "G:/sfx/hardburn-audio10-guardian126-runtime-proof.json",
+    "actualCandidateAudioScope": "Actual ordinary-speed paid campaign resumed; audio10 discovery/recovery callbacks counted. EW diversion count remains zero here. This candidate audio snapshot does not independently show published guardian11 or its final film.",
+    "actualDiscoveryRecoveryCueCountsAccepted": true,
+    "actualDiversionCuePlaybackAccepted": false
+  },
+  "cleanup": {
+    "utc": "2026-10-10T23:20:07.539902+00:00",
+    "freedBytes": 603225842,
+    "removedOwnedRawOnly": [
+      {
+        "path": "/mnt/g/sfx/evidence/hardburn/solar-audio-1791673754724/frames",
+        "bytes": 183589738
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/hardburn/solar-audio-1791673754724/audio.webm",
+        "bytes": 737329
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/hardburn/solar-audio-1791673611473/frames",
+        "bytes": 1496812
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/combat-dungeon-1791674154155/frames",
+        "bytes": 416529420
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/combat-dungeon-1791674154155/audio.webm",
+        "bytes": 872543
+      }
+    ],
+    "retained": "All movies, reports, final representative images/spectra, logs, source and committed assets"
+  },
+  "guardian": {
+    "audioPass": 11,
+    "sourceCommit": "5681096da8960bf184ac3443da8b9ea0bca6a2b8",
+    "merged": true,
+    "receipt": "G:/sfx/integration/hardburn-new-sound-1791679553158/receipt.json",
+    "sourceEvidence": "G:/sfx/hardburn-audio-v11-evidence.json",
+    "nativeMetadata": "G:/sfx/hardburn-native-v11-registration.json",
+    "cuePackagesUnchanged": true,
+    "published11": true,
+    "actualGameplayFilmOwner": "ff",
+    "actual11RuntimeAccepted": false,
+    "publishedSourceCommit": "68a93d7fedf7add1d59a4c5be150e0d64c7fa1e4",
+    "publishedEntry": "assets/index-BhbDyhSf.js",
+    "publishedEntrySHA256": "ddce7cf13b4a6ec778f19d1747990fd76bd0467f03b29765637c58b99f88a51f",
+    "publishedAcceptance": "G:/sfx/hardburn-audio11-published-acceptance.json",
+    "actualGuardianKindPlaybackDemonstrated": false,
+    "ownerFilmReceipt": "G:/HardBurnScratch/guardian-127/loudness-delivery.json"
+  }
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "game": "hardburn",
+    "target": "G:/JsGameBridge/JavaScript/hardburn-assets.json",
+    "keys": 85,
+    "baseKeys": 286,
+    "sha256": "46a2a20c28b05d0f54d0d798690d1903176871f6b1c61d34b1f36ba4c33fa668",
+    "unchanged": true
+  },
+  {
+    "game": "unlit",
+    "target": "G:/JsGameBridge/JavaScript/unlit-assets.json",
+    "keys": 85,
+    "baseKeys": 85,
+    "sha256": "a76b4112b45242695aa943b6f14e426b1d0afc500dfdd24b58ea7a69032117db",
+    "unchanged": true
+  }
+]

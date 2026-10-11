@@ -1,0 +1,1 @@
+for (const n of ['sand-stalker','korath-charger','resin-spitter','siege-burrower','broodwing','zhal-stagjaw','zhal-queen58']) {const r=await fetch('http://127.0.0.1:5191/assets/pixal-creatures/rigs/'+n+'.json');const s=await r.text(); console.log(n,r.status,r.headers.get('content-type'),s.length,s.slice(0,45));}

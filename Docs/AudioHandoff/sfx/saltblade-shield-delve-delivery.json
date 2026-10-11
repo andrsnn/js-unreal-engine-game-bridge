@@ -1,0 +1,218 @@
+{
+  "ok": true,
+  "delivery": "C:/UnlitWorldsCaptures/judge/saltblade-audio-v6.mp4",
+  "capture": "G:/sfx/saltblade-shield-delve-film.json",
+  "originalInputOnly": true,
+  "gameplayStateInjection": false,
+  "playbackSpeed": 1,
+  "sourceDuration": 46.62100005149841,
+  "observed": {
+    "shield-deflect": 1,
+    "shield-pierce": 1,
+    "shield-overload": 0,
+    "shield-ready": 0,
+    "shield-reaction": 0,
+    "slow-blade": 6,
+    "bash": 0,
+    "parry": 3,
+    "hit": 3,
+    "heavy-hit": 7,
+    "kill": 3,
+    "descend": 1,
+    "delve-read": 1,
+    "delve-loot": 1,
+    "trap-plate": 2,
+    "trap-laser": 0,
+    "delve-lever": 0,
+    "delve-power": 0
+  },
+  "shieldObserved": [
+    "shield-deflect",
+    "shield-pierce"
+  ],
+  "shieldNotObserved": [
+    "shield-overload",
+    "shield-ready",
+    "shield-reaction"
+  ],
+  "nativeAcceptance": {
+    "audioPass": 6,
+    "maxLoops": 7,
+    "maxVoice": 24,
+    "buffers": 74,
+    "context": "running",
+    "mutePeak": 0,
+    "restorePeak": 0.013716858811676502,
+    "observedDeflect": true,
+    "observedPierce": true,
+    "authoredDescent": true,
+    "actualContact": true,
+    "gameplayElapsed": 82.13333333332996,
+    "actualKills": 5
+  },
+  "framesReviewed": true,
+  "spectrumReviewed": true,
+  "alignment": "CDP frame epochs and page Date.now epochs; each segment at actual wall speed. Encode separately then join with concat demuxer.",
+  "segments": [
+    {
+      "label": "01-shield-patrol",
+      "source": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/01-shield-patrol",
+      "seconds": 18.08400011062622,
+      "intermediate": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/segment-0.mkv",
+      "played": {
+        "shield-deflect": 1,
+        "shield-pierce": 1,
+        "shield-overload": 0,
+        "shield-ready": 0,
+        "shield-reaction": 0,
+        "slow-blade": 2,
+        "bash": 0,
+        "parry": 0,
+        "hit": 3,
+        "heavy-hit": 2,
+        "kill": 1,
+        "descend": 0,
+        "delve-read": 0,
+        "delve-loot": 0,
+        "trap-plate": 0,
+        "trap-laser": 0,
+        "delve-lever": 0,
+        "delve-power": 0
+      }
+    },
+    {
+      "label": "02-authored-delve",
+      "source": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/02-authored-delve",
+      "seconds": 28.536999940872192,
+      "intermediate": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/segment-1.mkv",
+      "played": {
+        "shield-deflect": 0,
+        "shield-pierce": 0,
+        "shield-overload": 0,
+        "shield-ready": 0,
+        "shield-reaction": 0,
+        "slow-blade": 4,
+        "bash": 0,
+        "parry": 3,
+        "hit": 0,
+        "heavy-hit": 5,
+        "kill": 2,
+        "descend": 1,
+        "delve-read": 1,
+        "delve-loot": 1,
+        "trap-plate": 2,
+        "trap-laser": 0,
+        "delve-lever": 0,
+        "delve-power": 0
+      }
+    }
+  ],
+  "errors": [],
+  "inputLUFS": -21.01,
+  "inputDBTP": -6.02,
+  "loudnessLUFS": -16.27,
+  "truePeakDBTP": -1.7,
+  "lra": 21,
+  "fullDecode": true,
+  "media": {
+    "programs": [],
+    "streams": [
+      {
+        "codec_name": "h264",
+        "codec_type": "video",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "codec_name": "aac",
+        "codec_type": "audio"
+      }
+    ],
+    "format": {
+      "duration": "46.633000"
+    }
+  },
+  "duration": 46.633,
+  "bytes": 15368489,
+  "frames": [
+    {
+      "file": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/01-shield-patrol-20.png",
+      "time": 3.6168000221252443
+    },
+    {
+      "file": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/01-shield-patrol-65.png",
+      "time": 11.754600071907044
+    },
+    {
+      "file": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/01-shield-patrol-90.png",
+      "time": 16.2756000995636
+    },
+    {
+      "file": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/02-authored-delve-20.png",
+      "time": 23.791400098800658
+    },
+    {
+      "file": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/02-authored-delve-65.png",
+      "time": 36.63305007219314
+    },
+    {
+      "file": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/02-authored-delve-90.png",
+      "time": 43.76730005741119
+    }
+  ],
+  "spectrum": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/spectrum.png",
+  "sha256": "f448a8fbd6d1396f06853c2faba77904bc00121a00137fcfe6ddbb358af23ba0",
+  "reviewedUTC": "2026-10-11T02:06:58.403494+00:00",
+  "sourceCommit": "aead73776046672288f853fa5df0935abbfc9fe0",
+  "browserReleaseAuthorization": "2026-10-10T18:36:03.647308-07:00",
+  "browserClosed": true,
+  "nativeReport": "G:/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/report.json",
+  "coverage": "Actual fresh patrol: deflect1/pierce1/slow-blade2/contact/kill1; real Smugglers Cut: descent1/slow-blade4/parry3/kill2/loot1/read1/plate2. Quiet warren bed and finite room echoes. No overload, ready, reaction, laser or lever/power playback demonstrated.",
+  "reviewNotes": "Six extracted frames and full spectrum viewed; actual scene geometry/combat/UI visible, no invalid/blank frame. Full H264/AAC decode passed. Normal wall-rate actual postmaster soundtrack, measured two-pass film loudness mastering only; runtime .80 unchanged.",
+  "cleanup": {
+    "freedBytes": 572356921,
+    "removedOwnedRawOnly": [
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684184470/01-shield-patrol/frames",
+        "bytes": 112615025
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684184470/01-shield-patrol/audio.webm",
+        "bytes": 437805
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/01-shield-patrol/frames",
+        "bytes": 123375252
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/02-authored-delve/frames",
+        "bytes": 272769204
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/01-shield-patrol/audio.webm",
+        "bytes": 437805
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/02-authored-delve/audio.webm",
+        "bytes": 690801
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/segment-0.mkv",
+        "bytes": 11680190
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/segment-1.mkv",
+        "bytes": 11651313
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/joined-native.mkv",
+        "bytes": 23331037
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/shield-delve-audio6-1791684272500/delivery-pending.mp4",
+        "bytes": 15368489
+      }
+    ],
+    "retained": "Final v6/v5 films, seven reviewed images, native and failure reports, logs, scripts and all source/committed assets"
+  }
+}

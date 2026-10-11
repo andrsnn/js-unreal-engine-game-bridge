@@ -1,0 +1,17 @@
+{
+  "tip": "410cdb090e3252b9be28668db23a2aa93d0d7705",
+  "audioCommit": "e49fb245",
+  "primary": "f195b8d9c5ff2c46f15b6fff556f8bb3ed7e90a1",
+  "revision": 12,
+  "audioPass": 3,
+  "checks": [
+    "test-audio-v1.mjs PASS",
+    "test-audio-pass2.mjs PASS",
+    "test-audio-pass3.mjs PASS",
+    "tsc --noEmit PASS on audio commit; conflict-free subsequent lighting sync",
+    "git diff --cached --check PASS",
+    "clean owned tracked paths"
+  ],
+  "productionBuild": "root-owned pending publication",
+  "previewJunctions": "restored; no main writes"
+}

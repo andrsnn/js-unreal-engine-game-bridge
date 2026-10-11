@@ -1,0 +1,3 @@
+Karvos audio pass three
+All v3-*.ogg sounds and music are original deterministic synthesis/composition dedicated to the public domain under CC0 1.0 Universal. No external voices, music, game/film recordings or model samples are used. Reproducible with scripts/build-audio-v3.py.
+https://creativecommons.org/publicdomain/zero/1.0/

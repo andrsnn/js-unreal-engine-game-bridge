@@ -1,0 +1,1389 @@
+{
+  "licence": "Mixed; individual file and recording licences below. Sonniss derivatives are not CC0.",
+  "recordingSources": {
+    "bong1.wav": {
+      "author": "Brian MacIntosh (BMacZero)",
+      "licence": "CC0-1.0",
+      "url": "https://opengameart.org/content/metal-impact-sounds",
+      "sha256": "a6558d186f2843aefa212d567963b0ad79a6f78614bcf650f519620fc1549a6d"
+    },
+    "thud2.wav": {
+      "author": "Brian MacIntosh (BMacZero)",
+      "licence": "CC0-1.0",
+      "url": "https://opengameart.org/content/metal-impact-sounds",
+      "sha256": "5fb5c1b37a95cb6716d0bb529a0b9fe1ae9f3e2228b8f30c5c3dcbb1b570a3af"
+    },
+    "thud3.wav": {
+      "author": "Brian MacIntosh (BMacZero)",
+      "licence": "CC0-1.0",
+      "url": "https://opengameart.org/content/metal-impact-sounds",
+      "sha256": "3aa636679ffdc9602d27655ca59a7c7342ae137b68e54c61aad0fb3c414506ca"
+    },
+    "clink2.wav": {
+      "author": "Brian MacIntosh (BMacZero)",
+      "licence": "CC0-1.0",
+      "url": "https://opengameart.org/content/metal-impact-sounds",
+      "sha256": "ecbf5a221f2aff32376b8584eea875d0b7d9963d22f6c16e237f5e7b63f51dc2"
+    },
+    "clink3.wav": {
+      "author": "Brian MacIntosh (BMacZero)",
+      "licence": "CC0-1.0",
+      "url": "https://opengameart.org/content/metal-impact-sounds",
+      "sha256": "dd07516e51e9092efc36d13668de7d29d096955a437894cedeb5064933e2650f"
+    },
+    "groan": {
+      "file": "Metallic-Groan-hinchinbrook-496836-hq.mp3",
+      "author": "hinchinbrook",
+      "licence": "CC0-1.0",
+      "url": "https://freesound.org/people/hinchinbrook/sounds/496836/",
+      "sha256": "6338c39f45ae7407ae4a388822a011e8849816549df4d74dbcd77662816a4f8c"
+    },
+    "hammer": {
+      "file": "Spring_Powered_Hammer_Impacts_Various_Speeds_MKH8060.wav",
+      "author": "Pole Position - The Ironwork Machinery Library",
+      "licence": "Sonniss GDC Bundle EULA v2.0 (royalty-free commercial game use; not CC0)",
+      "url": "https://sonniss.com/gameaudiogdc/",
+      "licenceURL": "https://sonniss.com/gdc-bundle-license/",
+      "sha256": "e9faf0f669a05f5c3561df217b92ab1df793383841286ae24b1b90f03d17acb1"
+    },
+    "tank": {
+      "file": "Metal_Rocking_Diesel_Tank_Pulses_A_DPA4061.wav",
+      "author": "Pole Position - The Junkyard Metal Library",
+      "licence": "Sonniss GDC Bundle EULA v2.0 (royalty-free commercial game use; not CC0)",
+      "url": "https://sonniss.com/gameaudiogdc/",
+      "licenceURL": "https://sonniss.com/gdc-bundle-license/",
+      "sha256": "74481e833505a06365a9b3f3d7b6b7fccb6bd9832e294b14f3b41df68cecfc2f"
+    },
+    "creak": {
+      "file": "Metal_Creak_Van_Door_Back_and_Forth_Various_CO100k.wav",
+      "author": "Pole Position - The Junkyard Metal Library",
+      "licence": "Sonniss GDC Bundle EULA v2.0 (royalty-free commercial game use; not CC0)",
+      "url": "https://sonniss.com/gameaudiogdc/",
+      "licenceURL": "https://sonniss.com/gdc-bundle-license/",
+      "sha256": "8df4fc977d36d7e4a03f8b4de42660145751f7b4e73e26f46f098f67da986908"
+    },
+    "explosion": {
+      "file": "DeepExplosion02.wav",
+      "author": "Stefano Cremona - Explosions",
+      "licence": "Sonniss GDC Bundle EULA v2.0 (royalty-free commercial game use; not CC0)",
+      "url": "https://sonniss.com/gameaudiogdc/",
+      "licenceURL": "https://sonniss.com/gdc-bundle-license/",
+      "sha256": "871cd92855deb1e21540b139a8b85ae17cbc36492fea5509015ffe719bbfff9f"
+    }
+  },
+  "files": {
+    "rail-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud3.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: rail",
+      "duration": 2.8,
+      "loop": false,
+      "rms": 0.17147,
+      "peak": 0.79346,
+      "energyBelow250Hz": 0.89467
+    },
+    "mac-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud3.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: mac",
+      "duration": 3.3,
+      "loop": false,
+      "rms": 0.16715,
+      "peak": 0.79472,
+      "energyBelow250Hz": 0.90547
+    },
+    "impact-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud3.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: impact",
+      "duration": 2.4,
+      "loop": false,
+      "rms": 0.17751,
+      "peak": 0.79124,
+      "energyBelow250Hz": 0.88204
+    },
+    "flak-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud3.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: flak",
+      "duration": 1.1,
+      "loop": false,
+      "rms": 0.19539,
+      "peak": 0.73221,
+      "energyBelow250Hz": 0.90316
+    },
+    "laser-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud3.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: laser",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.19042,
+      "peak": 0.75199,
+      "energyBelow250Hz": 0.90291
+    },
+    "plasma-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud3.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: plasma",
+      "duration": 2.1,
+      "loop": false,
+      "rms": 0.18109,
+      "peak": 0.78473,
+      "energyBelow250Hz": 0.89839
+    },
+    "pdc-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "hammer",
+        "clink2.wav",
+        "clink3.wav"
+      ],
+      "description": "Nine-round brutal mechanical barrel chatter, real powered hammer/ejection contacts, bass recoil and feed servo",
+      "duration": 0.5799791666666667,
+      "loop": false,
+      "rms": 0.22226,
+      "peak": 0.77333,
+      "energyBelow250Hz": 0.68365
+    },
+    "launch-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "thud2.wav",
+        "bong1.wav",
+        "tank"
+      ],
+      "description": "Recorded heavy tube latch/tank and ejection clunk followed by rising low guided motor rumble",
+      "duration": 3.2,
+      "loop": false,
+      "rms": 0.17153,
+      "peak": 0.79622,
+      "energyBelow250Hz": 0.95893
+    },
+    "small-blast-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "thud3.wav",
+        "bong1.wav",
+        "explosion",
+        "groan"
+      ],
+      "description": "Muffled real deep explosion, sub concussion, debris contacts, recorded bunker groan and pressure vent",
+      "duration": 2.0,
+      "loop": false,
+      "rms": 0.21245,
+      "peak": 0.73247,
+      "energyBelow250Hz": 0.91862
+    },
+    "large-blast-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "thud3.wav",
+        "bong1.wav",
+        "explosion",
+        "groan"
+      ],
+      "description": "Muffled real deep explosion, sub concussion, debris contacts, recorded bunker groan and pressure vent",
+      "duration": 5.2,
+      "loop": false,
+      "rms": 0.19617,
+      "peak": 0.78048,
+      "energyBelow250Hz": 0.88539
+    },
+    "rail-tail-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "creak"
+      ],
+      "description": "Long low transmitted hull resonance and real stressed metal without atmospheric echo",
+      "duration": 3.1,
+      "loop": false,
+      "rms": 0.15408,
+      "peak": 0.71854,
+      "energyBelow250Hz": 0.9651
+    },
+    "impact-tail-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "creak"
+      ],
+      "description": "Long low transmitted hull resonance and real stressed metal without atmospheric echo",
+      "duration": 3.1,
+      "loop": false,
+      "rms": 0.15436,
+      "peak": 0.72321,
+      "energyBelow250Hz": 0.96327
+    },
+    "rail-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud2.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: rail",
+      "duration": 2.8,
+      "loop": false,
+      "rms": 0.1722,
+      "peak": 0.78836,
+      "energyBelow250Hz": 0.89551
+    },
+    "mac-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud2.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: mac",
+      "duration": 3.3,
+      "loop": false,
+      "rms": 0.1673,
+      "peak": 0.79375,
+      "energyBelow250Hz": 0.90788
+    },
+    "impact-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud2.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: impact",
+      "duration": 2.4,
+      "loop": false,
+      "rms": 0.17691,
+      "peak": 0.79301,
+      "energyBelow250Hz": 0.89013
+    },
+    "flak-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud2.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: flak",
+      "duration": 1.1,
+      "loop": false,
+      "rms": 0.19735,
+      "peak": 0.75506,
+      "energyBelow250Hz": 0.9059
+    },
+    "laser-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud2.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: laser",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.19065,
+      "peak": 0.75732,
+      "energyBelow250Hz": 0.90569
+    },
+    "plasma-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud2.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: plasma",
+      "duration": 2.1,
+      "loop": false,
+      "rms": 0.18075,
+      "peak": 0.78724,
+      "energyBelow250Hz": 0.90524
+    },
+    "pdc-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "hammer",
+        "clink2.wav",
+        "clink3.wav"
+      ],
+      "description": "Nine-round brutal mechanical barrel chatter, real powered hammer/ejection contacts, bass recoil and feed servo",
+      "duration": 0.5799791666666667,
+      "loop": false,
+      "rms": 0.22345,
+      "peak": 0.77463,
+      "energyBelow250Hz": 0.67717
+    },
+    "launch-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "thud2.wav",
+        "bong1.wav",
+        "tank"
+      ],
+      "description": "Recorded heavy tube latch/tank and ejection clunk followed by rising low guided motor rumble",
+      "duration": 3.2,
+      "loop": false,
+      "rms": 0.16667,
+      "peak": 0.79782,
+      "energyBelow250Hz": 0.95037
+    },
+    "small-blast-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "thud3.wav",
+        "bong1.wav",
+        "explosion",
+        "groan"
+      ],
+      "description": "Muffled real deep explosion, sub concussion, debris contacts, recorded bunker groan and pressure vent",
+      "duration": 2.0,
+      "loop": false,
+      "rms": 0.21305,
+      "peak": 0.72169,
+      "energyBelow250Hz": 0.92494
+    },
+    "large-blast-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "thud3.wav",
+        "bong1.wav",
+        "explosion",
+        "groan"
+      ],
+      "description": "Muffled real deep explosion, sub concussion, debris contacts, recorded bunker groan and pressure vent",
+      "duration": 5.2,
+      "loop": false,
+      "rms": 0.19561,
+      "peak": 0.78065,
+      "energyBelow250Hz": 0.88394
+    },
+    "rail-tail-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "creak"
+      ],
+      "description": "Long low transmitted hull resonance and real stressed metal without atmospheric echo",
+      "duration": 3.1,
+      "loop": false,
+      "rms": 0.15409,
+      "peak": 0.69634,
+      "energyBelow250Hz": 0.96869
+    },
+    "impact-tail-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "creak"
+      ],
+      "description": "Long low transmitted hull resonance and real stressed metal without atmospheric echo",
+      "duration": 3.1,
+      "loop": false,
+      "rms": 0.15423,
+      "peak": 0.67488,
+      "energyBelow250Hz": 0.96857
+    },
+    "rail-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud3.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: rail",
+      "duration": 2.8,
+      "loop": false,
+      "rms": 0.17095,
+      "peak": 0.79379,
+      "energyBelow250Hz": 0.89401
+    },
+    "mac-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud3.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: mac",
+      "duration": 3.3,
+      "loop": false,
+      "rms": 0.16579,
+      "peak": 0.79622,
+      "energyBelow250Hz": 0.90055
+    },
+    "impact-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud3.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: impact",
+      "duration": 2.4,
+      "loop": false,
+      "rms": 0.17787,
+      "peak": 0.79214,
+      "energyBelow250Hz": 0.87799
+    },
+    "flak-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud3.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: flak",
+      "duration": 1.1,
+      "loop": false,
+      "rms": 0.19724,
+      "peak": 0.73266,
+      "energyBelow250Hz": 0.90559
+    },
+    "laser-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud3.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: laser",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.18987,
+      "peak": 0.74621,
+      "energyBelow250Hz": 0.90546
+    },
+    "plasma-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud3.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: plasma",
+      "duration": 2.1,
+      "loop": false,
+      "rms": 0.18106,
+      "peak": 0.78564,
+      "energyBelow250Hz": 0.90622
+    },
+    "pdc-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "hammer",
+        "clink2.wav",
+        "clink3.wav"
+      ],
+      "description": "Nine-round brutal mechanical barrel chatter, real powered hammer/ejection contacts, bass recoil and feed servo",
+      "duration": 0.5799791666666667,
+      "loop": false,
+      "rms": 0.2236,
+      "peak": 0.77789,
+      "energyBelow250Hz": 0.66811
+    },
+    "launch-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "thud2.wav",
+        "bong1.wav",
+        "tank"
+      ],
+      "description": "Recorded heavy tube latch/tank and ejection clunk followed by rising low guided motor rumble",
+      "duration": 3.2,
+      "loop": false,
+      "rms": 0.176,
+      "peak": 0.79442,
+      "energyBelow250Hz": 0.96794
+    },
+    "small-blast-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "thud3.wav",
+        "bong1.wav",
+        "explosion",
+        "groan"
+      ],
+      "description": "Muffled real deep explosion, sub concussion, debris contacts, recorded bunker groan and pressure vent",
+      "duration": 2.0,
+      "loop": false,
+      "rms": 0.21227,
+      "peak": 0.73185,
+      "energyBelow250Hz": 0.92061
+    },
+    "large-blast-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "thud3.wav",
+        "bong1.wav",
+        "explosion",
+        "groan"
+      ],
+      "description": "Muffled real deep explosion, sub concussion, debris contacts, recorded bunker groan and pressure vent",
+      "duration": 5.2,
+      "loop": false,
+      "rms": 0.19592,
+      "peak": 0.78312,
+      "energyBelow250Hz": 0.8867
+    },
+    "rail-tail-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "creak"
+      ],
+      "description": "Long low transmitted hull resonance and real stressed metal without atmospheric echo",
+      "duration": 3.1,
+      "loop": false,
+      "rms": 0.15453,
+      "peak": 0.68203,
+      "energyBelow250Hz": 0.95998
+    },
+    "impact-tail-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "creak"
+      ],
+      "description": "Long low transmitted hull resonance and real stressed metal without atmospheric echo",
+      "duration": 3.1,
+      "loop": false,
+      "rms": 0.15413,
+      "peak": 0.72481,
+      "energyBelow250Hz": 0.9687
+    },
+    "rail-3.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud2.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: rail",
+      "duration": 2.8,
+      "loop": false,
+      "rms": 0.17139,
+      "peak": 0.79403,
+      "energyBelow250Hz": 0.90861
+    },
+    "mac-3.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud2.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: mac",
+      "duration": 3.3,
+      "loop": false,
+      "rms": 0.16672,
+      "peak": 0.79288,
+      "energyBelow250Hz": 0.90962
+    },
+    "impact-3.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud2.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: impact",
+      "duration": 2.4,
+      "loop": false,
+      "rms": 0.17708,
+      "peak": 0.79162,
+      "energyBelow250Hz": 0.89767
+    },
+    "flak-3.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud2.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: flak",
+      "duration": 1.1,
+      "loop": false,
+      "rms": 0.19649,
+      "peak": 0.71723,
+      "energyBelow250Hz": 0.91634
+    },
+    "laser-3.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud2.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: laser",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.18895,
+      "peak": 0.75766,
+      "energyBelow250Hz": 0.91776
+    },
+    "plasma-3.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "thud2.wav",
+        "hammer",
+        "creak"
+      ],
+      "description": "Sub-bass sine fall, saturated physical crack and real recorded hammer/metal/hull stress: plasma",
+      "duration": 2.1,
+      "loop": false,
+      "rms": 0.17936,
+      "peak": 0.77505,
+      "energyBelow250Hz": 0.91693
+    },
+    "pdc-3.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "hammer",
+        "clink2.wav",
+        "clink3.wav"
+      ],
+      "description": "Nine-round brutal mechanical barrel chatter, real powered hammer/ejection contacts, bass recoil and feed servo",
+      "duration": 0.5799791666666667,
+      "loop": false,
+      "rms": 0.22221,
+      "peak": 0.77902,
+      "energyBelow250Hz": 0.65309
+    },
+    "launch-3.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "thud2.wav",
+        "bong1.wav",
+        "tank"
+      ],
+      "description": "Recorded heavy tube latch/tank and ejection clunk followed by rising low guided motor rumble",
+      "duration": 3.2,
+      "loop": false,
+      "rms": 0.16546,
+      "peak": 0.7964,
+      "energyBelow250Hz": 0.9555
+    },
+    "small-blast-3.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "thud3.wav",
+        "bong1.wav",
+        "explosion",
+        "groan"
+      ],
+      "description": "Muffled real deep explosion, sub concussion, debris contacts, recorded bunker groan and pressure vent",
+      "duration": 2.0,
+      "loop": false,
+      "rms": 0.21048,
+      "peak": 0.73756,
+      "energyBelow250Hz": 0.91617
+    },
+    "large-blast-3.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "thud3.wav",
+        "bong1.wav",
+        "explosion",
+        "groan"
+      ],
+      "description": "Muffled real deep explosion, sub concussion, debris contacts, recorded bunker groan and pressure vent",
+      "duration": 5.2,
+      "loop": false,
+      "rms": 0.19328,
+      "peak": 0.78679,
+      "energyBelow250Hz": 0.87853
+    },
+    "rail-tail-3.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "creak"
+      ],
+      "description": "Long low transmitted hull resonance and real stressed metal without atmospheric echo",
+      "duration": 3.1,
+      "loop": false,
+      "rms": 0.15489,
+      "peak": 0.67166,
+      "energyBelow250Hz": 0.9624
+    },
+    "impact-tail-3.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "bong1.wav",
+        "creak"
+      ],
+      "description": "Long low transmitted hull resonance and real stressed metal without atmospheric echo",
+      "duration": 3.1,
+      "loop": false,
+      "rms": 0.15415,
+      "peak": 0.7298,
+      "energyBelow250Hz": 0.96929
+    },
+    "drive-small.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "tank"
+      ],
+      "description": "Continuous low structural drive rumble and recorded diesel-tank strain; thrust and closing-distance modulated",
+      "duration": 12.0,
+      "loop": true,
+      "rms": 0.24198,
+      "peak": 0.57946,
+      "energyBelow250Hz": 0.99481
+    },
+    "drive-medium.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "tank"
+      ],
+      "description": "Continuous low structural drive rumble and recorded diesel-tank strain; thrust and closing-distance modulated",
+      "duration": 12.0,
+      "loop": true,
+      "rms": 0.24192,
+      "peak": 0.58181,
+      "energyBelow250Hz": 0.99452
+    },
+    "drive-heavy.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "tank"
+      ],
+      "description": "Continuous low structural drive rumble and recorded diesel-tank strain; thrust and closing-distance modulated",
+      "duration": 12.0,
+      "loop": true,
+      "rms": 0.24233,
+      "peak": 0.56408,
+      "energyBelow250Hz": 0.99479
+    },
+    "torpedo-burn.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "tank"
+      ],
+      "description": "Continuous low structural drive rumble and recorded diesel-tank strain; thrust and closing-distance modulated",
+      "duration": 12.0,
+      "loop": true,
+      "rms": 0.24214,
+      "peak": 0.60769,
+      "energyBelow250Hz": 0.99446
+    },
+    "shipboard.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [],
+      "description": "Quiet low machinery and ventilation floor",
+      "duration": 12.0,
+      "loop": true,
+      "rms": 0.08897,
+      "peak": 0.3119,
+      "energyBelow250Hz": 0.80437
+    },
+    "score-bed.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [],
+      "description": "Original dark tension and hull percussion, synchronized 16-bar 72 BPM bed",
+      "duration": 53.333333333333336,
+      "loop": true,
+      "rms": 0.10855,
+      "peak": 0.22718,
+      "energyBelow250Hz": 1.0
+    },
+    "score-motif.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [],
+      "description": "Original dark tension and hull percussion, synchronized 16-bar 72 BPM motif",
+      "duration": 53.333333333333336,
+      "loop": true,
+      "rms": 0.1218,
+      "peak": 0.74943,
+      "energyBelow250Hz": 0.99284
+    },
+    "score-pulse.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [],
+      "description": "Original dark tension and hull percussion, synchronized 16-bar 72 BPM pulse",
+      "duration": 53.333333333333336,
+      "loop": true,
+      "rms": 0.12808,
+      "peak": 0.59162,
+      "energyBelow250Hz": 0.99963
+    },
+    "score-combat.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "recordingComponents": [
+        "thud2.wav",
+        "hammer"
+      ],
+      "description": "Original dark tension and hull percussion, synchronized 16-bar 72 BPM combat",
+      "duration": 53.333333333333336,
+      "loop": true,
+      "rms": 0.12562,
+      "peak": 0.68583,
+      "energyBelow250Hz": 0.97438
+    },
+    "score-danger.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [],
+      "description": "Original dark tension and hull percussion, synchronized 16-bar 72 BPM danger",
+      "duration": 53.333333333333336,
+      "loop": true,
+      "rms": 0.13113,
+      "peak": 0.71168,
+      "energyBelow250Hz": 0.92776
+    },
+    "score-machinery.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [],
+      "description": "Original dark tension and hull percussion, synchronized 16-bar 72 BPM machinery",
+      "duration": 53.333333333333336,
+      "loop": true,
+      "rms": 0.12526,
+      "peak": 0.72107,
+      "energyBelow250Hz": 0.99302
+    },
+    "ui-select-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10606,
+      "peak": 0.46602,
+      "energyBelow250Hz": 0.50339
+    },
+    "ui-cancel-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10606,
+      "peak": 0.46602,
+      "energyBelow250Hz": 0.50339
+    },
+    "ui-nav-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10606,
+      "peak": 0.46602,
+      "energyBelow250Hz": 0.50339
+    },
+    "click-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10606,
+      "peak": 0.46602,
+      "energyBelow250Hz": 0.50339
+    },
+    "confirm-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10606,
+      "peak": 0.46602,
+      "energyBelow250Hz": 0.50339
+    },
+    "contact-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.10167,
+      "peak": 0.61301,
+      "energyBelow250Hz": 0.51152
+    },
+    "alert-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.1042,
+      "peak": 0.54384,
+      "energyBelow250Hz": 0.50876
+    },
+    "hostile-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.1042,
+      "peak": 0.54384,
+      "energyBelow250Hz": 0.50876
+    },
+    "critical-0.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.1042,
+      "peak": 0.54384,
+      "energyBelow250Hz": 0.50876
+    },
+    "ui-select-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10596,
+      "peak": 0.45762,
+      "energyBelow250Hz": 0.52461
+    },
+    "ui-cancel-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10596,
+      "peak": 0.45762,
+      "energyBelow250Hz": 0.52461
+    },
+    "ui-nav-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10596,
+      "peak": 0.45762,
+      "energyBelow250Hz": 0.52461
+    },
+    "click-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10596,
+      "peak": 0.45762,
+      "energyBelow250Hz": 0.52461
+    },
+    "confirm-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10596,
+      "peak": 0.45762,
+      "energyBelow250Hz": 0.52461
+    },
+    "contact-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.10182,
+      "peak": 0.60278,
+      "energyBelow250Hz": 0.54317
+    },
+    "alert-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.10422,
+      "peak": 0.53322,
+      "energyBelow250Hz": 0.53717
+    },
+    "hostile-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.10422,
+      "peak": 0.53322,
+      "energyBelow250Hz": 0.53717
+    },
+    "critical-1.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.10422,
+      "peak": 0.53322,
+      "energyBelow250Hz": 0.53717
+    },
+    "ui-select-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10592,
+      "peak": 0.4565,
+      "energyBelow250Hz": 0.55178
+    },
+    "ui-cancel-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10592,
+      "peak": 0.4565,
+      "energyBelow250Hz": 0.55178
+    },
+    "ui-nav-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10592,
+      "peak": 0.4565,
+      "energyBelow250Hz": 0.55178
+    },
+    "click-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10592,
+      "peak": 0.4565,
+      "energyBelow250Hz": 0.55178
+    },
+    "confirm-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 0.32,
+      "loop": false,
+      "rms": 0.10592,
+      "peak": 0.4565,
+      "energyBelow250Hz": 0.55178
+    },
+    "contact-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.10146,
+      "peak": 0.6056,
+      "energyBelow250Hz": 0.5583
+    },
+    "alert-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.10389,
+      "peak": 0.53906,
+      "energyBelow250Hz": 0.55758
+    },
+    "hostile-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.10389,
+      "peak": 0.53906,
+      "energyBelow250Hz": 0.55758
+    },
+    "critical-2.ogg": {
+      "source": "Original procedural synthesis plus processed field recordings, tools/generate-audio-v4.py",
+      "author": "HARD BURN original audio; see recordingSources for original recording authors",
+      "licence": "CC0-1.0",
+      "recordingComponents": [
+        "thud2.wav"
+      ],
+      "description": "Low mechanical panel latch or hull-transmitted warning pulse; no bright chirp",
+      "duration": 1.5,
+      "loop": false,
+      "rms": 0.10389,
+      "peak": 0.53906,
+      "energyBelow250Hz": 0.55758
+    }
+  }
+}

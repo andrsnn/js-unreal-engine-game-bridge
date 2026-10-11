@@ -1,0 +1,59 @@
+{
+  "ok": true,
+  "delivery": "C:/UnlitWorldsCaptures/judge/saltblade-audio-v2.mp4",
+  "bytes": 29223801,
+  "sha256": "55b90c6f259775624d41c22a8ab9ee5efa435d5209654d367d6173efb8b37972",
+  "capture": "G:/sfx/evidence/saltblade/openworld-film-1791672372095/report.json",
+  "originalInputOnly": true,
+  "playbackSpeed": 1,
+  "fullDecode": true,
+  "loudnessLUFS": -16.47,
+  "truePeakDBTP": -3.07,
+  "lra": 9.1,
+  "frames": [
+    "G:/sfx/evidence/saltblade/openworld-film-1791672372095/flapping.png",
+    "G:/sfx/evidence/saltblade/openworld-film-1791672372095/giant.png",
+    "G:/sfx/evidence/saltblade/openworld-film-1791672372095/gliding.png",
+    "G:/sfx/evidence/saltblade/openworld-film-1791672372095/landing.png"
+  ],
+  "spectrum": "G:/sfx/evidence/saltblade/openworld-film-1791672372095/spectrum.png",
+  "sourceDuration": 32.215,
+  "sourceVideoOffset": 1.5664166666666666,
+  "scope": "Actual fresh open-world native flight, giant tremor/breach, patrol engine approach, glide, noisy hard landing and sparse noise warning. No discovery/storm/searchlight encounter capture claimed.",
+  "syncCalibration": {
+    "videoBoardingFrame": 57,
+    "rawVideoBoardingSeconds": 2.28,
+    "audioBoardingTransientSeconds": 0.7135833333333333,
+    "correctedOffset": 1.5664166666666666,
+    "oldOffset": 1.254,
+    "method": "Match first visible ALT-bar boarding frame (25fps) to first post-master boarding transient; audio envelope gives <=40ms onset tolerance. Existing raw capture only, no respeed/injected gameplay."
+  },
+  "supersededDraft": {
+    "path": "C:/UnlitWorldsCaptures/judge/saltblade-audio-v2-sync-draft.mp4",
+    "sha256": "373f4569ad8419480a547135c12b4dc56b3cfbf37a5410793808da94be5fcc27",
+    "deletedAfterFinalVerification": true
+  },
+  "framesReviewed": true,
+  "syncReviewFrame": "G:/sfx/evidence/saltblade/openworld-film-1791672372095/sync-corrected-0.8.png",
+  "review": "Corrected sync boarding frame, flap, real tremor with nearby patrol, glide, landing and full-clip spectrum inspected. Full decoding and loudness checks passed before final rename.",
+  "cleanup": {
+    "utc": "2026-10-10T22:54:03.861841+00:00",
+    "removed": [
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/openworld-film-1791672372095/page@a37d45b54f15683033c15b88d2bd4097.webm",
+        "bytes": 12680986
+      },
+      {
+        "path": "/mnt/g/sfx/evidence/saltblade/openworld-film-1791672372095/audio.webm",
+        "bytes": 778041
+      },
+      {
+        "path": "/mnt/c/UnlitWorldsCaptures/judge/saltblade-audio-v2-sync-draft.mp4",
+        "bytes": 29081683
+      }
+    ],
+    "bytesFreed": 42540710,
+    "gBytesFreed": 13459027,
+    "kept": "Final movie, final assets, committed code, focused tests, reports and representative review frames."
+  }
+}

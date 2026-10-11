@@ -1,0 +1,2452 @@
+{
+  "version": 1,
+  "game": "hardburn",
+  "audioPass": 11,
+  "sourceCommit": "5681096da8960bf184ac3443da8b9ea0bca6a2b8",
+  "eventControls": {
+    "rail": {
+      "layers": [
+        {
+          "bank": "hb-rail",
+          "gain": 1.45,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.8
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.085
+    },
+    "coilgun": {
+      "layers": [
+        {
+          "bank": "hb-rail",
+          "gain": 0.85,
+          "basePitch": 1.24,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 0.7
+        },
+        {
+          "bank": "pdc-mechanism",
+          "gain": 0.18,
+          "basePitch": 0.78,
+          "delaySeconds": 0.035,
+          "maximumDurationSeconds": 0.3
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.13
+    },
+    "autocannon": {
+      "layers": [
+        {
+          "bank": "hb-pdc",
+          "gain": 0.75,
+          "basePitch": 0.68,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 0.22
+        },
+        {
+          "bank": "rail-tail",
+          "gain": 0.18,
+          "basePitch": 1.18,
+          "delaySeconds": 0.025,
+          "maximumDurationSeconds": 0.48
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.22
+    },
+    "mac": {
+      "layers": [
+        {
+          "bank": "hb-mac",
+          "gain": 1.55,
+          "basePitch": 0.94,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 3.4
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "pdc": {
+      "layers": [
+        {
+          "bank": "hb-pdc",
+          "gain": 1.35,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 0.31
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.34
+    },
+    "flak": {
+      "layers": [
+        {
+          "bank": "hb-flak",
+          "gain": 1.25,
+          "basePitch": 0.96,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 1.2
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "missile": {
+      "layers": [],
+      "maximumRuntimeLayers": 0,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07,
+      "deferToActualPhaseCallbacks": true,
+      "note": "Mount fire is an order. Suppress this old immediate report; phaseCold/phaseIgnition produce the actual timed sounds. Compatibility bank remains registered for old callers."
+    },
+    "torpedo": {
+      "layers": [],
+      "maximumRuntimeLayers": 0,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07,
+      "deferToActualPhaseCallbacks": true,
+      "note": "Mount fire is an order. Suppress this old immediate report; phaseCold/phaseIgnition produce the actual timed sounds. Compatibility bank remains registered for old callers."
+    },
+    "nuclear": {
+      "layers": [],
+      "maximumRuntimeLayers": 0,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07,
+      "deferToActualPhaseCallbacks": true,
+      "note": "Mount fire is an order. Suppress this old immediate report; phaseCold/phaseIgnition produce the actual timed sounds. Compatibility bank remains registered for old callers."
+    },
+    "swarm": {
+      "layers": [],
+      "maximumRuntimeLayers": 0,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07,
+      "deferToActualPhaseCallbacks": true,
+      "note": "Mount fire is an order. Suppress this old immediate report; phaseCold/phaseIgnition produce the actual timed sounds. Compatibility bank remains registered for old callers."
+    },
+    "laser": {
+      "layers": [
+        {
+          "bank": "energy-laser",
+          "gain": 1.2,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 1.6
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "plasma": {
+      "layers": [
+        {
+          "bank": "energy-plasma",
+          "gain": 1.35,
+          "basePitch": 0.94,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.3
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "impact": {
+      "layers": [
+        {
+          "bank": "hb-impact",
+          "gain": 1.25,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.4
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.06
+    },
+    "armour": {
+      "layers": [
+        {
+          "bank": "hb-armour",
+          "gain": 1.35,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.6
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "shield": {
+      "layers": [
+        {
+          "bank": "hb-impact",
+          "gain": 0.8,
+          "basePitch": 0.78,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.4
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "hull-breach": {
+      "layers": [
+        {
+          "bank": "hb-breach",
+          "gain": 0.68,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.8
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.35
+    },
+    "intercept": {
+      "layers": [
+        {
+          "bank": "hb-intercept",
+          "gain": 0.42,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 0.75
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.11
+    },
+    "vent": {
+      "layers": [
+        {
+          "bank": "hb-vent",
+          "gain": 0.24,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 1.8
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 1.8
+    },
+    "explosion": {
+      "layers": [
+        {
+          "bank": "hb-small-blast",
+          "gain": 1.05,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.1
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.14
+    },
+    "explosion-small": {
+      "layers": [
+        {
+          "bank": "hb-small-blast",
+          "gain": 0.88,
+          "basePitch": 1.12,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "explosion-large": {
+      "layers": [
+        {
+          "bank": "hb-large-blast",
+          "gain": 1.55,
+          "basePitch": 0.92,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 5.6
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "explosion-reactor": {
+      "layers": [
+        {
+          "bank": "hb-reactor-blast",
+          "gain": 1.55,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 5.8
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.65
+    },
+    "nuclear-impact": {
+      "layers": [
+        {
+          "bank": "hb-reactor-blast",
+          "gain": 1.65,
+          "basePitch": 0.9,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 5.8
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "emp": {
+      "layers": [
+        {
+          "bank": "energy-plasma",
+          "gain": 1.1,
+          "basePitch": 0.76,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.3
+        }
+      ],
+      "maximumRuntimeLayers": 1,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "veil-arc": {
+      "layers": [
+        {
+          "bank": "energy-plasma",
+          "gain": 1.2,
+          "basePitch": 0.84,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.3
+        }
+      ],
+      "maximumRuntimeLayers": 1,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "swarm-cold": {
+      "layers": [
+        {
+          "bank": "hb-swarm-cold",
+          "gain": 0.42,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 0.19
+        }
+      ],
+      "maximumRuntimeLayers": 1,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.035,
+      "lowpassHz": 1500,
+      "phaseGenerationDedup": true,
+      "nuclearRateMultiplier": 1,
+      "sameTickColdBeforeIgnitionSpacingSeconds": 0.025
+    },
+    "swarm-ignition": {
+      "layers": [
+        {
+          "bank": "hb-swarm-ignition",
+          "gain": 0.55,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 0.52
+        }
+      ],
+      "maximumRuntimeLayers": 1,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07,
+      "lowpassHz": 1200,
+      "phaseGenerationDedup": true,
+      "nuclearRateMultiplier": 1,
+      "sameTickColdBeforeIgnitionSpacingSeconds": 0.025
+    },
+    "missile-cold": {
+      "layers": [
+        {
+          "bank": "hb-missile-cold",
+          "gain": 0.72,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 0.26
+        }
+      ],
+      "maximumRuntimeLayers": 1,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.055,
+      "lowpassHz": 1400,
+      "phaseGenerationDedup": true,
+      "nuclearRateMultiplier": 1,
+      "sameTickColdBeforeIgnitionSpacingSeconds": 0.025
+    },
+    "missile-ignition": {
+      "layers": [
+        {
+          "bank": "hb-missile-ignition",
+          "gain": 0.86,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 0.95
+        }
+      ],
+      "maximumRuntimeLayers": 1,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.085,
+      "lowpassHz": 1300,
+      "phaseGenerationDedup": true,
+      "nuclearRateMultiplier": 1,
+      "sameTickColdBeforeIgnitionSpacingSeconds": 0.025
+    },
+    "torpedo-cold": {
+      "layers": [
+        {
+          "bank": "hb-torpedo-cold",
+          "gain": 0.9,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 0.38
+        }
+      ],
+      "maximumRuntimeLayers": 1,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.09,
+      "lowpassHz": 1100,
+      "phaseGenerationDedup": true,
+      "nuclearRateMultiplier": 0.82,
+      "sameTickColdBeforeIgnitionSpacingSeconds": 0.025
+    },
+    "torpedo-ignition": {
+      "layers": [
+        {
+          "bank": "hb-torpedo-ignition",
+          "gain": 1.15,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 1.5
+        }
+      ],
+      "maximumRuntimeLayers": 1,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.14,
+      "lowpassHz": 1000,
+      "phaseGenerationDedup": true,
+      "nuclearRateMultiplier": 0.82,
+      "sameTickColdBeforeIgnitionSpacingSeconds": 0.025
+    },
+    "sensorReceiver": {
+      "bank": "contact",
+      "bus": "alerts",
+      "spatial": false,
+      "observer": "Read world.galactic.radarContacts plus campaign.contacts confidence/identified/uncertainty; only live local actually rendered radar reports sound. Hidden designer transitions consumed; no hidden coordinates read. Optional world.solarIntel() supplies only actually activated disclosed/observed, precise, matching-system scans with finite position, startedAt and duration evaluated against authoritative simulation time. Explicit disclosed:false fails closed.",
+      "thresholds": {
+        "detected": 0.1,
+        "identified": 0.72,
+        "identificationRelease": 0.6,
+        "lostConfidence": 0.075,
+        "lostHoldSeconds": 5,
+        "uncertaintyGrowthMeters": 28,
+        "uncertaintyGrowthFraction": 0.2,
+        "uncertaintyDisplayRangeMeters": [
+          12,
+          1000000
+        ]
+      },
+      "globalMinimumReportIntervalSeconds": 4,
+      "perContactPerKindMinimumSeconds": 18,
+      "maximumPendingReports": 1,
+      "pendingExpiresSeconds": 6,
+      "maximumTrackedContacts": 512,
+      "identityExpirySeconds": 60,
+      "maximumScansPerSnapshot": 24,
+      "maximumTrackedScanIdentities": 256,
+      "coalesce": "Actual ping/sweep takes one shared report slot and consumes same-tick contact transitions; never queue fleet-sized reports. Suppress restored/save/view/pause scan baselines, repeated IDs, late disclosure, future/expired scans and confidence jitter. Scan ID uses system/emitter/mode/startedAt. Receiver reports consume legacy contact:ui even when full voice pool; successful ACTIVE PING toast has no generic confirm before the actual emission. Actual solar uncertainty preserved; uncertainty drift threshold max(28m,20% of best prior solution).",
+      "gainPitchDurationLowpassByEvent": {
+        "ping": [
+          0.18,
+          0.88,
+          0.55,
+          950
+        ],
+        "sweep": [
+          0.16,
+          0.7,
+          0.9,
+          700
+        ],
+        "detected": [
+          0.16,
+          0.78,
+          0.7,
+          850
+        ],
+        "acquired": [
+          0.22,
+          1,
+          0.9,
+          1250
+        ],
+        "uncertain": [
+          0.12,
+          0.66,
+          1.1,
+          650
+        ]
+      },
+      "voicePolicy": "Priority0, at most existing64 pool; reports never steal a gun voice; skip while Alerts0/masterMute; no new oscillator/timer/assets.",
+      "music": "sensorTension<=.55, rise2.5s/release5s; contribution=tension*max(0,1-combatIntensity/.35); existing score-pulse +.18*contribution, danger +.10*contribution, bed LP -350*contribution. Existing Music/master/mute and duck buses retain control."
+    },
+    "solarReceiver": {
+      "bank": "shipboard",
+      "bus": "ambience",
+      "instance": "receiver-owned ECM loop separate from ambient shipboard instance",
+      "loop": true,
+      "maxVoices": 1,
+      "spatial": false,
+      "source": "frame.interference where kind=ecm and disclosed=true",
+      "strength": "max(clamp(strength)*clamp(confidence)*1200/(1200+reported-camera-distance)) within4800",
+      "gain": ".40*strength*combatSparseGain",
+      "playbackRate": 1.9,
+      "highpassHz": 180,
+      "lowpassHz": "600+300*strength",
+      "attackSeconds": 0.08,
+      "filterResponseSeconds": 0.12,
+      "stop": {
+        "fadeSeconds": 0.004,
+        "sourceStopSeconds": 0.018,
+        "cancelGainAutomation": true,
+        "conditions": [
+          "no explicit power",
+          "no actual strength",
+          "missing frame",
+          "disabled frame",
+          "pause",
+          "map/designer",
+          "remote system",
+          "out of range",
+          "runningCold",
+          "done"
+        ]
+      },
+      "quietMusicContribution": "max(existing receiver tension,.22*ecmStrength), 2.5s rise/5s release; suppressed in music at battle intensity>=.35",
+      "doesNotRevealEnemyBearing": true
+    },
+    "solarTraffic": {
+      "banks": {
+        "drone": "hb-drive-small",
+        "tanker": "hb-drive-medium"
+      },
+      "bus": "engines",
+      "loop": true,
+      "maxVoices": 2,
+      "identity": "systemId + stable traffic.id",
+      "selection": "nearest two among first64 valid entries, identity dedup",
+      "contract": {
+        "disclosed": true,
+        "precise": true,
+        "motorActive": true,
+        "throttle": "finite>.035 clamped0..1",
+        "runningCold": false,
+        "done": false,
+        "kind": [
+          "drone",
+          "tanker"
+        ],
+        "powerSource": "ff: actual repairDroneNozzle.powered or tanker ship.driveBurn, never inferred velocity/age"
+      },
+      "gain": "(drone?.16:.20)*throttle*confidence*spatialGain*combatSparseGain/sqrt(selected count)",
+      "playbackRate": ".78+.13*throttle",
+      "lowpassHz": "min(spatial cutoff,230+350*throttle)",
+      "pan": "existing camera-relative pan clamped±.88",
+      "spatialGain": "220/(220+max(0,distance-120))",
+      "range": 4800,
+      "gainAttackSeconds": 0.025,
+      "filterPanRateResponseSeconds": 0.08,
+      "stop": {
+        "fadeSeconds": 0.004,
+        "sourceStopSeconds": 0.018,
+        "cancelGainAutomation": true,
+        "conditions": [
+          "no explicit power",
+          "no actual strength",
+          "missing frame",
+          "disabled frame",
+          "pause",
+          "map/designer",
+          "remote system",
+          "out of range",
+          "runningCold",
+          "done"
+        ]
+      }
+    },
+    "discoveryReceiver": {
+      "source": "world.solarIntel().discoveries ONLY author-defined disclosed intel; do not access whole campaign.recon or site classification/rewards",
+      "required": {
+        "enabled": true,
+        "disclosed": true,
+        "sameActiveSystem": true,
+        "running": true,
+        "id": "stable non-null",
+        "position": "finite reportedXYZ array; validation only, never spatialised",
+        "confidence": "finite >=.12"
+      },
+      "thresholds": {
+        "detected": 0.12,
+        "identified": ".8 and explicit identified:true"
+      },
+      "trigger": "highest known stage increases, never observedAt/discoveredAt tick changes",
+      "reportArticulation": {
+        "discovery-detected": {
+          "bank": "contact",
+          "bus": "alerts",
+          "gain": 0.16,
+          "rate": 0.62,
+          "duration": 0.9,
+          "lowpassHz": 650
+        },
+        "discovery-identified": {
+          "bank": "contact",
+          "bus": "alerts",
+          "gain": 0.22,
+          "rate": 0.82,
+          "duration": 1.1,
+          "lowpassHz": 1050
+        }
+      },
+      "spatial": false,
+      "priority": 0,
+      "voiceRule": "Only if gun pool<64 and Alerts>0 and master not muted; cannot steal guns",
+      "cadence": "shared receiver >=4 seconds with actual ping/sweep and radar reports",
+      "eventPriority": [
+        "active scan",
+        "observed diversion or paid completion",
+        "discovery transition",
+        "radar contact transition"
+      ],
+      "pending": {
+        "max": 1,
+        "expirySimulationSeconds": 6,
+        "validity": "discovery remains disclosed/current-system; clear on disabled/pause/scope/rewind"
+      },
+      "caps": {
+        "recordsPerFrame": 128,
+        "highestStageIdentityCache": 512
+      },
+      "baselineSilence": [
+        "first canonical frame",
+        "restored save",
+        "view/system entry",
+        "pause resume",
+        "frame-clock rewind"
+      ],
+      "logAndToastPrefixesSuppressed": [
+        "SIGNAL DETECTED",
+        "SURVEY IDENTIFIED",
+        "RECOVERY COMPLETE"
+      ],
+      "classificationExcluded": [
+        "kind",
+        "guardianKind",
+        "resource",
+        "reward",
+        "truePosition",
+        "raw site coordinates"
+      ],
+      "nativeDependency": "existing contact cue/package unchanged; host owns receiver transitions/filter/articulation/control routing",
+      "sourceContractStatus": "Verified actual committed ff solarIntel/solar-recon from5939c4e plusf1afff7; current reported coordinates/detection/identification match observer."
+    },
+    "observedEwReceiver": {
+      "source": "world.solarIntel().ewEvents ONLY player-authorised producer outcomes, never world.decoyLocks or raw ship/guardian/reward state",
+      "kinds": [
+        "decoy-diversion",
+        "recovery-complete"
+      ],
+      "required": {
+        "enabled": true,
+        "sameActiveSystem": true,
+        "disclosed": true,
+        "observed": true,
+        "running": true,
+        "id": "stable non-null",
+        "at": "finite actual simulation time, not future, younger than20s",
+        "position": "finite public XYZ validation only; report always receiver-centred"
+      },
+      "articulation": {
+        "decoy-diversion": {
+          "bank": "contact",
+          "bus": "alerts",
+          "gain": 0.19,
+          "rate": 0.7,
+          "duration": 0.75,
+          "lowpassHz": 800
+        },
+        "recovery-complete": {
+          "bank": "contact",
+          "bus": "alerts",
+          "gain": 0.18,
+          "rate": 0.9,
+          "duration": 0.8,
+          "lowpassHz": 1100
+        }
+      },
+      "spatial": false,
+      "priority": 0,
+      "voiceRule": "Only if global gun pool<64, Alerts>0 and not muted; no gun stealing",
+      "cadenceSeconds": 4,
+      "sharedWith": [
+        "actual active scans",
+        "discovery receiver",
+        "radar confidence receiver"
+      ],
+      "pendingMax": 1,
+      "pendingExpirySeconds": 6,
+      "caps": {
+        "records": 24,
+        "seenIdentities": 256
+      },
+      "baselineSilence": [
+        "initial frame",
+        "load",
+        "view/system entry",
+        "pause/resume",
+        "clock rewind"
+      ],
+      "lateDisclosure": "new event at must be >=previous snapshot time-.02; late historic authorisation silently consumed",
+      "dedup": "stable event id consumed once, burst outcomes coalesced",
+      "producerScope": "ff: actual player-decoy retarget, attacker already player-observed; actual recovery-complete pushed at claimed/reward payment",
+      "nativeDependency": "Existing contact SoundCue/package unchanged; host implements event lifecycle/filter/gain/control routing",
+      "producerAudit": "Fleet producer currently invoked in findTarget selection query; ff queued concrete assignment-only fix. Audio consumes explicit observed records, cannot validate all-world target queries. Seeker selected target is actually assigned to projectile targetEntity/getTarget in same launch."
+    },
+    "guardianAccents": {
+      "source": "Actual committed solarIntel().guardianEvents with currently disclosed precise identified guardian bodies",
+      "sourceContractCommit": "f3b77632a97eaf75d2f0177f2d7518b7977bf476",
+      "bus": "ambience",
+      "overrideCueBus": true,
+      "outputGain": 0.69,
+      "spatial": true,
+      "maxDistance": 1800,
+      "maxEventAgeSeconds": 0.75,
+      "position": "Only actual public accepted emitter/intercept position; no raw recon/hidden wing/model access",
+      "authorization": {
+        "system": "current enabled tactical system",
+        "body": "disclosed===true, precise===true, identified===true, confidence>=.72",
+        "event": "disclosed===true, observed===true, precise===true, sourceId present, confidence>=.72, finite at/position/direction",
+        "realProducers": "Finite charged20fuel EMP, fuel-spent feeding, accepted onLaunch kinetic/flak and actual intercept; rejected fitted-weapon queries never qualify"
+      },
+      "baselines": "Initial/load/view/system/pause/map/design/clock-rewind/AudioContext resume silent",
+      "noImmediateRepeats": "Stable event-ID dedupe256; no historical or missed-mute backlog; no queue",
+      "globalCadenceSimulationSeconds": 0.75,
+      "voiceLimit": 2,
+      "voiceLimitIncludesRetiring": true,
+      "neverStealWeaponVoices": true,
+      "globalPoolLimit": 64,
+      "retirement": {
+        "revokedBodyOrSource": "cancel gain ramp,4ms time constant,stop within18ms",
+        "pauseMuteAmbienceZero": "same short stop",
+        "audioContextSuspension": "immediate zero and stop; silent resume baseline",
+        "dispose": "stop/disconnect every owned source and clear observations"
+      },
+      "recipes": {
+        "pulse": {
+          "bank": "energy-plasma",
+          "gain": 0.32,
+          "rate": 0.6,
+          "duration": 1.15,
+          "cutoff": 600,
+          "cadence": 4,
+          "priority": 5,
+          "bus": "ambience",
+          "loop": false,
+          "perGuardianCadenceSimulationSeconds": 4
+        },
+        "feeding": {
+          "bank": "hb-vent",
+          "gain": 0.2,
+          "rate": 0.7,
+          "duration": 1.3,
+          "cutoff": 700,
+          "cadence": 8,
+          "priority": 4,
+          "bus": "ambience",
+          "loop": false,
+          "perGuardianCadenceSimulationSeconds": 8
+        },
+        "mining": {
+          "bank": "impact-tail",
+          "gain": 0.09,
+          "rate": 0.72,
+          "duration": 0.7,
+          "cutoff": 750,
+          "cadence": 6,
+          "priority": 3,
+          "bus": "ambience",
+          "loop": false,
+          "perGuardianCadenceSimulationSeconds": 6
+        },
+        "warlord": {
+          "bank": "rail-tail",
+          "gain": 0.07,
+          "rate": 0.68,
+          "duration": 0.65,
+          "cutoff": 650,
+          "cadence": 6,
+          "priority": 2,
+          "bus": "ambience",
+          "loop": false,
+          "perGuardianCadenceSimulationSeconds": 6
+        },
+        "derelict": {
+          "bank": "impact-tail",
+          "gain": 0.08,
+          "rate": 0.62,
+          "duration": 0.8,
+          "cutoff": 700,
+          "cadence": 6,
+          "priority": 1,
+          "bus": "ambience",
+          "loop": false,
+          "perGuardianCadenceSimulationSeconds": 6
+        }
+      },
+      "stats": [
+        "audioPass",
+        "guardianAccents",
+        "guardianKinds",
+        "guardianVoices",
+        "guardianCulled",
+        "lastGuardianEvent"
+      ],
+      "nativeHostRequirements": "Reuse existing named SoundCues/waves. Instance override to Ambience is required despite the canonical weapon bank bus. Apply gain/rate/duration/lowpass/distance/cadence and two-background-voice cap in host; never play another full gun/blast or continuously loop these samples. Metadata registration is not native gameplay proof."
+    }
+  },
+  "mix": {
+    "outputTrim": 0.69,
+    "defaults": {
+      "master": 0.72,
+      "weapons": 0.52,
+      "impacts": 0.6,
+      "engines": 0.25,
+      "ambience": 0.16,
+      "music": 0.38,
+      "interface": 0.5,
+      "alerts": 0.66
+    },
+    "musicTempo": 72,
+    "phaseAlignedScoreFrames": 2560000,
+    "sampleRate": 48000,
+    "weaponMusicDuck": 0.32,
+    "largeBlastMusicDuck": 0.18,
+    "source": "G:/sfx/hardburn/src/audio.js",
+    "note": "Cue assets remain unity gain/pitch. These are existing browser mixer settings for a port adapter, not DSP baked into imported Unreal assets.",
+    "outputGain": 0.69,
+    "pdcPolicy": {
+      "maxVoices": 4,
+      "retriggerSeconds": 0.34,
+      "maximumPhraseSeconds": 0.31,
+      "recipeGain": 1.35,
+      "lowpassHz": 3000,
+      "priorityBase": 0.75,
+      "heavyRailMacPriorityBase": 1.5,
+      "priorityIncludesListenerGain": true,
+      "replaceOnlyIfPriorityImprovementExceeds": 0.08,
+      "replacementFadeSeconds": 0.018,
+      "globalVoiceLimit": 64,
+      "variationBagWithoutReplacement": true,
+      "pitchVariationFraction": 0.08,
+      "alsoBoundsAutocannonCore": true
+    },
+    "audioPass": 11,
+    "globalVoiceLimit": 64,
+    "eventVariation": {
+      "pitchMultiplierRange": [
+        0.96,
+        1.04
+      ],
+      "gainMultiplierRange": [
+        0.92,
+        1.08
+      ],
+      "filterMultiplierRange": [
+        0.88,
+        1
+      ],
+      "oneShotStartOffsetSeconds": [
+        0,
+        0.004
+      ],
+      "roundRobin": "Full shuffled bag, every take once before refill; boundary swap prevents immediate last-take repetition. UI and score unchanged.",
+      "bakedLayerSelection": "All20 families have8 unique takes and >=2 actual source-layer combinations. PDC layer selection is baked, never stacked. V7 seven guided phase/motor families also each8 unique physical takes and >=2 actual source-layer combinations.",
+      "runtimeLayerLimit": 2,
+      "farTailProbability": 0.82,
+      "farTailGainFactor": 0.38,
+      "farTailDelaySeconds": [
+        0.014,
+        0.026
+      ]
+    },
+    "spatialPolicy": {
+      "listenerGain": "220/(220+max(0,distance-120))",
+      "audibleGainFloor": 0.04,
+      "distanceLowpass": "max(700,15000/(1+distance/520))",
+      "panLimit": 0.88,
+      "sizeUnits": "game hull length; unitsToCentimeters100 applies native distances",
+      "sizeInputRange": [
+        4,
+        500
+      ],
+      "sizeGain": "clamp(1+log2(size/30)*.045,.88,1.15)",
+      "sizePitch": "clamp((30/size)^.022,.94,1.045)",
+      "sizeLowpass": "clamp((30/size)^.035,.90,1.04)",
+      "PDCSizeModulation": "fixed30 to preserve calibrated short burst weight"
+    },
+    "guidedMotorPolicy": {
+      "maximumActiveLoops": 2,
+      "maximumDistance": 4800,
+      "sampleDurationSeconds": 12,
+      "variantStartOffsetSeconds": [
+        0,
+        11.95
+      ],
+      "bankByWeapon": {
+        "missile": "missile-burn",
+        "swarm": "swarm-burn",
+        "torpedo": "torpedo-burn",
+        "nuclear": "torpedo-burn"
+      },
+      "lifetime": "Strict motorActive===true only. Evaluate guided routes every audio.update frame, independent of100ms score/hull cadence.12ms powered gain attack; cancel stale automation and fade4ms/stop18ms on actual coast/done/generation/map/remote/pause. Brief correction and heavy terminal pulses resume motor only, never first ignition.",
+      "sizeInput": "clamp(bodyScale*160,8,160)",
+      "gain": "distance<=1000: .14*listenerGain*(.35+closing)*randomGain*sizeGain (unchanged); heavy distance>1000: .028*(distance/1000)^(-.65)*(.35+closing)*randomGain*sizeGain",
+      "pitch": "(.72+closing*.38)*randomPitch*sizePitch",
+      "filter": "Existing near filter unchanged; heavy distance>1000 additionally caps lowpass at360*(distance/1000)^(-.20)Hz. No additional loops; two nearest actually powered eligible bodies total.",
+      "poweredGainAttackSeconds": 0.012,
+      "stopSeconds": 0.018,
+      "stopGainTimeConstantSeconds": 0.004,
+      "unknownMotorStateIsSilent": true,
+      "maximumDistanceByWeapon": {
+        "torpedo": 4800,
+        "nuclear": 4800,
+        "missile": 1000,
+        "swarm": 1000
+      }
+    },
+    "damageObservation": {
+      "breach": "Read actual campaignUnit.damageControl.sections (or ship.damageControl.sections) breach counts; visual holes cap at6 and can remain after patch. Observe new increases only, no restored-save startup reports; legacy visual-count fallback only without compartment state. Never modify damage.",
+      "vent": "At most2 nearest live local hulls whose actual section breaches>0 and pressure>.025. Finite1.8s releases gated1.8s; patch, repair or depressurization stops new releases. Legacyfallback requires visual breaches and hp<95% only if no section state."
+    },
+    "guidedPhasePolicy": {
+      "callbacks": {
+        "cold": "world.audio.phaseCold(position,currentHeading,projectile)",
+        "ignition": "world.audio.phaseIgnition(position,currentHeading,projectile)"
+      },
+      "markers": [
+        "userData.weapon",
+        "userData.effectSystemId",
+        "userData.owner.systemId",
+        "userData.launchPending",
+        "userData.motorActive",
+        "userData.guidedGeneration",
+        "userData.flightAge"
+      ],
+      "dedup": "Audio-owned WeakMap keyed object identity plus guidedGeneration; first cold release and first ignition only. Coast correction never replays ignition. Old flying objects discovered from load/view do not invent launch reports. Consume remote/paused transitions without delayed replay. Callback timing authoritative;Per-frame observer fallback supports older callbackless bodies.",
+      "maximumActivePhaseVoices": 6,
+      "maximumPhaseSourcesIncludingRetirement": 8,
+      "maximumActiveIgnitionVoices": 3,
+      "replacementPriorityImprovement": 0.05,
+      "replacementFadeSeconds": 0.018,
+      "priorityBase": {
+        "swarm": 1,
+        "missile": 1,
+        "torpedo": 1.35
+      },
+      "priorityIncludesListenerGain": true,
+      "lifetime": "Cold report keeps its finite physical decay. Ignition voices retain projectile+guidedGeneration and are gated every frame by strict motorActive===true, !done, !launchPending, matching generation and local running system. On coast/done/reuse/pause/map/remote cancel stale gain automation and fade4ms/stop18ms. Callback occurs before motor flag is updated in same simulation step; frame gate consumes authoritative final powered state. Do not replay first ignition on correction/terminal burns.",
+      "mountFireSuppressed": [
+        "missile",
+        "torpedo",
+        "nuclear",
+        "swarm"
+      ],
+      "weaponsBus": true,
+      "preservedGunMix": true,
+      "physicalHullReturnMaximumSeconds": 0.32
+    },
+    "swarmWallPolicy": {
+      "bank": "swarm-burn",
+      "minimumActuallyBurningLocalBodies": 3,
+      "maximumActiveDensityLoops": 1,
+      "maximumNearestIndividualMotorLoops": 2,
+      "maximumDistance": 1000,
+      "gain": ".12*sqrt(min(40,density)/40)*listenerGain*randomGain",
+      "maximumPreBusGainBeforeDistance": 0.1296,
+      "position": "centroid of actually burning local swarm bodies within1000",
+      "lowpassHz": "min(distanceLowpass,780*randomFilter)",
+      "stop": "Strict currently powered local swarm count<3, coast/done/remote/map/pause; cancel stale automation then fade4ms/stop18ms.12ms powered attack; sync each audio.update frame.",
+      "loopContract": "Spawn once, update bounded density/pan/filter, retain native component while burning, stop on lifetime end. Score transport unchanged.",
+      "poweredGainAttackSeconds": 0.012,
+      "stopSeconds": 0.018
+    },
+    "longRangeReceiver": {
+      "bank": "contact",
+      "bus": "alerts",
+      "spatial": false,
+      "observer": "Read world.galactic.radarContacts plus campaign.contacts confidence/identified/uncertainty; only live local actually rendered radar reports sound. Hidden designer transitions consumed; no hidden coordinates read. Optional world.solarIntel() supplies only actually activated disclosed/observed, precise, matching-system scans with finite position, startedAt and duration evaluated against authoritative simulation time. Explicit disclosed:false fails closed.",
+      "thresholds": {
+        "detected": 0.1,
+        "identified": 0.72,
+        "identificationRelease": 0.6,
+        "lostConfidence": 0.075,
+        "lostHoldSeconds": 5,
+        "uncertaintyGrowthMeters": 28,
+        "uncertaintyGrowthFraction": 0.2,
+        "uncertaintyDisplayRangeMeters": [
+          12,
+          1000000
+        ]
+      },
+      "globalMinimumReportIntervalSeconds": 4,
+      "perContactPerKindMinimumSeconds": 18,
+      "maximumPendingReports": 1,
+      "pendingExpiresSeconds": 6,
+      "maximumTrackedContacts": 512,
+      "identityExpirySeconds": 60,
+      "maximumScansPerSnapshot": 24,
+      "maximumTrackedScanIdentities": 256,
+      "coalesce": "Actual ping/sweep takes one shared report slot and consumes same-tick contact transitions; never queue fleet-sized reports. Suppress restored/save/view/pause scan baselines, repeated IDs, late disclosure, future/expired scans and confidence jitter. Scan ID uses system/emitter/mode/startedAt. Receiver reports consume legacy contact:ui even when full voice pool; successful ACTIVE PING toast has no generic confirm before the actual emission. Actual solar uncertainty preserved; uncertainty drift threshold max(28m,20% of best prior solution).",
+      "gainPitchDurationLowpassByEvent": {
+        "ping": [
+          0.18,
+          0.88,
+          0.55,
+          950
+        ],
+        "sweep": [
+          0.16,
+          0.7,
+          0.9,
+          700
+        ],
+        "detected": [
+          0.16,
+          0.78,
+          0.7,
+          850
+        ],
+        "acquired": [
+          0.22,
+          1,
+          0.9,
+          1250
+        ],
+        "uncertain": [
+          0.12,
+          0.66,
+          1.1,
+          650
+        ]
+      },
+      "voicePolicy": "Priority0, at most existing64 pool; reports never steal a gun voice; skip while Alerts0/masterMute; no new oscillator/timer/assets.",
+      "music": "sensorTension<=.55, rise2.5s/release5s; contribution=tension*max(0,1-combatIntensity/.35); existing score-pulse +.18*contribution, danger +.10*contribution, bed LP -350*contribution. Existing Music/master/mute and duck buses retain control."
+    },
+    "solarAudioPolicy": {
+      "source": "world.solarIntel() authoritative read-only disclosed current-system frame; not hidden ships or drive-signature correlation",
+      "frameGate": {
+        "enabled": true,
+        "sameSystem": true,
+        "running": "world.speed>0 && !campaign.mapOpen",
+        "position": "finite three-component array",
+        "confidenceMinimum": 0.1
+      },
+      "inputCaps": {
+        "interference": 64,
+        "traffic": 64
+      },
+      "receiverRange": 4800,
+      "stop": {
+        "fadeSeconds": 0.004,
+        "sourceStopSeconds": 0.018,
+        "cancelGainAutomation": true,
+        "conditions": [
+          "no explicit power",
+          "no actual strength",
+          "missing frame",
+          "disabled frame",
+          "pause",
+          "map/designer",
+          "remote system",
+          "out of range",
+          "runningCold",
+          "done"
+        ]
+      },
+      "combatSparseGain": "max(.25,1-musicIntensity/.5)",
+      "doesNotAllocateGunVoices": true,
+      "outputTrim": 0.69
+    },
+    "discoveryReceiver": {
+      "source": "world.solarIntel().discoveries ONLY author-defined disclosed intel; do not access whole campaign.recon or site classification/rewards",
+      "required": {
+        "enabled": true,
+        "disclosed": true,
+        "sameActiveSystem": true,
+        "running": true,
+        "id": "stable non-null",
+        "position": "finite reportedXYZ array; validation only, never spatialised",
+        "confidence": "finite >=.12"
+      },
+      "thresholds": {
+        "detected": 0.12,
+        "identified": ".8 and explicit identified:true"
+      },
+      "trigger": "highest known stage increases, never observedAt/discoveredAt tick changes",
+      "reportArticulation": {
+        "discovery-detected": {
+          "bank": "contact",
+          "bus": "alerts",
+          "gain": 0.16,
+          "rate": 0.62,
+          "duration": 0.9,
+          "lowpassHz": 650
+        },
+        "discovery-identified": {
+          "bank": "contact",
+          "bus": "alerts",
+          "gain": 0.22,
+          "rate": 0.82,
+          "duration": 1.1,
+          "lowpassHz": 1050
+        }
+      },
+      "spatial": false,
+      "priority": 0,
+      "voiceRule": "Only if gun pool<64 and Alerts>0 and master not muted; cannot steal guns",
+      "cadence": "shared receiver >=4 seconds with actual ping/sweep and radar reports",
+      "eventPriority": [
+        "active scan",
+        "observed diversion or paid completion",
+        "discovery transition",
+        "radar contact transition"
+      ],
+      "pending": {
+        "max": 1,
+        "expirySimulationSeconds": 6,
+        "validity": "discovery remains disclosed/current-system; clear on disabled/pause/scope/rewind"
+      },
+      "caps": {
+        "recordsPerFrame": 128,
+        "highestStageIdentityCache": 512
+      },
+      "baselineSilence": [
+        "first canonical frame",
+        "restored save",
+        "view/system entry",
+        "pause resume",
+        "frame-clock rewind"
+      ],
+      "logAndToastPrefixesSuppressed": [
+        "SIGNAL DETECTED",
+        "SURVEY IDENTIFIED",
+        "RECOVERY COMPLETE"
+      ],
+      "classificationExcluded": [
+        "kind",
+        "guardianKind",
+        "resource",
+        "reward",
+        "truePosition",
+        "raw site coordinates"
+      ],
+      "nativeDependency": "existing contact cue/package unchanged; host owns receiver transitions/filter/articulation/control routing",
+      "sourceContractStatus": "Verified actual committed ff solarIntel/solar-recon from5939c4e plusf1afff7; current reported coordinates/detection/identification match observer."
+    },
+    "observedEwReceiver": {
+      "source": "world.solarIntel().ewEvents ONLY player-authorised producer outcomes, never world.decoyLocks or raw ship/guardian/reward state",
+      "kinds": [
+        "decoy-diversion",
+        "recovery-complete"
+      ],
+      "required": {
+        "enabled": true,
+        "sameActiveSystem": true,
+        "disclosed": true,
+        "observed": true,
+        "running": true,
+        "id": "stable non-null",
+        "at": "finite actual simulation time, not future, younger than20s",
+        "position": "finite public XYZ validation only; report always receiver-centred"
+      },
+      "articulation": {
+        "decoy-diversion": {
+          "bank": "contact",
+          "bus": "alerts",
+          "gain": 0.19,
+          "rate": 0.7,
+          "duration": 0.75,
+          "lowpassHz": 800
+        },
+        "recovery-complete": {
+          "bank": "contact",
+          "bus": "alerts",
+          "gain": 0.18,
+          "rate": 0.9,
+          "duration": 0.8,
+          "lowpassHz": 1100
+        }
+      },
+      "spatial": false,
+      "priority": 0,
+      "voiceRule": "Only if global gun pool<64, Alerts>0 and not muted; no gun stealing",
+      "cadenceSeconds": 4,
+      "sharedWith": [
+        "actual active scans",
+        "discovery receiver",
+        "radar confidence receiver"
+      ],
+      "pendingMax": 1,
+      "pendingExpirySeconds": 6,
+      "caps": {
+        "records": 24,
+        "seenIdentities": 256
+      },
+      "baselineSilence": [
+        "initial frame",
+        "load",
+        "view/system entry",
+        "pause/resume",
+        "clock rewind"
+      ],
+      "lateDisclosure": "new event at must be >=previous snapshot time-.02; late historic authorisation silently consumed",
+      "dedup": "stable event id consumed once, burst outcomes coalesced",
+      "producerScope": "ff: actual player-decoy retarget, attacker already player-observed; actual recovery-complete pushed at claimed/reward payment",
+      "nativeDependency": "Existing contact SoundCue/package unchanged; host implements event lifecycle/filter/gain/control routing",
+      "producerAudit": "Fleet producer currently invoked in findTarget selection query; ff queued concrete assignment-only fix. Audio consumes explicit observed records, cannot validate all-world target queries. Seeker selected target is actually assigned to projectile targetEntity/getTarget in same launch."
+    }
+  },
+  "assets": {
+    "alert": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_alert_df905058.SC_alert_df905058",
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "click": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_click_e5c7ffac.SC_click_e5c7ffac",
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "comms-close": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_comms_close_82995aac.SC_comms_close_82995aac",
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "comms-key": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_comms_key_140c2955.SC_comms_key_140c2955",
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "confirm": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_confirm_3f267c2a.SC_confirm_3f267c2a",
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "contact": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_contact_093e7d5f.SC_contact_093e7d5f",
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "critical": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_critical_bfba7033.SC_critical_bfba7033",
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "energy-laser": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_energy_laser_aa855c09.SC_energy_laser_aa855c09",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "energy-plasma": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_energy_plasma_53366ef4.SC_energy_plasma_53366ef4",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-armour": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_armour_a82b318c.SC_hb_armour_a82b318c",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-breach": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_breach_4eba1780.SC_hb_breach_4eba1780",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-drive-heavy": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_drive_heavy_3190173a.SC_hb_drive_heavy_3190173a",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-drive-medium": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_drive_medium_4c6cf068.SC_hb_drive_medium_4c6cf068",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-drive-small": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_drive_small_68273441.SC_hb_drive_small_68273441",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-flak": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_flak_b562a1d5.SC_hb_flak_b562a1d5",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-impact": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_impact_bc3c040c.SC_hb_impact_bc3c040c",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-intercept": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_intercept_41785098.SC_hb_intercept_41785098",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-large-blast": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_large_blast_56d998ce.SC_hb_large_blast_56d998ce",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-launch": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_launch_129b78c7.SC_hb_launch_129b78c7",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-mac": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_mac_f47bbe0a.SC_hb_mac_f47bbe0a",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-missile-cold": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_missile_cold_66862afb.SC_hb_missile_cold_66862afb",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-missile-ignition": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_missile_ignition_fa7ab059.SC_hb_missile_ignition_fa7ab059",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-missile-launch": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_missile_launch_675e7a22.SC_hb_missile_launch_675e7a22",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-pdc": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_pdc_426bfe18.SC_hb_pdc_426bfe18",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-rail": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_rail_a61d8aeb.SC_hb_rail_a61d8aeb",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-reactor-blast": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_reactor_blast_1e8f729b.SC_hb_reactor_blast_1e8f729b",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-small-blast": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_small_blast_0b56cde6.SC_hb_small_blast_0b56cde6",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-swarm-cold": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_swarm_cold_5f17f801.SC_hb_swarm_cold_5f17f801",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-swarm-ignition": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_swarm_ignition_996cc113.SC_hb_swarm_ignition_996cc113",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-torpedo-cold": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_torpedo_cold_30280722.SC_hb_torpedo_cold_30280722",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-torpedo-ignition": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_torpedo_ignition_7161e114.SC_hb_torpedo_ignition_7161e114",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hb-vent": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_vent_3331e1dc.SC_hb_vent_3331e1dc",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hostile": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hostile_8f383ccd.SC_hostile_8f383ccd",
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "impact-tail": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_impact_tail_9480404c.SC_impact_tail_9480404c",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "missile-burn": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_missile_burn_e4487716.SC_missile_burn_e4487716",
+      "loop": true,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 100000
+    },
+    "pdc-mechanism": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_pdc_mechanism_9f465909.SC_pdc_mechanism_9f465909",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "radio-breach": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_radio_breach_cedfaf5f.SC_radio_breach_cedfaf5f",
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "radio-incoming": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_radio_incoming_95f437a4.SC_radio_incoming_95f437a4",
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "radio-intercept": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_radio_intercept_a2fc5f23.SC_radio_intercept_a2fc5f23",
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "rail-tail": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_rail_tail_da512fd3.SC_rail_tail_da512fd3",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "score-bed": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_score_bed_f830f1ae.SC_score_bed_f830f1ae",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "score-combat": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_score_combat_29071067.SC_score_combat_29071067",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "score-danger": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_score_danger_1b5d719a.SC_score_danger_1b5d719a",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "score-machinery": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_score_machinery_0587e152.SC_score_machinery_0587e152",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "score-motif": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_score_motif_55f593c0.SC_score_motif_55f593c0",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "score-pulse": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_score_pulse_cccc8b79.SC_score_pulse_cccc8b79",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "shipboard": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_shipboard_b1791f35.SC_shipboard_b1791f35",
+      "loop": true,
+      "spatial": false,
+      "bus": "ambience",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "swarm-burn": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_swarm_burn_a597ce59.SC_swarm_burn_a597ce59",
+      "loop": true,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 100000
+    },
+    "torpedo-burn": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_torpedo_burn_347f1381.SC_torpedo_burn_347f1381",
+      "loop": true,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 480000
+    },
+    "ui-cancel": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_ui_cancel_f45ff828.SC_ui_cancel_f45ff828",
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "ui-nav": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_ui_nav_92b97c12.SC_ui_nav_92b97c12",
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "ui-select": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_ui_select_6e5ec4eb.SC_ui_select_6e5ec4eb",
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "minDistance": 0,
+      "maxDistance": 100
+    },
+    "rail": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_rail_a61d8aeb.SC_hb_rail_a61d8aeb",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "mac": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_mac_f47bbe0a.SC_hb_mac_f47bbe0a",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "pdc": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_pdc_426bfe18.SC_hb_pdc_426bfe18",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "flak": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_flak_b562a1d5.SC_hb_flak_b562a1d5",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "missile": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_missile_launch_675e7a22.SC_hb_missile_launch_675e7a22",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "torpedo": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_launch_129b78c7.SC_hb_launch_129b78c7",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "nuclear": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_launch_129b78c7.SC_hb_launch_129b78c7",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "swarm": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_missile_launch_675e7a22.SC_hb_missile_launch_675e7a22",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "nuclear-impact": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_reactor_blast_1e8f729b.SC_hb_reactor_blast_1e8f729b",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "laser": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_energy_laser_aa855c09.SC_energy_laser_aa855c09",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "plasma": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_energy_plasma_53366ef4.SC_energy_plasma_53366ef4",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "emp": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_energy_plasma_53366ef4.SC_energy_plasma_53366ef4",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "veil-arc": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_energy_plasma_53366ef4.SC_energy_plasma_53366ef4",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "impact": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_impact_bc3c040c.SC_hb_impact_bc3c040c",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "armour": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_armour_a82b318c.SC_hb_armour_a82b318c",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "shield": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_impact_bc3c040c.SC_hb_impact_bc3c040c",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "explosion": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_small_blast_0b56cde6.SC_hb_small_blast_0b56cde6",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "explosion-small": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_small_blast_0b56cde6.SC_hb_small_blast_0b56cde6",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "explosion-large": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_large_blast_56d998ce.SC_hb_large_blast_56d998ce",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "intercept": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_intercept_41785098.SC_hb_intercept_41785098",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "proj": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_rail_a61d8aeb.SC_hb_rail_a61d8aeb",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "light": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_energy_plasma_53366ef4.SC_energy_plasma_53366ef4",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "hull-breach": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_breach_4eba1780.SC_hb_breach_4eba1780",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "vent": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_vent_3331e1dc.SC_hb_vent_3331e1dc",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "explosion-reactor": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_reactor_blast_1e8f729b.SC_hb_reactor_blast_1e8f729b",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "coilgun": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_rail_a61d8aeb.SC_hb_rail_a61d8aeb",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "autocannon": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_pdc_426bfe18.SC_hb_pdc_426bfe18",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "swarm-cold": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_swarm_cold_5f17f801.SC_hb_swarm_cold_5f17f801",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "swarm-ignition": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_swarm_ignition_996cc113.SC_hb_swarm_ignition_996cc113",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "missile-cold": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_missile_cold_66862afb.SC_hb_missile_cold_66862afb",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "missile-ignition": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_missile_ignition_fa7ab059.SC_hb_missile_ignition_fa7ab059",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "torpedo-cold": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_torpedo_cold_30280722.SC_hb_torpedo_cold_30280722",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    },
+    "torpedo-ignition": {
+      "sound": "/JsGameBridge/Audio/HardBurn/SC_hb_torpedo_ignition_7161e114.SC_hb_torpedo_ignition_7161e114",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 12000,
+      "maxDistance": 550000
+    }
+  }
+}

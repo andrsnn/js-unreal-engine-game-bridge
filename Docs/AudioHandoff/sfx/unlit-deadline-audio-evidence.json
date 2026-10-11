@@ -1,0 +1,22 @@
+{
+  "tip": "f56c04541e632cf6ab6ffd03b371d718753b4fdc",
+  "branch": "audio/v1",
+  "primaryIncluded": "add16d14bf09c08508a750c7a931fea433c09a0c",
+  "audioRevision": 14,
+  "audioPass": 5,
+  "sourceFix": "Atmospheric engine hook now uses same actual burn/boost as plumes; parked clears owner",
+  "checks": [
+    "actual native flight function W/Shift/X, liftoff/descent/parked PASS",
+    "physical pass4 assets/mixer/spatial/bounds/mute PASS",
+    "physical pass5 evaluated rotor-release/recut/finite tail/mute PASS",
+    "Windows Node full tsc --noEmit PASS",
+    "scoped staged diff whitespace PASS"
+  ],
+  "productionPort": 5336,
+  "devPort": 5353,
+  "browserBuildPublication": "Root-owned pending batch; agent ran none",
+  "assetsAndMix": "Same25 assets/licences/cuekeys; presence2.7/2.4/2.7 and settings unchanged",
+  "primaryWorkingFilesReadOnly": "audio.ts/planetScene.ts/PLAY.md/digTool.ts/mineTools.ts normalized same as HEAD at audit time; git stat flags from CRLF only",
+  "handoff": "G:/sfx/unlit-unreal-audio-v5.json",
+  "completedUtc": "2026-10-10T19:42:34.124945+00:00"
+}

@@ -1,0 +1,1390 @@
+{
+  "version": 1,
+  "game": "karvos",
+  "audioPass": 5,
+  "sourceCommit": "e8f9f023a745ab0656e0b05d36217ac3f679bb53",
+  "cues": {
+    "impactMetal": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-impactMetal-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-impactMetal-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-impactMetal-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-impactMetal-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "impactFlesh": {
+      "files": [
+        "G:/sfx/karvos/public/audio/impactFlesh-01.ogg",
+        "G:/sfx/karvos/public/audio/impactFlesh-02.ogg",
+        "G:/sfx/karvos/public/audio/impactFlesh-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "impactRock": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-impactRock-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-impactRock-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-impactRock-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-impactRock-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "stepRock": {
+      "files": [
+        "G:/sfx/karvos/public/audio/stepRock-01.ogg",
+        "G:/sfx/karvos/public/audio/stepRock-02.ogg",
+        "G:/sfx/karvos/public/audio/stepRock-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "stepSnow": {
+      "files": [
+        "G:/sfx/karvos/public/audio/stepSnow-01.ogg",
+        "G:/sfx/karvos/public/audio/stepSnow-02.ogg",
+        "G:/sfx/karvos/public/audio/stepSnow-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "energy": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-energy-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-energy-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-energy-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-energy-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "explosion": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-explosion-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-explosion-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-explosion-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-explosion-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "explosions",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "rocket": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-rocket-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-rocket-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-rocket-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-rocket-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "rifle": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-rifle-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-rifle-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-rifle-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-rifle-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "heavy": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-heavy-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-heavy-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-heavy-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-heavy-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "pistol": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-pistol-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-pistol-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-pistol-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-pistol-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "shotgun": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-shotgun-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-shotgun-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-shotgun-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-shotgun-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "reloadStart": {
+      "files": [
+        "G:/sfx/karvos/public/audio/reloadStart-01.ogg",
+        "G:/sfx/karvos/public/audio/reloadStart-02.ogg",
+        "G:/sfx/karvos/public/audio/reloadStart-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "reloadEnd": {
+      "files": [
+        "G:/sfx/karvos/public/audio/reloadEnd-01.ogg",
+        "G:/sfx/karvos/public/audio/reloadEnd-02.ogg",
+        "G:/sfx/karvos/public/audio/reloadEnd-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "swap": {
+      "files": [
+        "G:/sfx/karvos/public/audio/swap-01.ogg",
+        "G:/sfx/karvos/public/audio/swap-02.ogg",
+        "G:/sfx/karvos/public/audio/swap-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "creature": {
+      "files": [
+        "G:/sfx/karvos/public/audio/creature-01.ogg",
+        "G:/sfx/karvos/public/audio/creature-02.ogg",
+        "G:/sfx/karvos/public/audio/creature-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "creatureAttack": {
+      "files": [
+        "G:/sfx/karvos/public/audio/creatureAttack-01.ogg",
+        "G:/sfx/karvos/public/audio/creatureAttack-02.ogg",
+        "G:/sfx/karvos/public/audio/creatureAttack-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "creatureDeath": {
+      "files": [
+        "G:/sfx/karvos/public/audio/creatureDeath-01.ogg",
+        "G:/sfx/karvos/public/audio/creatureDeath-02.ogg",
+        "G:/sfx/karvos/public/audio/creatureDeath-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "stepSand": {
+      "files": [
+        "G:/sfx/karvos/public/audio/stepSand-01.ogg",
+        "G:/sfx/karvos/public/audio/stepSand-02.ogg",
+        "G:/sfx/karvos/public/audio/stepSand-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "stepMud": {
+      "files": [
+        "G:/sfx/karvos/public/audio/stepMud-01.ogg",
+        "G:/sfx/karvos/public/audio/stepMud-02.ogg",
+        "G:/sfx/karvos/public/audio/stepMud-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "dry": {
+      "files": [
+        "G:/sfx/karvos/public/audio/dry-01.ogg",
+        "G:/sfx/karvos/public/audio/dry-02.ogg",
+        "G:/sfx/karvos/public/audio/dry-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "alert": {
+      "files": [
+        "G:/sfx/karvos/public/audio/alert-01.ogg",
+        "G:/sfx/karvos/public/audio/alert-02.ogg",
+        "G:/sfx/karvos/public/audio/alert-03.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "rustle": {
+      "files": [
+        "G:/sfx/karvos/public/audio/rustle-01.ogg",
+        "G:/sfx/karvos/public/audio/rustle-02.ogg",
+        "G:/sfx/karvos/public/audio/rustle-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "tailOpen": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-tailOpen-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-tailOpen-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-tailOpen-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-tailOpen-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "reflections",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "tailCanyon": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-tailCanyon-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-tailCanyon-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-tailCanyon-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-tailCanyon-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "reflections",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "tailRoom": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-tailRoom-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-tailRoom-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-tailRoom-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-tailRoom-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "reflections",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "bikeStart": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-bikeStart-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-bikeStart-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-bikeStart-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-bikeStart-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "near": 5,
+      "far": 65,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "bikeStop": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-bikeStop-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-bikeStop-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-bikeStop-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-bikeStop-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "near": 5,
+      "far": 65,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "build": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-build-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-build-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-build-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-build-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "craft": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-craft-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-craft-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-craft-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-craft-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "thunder": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-thunder-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-thunder-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-thunder-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-thunder-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "ambience",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "creatureLarge": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v1-creatureLarge-01.ogg",
+        "G:/sfx/karvos/public/audio/v1-creatureLarge-02.ogg",
+        "G:/sfx/karvos/public/audio/v1-creatureLarge-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "creatureSmall": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v1-creatureSmall-01.ogg",
+        "G:/sfx/karvos/public/audio/v1-creatureSmall-02.ogg",
+        "G:/sfx/karvos/public/audio/v1-creatureSmall-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "stepMetal": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-stepMetal-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-stepMetal-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-stepMetal-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-stepMetal-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "punchRifle": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v2-punchRifle-01.ogg",
+        "G:/sfx/karvos/public/audio/v2-punchRifle-02.ogg",
+        "G:/sfx/karvos/public/audio/v2-punchRifle-03.ogg",
+        "G:/sfx/karvos/public/audio/v2-punchRifle-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "punchHeavy": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v2-punchHeavy-01.ogg",
+        "G:/sfx/karvos/public/audio/v2-punchHeavy-02.ogg",
+        "G:/sfx/karvos/public/audio/v2-punchHeavy-03.ogg",
+        "G:/sfx/karvos/public/audio/v2-punchHeavy-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "punchPistol": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v2-punchPistol-01.ogg",
+        "G:/sfx/karvos/public/audio/v2-punchPistol-02.ogg",
+        "G:/sfx/karvos/public/audio/v2-punchPistol-03.ogg",
+        "G:/sfx/karvos/public/audio/v2-punchPistol-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "punchShotgun": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v2-punchShotgun-01.ogg",
+        "G:/sfx/karvos/public/audio/v2-punchShotgun-02.ogg",
+        "G:/sfx/karvos/public/audio/v2-punchShotgun-03.ogg",
+        "G:/sfx/karvos/public/audio/v2-punchShotgun-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "voiceDrone": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceDrone-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceDrone-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceDrone-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceBrute": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceBrute-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceBrute-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceBrute-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceStalker": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceStalker-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceStalker-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceStalker-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceFlyer": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceFlyer-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceFlyer-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceFlyer-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceRaider": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceRaider-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceRaider-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceRaider-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "uiAccept": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v2-uiAccept-01.ogg",
+        "G:/sfx/karvos/public/audio/v2-uiAccept-02.ogg",
+        "G:/sfx/karvos/public/audio/v2-uiAccept-03.ogg",
+        "G:/sfx/karvos/public/audio/v2-uiAccept-04.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "ui",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "uiBack": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v2-uiBack-01.ogg",
+        "G:/sfx/karvos/public/audio/v2-uiBack-02.ogg",
+        "G:/sfx/karvos/public/audio/v2-uiBack-03.ogg",
+        "G:/sfx/karvos/public/audio/v2-uiBack-04.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "ui",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "uiSelect": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v2-uiSelect-01.ogg",
+        "G:/sfx/karvos/public/audio/v2-uiSelect-02.ogg",
+        "G:/sfx/karvos/public/audio/v2-uiSelect-03.ogg",
+        "G:/sfx/karvos/public/audio/v2-uiSelect-04.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "ui",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "uiHover": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v2-uiHover-01.ogg",
+        "G:/sfx/karvos/public/audio/v2-uiHover-02.ogg",
+        "G:/sfx/karvos/public/audio/v2-uiHover-03.ogg",
+        "G:/sfx/karvos/public/audio/v2-uiHover-04.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "ui",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "voiceThreat": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v3-voiceThreat-01.ogg",
+        "G:/sfx/karvos/public/audio/v3-voiceThreat-02.ogg",
+        "G:/sfx/karvos/public/audio/v3-voiceThreat-03.ogg",
+        "G:/sfx/karvos/public/audio/v3-voiceThreat-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "voicePain": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v3-voicePain-01.ogg",
+        "G:/sfx/karvos/public/audio/v3-voicePain-02.ogg",
+        "G:/sfx/karvos/public/audio/v3-voicePain-03.ogg",
+        "G:/sfx/karvos/public/audio/v3-voicePain-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "voiceFall": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v3-voiceFall-01.ogg",
+        "G:/sfx/karvos/public/audio/v3-voiceFall-02.ogg",
+        "G:/sfx/karvos/public/audio/v3-voiceFall-03.ogg",
+        "G:/sfx/karvos/public/audio/v3-voiceFall-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "raiderPain": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v3-raiderPain-01.ogg",
+        "G:/sfx/karvos/public/audio/v3-raiderPain-02.ogg",
+        "G:/sfx/karvos/public/audio/v3-raiderPain-03.ogg",
+        "G:/sfx/karvos/public/audio/v3-raiderPain-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "reloadLatch": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-reloadLatch-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-reloadLatch-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-reloadLatch-03.ogg",
+        "G:/sfx/karvos/public/audio/v4-reloadLatch-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 100,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "punchEnergy": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v3-punchEnergy-01.ogg",
+        "G:/sfx/karvos/public/audio/v3-punchEnergy-02.ogg",
+        "G:/sfx/karvos/public/audio/v3-punchEnergy-03.ogg",
+        "G:/sfx/karvos/public/audio/v3-punchEnergy-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "punchRocket": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v3-punchRocket-01.ogg",
+        "G:/sfx/karvos/public/audio/v3-punchRocket-02.ogg",
+        "G:/sfx/karvos/public/audio/v3-punchRocket-03.ogg",
+        "G:/sfx/karvos/public/audio/v3-punchRocket-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "uiTick": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v3-uiTick-01.ogg",
+        "G:/sfx/karvos/public/audio/v3-uiTick-02.ogg",
+        "G:/sfx/karvos/public/audio/v3-uiTick-03.ogg",
+        "G:/sfx/karvos/public/audio/v3-uiTick-04.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "ui",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "biomeIce": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v3-biomeIce-01.ogg",
+        "G:/sfx/karvos/public/audio/v3-biomeIce-02.ogg",
+        "G:/sfx/karvos/public/audio/v3-biomeIce-03.ogg",
+        "G:/sfx/karvos/public/audio/v3-biomeIce-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "ambience",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "biomeSand": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v3-biomeSand-01.ogg",
+        "G:/sfx/karvos/public/audio/v3-biomeSand-02.ogg",
+        "G:/sfx/karvos/public/audio/v3-biomeSand-03.ogg",
+        "G:/sfx/karvos/public/audio/v3-biomeSand-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "ambience",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "biomeSpore": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v3-biomeSpore-01.ogg",
+        "G:/sfx/karvos/public/audio/v3-biomeSpore-02.ogg",
+        "G:/sfx/karvos/public/audio/v3-biomeSpore-03.ogg",
+        "G:/sfx/karvos/public/audio/v3-biomeSpore-04.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "ambience",
+      "near": 3,
+      "far": 100,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "voiceBruteThreat": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceBruteThreat-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceBruteThreat-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceBruteThreat-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceBruteAttack": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceBruteAttack-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceBruteAttack-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceBruteAttack-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceBrutePain": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceBrutePain-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceBrutePain-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceBrutePain-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceBruteFall": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceBruteFall-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceBruteFall-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceBruteFall-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceStalkerThreat": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceStalkerThreat-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceStalkerThreat-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceStalkerThreat-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceStalkerAttack": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceStalkerAttack-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceStalkerAttack-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceStalkerAttack-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceStalkerPain": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceStalkerPain-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceStalkerPain-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceStalkerPain-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceStalkerFall": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceStalkerFall-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceStalkerFall-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceStalkerFall-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceFlyerThreat": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceFlyerThreat-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceFlyerThreat-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceFlyerThreat-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceFlyerAttack": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceFlyerAttack-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceFlyerAttack-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceFlyerAttack-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceFlyerPain": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceFlyerPain-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceFlyerPain-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceFlyerPain-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceFlyerFall": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceFlyerFall-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceFlyerFall-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceFlyerFall-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceDroneThreat": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceDroneThreat-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceDroneThreat-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceDroneThreat-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceDroneAttack": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceDroneAttack-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceDroneAttack-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceDroneAttack-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceDronePain": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceDronePain-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceDronePain-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceDronePain-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceDroneFall": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceDroneFall-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceDroneFall-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceDroneFall-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceRaiderThreat": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceRaiderThreat-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceRaiderThreat-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceRaiderThreat-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceRaiderAttack": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceRaiderAttack-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceRaiderAttack-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceRaiderAttack-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceRaiderPain": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceRaiderPain-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceRaiderPain-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceRaiderPain-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "voiceRaiderFall": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-voiceRaiderFall-01.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceRaiderFall-02.ogg",
+        "G:/sfx/karvos/public/audio/v4-voiceRaiderFall-03.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "near": 3,
+      "far": 95,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "wind": {
+      "files": [
+        "G:/sfx/karvos/public/audio/wind-01.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "near": 3,
+      "far": 140,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "engine": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-engine-01.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 140,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "ocean": {
+      "files": [
+        "G:/sfx/karvos/public/audio/ocean-01.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "near": 3,
+      "far": 140,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "storm": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-storm-01.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "near": 3,
+      "far": 140,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "bio": {
+      "files": [
+        "G:/sfx/karvos/public/audio/bio-01.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "near": 3,
+      "far": 140,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "volcano": {
+      "files": [
+        "G:/sfx/karvos/public/audio/volcano-01.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "near": 3,
+      "far": 140,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "rumble": {
+      "files": [
+        "G:/sfx/karvos/public/audio/engine-01.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "near": 3,
+      "far": 140,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "scoreBed": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v1-scoreBed-01.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 3,
+      "far": 140,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "scorePulse": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-scorePulse-01.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 3,
+      "far": 140,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "scoreDrums": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-scoreDrums-01.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 3,
+      "far": 140,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "hover": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v4-hover-01.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 3,
+      "far": 140,
+      "licence": "Original/CC0 layers and Sonniss GDC Bundle EULA v2.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/licenses/Karvos-physical-v4.json"
+    },
+    "cutter": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v1-cutter-01.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "foley",
+      "near": 3,
+      "far": 140,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "scoreMotif": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v2-scoreMotif-01.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 3,
+      "far": 140,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    },
+    "scoreStrings": {
+      "files": [
+        "G:/sfx/karvos/public/audio/v3-scoreStrings-01.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 3,
+      "far": 140,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/karvos/public/audio/bank.json"
+    }
+  },
+  "aliases": {
+    "click": "uiSelect",
+    "confirm": "uiAccept",
+    "front": "storm",
+    "biome": "wind",
+    "bike": "engine",
+    "bike-turbine": "hover",
+    "ship": "engine",
+    "seismic": "rumble",
+    "score-bed": "scoreBed",
+    "score-pulse": "scorePulse",
+    "score-drums": "scoreDrums",
+    "score-motif": "scoreMotif",
+    "score-strings": "scoreStrings"
+  },
+  "mixerParity": {
+    "outputGain": 0.72,
+    "subFloorHz": 24,
+    "compressor": {
+      "thresholdDb": -12,
+      "kneeDb": 8,
+      "ratio": 3.5,
+      "attackSeconds": 0.012,
+      "releaseSeconds": 0.22,
+      "makeup": 1.35
+    },
+    "buses": {
+      "weapons": 0.88,
+      "impacts": 0.46,
+      "explosions": 0.66,
+      "engines": 0.72,
+      "ambience": 0.42,
+      "foley": 0.46,
+      "creatures": 0.48,
+      "ui": 0.26,
+      "alerts": 0.32,
+      "music": 0.42,
+      "reflections": 0.32
+    },
+    "eventControls": {
+      "weaponCycle": {
+        "cue": "reloadLatch",
+        "bus": "weapons",
+        "gain": 0.055,
+        "shotgunGain": 0.075,
+        "lowpassHz": 1800,
+        "maxDurationSeconds": 0.11,
+        "fadeSeconds": 0.025,
+        "priority": 35,
+        "delaySeconds": 0.045,
+        "shotgunDelaySeconds": 0.085,
+        "duck": false,
+        "exclude": [
+          "energy",
+          "melee"
+        ]
+      },
+      "reloadStart": {
+        "cue": "reloadStart",
+        "bus": "foley",
+        "gain": 0.8,
+        "layers": [
+          {
+            "cue": "reloadLatch",
+            "gain": 0.46,
+            "pitch": 0.82,
+            "delaySeconds": 0.09
+          }
+        ]
+      },
+      "reloadEnd": {
+        "cue": "reloadEnd",
+        "bus": "foley",
+        "gain": 0.8,
+        "layers": [
+          {
+            "cue": "reloadLatch",
+            "gain": 0.46,
+            "pitch": 1,
+            "delaySeconds": 0.015
+          }
+        ]
+      }
+    }
+  }
+}

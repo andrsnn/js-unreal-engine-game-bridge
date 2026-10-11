@@ -1,0 +1,854 @@
+{
+  "version": 1,
+  "assets": {
+    "karvos.painted": {
+      "material": "/Game/Karvos/Materials/M_KarvosPainted.M_KarvosPainted"
+    },
+    "fx.muzzle": {
+      "niagara": "/Game/Karvos/FX/NS_Muzzle.NS_Muzzle"
+    },
+    "sfx.alert": {
+      "sound": "/Game/Karvos/Audio/S_Alert.S_Alert"
+    },
+    "alert": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_alert_df905058.SC_alert_df905058",
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "bikeStart": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_bikeStart_7062327d.SC_bikeStart_7062327d",
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 500,
+      "maxDistance": 6500
+    },
+    "bikeStop": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_bikeStop_624be3e2.SC_bikeStop_624be3e2",
+      "loop": false,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 500,
+      "maxDistance": 6500
+    },
+    "bio": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_bio_05320182.SC_bio_05320182",
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "biomeIce": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_biomeIce_ca3c7cba.SC_biomeIce_ca3c7cba",
+      "loop": false,
+      "spatial": true,
+      "bus": "ambience",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "biomeSand": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_biomeSand_1d2ec9f9.SC_biomeSand_1d2ec9f9",
+      "loop": false,
+      "spatial": true,
+      "bus": "ambience",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "biomeSpore": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_biomeSpore_ee670641.SC_biomeSpore_ee670641",
+      "loop": false,
+      "spatial": true,
+      "bus": "ambience",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "build": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_build_44575cf5.SC_build_44575cf5",
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "craft": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_craft_355543f7.SC_craft_355543f7",
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "creature": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_creature_df8eb42b.SC_creature_df8eb42b",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "creatureAttack": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_creatureAttack_bf1e0c43.SC_creatureAttack_bf1e0c43",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "creatureDeath": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_creatureDeath_86b75b6f.SC_creatureDeath_86b75b6f",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "creatureLarge": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_creatureLarge_151cb117.SC_creatureLarge_151cb117",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "creatureSmall": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_creatureSmall_dc4bfdc2.SC_creatureSmall_dc4bfdc2",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "cutter": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_cutter_1e672dcc.SC_cutter_1e672dcc",
+      "loop": true,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "dry": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_dry_b755cb24.SC_dry_b755cb24",
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "energy": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_energy_381cfb6e.SC_energy_381cfb6e",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "engine": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_engine_ed9f6f25.SC_engine_ed9f6f25",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "explosion": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_explosion_4e33d57d.SC_explosion_4e33d57d",
+      "loop": false,
+      "spatial": true,
+      "bus": "explosions",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "heavy": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_heavy_22d5925e.SC_heavy_22d5925e",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "hover": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_hover_7c8b29e7.SC_hover_7c8b29e7",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "impactFlesh": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_impactFlesh_214d4ae8.SC_impactFlesh_214d4ae8",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "impactMetal": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_impactMetal_998ded0a.SC_impactMetal_998ded0a",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "impactRock": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_impactRock_f636416b.SC_impactRock_f636416b",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "ocean": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_ocean_47afad61.SC_ocean_47afad61",
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "pistol": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_pistol_a00f2954.SC_pistol_a00f2954",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "punchEnergy": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_punchEnergy_0e7045cf.SC_punchEnergy_0e7045cf",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "punchHeavy": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_punchHeavy_7a5f7c8b.SC_punchHeavy_7a5f7c8b",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "punchPistol": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_punchPistol_82a23af2.SC_punchPistol_82a23af2",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "punchRifle": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_punchRifle_80b555ee.SC_punchRifle_80b555ee",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "punchRocket": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_punchRocket_88239d2d.SC_punchRocket_88239d2d",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "punchShotgun": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_punchShotgun_91f3dec9.SC_punchShotgun_91f3dec9",
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "raiderPain": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_raiderPain_f475ed33.SC_raiderPain_f475ed33",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "reloadEnd": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_reloadEnd_fe2972c8.SC_reloadEnd_fe2972c8",
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "reloadLatch": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_reloadLatch_50c4f169.SC_reloadLatch_50c4f169",
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "reloadStart": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_reloadStart_99735a32.SC_reloadStart_99735a32",
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rifle": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_rifle_6dcdffae.SC_rifle_6dcdffae",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rocket": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_rocket_c58dd0a3.SC_rocket_c58dd0a3",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "rumble": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_rumble_a0a6df0d.SC_rumble_a0a6df0d",
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "rustle": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_rustle_d0ae0357.SC_rustle_d0ae0357",
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "scoreBed": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_scoreBed_d3248e5b.SC_scoreBed_d3248e5b",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "scoreDrums": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_scoreDrums_af395c6d.SC_scoreDrums_af395c6d",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "scoreMotif": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_scoreMotif_1bf72279.SC_scoreMotif_1bf72279",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "scorePulse": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_scorePulse_77869b64.SC_scorePulse_77869b64",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "scoreStrings": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_scoreStrings_67263c84.SC_scoreStrings_67263c84",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "shotgun": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_shotgun_330a3129.SC_shotgun_330a3129",
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "stepMetal": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_stepMetal_40c00ffd.SC_stepMetal_40c00ffd",
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "stepMud": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_stepMud_ec1d60c1.SC_stepMud_ec1d60c1",
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "stepRock": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_stepRock_8ac1f6f7.SC_stepRock_8ac1f6f7",
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "stepSand": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_stepSand_a8f18fbc.SC_stepSand_a8f18fbc",
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "stepSnow": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_stepSnow_993071bb.SC_stepSnow_993071bb",
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "storm": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_storm_9a105749.SC_storm_9a105749",
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "swap": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_swap_da47c2f4.SC_swap_da47c2f4",
+      "loop": false,
+      "spatial": true,
+      "bus": "foley",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "tailCanyon": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_tailCanyon_f82dbeca.SC_tailCanyon_f82dbeca",
+      "loop": false,
+      "spatial": true,
+      "bus": "reflections",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "tailOpen": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_tailOpen_454ff7ff.SC_tailOpen_454ff7ff",
+      "loop": false,
+      "spatial": true,
+      "bus": "reflections",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "tailRoom": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_tailRoom_87fa9e38.SC_tailRoom_87fa9e38",
+      "loop": false,
+      "spatial": true,
+      "bus": "reflections",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "thunder": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_thunder_49eff747.SC_thunder_49eff747",
+      "loop": false,
+      "spatial": true,
+      "bus": "ambience",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "uiAccept": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_uiAccept_0c03bbea.SC_uiAccept_0c03bbea",
+      "loop": false,
+      "spatial": false,
+      "bus": "ui",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "uiBack": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_uiBack_75d362fb.SC_uiBack_75d362fb",
+      "loop": false,
+      "spatial": false,
+      "bus": "ui",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "uiHover": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_uiHover_0e1e2a0c.SC_uiHover_0e1e2a0c",
+      "loop": false,
+      "spatial": false,
+      "bus": "ui",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "uiSelect": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_uiSelect_03605b1d.SC_uiSelect_03605b1d",
+      "loop": false,
+      "spatial": false,
+      "bus": "ui",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "uiTick": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_uiTick_8f92bc8b.SC_uiTick_8f92bc8b",
+      "loop": false,
+      "spatial": false,
+      "bus": "ui",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "voiceBrute": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceBrute_245bb9ac.SC_voiceBrute_245bb9ac",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceBruteAttack": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceBruteAttack_c73e82d8.SC_voiceBruteAttack_c73e82d8",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceBruteFall": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceBruteFall_66756d3e.SC_voiceBruteFall_66756d3e",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceBrutePain": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceBrutePain_f37c321f.SC_voiceBrutePain_f37c321f",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceBruteThreat": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceBruteThreat_0babfb71.SC_voiceBruteThreat_0babfb71",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceDrone": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceDrone_67f364c9.SC_voiceDrone_67f364c9",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceDroneAttack": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceDroneAttack_4e3cac4b.SC_voiceDroneAttack_4e3cac4b",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceDroneFall": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceDroneFall_e748bf56.SC_voiceDroneFall_e748bf56",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceDronePain": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceDronePain_dbbb9dbe.SC_voiceDronePain_dbbb9dbe",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceDroneThreat": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceDroneThreat_9e15341a.SC_voiceDroneThreat_9e15341a",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceFall": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceFall_7538c1b5.SC_voiceFall_7538c1b5",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceFlyer": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceFlyer_263b4386.SC_voiceFlyer_263b4386",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceFlyerAttack": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceFlyerAttack_ec96a3e9.SC_voiceFlyerAttack_ec96a3e9",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceFlyerFall": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceFlyerFall_034f01c1.SC_voiceFlyerFall_034f01c1",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceFlyerPain": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceFlyerPain_68c7dc2f.SC_voiceFlyerPain_68c7dc2f",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceFlyerThreat": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceFlyerThreat_c5f39180.SC_voiceFlyerThreat_c5f39180",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voicePain": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voicePain_e461565f.SC_voicePain_e461565f",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceRaider": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceRaider_642bbef0.SC_voiceRaider_642bbef0",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceRaiderAttack": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceRaiderAttack_05fd47c3.SC_voiceRaiderAttack_05fd47c3",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceRaiderFall": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceRaiderFall_14d681c1.SC_voiceRaiderFall_14d681c1",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceRaiderPain": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceRaiderPain_cb9b0381.SC_voiceRaiderPain_cb9b0381",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceRaiderThreat": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceRaiderThreat_49aa8e66.SC_voiceRaiderThreat_49aa8e66",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceStalker": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceStalker_1633656b.SC_voiceStalker_1633656b",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceStalkerAttack": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceStalkerAttack_b9b9f86d.SC_voiceStalkerAttack_b9b9f86d",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceStalkerFall": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceStalkerFall_5d870252.SC_voiceStalkerFall_5d870252",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceStalkerPain": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceStalkerPain_a8dc6771.SC_voiceStalkerPain_a8dc6771",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceStalkerThreat": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceStalkerThreat_740aa520.SC_voiceStalkerThreat_740aa520",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "voiceThreat": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_voiceThreat_d3689183.SC_voiceThreat_d3689183",
+      "loop": false,
+      "spatial": true,
+      "bus": "creatures",
+      "minDistance": 300,
+      "maxDistance": 9500
+    },
+    "volcano": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_volcano_06612c28.SC_volcano_06612c28",
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "wind": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_wind_9b58e681.SC_wind_9b58e681",
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "click": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_uiSelect_03605b1d.SC_uiSelect_03605b1d",
+      "loop": false,
+      "spatial": false,
+      "bus": "ui",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "confirm": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_uiAccept_0c03bbea.SC_uiAccept_0c03bbea",
+      "loop": false,
+      "spatial": false,
+      "bus": "ui",
+      "minDistance": 300,
+      "maxDistance": 10000
+    },
+    "front": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_storm_9a105749.SC_storm_9a105749",
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "biome": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_wind_9b58e681.SC_wind_9b58e681",
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "bike": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_engine_ed9f6f25.SC_engine_ed9f6f25",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "bike-turbine": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_hover_7c8b29e7.SC_hover_7c8b29e7",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "ship": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_engine_ed9f6f25.SC_engine_ed9f6f25",
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "seismic": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_rumble_a0a6df0d.SC_rumble_a0a6df0d",
+      "loop": true,
+      "spatial": true,
+      "bus": "ambience",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "score-bed": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_scoreBed_d3248e5b.SC_scoreBed_d3248e5b",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "score-pulse": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_scorePulse_77869b64.SC_scorePulse_77869b64",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "score-drums": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_scoreDrums_af395c6d.SC_scoreDrums_af395c6d",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "score-motif": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_scoreMotif_1bf72279.SC_scoreMotif_1bf72279",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 300,
+      "maxDistance": 14000
+    },
+    "score-strings": {
+      "sound": "/JsGameBridge/Audio/Karvos/SC_scoreStrings_67263c84.SC_scoreStrings_67263c84",
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "minDistance": 300,
+      "maxDistance": 14000
+    }
+  }
+}

@@ -1,0 +1,2373 @@
+{
+  "version": 1,
+  "game": "hardburn",
+  "sourceCommit": "74f3a723498954bf27e2700273e92b7e256e45d3",
+  "audioPass": 6,
+  "unitsToCentimeters": 100,
+  "cues": {
+    "hb-rail": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "82% optional far hull layer; armour chooses rail-tail25% or impact-tail75%",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-mac": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/mac-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/mac-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/mac-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/mac-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/mac-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/mac-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/mac-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/mac-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "82% optional far hull layer; armour chooses rail-tail25% or impact-tail75%",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-pdc": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-flak": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/flak-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/flak-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/flak-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/flak-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/flak-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/flak-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/flak-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/flak-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-launch": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-launch-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-launch-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-launch-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-launch-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-launch-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-launch-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-launch-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-launch-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-impact": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "82% optional far hull layer; armour chooses rail-tail25% or impact-tail75%",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-small-blast": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/small-blast-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/small-blast-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/small-blast-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/small-blast-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/small-blast-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/small-blast-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/small-blast-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/small-blast-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-large-blast": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/ship-blast-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/ship-blast-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/ship-blast-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/ship-blast-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/ship-blast-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/ship-blast-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/ship-blast-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/ship-blast-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "rail-tail": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-tail-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-tail-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-tail-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-tail-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-tail-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-tail-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-tail-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/rail-tail-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "impact-tail": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-tail-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-tail-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-tail-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-tail-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-tail-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-tail-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-tail-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/impact-tail-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "energy-laser": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/laser-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/laser-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/laser-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/laser-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/laser-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/laser-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/laser-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/laser-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "energy-plasma": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/plasma-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/plasma-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/plasma-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/plasma-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/plasma-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/plasma-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/plasma-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/plasma-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-drive-small": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/drive-small.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hb-drive-medium": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/drive-medium.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hb-drive-heavy": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/drive-heavy.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "engines",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "torpedo-burn": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/torpedo-burn-7.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 1000,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          11.95
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "shipboard": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/shipboard.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "ambience",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "score-bed": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/score-bed.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "score-motif": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/score-motif.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "score-pulse": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/score-pulse.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "score-combat": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/score-combat.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "score-danger": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/score-danger.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "score-machinery": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/score-machinery.ogg"
+      ],
+      "loop": true,
+      "spatial": false,
+      "bus": "music",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "ui-select": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-select-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-select-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-select-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "ui-cancel": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-cancel-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-cancel-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-cancel-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "ui-nav": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-nav-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-nav-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/ui-nav-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "click": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/click-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/click-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/click-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "confirm": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/confirm-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/confirm-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/confirm-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "interface",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "contact": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/contact-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/contact-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/contact-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "alert": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/alert-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/alert-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/alert-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "hostile": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/hostile-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/hostile-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/hostile-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "critical": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v4/critical-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/critical-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v4/critical-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v4/sources.json"
+    },
+    "comms-key": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v3/comms-key-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v3/comms-key-1.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0 original procedural radio squelch; HARD BURN original audio",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v3/sources.json"
+    },
+    "comms-close": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v3/comms-close-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v3/comms-close-1.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "CC0-1.0 original procedural radio squelch; HARD BURN original audio",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v3/sources.json"
+    },
+    "radio-incoming": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-incoming-0.ogg",
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-incoming-1.ogg",
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-incoming-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "Original game dialogue generated locally with installed Windows System.Speech voice; separate from Kenney and not identified as CC0 recordings. See AUDIO-CREDITS.md and ASSETS.md.",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/AUDIO-CREDITS.md"
+    },
+    "radio-breach": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-breach-0.ogg",
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-breach-1.ogg",
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-breach-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "Original game dialogue generated locally with installed Windows System.Speech voice; separate from Kenney and not identified as CC0 recordings. See AUDIO-CREDITS.md and ASSETS.md.",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/AUDIO-CREDITS.md"
+    },
+    "radio-intercept": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-intercept-0.ogg",
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-intercept-1.ogg",
+        "G:/sfx/hardburn/public/audio/kenney/hardburn-radio-intercept-2.ogg"
+      ],
+      "loop": false,
+      "spatial": false,
+      "bus": "alerts",
+      "near": 0,
+      "far": 1,
+      "licence": "Original game dialogue generated locally with installed Windows System.Speech voice; separate from Kenney and not identified as CC0 recordings. See AUDIO-CREDITS.md and ASSETS.md.",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/AUDIO-CREDITS.md"
+    },
+    "pdc-mechanism": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/pdc-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-armour": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/armour-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/armour-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/armour-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/armour-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/armour-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/armour-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/armour-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/armour-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "82% optional far hull layer; armour chooses rail-tail25% or impact-tail75%",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-breach": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/breach-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/breach-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/breach-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/breach-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/breach-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/breach-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/breach-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/breach-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "82% optional far hull layer; armour chooses rail-tail25% or impact-tail75%",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-intercept": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/intercept-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/intercept-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/intercept-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/intercept-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/intercept-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/intercept-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/intercept-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/intercept-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-missile-launch": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-launch-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-launch-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-launch-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-launch-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-launch-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-launch-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-launch-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-launch-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "missile-burn": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-burn-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-burn-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-burn-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-burn-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-burn-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-burn-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-burn-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/missile-burn-7.ogg"
+      ],
+      "loop": true,
+      "spatial": true,
+      "bus": "weapons",
+      "near": 120,
+      "far": 1000,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          11.95
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-reactor-blast": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/reactor-blast-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/reactor-blast-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/reactor-blast-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/reactor-blast-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/reactor-blast-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/reactor-blast-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/reactor-blast-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/reactor-blast-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    },
+    "hb-vent": {
+      "files": [
+        "G:/sfx/hardburn/public/audio/naval-v6/vent-0.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/vent-1.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/vent-2.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/vent-3.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/vent-4.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/vent-5.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/vent-6.ogg",
+        "G:/sfx/hardburn/public/audio/naval-v6/vent-7.ogg"
+      ],
+      "loop": false,
+      "spatial": true,
+      "bus": "impacts",
+      "near": 120,
+      "far": 5500,
+      "licence": "CC0-1.0 original/CC0 layers; Sonniss GDC Bundle EULA v2.0 recorded layers",
+      "sourceManifest": "G:/sfx/hardburn/public/audio/naval-v6/sources.json",
+      "variation": {
+        "pitchMultiplierRange": [
+          0.96,
+          1.04
+        ],
+        "gainMultiplierRange": [
+          0.92,
+          1.08
+        ],
+        "filterMultiplierRange": [
+          0.88,
+          1.0
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ],
+        "sampleChoice": "shuffled complete eight-take bag; no immediate repeat across bag boundaries",
+        "layerChoice": "Each chosen take contains separately selected physical recorded source layers; sources.json layerChoice/derivedSources prove at least two source combinations per family.",
+        "runtimeTailChoice": "Physical layer selection baked into the chosen take; no additional voices",
+        "sizeGainRange": [
+          0.88,
+          1.15
+        ],
+        "sizePitchRange": [
+          0.94,
+          1.045
+        ],
+        "sizeFilterRange": [
+          0.9,
+          1.04
+        ]
+      },
+      "hostRequirements": "Native SoundNodeRandom supplies variants without replacement; boundary no-repeat, event pitch/gain/filter/offset, category/size/distance controls and lifetime belong to native host."
+    }
+  },
+  "aliases": {
+    "rail": "hb-rail",
+    "mac": "hb-mac",
+    "pdc": "hb-pdc",
+    "flak": "hb-flak",
+    "missile": "hb-missile-launch",
+    "torpedo": "hb-launch",
+    "nuclear": "hb-launch",
+    "swarm": "hb-missile-launch",
+    "nuclear-impact": "hb-reactor-blast",
+    "laser": "energy-laser",
+    "plasma": "energy-plasma",
+    "emp": "energy-plasma",
+    "veil-arc": "energy-plasma",
+    "impact": "hb-impact",
+    "armour": "hb-armour",
+    "shield": "hb-impact",
+    "explosion": "hb-small-blast",
+    "explosion-small": "hb-small-blast",
+    "explosion-large": "hb-large-blast",
+    "intercept": "hb-intercept",
+    "proj": "hb-rail",
+    "light": "energy-plasma",
+    "hull-breach": "hb-breach",
+    "vent": "hb-vent",
+    "explosion-reactor": "hb-reactor-blast",
+    "coilgun": "hb-rail",
+    "autocannon": "hb-pdc"
+  },
+  "mixerMetadata": {
+    "outputTrim": 0.69,
+    "defaults": {
+      "master": 0.72,
+      "weapons": 0.52,
+      "impacts": 0.6,
+      "engines": 0.25,
+      "ambience": 0.16,
+      "music": 0.38,
+      "interface": 0.5,
+      "alerts": 0.66
+    },
+    "musicTempo": 72,
+    "phaseAlignedScoreFrames": 2560000,
+    "sampleRate": 48000,
+    "weaponMusicDuck": 0.32,
+    "largeBlastMusicDuck": 0.18,
+    "source": "G:/sfx/hardburn/src/audio.js",
+    "note": "Cue assets remain unity gain/pitch. These are existing browser mixer settings for a port adapter, not DSP baked into imported Unreal assets.",
+    "outputGain": 0.69,
+    "pdcPolicy": {
+      "maxVoices": 4,
+      "retriggerSeconds": 0.34,
+      "maximumPhraseSeconds": 0.31,
+      "recipeGain": 1.35,
+      "lowpassHz": 3000,
+      "priorityBase": 0.75,
+      "heavyRailMacPriorityBase": 1.5,
+      "priorityIncludesListenerGain": true,
+      "replaceOnlyIfPriorityImprovementExceeds": 0.08,
+      "replacementFadeSeconds": 0.018,
+      "globalVoiceLimit": 64,
+      "variationBagWithoutReplacement": true,
+      "pitchVariationFraction": 0.08,
+      "alsoBoundsAutocannonCore": true
+    },
+    "audioPass": 6,
+    "globalVoiceLimit": 64,
+    "eventVariation": {
+      "pitchMultiplierRange": [
+        0.96,
+        1.04
+      ],
+      "gainMultiplierRange": [
+        0.92,
+        1.08
+      ],
+      "filterMultiplierRange": [
+        0.88,
+        1
+      ],
+      "oneShotStartOffsetSeconds": [
+        0,
+        0.004
+      ],
+      "roundRobin": "Full shuffled bag, every take once before refill; boundary swap prevents immediate last-take repetition. UI and score unchanged.",
+      "bakedLayerSelection": "All20 families have8 unique takes and >=2 actual source-layer combinations. PDC layer selection is baked, never stacked.",
+      "runtimeLayerLimit": 2,
+      "farTailProbability": 0.82,
+      "farTailGainFactor": 0.38,
+      "farTailDelaySeconds": [
+        0.014,
+        0.026
+      ]
+    },
+    "spatialPolicy": {
+      "listenerGain": "220/(220+max(0,distance-120))",
+      "audibleGainFloor": 0.04,
+      "distanceLowpass": "max(700,15000/(1+distance/520))",
+      "panLimit": 0.88,
+      "sizeUnits": "game hull length; unitsToCentimeters100 applies native distances",
+      "sizeInputRange": [
+        4,
+        500
+      ],
+      "sizeGain": "clamp(1+log2(size/30)*.045,.88,1.15)",
+      "sizePitch": "clamp((30/size)^.022,.94,1.045)",
+      "sizeLowpass": "clamp((30/size)^.035,.90,1.04)",
+      "PDCSizeModulation": "fixed30 to preserve calibrated short burst weight"
+    },
+    "guidedMotorPolicy": {
+      "maximumActiveLoops": 2,
+      "maximumDistance": 1000,
+      "sampleDurationSeconds": 12,
+      "variantStartOffsetSeconds": [
+        0,
+        11.95
+      ],
+      "bankByWeapon": {
+        "missile": "missile-burn",
+        "swarm": "missile-burn",
+        "torpedo": "torpedo-burn",
+        "nuclear": "torpedo-burn"
+      },
+      "lifetime": "Start once for nearest active motor per objectID+guidedGeneration. Cold launch, coasting, done, launchPending, remote, map-open and pause silence it. Stop/fade200ms when source ends; pooled generation starts new variant.",
+      "sizeInput": "clamp(bodyScale*160,8,160)",
+      "gain": ".14*listenerGain*(.35+closing)*randomGain*sizeGain",
+      "pitch": "(.72+closing*.38)*randomPitch*sizePitch",
+      "filter": "missile390+closing460 / torpedo280+closing390, times randomFilter*sizeFilter, capped by distanceLowpass"
+    },
+    "damageObservation": {
+      "breach": "Observe new real hull breach count; do not replay restored-save breaches on startup. No damage changes.",
+      "vent": "At most2 nearest damaged breached hulls; finite1.8s releases, gated1.8s per hull; no per-particle sounds."
+    }
+  },
+  "sourceDocuments": [
+    "G:/sfx/hardburn/public/audio/AUDIO-CREDITS.md",
+    "G:/sfx/hardburn/public/audio/naval-v4/sources.json",
+    "G:/sfx/hardburn/public/audio/naval-v3/sources.json"
+  ],
+  "notes": [
+    "Only banks actually referenced by pass-four recipes, loops or tails are included. Unused older preload banks are excluded.",
+    "Spatial near/far are source game units; generator converts to centimeters. Non-positional cues use a valid dummy range with attenuation disabled.",
+    "radio-intercept is the speech bank; intercept alias is the physical interception impact event.",
+    "Runtime aliases identify banks; category/recipe gain, pitch, layered squelch and conditional hull tails remain runtime mixer behavior.",
+    "V5 changes only PDC articulation/voice masking. All v4 heavy weapons, master calibration .69 and user preferences retained. Native adapter should mirror pdcPolicy; raw cues retain unity gain."
+  ],
+  "eventControls": {
+    "rail": {
+      "layers": [
+        {
+          "bank": "hb-rail",
+          "gain": 1.45,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.8
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.085
+    },
+    "coilgun": {
+      "layers": [
+        {
+          "bank": "hb-rail",
+          "gain": 0.85,
+          "basePitch": 1.24,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 0.7
+        },
+        {
+          "bank": "pdc-mechanism",
+          "gain": 0.18,
+          "basePitch": 0.78,
+          "delaySeconds": 0.035,
+          "maximumDurationSeconds": 0.3
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.13
+    },
+    "autocannon": {
+      "layers": [
+        {
+          "bank": "hb-pdc",
+          "gain": 0.75,
+          "basePitch": 0.68,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 0.22
+        },
+        {
+          "bank": "rail-tail",
+          "gain": 0.18,
+          "basePitch": 1.18,
+          "delaySeconds": 0.025,
+          "maximumDurationSeconds": 0.48
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.22
+    },
+    "mac": {
+      "layers": [
+        {
+          "bank": "hb-mac",
+          "gain": 1.55,
+          "basePitch": 0.94,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 3.4
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "pdc": {
+      "layers": [
+        {
+          "bank": "hb-pdc",
+          "gain": 1.35,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 0.31
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.34
+    },
+    "flak": {
+      "layers": [
+        {
+          "bank": "hb-flak",
+          "gain": 1.25,
+          "basePitch": 0.96,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 1.2
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "missile": {
+      "layers": [
+        {
+          "bank": "hb-missile-launch",
+          "gain": 1.08,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.2
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "torpedo": {
+      "layers": [
+        {
+          "bank": "hb-launch",
+          "gain": 1.4,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 3.2
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "nuclear": {
+      "layers": [
+        {
+          "bank": "hb-launch",
+          "gain": 1.38,
+          "basePitch": 0.76,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 3.8
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "swarm": {
+      "layers": [
+        {
+          "bank": "hb-missile-launch",
+          "gain": 0.9,
+          "basePitch": 1.05,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.2
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "laser": {
+      "layers": [
+        {
+          "bank": "energy-laser",
+          "gain": 1.2,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 1.6
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "plasma": {
+      "layers": [
+        {
+          "bank": "energy-plasma",
+          "gain": 1.35,
+          "basePitch": 0.94,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.3
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "impact": {
+      "layers": [
+        {
+          "bank": "hb-impact",
+          "gain": 1.25,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.4
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.06
+    },
+    "armour": {
+      "layers": [
+        {
+          "bank": "hb-armour",
+          "gain": 1.35,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.6
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "shield": {
+      "layers": [
+        {
+          "bank": "hb-impact",
+          "gain": 0.8,
+          "basePitch": 0.78,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.4
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "hull-breach": {
+      "layers": [
+        {
+          "bank": "hb-breach",
+          "gain": 0.68,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.8
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.35
+    },
+    "intercept": {
+      "layers": [
+        {
+          "bank": "hb-intercept",
+          "gain": 0.42,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 0.75
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.11
+    },
+    "vent": {
+      "layers": [
+        {
+          "bank": "hb-vent",
+          "gain": 0.24,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 1.8
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 1.8
+    },
+    "explosion": {
+      "layers": [
+        {
+          "bank": "hb-small-blast",
+          "gain": 1.05,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.1
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.14
+    },
+    "explosion-small": {
+      "layers": [
+        {
+          "bank": "hb-small-blast",
+          "gain": 0.88,
+          "basePitch": 1.12,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "explosion-large": {
+      "layers": [
+        {
+          "bank": "hb-large-blast",
+          "gain": 1.55,
+          "basePitch": 0.92,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 5.6
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "explosion-reactor": {
+      "layers": [
+        {
+          "bank": "hb-reactor-blast",
+          "gain": 1.55,
+          "basePitch": 1,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 5.8
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.65
+    },
+    "nuclear-impact": {
+      "layers": [
+        {
+          "bank": "hb-reactor-blast",
+          "gain": 1.65,
+          "basePitch": 0.9,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 5.8
+        }
+      ],
+      "maximumRuntimeLayers": 2,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "emp": {
+      "layers": [
+        {
+          "bank": "energy-plasma",
+          "gain": 1.1,
+          "basePitch": 0.76,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.3
+        }
+      ],
+      "maximumRuntimeLayers": 1,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    },
+    "veil-arc": {
+      "layers": [
+        {
+          "bank": "energy-plasma",
+          "gain": 1.2,
+          "basePitch": 0.84,
+          "delaySeconds": 0,
+          "maximumDurationSeconds": 2.3
+        }
+      ],
+      "maximumRuntimeLayers": 1,
+      "variation": {
+        "pitchRange": [
+          0.96,
+          1.04
+        ],
+        "gainRange": [
+          0.92,
+          1.08
+        ],
+        "filterRange": [
+          0.88,
+          1
+        ],
+        "startOffsetSeconds": [
+          0,
+          0.004
+        ]
+      },
+      "retriggerSeconds": 0.07
+    }
+  }
+}

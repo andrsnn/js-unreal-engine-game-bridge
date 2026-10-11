@@ -1,0 +1,92 @@
+{
+  "timeUTC": "2026-10-10T14:22:16.062693+00:00",
+  "actualRegularFileBytesUnlinked": 434355,
+  "regularFilesUnlinked": 20,
+  "deleted": [
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/1e3c038bd4d7fd014d941b295ef4e8453a3e0cc02555397b4c0aaa7981f57926.wav",
+      "bytes": 51790
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/5a59d64aacbc31d89874247114eed251663de0e4ae332dbc63a93d58892f4109.wav",
+      "bytes": 56398
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/6ef1a1ac4bf5e848b2e5ad792bcd96d66c2f7151f144cba5bd41970f72e55a85.wav",
+      "bytes": 54478
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/8a229da01ee35a8b4214d9c8241abb33f65921ff645cad56a460f1646e666131.wav",
+      "bytes": 53326
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/b0785df8fc8f45a8c7acca7ea8fe09ea6047854e782768925c70cb3758acac74.wav",
+      "bytes": 55630
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/pcm/c5bfe36c04b3a2e9b1184a2332b61552ac7c4fa04f0bea5d9910ca7f3198c404.wav",
+      "bytes": 57166
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Saved/Logs/AutoSDKInfo-backup-2026.10.10-14.10.47.json",
+      "bytes": 13167
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Saved/Logs/AutoSDKInfo-backup-2026.10.10-14.10.47.txt",
+      "bytes": 4315
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Saved/Logs/AutoSDKInfo.json",
+      "bytes": 13167
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Saved/Logs/AutoSDKInfo.txt",
+      "bytes": 4315
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Saved/SourceControl/UncontrolledChangelists.json",
+      "bytes": 1674
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Saved/UnrealBuildTool/BuildConfiguration.xml",
+      "bytes": 132
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Saved/Config/WindowsEditor/EditorPerProjectUserSettings.ini",
+      "bytes": 68001
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Saved/Config/CrashReportClient/UECC-Windows-3112150047C156F9713B9EA7FB861C32/CrashReportClient.ini",
+      "bytes": 239
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Saved/Config/CrashReportClient/UECC-Windows-D8A5C39F4B95243865C119B72C095299/CrashReportClient.ini",
+      "bytes": 239
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Intermediate/Build/XmlConfigCache.bin",
+      "bytes": 318
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Intermediate/PipInstall/extra_urls.txt",
+      "bytes": 0
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Intermediate/PipInstall/merged_requirements.in",
+      "bytes": 0
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Intermediate/PipInstall/pyreqs_plugins.list",
+      "bytes": 0
+    },
+    {
+      "file": "/mnt/g/JsGameBridge/Tools/AudioImporter/ContentOnlyProject/Intermediate/PipInstall/Lib/site-packages/plugin_site_package.pth",
+      "bytes": 0
+    }
+  ],
+  "preserved": [
+    "All final native assets/metadata",
+    "all manifests, licences, reports and import tools",
+    "shared/unowned engine caches"
+  ]
+}

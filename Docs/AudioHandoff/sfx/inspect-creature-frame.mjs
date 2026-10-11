@@ -1,0 +1,1 @@
+import {spawnSync}from'node:child_process';const r=spawnSync('C:/ProgramData/chocolatey/bin/ffmpeg.exe',['-hide_banner','-loglevel','error','-y','-ss','14','-i','G:/sfx/evidence/karvos/pass4/creature-segment/segment-1/cut.mkv','-frames:v','1','G:/sfx/evidence/karvos/pass4/creature-frame14.png'],{encoding:'utf8',timeout:30000,windowsHide:true});if(r.status)throw Error(r.stderr);

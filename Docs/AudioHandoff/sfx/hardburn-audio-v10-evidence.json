@@ -1,0 +1,47 @@
+{
+  "sourceCommit": "c025d94ee7b9a254d3e411e1b869562e95778e1a",
+  "primaryBase": "f1afff7fceb3cd40935369a1a8b873b56058ebfc",
+  "audioPass": 10,
+  "contractStatus": "Verified actual committed ff5939/f1 canonical snapshots and paid recovery event; producer fleet-query accuracy issue separately queued by ff",
+  "committedContractHashes": {
+    "src/game/solar-recon.js": "6cf00539d1fde064d8beb4df6f1854f9ccd2c8e9496de62853f2180d00fef664",
+    "src/game/galactic-campaign.js": "f64114436956c8b0af35d3879a90d7ee4af332c5540e7df86291d0cdd3e1edab",
+    "src/game/electronic-warfare.js": "874e8b1fbf2ce4efa5041a50b01de112764422a083fa1a5bee63e2c12292edac",
+    "src/game/entities.js": "0cee69b5e903a167561cd53eef52f24c8aa3e00427855db7a3b42c5a1434c42e"
+  },
+  "changedPaths": {
+    "src/audio.js": "f23cd247b198239043e3c3ea5d337da5baeef6526888e1fb7d9e1bb3642f5703",
+    "src/audio-policy.js": "1a0032fc4ed265a247e7a87365fee084904b35262c033dee1606b41b7b859f3a",
+    "tools/check-audio-policy.mjs": "a0db8d9b0a1cb8511e69628b7b4ec337d9ed185acf2ce2d9ec28dd80fbf782d6",
+    "tools/check-audio-routing.mjs": "ae15f46ea46953e8ad0197fd0cd067ccad9518280795db6634347c26d5a06e35",
+    "tools/check-audio-recon-adapter.mjs": "a1b13da5ee968237f303da823973068b2e539b4d292ae3f27c46e1c9662036cb"
+  },
+  "assetsChanged": 0,
+  "nativeCueAliasesWaveHashesUnchanged": true,
+  "tests": [
+    "tools/check-audio-policy.mjs PASS .12/.8 threshold,1000observedAt silence, explicit authorised events, ID/late/pause/load/rewind gates",
+    "tools/check-audio-routing.mjs PASS actual mixer discovered/identified/diversion/recovery centred finite contact voices, no duplicate canonical reports, prior gun/PDC/swarm/ECM/traffic/distant coast/cleanup controls",
+    "tools/check-audio-recon-adapter.mjs PASS actual committed solarIntel reported coordinates/unknown&remote exclusion; real reconAction fuel debit10 then tickSolarRecon pays50metal and emits canonical completion; actual diversion callback player/sensor/system authorization",
+    "node --check src/audio.js PASS",
+    "git diff --check PASS"
+  ],
+  "captureDiagnostics": [
+    "audioPass10",
+    "discoveryContacts",
+    "discoveryReports",
+    "ewReports",
+    "recoveryReports",
+    "sensorEvents by kind",
+    "loaded321/missing",
+    "outputTrim.69",
+    "peak/peakMax"
+  ],
+  "notClaimed": [
+    "actual movie or live pass10 playback",
+    "native packaged pass10 play",
+    "fleet physical retarget proof"
+  ],
+  "producerFinding": "world.findTarget emits fleet record before target assignment and is used by purequeries; ff owns assignment-only fix before final gameplay proof",
+  "handoff": "/mnt/g/sfx/hardburn-unreal-audio-v10.json",
+  "handoffSha256": "55a33946787404eb18107027343e868bcb1e3511235429679c3ef3e44693b916"
+}

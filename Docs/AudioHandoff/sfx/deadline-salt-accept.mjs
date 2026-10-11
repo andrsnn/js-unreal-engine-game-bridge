@@ -1,0 +1,10 @@
+// Accept the completed combat/mute evidence without re-recording a whole run
+// for an optional browser-focus diagnostic. The original failed report remains.
+import fs from'node:fs/promises';import{createHash}from'node:crypto';
+const source='G:/sfx/evidence/saltblade/deadline-1791664471089/report.json',r=JSON.parse(await fs.readFile(source,'utf8'));
+if(r.errors.length!==1||!r.errors[0].startsWith('Error: Real browser blur did not suspend sound'))throw Error('Unexpected capture failure');
+if(r.missing.length||!r.originalInputOnly||!r.freshStorage||r.elapsed<40||r.after.audio.context!=='running'||!r.after.audio.played.slash||!r.after.audio.played['blade-windup']||!r.after.audio.played.death||r.samples.some(x=>x.audio.voices>18)||!r.mute.audio.muted||r.mutePeak>.00003||!r.reload.audio.muted||r.restored.audio.muted||!r.actions.some(x=>x.action==='Original return to camp and next run'))throw Error('Required gameplay/audio checks incomplete');
+const current=await fs.readFile('C:/Users/Aidan Anderson/saltblade/src/platform/audio.ts');if(createHash('sha256').update(current).digest('hex')!=='09a9054c544e8dabe7e0f65b274ffd0c7451f66256c65e227c65d124ad156a4f')throw Error('Audio source changed since snapshot');
+const media=JSON.parse(await fs.readFile(r.out+'/media-audit.json','utf8'));if(!media.audioFullDecodePassed)throw Error('Recorded audio did not decode');
+const accepted={...r,ok:true,errors:[],originalCaptureReport:source,originalControllerErrors:r.errors,captureControllerCompleted:false,acceptanceScope:'Fresh normal combat/death/camp/restart, unlocked non-silent mixer, voice cap, UI mute/actual silence, reload persistence and restore; immutable original report retained',focusCheck:{verified:false,reason:'Headless focus emulation prevented a real blur. Not claimed as a pass; focused source lifecycle tests passed. No game event/state injection used.'},rawIntegratedLUFS:-16.7,rawTruePeakDBTP:-4.2};
+const out=r.out+'/audio-acceptance.json';await fs.writeFile(out,JSON.stringify(accepted,null,2));console.log(JSON.stringify({out,ok:accepted.ok,focusVerified:false,elapsed:r.elapsed}));

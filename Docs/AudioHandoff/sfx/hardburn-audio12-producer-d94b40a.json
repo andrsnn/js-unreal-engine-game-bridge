@@ -1,0 +1,64 @@
+{
+  "sourceCommit": "d94b40a9a5a81390c877dc621a8c494642403c15",
+  "scope": "Actual committed solarIntel disclosure expression, campaign event recorder/emission, real physical pod transfer and marine contest kernels under CPU fixtures; no browser/live/movie claim",
+  "ok": false,
+  "results": [
+    {
+      "name": "hidden enemy launcher towards own hull emits no launch origin",
+      "ok": false,
+      "error": "Known own target must not authorize unseen launcher position"
+    },
+    {
+      "name": "identified target alone cannot disclose enemy-on-enemy launch origin",
+      "ok": false,
+      "error": "Launcher needs its own current identified contact\n\n1 !== 0\n"
+    },
+    {
+      "name": "genuine identified launcher produces precise release and source ID",
+      "ok": false,
+      "error": "The expression evaluated to a falsy value:\n\n  assert(e?.precise&&e.sourceId==='launcher')\n"
+    },
+    {
+      "name": "own missing-position result is centred authorized comms",
+      "ok": false,
+      "error": "Missing actual seat cannot be declared precise"
+    },
+    {
+      "name": "hidden own-assault target cannot supply a precise enemy hull bearing",
+      "ok": false,
+      "error": "Own marines may report without exposing lost target coordinate"
+    },
+    {
+      "name": "remote, old and future receiver events omitted",
+      "ok": false,
+      "error": "Expected values to be strictly equal:\n\n1 !== 0\n"
+    },
+    {
+      "name": "physical transfer loss emits casualty without invented marine fighting",
+      "ok": false,
+      "error": "Transfer pod casualty is not marine assault exchange"
+    },
+    {
+      "name": "accepted physical launch retains actual pod source ID",
+      "ok": false,
+      "error": "Ledger must retain actual pod launcher"
+    },
+    {
+      "name": "accepted physical launch records saved release seat before motion",
+      "ok": true
+    },
+    {
+      "name": "accepted same-step physical launch+dock emits breach",
+      "ok": false,
+      "error": "Newly initialized and physically docked pod needs breach transition"
+    },
+    {
+      "name": "unchanged paused or loaded transfer never manufactures fresh events",
+      "ok": true
+    },
+    {
+      "name": "real assault defender exchange and section control emit canonical records",
+      "ok": true
+    }
+  ]
+}

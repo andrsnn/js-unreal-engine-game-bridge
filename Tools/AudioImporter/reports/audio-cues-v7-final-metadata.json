@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "importedManifestSha256": "b077500509785726d6889f2258df56a9d260befb55df9c7384baee1a714d42e9",
+  "finalManifestSha256": "07b8f20f69e635b28a3b1d357e1aa7175a12b6e2fdc22054053633c048d912a6",
+  "cueDefinitionsUnchanged": true,
+  "aliasesUnchanged": true,
+  "provenanceUnchanged": true,
+  "unrelatedGamesUnchanged": true,
+  "finalUnlitSourceCommit": "f56c04541e632cf6ab6ffd03b371d718753b4fdc",
+  "runtimeSoundKeysVerified": true,
+  "finalSourceCommit": "be54e328c09affe3ef7f93406ae9b8a3879e4f56",
+  "nativeAssetsRequireReimport": false,
+  "note": "Host-only source/mix/lifetime metadata refreshed. Original frozen import and fresh-process asset verification remain valid; no native gameplay acceptance claimed."
+}

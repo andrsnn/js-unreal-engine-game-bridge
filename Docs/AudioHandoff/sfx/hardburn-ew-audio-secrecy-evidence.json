@@ -1,0 +1,29 @@
+{
+  "sourceCommit": "e9ca68b234375d64e1d6951c6ca61e8fb5e8eb13",
+  "baseCommit": "8b5bd9b68e0fb985a07b8eaa09377a1f1368c629",
+  "scope": "undisclosed global decoy log audio secrecy fix only, stage for next ff EW milestone",
+  "audioPass": 9,
+  "changedPaths": {
+    "src/audio.js": "5f30db8d6222de8a978c6b2025fb203048df1de542ee4a67b0d25a4d020787b9",
+    "tools/check-audio-routing.mjs": "359c710ba62c2be3ed805ac1b45da6a75cab35767d9468eccafdc02230323fe6"
+  },
+  "tests": [
+    "actual mixer graph with global undisclosed/remote spoof log remains silent, genuine local receiver acquisition still audible PASS",
+    "full focused audio policy PASS",
+    "node --check src/audio.js PASS",
+    "git diff --check PASS"
+  ],
+  "assetsChanged": 0,
+  "nativeCueChanges": 0,
+  "sourceContractGap": "no canonical detected discoveries, coverage, or player-observed diversion event in committed primary8b5 yet; do not use all-world decoyLocks",
+  "preserved": [
+    "321 samples",
+    "existing cue/alias sets",
+    "gun/impact mix",
+    "outputTrim.69",
+    "coast-aware motors",
+    "UI notify feedback",
+    "disclosed ECM and active scans"
+  ],
+  "publication": "not merged or built by audio; root/ff coordinate next milestone"
+}

@@ -1,0 +1,205 @@
+{
+  "licence": "CC0-1.0",
+  "files": {
+    "rail-tail-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Low transmitted frame resonance: camera-distance report tail, no atmospheric echo",
+      "duration": 1.7,
+      "loop": false
+    },
+    "impact-tail-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Low transmitted frame resonance: camera-distance report tail, no atmospheric echo",
+      "duration": 1.7,
+      "loop": false
+    },
+    "hostile-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Original vowel-like tactical identification burst; no words, voice model or recordings",
+      "duration": 1.35,
+      "loop": false
+    },
+    "rail-tail-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Low transmitted frame resonance: camera-distance report tail, no atmospheric echo",
+      "duration": 1.7,
+      "loop": false
+    },
+    "impact-tail-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Low transmitted frame resonance: camera-distance report tail, no atmospheric echo",
+      "duration": 1.7,
+      "loop": false
+    },
+    "hostile-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Original vowel-like tactical identification burst; no words, voice model or recordings",
+      "duration": 1.35,
+      "loop": false
+    },
+    "rail-tail-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Low transmitted frame resonance: camera-distance report tail, no atmospheric echo",
+      "duration": 1.7,
+      "loop": false
+    },
+    "impact-tail-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Low transmitted frame resonance: camera-distance report tail, no atmospheric echo",
+      "duration": 1.7,
+      "loop": false
+    },
+    "hostile-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Original vowel-like tactical identification burst; no words, voice model or recordings",
+      "duration": 1.35,
+      "loop": false
+    },
+    "rail-tail-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Low transmitted frame resonance: camera-distance report tail, no atmospheric echo",
+      "duration": 1.7,
+      "loop": false
+    },
+    "impact-tail-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Low transmitted frame resonance: camera-distance report tail, no atmospheric echo",
+      "duration": 1.7,
+      "loop": false
+    },
+    "hostile-3.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Original vowel-like tactical identification burst; no words, voice model or recordings",
+      "duration": 1.35,
+      "loop": false
+    },
+    "ui-select-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Shipboard ui-select coded tones, original synthesis",
+      "duration": 0.28,
+      "loop": false
+    },
+    "ui-cancel-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Shipboard ui-cancel coded tones, original synthesis",
+      "duration": 0.28,
+      "loop": false
+    },
+    "ui-nav-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Shipboard ui-nav coded tones, original synthesis",
+      "duration": 0.28,
+      "loop": false
+    },
+    "critical-0.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Shipboard critical coded tones, original synthesis",
+      "duration": 1.2,
+      "loop": false
+    },
+    "ui-select-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Shipboard ui-select coded tones, original synthesis",
+      "duration": 0.28,
+      "loop": false
+    },
+    "ui-cancel-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Shipboard ui-cancel coded tones, original synthesis",
+      "duration": 0.28,
+      "loop": false
+    },
+    "ui-nav-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Shipboard ui-nav coded tones, original synthesis",
+      "duration": 0.28,
+      "loop": false
+    },
+    "critical-1.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Shipboard critical coded tones, original synthesis",
+      "duration": 1.2,
+      "loop": false
+    },
+    "ui-select-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Shipboard ui-select coded tones, original synthesis",
+      "duration": 0.28,
+      "loop": false
+    },
+    "ui-cancel-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Shipboard ui-cancel coded tones, original synthesis",
+      "duration": 0.28,
+      "loop": false
+    },
+    "ui-nav-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Shipboard ui-nav coded tones, original synthesis",
+      "duration": 0.28,
+      "loop": false
+    },
+    "critical-2.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Shipboard critical coded tones, original synthesis",
+      "duration": 1.2,
+      "loop": false
+    },
+    "score-danger.ogg": {
+      "source": "Original deterministic synthesis in tools/generate-audio-v2.py",
+      "author": "HARD BURN original audio",
+      "licence": "CC0-1.0",
+      "description": "Synchronized 16-bar 72 BPM dissonant low-string danger stem, follows actual local hull condition",
+      "duration": 53.333333333333336,
+      "loop": true
+    }
+  }
+}

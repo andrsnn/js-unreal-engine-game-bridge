@@ -1,0 +1,19 @@
+import './browser-safety.cjs';
+import {chromium} from 'playwright';import {writeFileSync} from 'node:fs';import assert from 'node:assert/strict';
+const b=await chromium.launch({args:['--autoplay-policy=no-user-gesture-required']}),p=await b.newPage(),errors=[];
+p.on('pageerror',e=>errors.push(String(e)));
+try{
+ await p.route('**/__context_lab__',r=>r.fulfill({contentType:'text/html',body:'<button id="start">Start</button><script type="module">import {gameAudio} from "/src/core/audio.ts";import {VoxelChar} from "/src/render/voxelChar.ts";import * as THREE from "/node_modules/three/build/three.module.js";window.lab={a:gameAudio,VoxelChar,THREE};gameAudio.install();</script>'}));
+ await p.goto('http://127.0.0.1:5200/__context_lab__');await p.waitForFunction(()=>window.lab);await p.click('#start');
+ const geometry=await p.evaluate(()=>{
+  const {VoxelChar,THREE}=lab,c=new VoxelChar('humanoid',{sword:true},3.2),camera=new THREE.PerspectiveCamera(55,1,.1,500);camera.position.set(0,4,12);camera.lookAt(0,1,0);camera.updateMatrixWorld();c.setFlatPosition(0,0,0);
+  const cycles=[];for(let swing=0;swing<16;swing++){c.setAnim('attack',true);const frames=[];for(let i=0;i<28;i++){c.setAnim('attack');c.update(1/60,camera);frames.push(c.animationPose.arms);}cycles.push([...new Set(frames)]);}
+  c.setAnim('idle');c.update(.1,camera);const idle=c.animationPose.arms;
+  const colors=[];for(const hp of [100,60,25,100]){c.setHealth(hp,100);c.setTint(0xffffff);colors.push(c.mat.color.toArray());}c.setHealth(25,100);c.setFlash(true);c.setFlash(false);const restored=c.mat.color.toArray();c.dispose();return {cycles,idle,colors,restored};
+ });assert.ok(geometry.cycles.every(c=>['windup','strike','follow'].every(p=>c.includes(p))));assert.equal(geometry.idle,'down');assert.ok(geometry.colors[2][1]<geometry.colors[1][1]&&geometry.colors[1][1]<geometry.colors[0][1]);assert.deepEqual(geometry.colors[0],geometry.colors[3]);assert.deepEqual(geometry.restored,geometry.colors[2]);
+ await p.evaluate(async()=>{const a=lab.a;await a.ready();a.setSettings({master:.7,music:.32,effects:.75,muted:false});a.setEnvironment('space',{combat:false});a.update('space','verdant');window.analyser=a.ctx.createAnalyser();a.music.connect(analyser);});
+ const rows=[];async function track(scene,body,env,expected){await p.evaluate(([scene,body,env])=>{lab.a.setEnvironment(scene,env);lab.a.update(scene,body)},[scene,body,env]);await p.waitForFunction(id=>lab.a.snapshot().score?.track===id,expected,{timeout:20000});await p.waitForTimeout(1300);const s=await p.evaluate(()=>{const d=new Float32Array(analyser.fftSize);analyser.getFloatTimeDomainData(d);return {...lab.a.snapshot(),musicPeak:Math.max(...d.map(Math.abs)),media:{time:lab.a.locationMusic.current.audio.currentTime,ready:lab.a.locationMusic.current.audio.readyState}}});assert.ok(s.musicPeak>.00001,'actual music signal '+expected);assert.ok(s.score.streams<=2);assert.equal(s.score.failures,0);rows.push(s);}
+ await track('space','verdant',{combat:false},'space');await track('dungeon','verdant',{location:'cairn',combat:false},'vault');await track('dungeon','verdant',{location:'cairn',combat:true},'ground-combat');await track('space','verdant',{combat:true},'space-combat');await track('planet','sirocco',{combat:false},'dunes');
+ await p.evaluate(()=>lab.a.setSettings({muted:true}));await p.waitForTimeout(80);const muted=await p.evaluate(()=>lab.a.snapshot());assert.equal(muted.score.streams,0);assert.deepEqual(errors,[]);
+ writeFileSync('reports/context-audio/runtime.json',JSON.stringify({geometry,rows,muted,errors,limits:'Actual WebAudio/media signals, bounded streams, animated voxel pose/health tint checks. No subjective listening score or physical Claw measurement.'},null,2));console.log('PASS live streamed music, five contexts, combat transitions, mute; 16 full sword pose cycles and persistent wound tints');
+}finally{await b.close();}

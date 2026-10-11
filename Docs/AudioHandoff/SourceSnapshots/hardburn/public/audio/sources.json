@@ -1,0 +1,382 @@
+{
+  "licence": "CC0 1.0",
+  "sources": {
+    "scifi": "https://kenney.nl/assets/sci-fi-sounds",
+    "impact": "https://kenney.nl/assets/impact-sounds",
+    "interface": "https://kenney.nl/assets/interface-sounds"
+  },
+  "files": {
+    "scifi-laserLarge_000.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/laserLarge_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-laserLarge_001.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/laserLarge_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-laserLarge_002.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/laserLarge_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-laserSmall_000.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/laserSmall_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-laserSmall_001.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/laserSmall_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-laserSmall_002.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/laserSmall_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-laserRetro_000.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/laserRetro_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-laserRetro_001.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/laserRetro_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-laserRetro_002.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/laserRetro_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-thrusterFire_000.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/thrusterFire_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-thrusterFire_001.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/thrusterFire_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-thrusterFire_002.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/thrusterFire_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-forceField_000.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/forceField_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-forceField_001.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/forceField_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-forceField_002.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/forceField_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-explosionCrunch_000.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/explosionCrunch_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-explosionCrunch_001.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/explosionCrunch_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-explosionCrunch_002.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/explosionCrunch_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-impactMetal_000.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/impactMetal_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-impactMetal_001.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/impactMetal_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-impactMetal_002.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/impactMetal_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-spaceEngineLarge_000.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/spaceEngineLarge_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-spaceEngineLarge_001.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/spaceEngineLarge_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-spaceEngineLarge_002.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/spaceEngineLarge_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-spaceEngineLow_000.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/spaceEngineLow_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-spaceEngineLow_001.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/spaceEngineLow_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-spaceEngineLow_002.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/spaceEngineLow_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-spaceEngineSmall_000.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/spaceEngineSmall_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-spaceEngineSmall_001.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/spaceEngineSmall_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-spaceEngineSmall_002.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/spaceEngineSmall_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-computerNoise_000.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/computerNoise_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-computerNoise_001.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/computerNoise_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-computerNoise_002.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/computerNoise_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "impact-impactMetal_heavy_000.ogg": {
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "original": "Audio/impactMetal_heavy_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "impact-impactMetal_heavy_001.ogg": {
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "original": "Audio/impactMetal_heavy_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "impact-impactMetal_heavy_002.ogg": {
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "original": "Audio/impactMetal_heavy_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "impact-impactMetal_medium_000.ogg": {
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "original": "Audio/impactMetal_medium_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "impact-impactMetal_medium_001.ogg": {
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "original": "Audio/impactMetal_medium_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "impact-impactMetal_medium_002.ogg": {
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "original": "Audio/impactMetal_medium_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "impact-impactMetal_light_000.ogg": {
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "original": "Audio/impactMetal_light_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "impact-impactMetal_light_001.ogg": {
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "original": "Audio/impactMetal_light_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "impact-impactMetal_light_002.ogg": {
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "original": "Audio/impactMetal_light_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "impact-impactPlate_heavy_000.ogg": {
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "original": "Audio/impactPlate_heavy_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "impact-impactPlate_heavy_001.ogg": {
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "original": "Audio/impactPlate_heavy_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "impact-impactPlate_heavy_002.ogg": {
+      "source": "https://kenney.nl/assets/impact-sounds",
+      "original": "Audio/impactPlate_heavy_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-click_001.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/click_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-click_002.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/click_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-click_003.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/click_003.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-select_001.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/select_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-select_002.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/select_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-select_003.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/select_003.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-confirmation_001.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/confirmation_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-confirmation_002.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/confirmation_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-confirmation_003.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/confirmation_003.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-error_001.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/error_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-error_002.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/error_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-error_003.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/error_003.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-question_001.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/question_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-question_002.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/question_002.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "interface-question_003.ogg": {
+      "source": "https://kenney.nl/assets/interface-sounds",
+      "original": "Audio/question_003.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-lowFrequency_explosion_000.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/lowFrequency_explosion_000.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    },
+    "scifi-lowFrequency_explosion_001.ogg": {
+      "source": "https://kenney.nl/assets/sci-fi-sounds",
+      "original": "Audio/lowFrequency_explosion_001.ogg",
+      "licence": "CC0 1.0",
+      "author": "Kenney"
+    }
+  }
+}

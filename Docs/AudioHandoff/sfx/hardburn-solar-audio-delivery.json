@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "delivery": "C:/UnlitWorldsCaptures/judge/hardburn-audio-v9.mp4",
+  "bytes": 1223852,
+  "sha256": "24ba510ae52e282c766c35e537e414ec968543dde76bec7ec99aa836a08c2dad",
+  "capture": "G:/sfx/evidence/hardburn/solar-audio-1791673754724/report.json",
+  "originalInputOnly": true,
+  "playbackSpeed": 1,
+  "sourceDuration": 30.4469997882843,
+  "fullDecode": true,
+  "loudnessLUFS": -16.08,
+  "truePeakDBTP": -1.36,
+  "lra": 5.4,
+  "frames": [
+    "G:/sfx/evidence/hardburn/solar-audio-1791673754724/ecm.png",
+    "G:/sfx/evidence/hardburn/solar-audio-1791673754724/ping.png",
+    "G:/sfx/evidence/hardburn/solar-audio-1791673754724/cold-order.png",
+    "G:/sfx/evidence/hardburn/solar-audio-1791673754724/quiet-bed.png"
+  ],
+  "spectrum": "G:/sfx/evidence/hardburn/solar-audio-1791673754724/spectrum.png",
+  "framesReviewed": true,
+  "alignment": "CDP screencast metadata epoch and page Date.now epoch, actual wall intervals, no respeed",
+  "captureScope": "Fresh native Quietwake: actual paid ECM burst, active PING, cold navigation order and quiet bed; traffic and distant torpedo burns are not demonstrated by this movie."
+}

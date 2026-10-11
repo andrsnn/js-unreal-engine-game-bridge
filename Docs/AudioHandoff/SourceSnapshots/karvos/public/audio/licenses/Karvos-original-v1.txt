@@ -1,0 +1,5 @@
+Karvos original audio v1
+All v1-*.ogg sounds and music are original deterministic synthesis/composition made for this project by scripts/build-audio-v1.py. No samples, copyrighted melodies, game/film recordings or model outputs are incorporated.
+Dedicated to the public domain under CC0 1.0 Universal. You may copy, modify, distribute and use these assets, including commercially, without asking permission.
+https://creativecommons.org/publicdomain/zero/1.0/
+Existing source recordings retain their separate bank.json provenance and accompanying licences.

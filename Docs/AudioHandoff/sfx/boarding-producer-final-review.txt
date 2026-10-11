@@ -1,0 +1,9 @@
+Audio12 final committed producer review (6915176), 8 passed / 5 failed.
+Actual CPU test is tools/check-audio-boarding-producer.mjs. No browser/build needed for these fixes.
+1. contact precision requires contact.systemId===systemId, identified, finite confidence>=.72.
+2. Own attacking party allows precise OWN pod-launch; other events require current identified target or known player-owned target. When target contact is lost, own marine/result reports return precise:false, own:true, no position.
+3. Receiver filter requires finite at and 0<=state.time-e.at<2.
+4. Marine exchange requires actual assault stage and defender/marine contest; transfer PDC casualties and target destruction/withdrawal are not marine gunfire. Before.stage==assault OR new b.stage==assault must be paired with actual defender drop, rather than generic loss of all marines on result.
+5. Actual breach uses !p.lost && old?.phase!=="docked" && p.phase==="docked", including initialization+dock in one real advance call.
+Launch records retain p.sourceId and saved p.launchPosition. Snapshot before collectLosses is already fixed. Existing321 banks/.69/guns/EW unchanged. Native12 registration remains held until fixed committed source review. SFX does not edit owner gameplay files or launch a duplicate browser/build.
+Evidence G:/sfx/hardburn-audio12-producer-6915176.json.
