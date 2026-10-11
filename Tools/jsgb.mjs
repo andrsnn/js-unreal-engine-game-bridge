@@ -19,10 +19,10 @@ const [command, gameArg, ...rest] = process.argv.slice(2);
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 const has = name => rest.includes(name);
 
-/** Machine settings: jsgb.local.json (not in git), overridden by JSGB_ENGINE, JSGB_PROJECT, JSGB_BUILDS. */
 // Notepad and Windows PowerShell save UTF-8 with a byte order mark, which JSON.parse rejects.
 export const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 
+/** Machine settings: jsgb.local.json (not in git), overridden by JSGB_ENGINE, JSGB_PROJECT, JSGB_BUILDS. */
 export function settings() {
   const file = path.join(bridge, 'jsgb.local.json');
   const local = fs.existsSync(file) ? readJson(file) : {};
