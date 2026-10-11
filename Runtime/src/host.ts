@@ -15,6 +15,12 @@ export interface SceneSink {
 export interface JsgbHost {
   /** Reads a file below the web build's site root ("/models/x.glb"); null when missing. */
   readFile(path: string): ArrayBuffer | null;
+  /** Web Workers on their own threads: create returns 0 when the host runs workers on the game thread. */
+  workerCreate?(source: string, url: string, name: string): number;
+  workerPost?(id: number, bytes: ArrayBuffer): void;
+  /** Replies since the last poll: [id, kind (0 message, 1 error), length, bytes padded to 4] repeated. */
+  workerPoll?(): ArrayBuffer | null;
+  workerTerminate?(id: number): void;
   /** Monotonic milliseconds. */
   now(): number;
   log(level: 'log' | 'warn' | 'error', text: string): void;
@@ -39,6 +45,8 @@ export interface JsgbHost {
   text?(fontPath: string, sizePx: number, run: string): ArrayBuffer | null;
   /** Seed for Math.random (deterministic captures); 0 or absent keeps it random. */
   seed?: number;
+  /** Milliseconds per frame when game time is stepped (deterministic captures); 0 or absent for real time. */
+  fixedStepMs?: number;
   /** Asset registry JSON ({assets: {key: {mesh, material, niagara, sound}}}); empty when none. */
   registry?: string;
 }

@@ -174,6 +174,7 @@ public:
 
 private:
 	UStaticMesh* BuildMesh(const FJsgbPendingGeometry& G, int32& OutSlots);
+	UStaticMesh* BuildMeshFromDescription(const FJsgbPendingGeometry& G, int32& OutSlots);
 	/** Builds a geometry the game draws for the first time, in this frame, as WebGL uploads it. */
 	UStaticMesh* FirstBuild(int32 GeometryId, struct FJsgbGeometry* G);
 	UStaticMesh* SpriteQuad();

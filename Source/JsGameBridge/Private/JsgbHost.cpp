@@ -45,6 +45,8 @@
 #include "IImageWrapperModule.h"
 #include "Async/Async.h"
 #include "HAL/ThreadSafeCounter.h"
+#include "HAL/Runnable.h"
+#include "HAL/RunnableThread.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
@@ -241,8 +243,61 @@ void UJsgbUIPort::SendInput(const FString& Json)
 		if (At >= 0) { AppliedCssVersion = FCString::Atoi(*Json.Mid(At + 10, 12)); }
 		return;
 	}
-	if (Bridge && Bridge->OnUIInput.IsBound()) { Bridge->OnUIInput.Execute(Json); }
+	if (UJsgbBridge* B = Bridge) { B->RunOnJs([B, Json] { if (B->OnUIInput.IsBound()) { B->OnUIInput.Execute(Json); } }); }
 }
+
+/** The game's JavaScript on its own thread (-JsgbJsThread): it runs the game's frames at its own pace and
+ *  hands each finished frame to the game thread as a snapshot, so Unreal draws without waiting for it.
+ *  Needs Puerts built with THREAD_SAFE, which locks the JavaScript engine for every call into it. */
+class FJsgbJsThread : public FRunnable
+{
+public:
+	FJsgbJsThread(UJsgbBridge* InBridge, double InHz) : Bridge(InBridge), Hz(FMath::Clamp(InHz, 10.0, 240.0))
+	{
+		Wake = FPlatformProcess::GetSynchEventFromPool(false);
+		Thread = FRunnableThread::Create(this, TEXT("JsgbJavaScript"), 0, TPri_AboveNormal);
+	}
+	virtual ~FJsgbJsThread() override
+	{
+		bStop = true; Wake->Trigger();
+		if (Thread) { Thread->WaitForCompletion(); delete Thread; }
+		FPlatformProcess::ReturnSynchEventToPool(Wake);
+	}
+	virtual uint32 Run() override
+	{
+		double Next = FPlatformTime::Seconds();
+		while (!bStop)
+		{
+			const double T0 = FPlatformTime::Seconds();
+			Bridge->DrainJsCommands();
+			if (Bridge->OnFrame.IsBound()) { Bridge->OnFrame.Execute(Bridge->bReady ? 8.f : 40.f); }
+			const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0;
+			{ FScopeLock Lock(&StatsLock); FrameMs += Ms; ++Frames; MaxMs = FMath::Max(MaxMs, Ms); }
+			// One game frame per tick of the configured rate; a slow frame is followed by the next at once.
+			Next = FMath::Max(Next + 1.0 / Hz, FPlatformTime::Seconds() - 0.25 / Hz);
+			const double Wait = Next - FPlatformTime::Seconds();
+			if (Wait > 0) { Wake->Wait(FMath::Max(1, static_cast<int32>(Wait * 1000.0))); }
+		}
+		return 0;
+	}
+	void Poke() { Wake->Trigger(); }
+	/** Average and longest frame times since the last call, and how many frames ran. */
+	void TakeStats(double& OutAvg, double& OutMax, int32& OutFrames)
+	{
+		FScopeLock Lock(&StatsLock);
+		OutFrames = Frames; OutAvg = Frames ? FrameMs / Frames : 0; OutMax = MaxMs;
+		FrameMs = 0; Frames = 0; MaxMs = 0;
+	}
+private:
+	UJsgbBridge* Bridge;
+	double Hz;
+	FEvent* Wake = nullptr;
+	FRunnableThread* Thread = nullptr;
+	TAtomic<bool> bStop{false};
+	FCriticalSection StatsLock;
+	double FrameMs = 0, MaxMs = 0;
+	int32 Frames = 0;
+};
 
 AJsgbHost::AJsgbHost()
 {
@@ -350,6 +405,8 @@ void AJsgbHost::StartJs()
 	Bridge->Trace = FParse::Param(FCommandLine::Get(), TEXT("JsgbTraceMirror"));
 	Mirror->bTrace = Bridge->Trace;
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbSeed="), Bridge->Seed);
+	// Web Workers run on their own threads unless -JsgbGameThreadWorkers asks for the old single-thread mode.
+	if (!FParse::Param(FCommandLine::Get(), TEXT("JsgbGameThreadWorkers"))) { FFileHelper::LoadFileToString(Bridge->WorkerRuntime, *(GameDir / TEXT("jsgb/worker-runtime.js"))); }
 	Bridge->Registry = RegistryJson;
 	Bridge->BundlePath = BundlePath;
 	Bridge->PublicRoots = PublicRoots;
@@ -375,12 +432,30 @@ void AJsgbHost::StartJs()
 	ReadyFrame = -1;
 	PushedUIVersion = -1;
 	if (Browser.IsValid() && bDocumentReady) { Browser->ExecuteJavascript(TEXT("window.JsGameUI&&window.JsGameUI.reset()")); }
+#ifdef THREAD_SAFE
+	// Deterministic captures (fixed steps) keep the JavaScript on the game thread.
+	if (FParse::Param(FCommandLine::Get(), TEXT("JsgbJsThread")) && Bridge->FixedStepMs <= 0 && Bridge->OnFrame.IsBound())
+	{
+		double Hz = 60;
+		FParse::Value(FCommandLine::Get(), TEXT("JsgbJsHz="), Hz);
+		Bridge->bJsThread = true;
+		JsThread = MakeShared<FJsgbJsThread>(Bridge, Hz);
+		Bridge->Log(TEXT("log"), FString::Printf(TEXT("JavaScript runs on its own thread at up to %.0f frames per second"), Hz));
+	}
+#else
+	if (FParse::Param(FCommandLine::Get(), TEXT("JsgbJsThread"))) { Bridge->Log(TEXT("warn"), TEXT("-JsgbJsThread needs Puerts built with THREAD_SAFE (ThreadSafe = true in JsEnv.Build.cs); JavaScript stays on the game thread")); }
+#endif
 }
 
 void AJsgbHost::StopJs()
 {
+	// The JavaScript thread stops first, so nothing runs JavaScript while the engine is torn down.
+	JsThread.Reset();
 	if (Bridge)
 	{
+		Bridge->DrainGameCommands();
+		Bridge->bJsThread = false;
+		Bridge->StopWorkers();
 		Bridge->OnFrame.Clear(); Bridge->OnUIInput.Clear(); Bridge->OnKey.Clear(); Bridge->OnMouse.Clear();
 		Bridge->OnWheel.Clear(); Bridge->OnViewport.Clear(); Bridge->OnGamepads.Clear(); Bridge->OnEval.Clear();
 		Bridge->Mirror = nullptr; Bridge->Audio = nullptr;
@@ -510,6 +585,16 @@ void AJsgbHost::StartServer()
 			Json(O);
 			return true;
 		}
+		if (Route == TEXT("/bridge/frametimes"))
+		{
+			// Every frame time in ms since the last read, then cleared: tools compute minimum and 1% low FPS from it.
+			FString Text = TEXT("[");
+			for (int32 I = 0; I < H->FrameTimesMs.Num(); ++I) { if (I) { Text += TEXT(","); } Text += FString::Printf(TEXT("%.2f"), H->FrameTimesMs[I]); }
+			Text += TEXT("]");
+			H->FrameTimesMs.Reset();
+			Done(FHttpServerResponse::Create(Text, TEXT("application/json")));
+			return true;
+		}
 		if (Route == TEXT("/bridge/describe"))
 		{
 			const FString Request = Body(R);
@@ -570,7 +655,7 @@ void AJsgbHost::StartServer()
 			if (!bRemote) { Done(FHttpServerResponse::Error(EHttpServerResponseCodes::Forbidden, TEXT("start Unreal with -JsgbAllowRemote"))); return true; }
 			auto O = MakeShared<FJsonObject>();
 			if (Route == TEXT("/bridge/eval")) { O->SetStringField(TEXT("result"), H->Eval(Body(R))); }
-			else if (Route == TEXT("/bridge/input")) { if (H->UIPort) { H->UIPort->SendInput(Body(R)); } else if (H->Bridge && H->Bridge->OnUIInput.IsBound()) { H->Bridge->OnUIInput.Execute(Body(R)); } O->SetBoolField(TEXT("accepted"), true); }
+			else if (Route == TEXT("/bridge/input")) { if (H->UIPort) { H->UIPort->SendInput(Body(R)); } else if (UJsgbBridge* B = H->Bridge) { const FString In = Body(R); B->RunOnJs([B, In] { if (B->OnUIInput.IsBound()) { B->OnUIInput.Execute(In); } }); } O->SetBoolField(TEXT("accepted"), true); }
 			else if (Route == TEXT("/bridge/capture")) { const FString Path = Body(R).TrimStartAndEnd(); H->Capture(Path); O->SetStringField(TEXT("path"), Path); }
 			else { O->SetBoolField(TEXT("closing"), true); FPlatformMisc::RequestExit(false); }
 			Json(O);
@@ -613,11 +698,23 @@ void AJsgbHost::EndPlay(const EEndPlayReason::Type Reason)
 	Super::EndPlay(Reason);
 }
 
-void AJsgbHost::SendKey(const FString& Type, const FString& Code, bool bRepeat) { if (Bridge && Bridge->OnKey.IsBound()) { Bridge->OnKey.Execute(Type, Code, bRepeat); } }
-void AJsgbHost::SendMouse(const FString& Type, float X, float Y, int32 Button, int32 Buttons, float DX, float DY) { if (Bridge && Bridge->OnMouse.IsBound()) { Bridge->OnMouse.Execute(Type, X, Y, Button, Buttons, DX, DY); } }
-void AJsgbHost::SendWheel(float DeltaY) { if (Bridge && Bridge->OnWheel.IsBound()) { Bridge->OnWheel.Execute(DeltaY); } }
-void AJsgbHost::SendGamepads(const FString& Json) { if (Bridge && Bridge->OnGamepads.IsBound()) { Bridge->OnGamepads.Execute(Json); } }
-FString AJsgbHost::Eval(const FString& Source) { return Bridge && Bridge->OnEval.IsBound() ? Bridge->OnEval.Execute(Source) : FString(TEXT("ERR no js")); }
+// Input goes to the game's JavaScript on whichever thread runs it.
+void AJsgbHost::SendKey(const FString& Type, const FString& Code, bool bRepeat) { if (UJsgbBridge* B = Bridge) { B->RunOnJs([B, Type, Code, bRepeat] { if (B->OnKey.IsBound()) { B->OnKey.Execute(Type, Code, bRepeat); } }); } }
+void AJsgbHost::SendMouse(const FString& Type, float X, float Y, int32 Button, int32 Buttons, float DX, float DY) { if (UJsgbBridge* B = Bridge) { B->RunOnJs([=] { if (B->OnMouse.IsBound()) { B->OnMouse.Execute(Type, X, Y, Button, Buttons, DX, DY); } }); } }
+void AJsgbHost::SendWheel(float DeltaY) { if (UJsgbBridge* B = Bridge) { B->RunOnJs([B, DeltaY] { if (B->OnWheel.IsBound()) { B->OnWheel.Execute(DeltaY); } }); } }
+void AJsgbHost::SendGamepads(const FString& Json) { if (UJsgbBridge* B = Bridge) { B->RunOnJs([B, Json] { if (B->OnGamepads.IsBound()) { B->OnGamepads.Execute(Json); } }); } }
+FString AJsgbHost::Eval(const FString& Source)
+{
+	if (!Bridge || !Bridge->OnEval.IsBound()) { return TEXT("ERR no js"); }
+	if (!Bridge->bJsThread) { return Bridge->OnEval.Execute(Source); }
+	// On the JavaScript thread: wait for its next turn (up to 10 s) for the answer.
+	struct FAnswer { FString Text; FEvent* Done = FPlatformProcess::GetSynchEventFromPool(true); ~FAnswer() { FPlatformProcess::ReturnSynchEventToPool(Done); } };
+	TSharedRef<FAnswer, ESPMode::ThreadSafe> Answer = MakeShared<FAnswer, ESPMode::ThreadSafe>();
+	UJsgbBridge* B = Bridge;
+	B->RunOnJs([B, Source, Answer] { Answer->Text = B->OnEval.IsBound() ? B->OnEval.Execute(Source) : FString(TEXT("ERR no js")); Answer->Done->Trigger(); });
+	if (JsThread) { JsThread->Poke(); }
+	return Answer->Done->Wait(10000) ? Answer->Text : FString(TEXT("ERR the JavaScript thread did not answer within 10 s"));
+}
 double AJsgbHost::GameSeconds() const { return Bridge ? Bridge->NowMs() / 1000.0 : 0.0; }
 
 // Upscaling and frame generation, chosen on the command line:
@@ -638,13 +735,22 @@ void AJsgbHost::SetupUpscaler()
 	FString Dlss, Tsr;
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbDLSS="), Dlss);
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbTSR="), Tsr);
+	ApplyUpscaler(Dlss, Tsr);
+	bShowHud = FParse::Param(FCommandLine::Get(), TEXT("JsgbHud"));
+}
+
+// Switches anti-aliasing and upscaling while the game runs (also the script step "upscaler dlaa|quality|...|off|tsr <percent>").
+void AJsgbHost::ApplyUpscaler(const FString& DlssMode, const FString& TsrPercent)
+{
+	FString Dlss = DlssMode.ToLower(), Tsr = TsrPercent;
+	Upscaler.Reset();
 	const bool bNvidia = IsRHIDeviceNVIDIA();
 	const bool bDlssPlugin = IConsoleManager::Get().FindConsoleVariable(TEXT("r.NGX.DLSS.Enable")) != nullptr;
 	double Percent = 100;
-	if (!Dlss.IsEmpty())
+	if (!Dlss.IsEmpty() && Dlss != TEXT("off"))
 	{
 		static const TMap<FString, double> Modes = {{TEXT("dlaa"), 100.0}, {TEXT("quality"), 66.7}, {TEXT("balanced"), 58.0}, {TEXT("performance"), 50.0}, {TEXT("ultra"), 33.3}};
-		const double* Found = Modes.Find(Dlss.ToLower());
+		const double* Found = Modes.Find(Dlss);
 		Percent = Found ? *Found : 66.7;
 		if (bNvidia && bDlssPlugin)
 		{
@@ -656,7 +762,7 @@ void AJsgbHost::SetupUpscaler()
 			FParse::Value(FCommandLine::Get(), TEXT("JsgbDLSSPreset="), Preset);
 			Preset = Preset.Left(1).ToUpper();
 			SetCVar(TEXT("r.NGX.DLSS.Preset"), FString::FromInt(Preset[0] - TEXT('A') + 1));
-			Upscaler = FString::Printf(TEXT("DLSS %s, preset %s (%.0f%% render scale)"), Dlss.ToLower() == TEXT("dlaa") ? TEXT("DLAA") : *Dlss.ToLower(), *Preset, Percent);
+			Upscaler = FString::Printf(TEXT("DLSS 4.5 %s, preset %s (%.0f%% render scale)"), Dlss == TEXT("dlaa") ? TEXT("DLAA") : *Dlss, *Preset, Percent);
 		}
 		else
 		{
@@ -672,6 +778,13 @@ void AJsgbHost::SetupUpscaler()
 		if (bDlssPlugin) { SetCVar(TEXT("r.NGX.DLSS.Enable"), TEXT("0")); }
 		Upscaler = FString::Printf(TEXT("TSR (%.0f%% render scale)"), Percent);
 	}
+	if (Upscaler.IsEmpty())
+	{
+		// Back to the default: FXAA at full resolution.
+		SetCVar(TEXT("r.AntiAliasingMethod"), TEXT("1"));
+		SetCVar(TEXT("r.ScreenPercentage"), TEXT("100"));
+		if (bDlssPlugin) { SetCVar(TEXT("r.NGX.DLSS.Enable"), TEXT("0")); }
+	}
 	if (FParse::Param(FCommandLine::Get(), TEXT("JsgbFrameGen")))
 	{
 		SetCVar(TEXT("r.Streamline.DLSSG.Enable"), TEXT("1"));
@@ -684,9 +797,9 @@ void AJsgbHost::SetupUpscaler()
 		SetCVar(TEXT("r.Streamline.DeepDVC.Intensity"), Vibrance);
 		Upscaler += Upscaler.IsEmpty() ? TEXT("RTX Dynamic Vibrance") : TEXT(" + RTX Dynamic Vibrance");
 	}
-	if (Upscaler.IsEmpty()) { Upscaler = TEXT("FXAA (full resolution)"); }
+	if (Upscaler.IsEmpty()) { Upscaler = TEXT("DLSS off (FXAA, full resolution)"); }
 	UE_LOG(LogJsgbHost, Display, TEXT("Anti-aliasing and upscaling: %s"), *Upscaler);
-	bShowHud = FParse::Param(FCommandLine::Get(), TEXT("JsgbHud"));
+	HudSeconds = 0.5;
 }
 
 // Frames on screen per second with DLSS Frame Generation, from the NVIDIA plugin's Blueprint library.
@@ -730,6 +843,8 @@ void AJsgbHost::UpdateHud(float DeltaSeconds)
 			];
 		GEngine->GameViewport->AddViewportWidgetContent(Box, 300);
 	}
+	// While a capture runs, each frame waits for its screenshot, so the frame rate means nothing: show the mode only.
+	if (!CaptureDir.IsEmpty()) { HudText->SetText(FText::FromString(Upscaler)); return; }
 	const FString Rate = HudPresentedFps > 0 ? FString::Printf(TEXT("%.0f FPS on screen, %.0f rendered"), HudPresentedFps, HudFps) : FString::Printf(TEXT("%.0f FPS"), HudFps);
 	HudText->SetText(FText::FromString(FString::Printf(TEXT("%s\n%s  (GPU %.1f ms)"), *Upscaler, *Rate, FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles()))));
 }
@@ -863,6 +978,7 @@ void AJsgbHost::RunScript()
 		else if (S.Verb == TEXT("key")) { Result = Eval(FString::Printf(TEXT("__jsgb.key(%s)"), *S.Args)); }
 		else if (S.Verb == TEXT("shot")) { Capture(CaptureDir.IsEmpty() ? FPaths::ProjectSavedDir() / TEXT("JsGameBridge") / (S.Args + TEXT(".png")) : CaptureDir / (S.Args + TEXT(".png"))); }
 		else if (S.Verb == TEXT("quit")) { ExitFrame = Frame + 2; }
+		else if (S.Verb == TEXT("upscaler")) { FString Mode = S.Args.TrimStartAndEnd(), Pct; if (Mode.StartsWith(TEXT("tsr"))) { Pct = Mode.Mid(3).TrimStart(); Mode.Reset(); } ApplyUpscaler(Mode, Pct); Result = Upscaler; if (!CaptureDir.IsEmpty() && CaptureStart >= 0) { CaptureTimes += FString::Printf(TEXT("upscaler %.3f %s\n"), GameSeconds() - CaptureStart, *Upscaler); } }
 		Bridge->Log(TEXT("log"), FString::Printf(TEXT("script %.2fs %s %s -> %s"), Rel, *S.Verb, *S.Args.Left(160), *Result.Left(800)));
 	}
 }
@@ -872,6 +988,7 @@ void AJsgbHost::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	++Frame;
 	UpdateHud(DeltaSeconds);
+	if (FrameTimesMs.Num() < 1000000) { FrameTimesMs.Add(DeltaSeconds * 1000.f); }
 	if (RecordDir.IsEmpty() && CaptureQueue.Num() && !FScreenshotRequest::IsScreenshotRequested()) { FScreenshotRequest::RequestScreenshot(CaptureQueue[0], true, false); CaptureQueue.RemoveAt(0); }
 	if (!RecordDir.IsEmpty() && !FScreenshotRequest::IsScreenshotRequested() && FPlatformTime::Seconds() >= NextRecord)
 	{
@@ -901,14 +1018,25 @@ void AJsgbHost::Tick(float DeltaSeconds)
 
 	FIntPoint Size(1920, 1080);
 	if (UGameViewportClient* Vp = GetWorld()->GetGameViewport()) { FVector2D S; Vp->GetViewportSize(S); if (S.X > 0) { Size = FIntPoint(S.X, S.Y); } }
-	if (Size != Viewport) { Viewport = Size; Mirror->ViewportSize = Size; if (Bridge->OnViewport.IsBound()) { Bridge->OnViewport.Execute(Size.X, Size.Y); } }
+	if (Size != Viewport) { Viewport = Size; Mirror->ViewportSize = Size; UJsgbBridge* B = Bridge; B->RunOnJs([B, Size] { if (B->OnViewport.IsBound()) { B->OnViewport.Execute(Size.X, Size.Y); } }); }
 
 	if (ReadyFrame < 0 && Bridge->bReady) { ReadyFrame = Frame; ReadySeconds = GameSeconds(); CaptureStart = ReadySeconds; Bridge->Log(TEXT("log"), FString::Printf(TEXT("game ready at host frame %lld"), Frame)); }
 	RunScript();
+	// A frame much longer than 60 FPS allows gets a breakdown of the tick before it.
+	if (ReadyFrame >= 0 && DeltaSeconds > 0.034f && LastTick.Num() == 6)
+	{
+		Bridge->Log(TEXT("log"), FString::Printf(TEXT("slow frame %lld: %.0f ms; previous tick: js %.1f ms (mirror %.1f, build queue %.1f in %d builds, stall %.1f), ui %.1f ms; the rest was outside the bridge"),
+			Frame, DeltaSeconds * 1000.f, LastTick[0], LastTick[1], LastTick[2], static_cast<int32>(LastTick[3]), LastTick[4], LastTick[5]));
+	}
+	const double MirrorBefore = Bridge->MirrorMs, QueueBefore = Mirror->QueueMs, StallBefore = Mirror->StallMs;
+	const int32 BuildsBefore = Mirror->QueueBuilds;
 	const double T0 = FPlatformTime::Seconds();
-	Bridge->OnFrame.Execute(ReadyFrame < 0 ? 40.f : 8.f);
-	JsMs += (FPlatformTime::Seconds() - T0) * 1000.0; ++TimedFrames;
+	if (JsThread) { Bridge->DrainGameCommands(); }
+	else { Bridge->OnFrame.Execute(ReadyFrame < 0 ? 40.f : 8.f); }
+	const double T1 = FPlatformTime::Seconds();
+	JsMs += (T1 - T0) * 1000.0; ++TimedFrames;
 	PushUI();
+	LastTick = {(T1 - T0) * 1000.0, Bridge->MirrorMs - MirrorBefore, Mirror->QueueMs - QueueBefore, static_cast<double>(Mirror->QueueBuilds - BuildsBefore), Mirror->StallMs - StallBefore, (FPlatformTime::Seconds() - T1) * 1000.0};
 	// The first frame the reloaded game draws stops the reload timer.
 	if (ReloadStart >= 0 && ReadyFrame >= 0 && Frame > ReadyFrame)
 	{
@@ -929,6 +1057,12 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		Bridge->Log(TEXT("log"), FString::Printf(TEXT("host frame %lld: js+mirror %.2f ms (game js %.2f, mirror %.2f, of which lines %.2f, materials %.2f in %d updates, textures %.2f in %d updates; build queue %.2f in %d builds, meshes %.2f, instanced %.2f, sprites %.2f, points %.2f, line records %.2f), frame %.2f ms, fps %.1f, gpu %.2f ms, drawn %d, lines %d, pending builds %d, voices %d, js errors %d"),
 			Frame, JsMs / N, (JsMs - Bridge->MirrorMs) / N, Bridge->MirrorMs / N, Mirror->LinesMs / N, Bridge->MaterialMs / N, Bridge->MaterialCalls, Bridge->TextureMs / N, Bridge->TextureCalls, Mirror->QueueMs / N, Mirror->QueueBuilds, Mirror->RecordMs[1] / N, Mirror->RecordMs[2] / N, Mirror->RecordMs[4] / N, Mirror->RecordMs[5] / N, Mirror->RecordMs[6] / N, DeltaSeconds * 1000.f, HudFps, FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles()),
 			Mirror->DrawnEntities, Mirror->LineSegmentsDrawn, Mirror->PendingBuilds(), Audio->ActiveVoices(), Bridge->ErrorCount));
+		if (JsThread)
+		{
+			double Avg = 0, Max = 0; int32 JsFrames = 0;
+			JsThread->TakeStats(Avg, Max, JsFrames);
+			Bridge->Log(TEXT("log"), FString::Printf(TEXT("JavaScript thread: %d game frames, %.2f ms average, %.1f ms longest"), JsFrames, Avg, Max));
+		}
 		JsMs = 0; TimedFrames = 0; Bridge->MirrorMs = 0; Mirror->ClearTimers(); Bridge->MaterialMs = 0; Bridge->TextureMs = 0; Bridge->MaterialCalls = 0; Bridge->TextureCalls = 0;
 	}
 	if (!CaptureDir.IsEmpty() && CaptureFps > 0 && ReadyFrame >= 0)

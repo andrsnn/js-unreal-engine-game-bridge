@@ -5,12 +5,23 @@ const bridge = puerts.argv.getByName('Bridge');
 const EMPTY = new ArrayBuffer(0);
 const buf = b => b || EMPTY;
 
+// Blob URLs shared with threaded workers (see polyfills.ts BlobStore).
+globalThis.__jsgbBlobs = {
+  put: (url, bytes, type) => bridge.BlobPut(url, bytes, type),
+  get: url => { const b = bridge.BlobGet(url); return b && b.byteLength > 0 ? {bytes: b, type: bridge.BlobType(url)} : null; },
+  revoke: url => bridge.BlobRevoke(url),
+};
 globalThis.__jsgbHost = {
   search: bridge.Search,
   registry: bridge.Registry,
   seed: bridge.Seed,
+  fixedStepMs: bridge.FixedStepMs,
   trace: bridge.Trace,
   now: () => bridge.NowMs(),
+  workerCreate: (source, url, name) => bridge.WorkerCreate(source, url, name),
+  workerPost: (id, bytes) => bridge.WorkerPost(id, bytes),
+  workerPoll: () => { const b = bridge.WorkerPoll(); return b && b.byteLength > 0 ? b : null; },
+  workerTerminate: id => bridge.WorkerTerminate(id),
   readFile: path => { const b = bridge.ReadFile(path); return b && b.byteLength > 0 ? b : null; },
   log: (level, text) => bridge.Log(level, String(text)),
   reload: () => bridge.RequestReload(),

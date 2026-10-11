@@ -13,8 +13,8 @@ const [game, ...rest] = process.argv.slice(2);
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 const from = +flag('--from', 30), to = +flag('--to', 90), res = flag('--res', '1920x1080');
 const pass = [];
-for (const f of ['--dlss', '--tsr', '--vibrance', '--dlss-preset', '--script', '--search']) if (flag(f)) pass.push(f, flag(f));
-for (const f of ['--frame-gen', '--hud']) if (rest.includes(f)) pass.push(f);
+for (const f of ['--dlss', '--tsr', '--vibrance', '--dlss-preset', '--script', '--search', '--js-hz']) if (flag(f)) pass.push(f, flag(f));
+for (const f of ['--frame-gen', '--hud', '--js-thread']) if (rest.includes(f)) pass.push(f);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const status = () => fetch('http://127.0.0.1:5292/bridge/status', {signal: AbortSignal.timeout(3000)}).then(r => r.json()).catch(() => null);
 
@@ -24,12 +24,17 @@ child.stdout.on('data', d => { out += d; });
 const exited = new Promise(r => child.on('exit', r));
 let ready = null, upscaler = '';
 const samples = [];
+const frameTimes = [];
+const readTimes = () => fetch('http://127.0.0.1:5292/bridge/frametimes', {signal: AbortSignal.timeout(5000)}).then(r => r.json()).catch(() => []);
+let timing = false;
 for (;;) {
   const s = await status();
   if (s?.ready && ready === null) ready = Date.now();
   if (ready !== null && s) {
     const t = (Date.now() - ready) / 1000;
     upscaler = s.upscaler ?? upscaler;
+    if (t >= from && !timing) { timing = true; await readTimes(); }
+    if (t >= from) frameTimes.push(...await readTimes());
     if (t >= from) samples.push({t, frames: s.hostFrames, gpuMs: s.gpuMs, presentedFps: s.presentedFps});
     if (t >= to) break;
   }
@@ -42,8 +47,13 @@ if (child.exitCode === null) child.kill();
 if (samples.length < 2) { console.log(JSON.stringify({game, res, upscaler, error: 'no samples', log: out.slice(-400)})); process.exit(1); }
 const a = samples[0], b = samples.at(-1);
 const fps = (b.frames - a.frames) / (b.t - a.t);
+// Minimum and 1% low: the frame rate of the slowest frame, and of the slowest 1% of frames on average.
+const sorted = [...frameTimes].sort((x, y) => y - x);
+const worst = sorted.slice(0, Math.max(1, Math.ceil(sorted.length / 100)));
+const minFps = sorted.length ? +(1000 / sorted[0]).toFixed(1) : null;
+const low1 = worst.length ? +(1000 / (worst.reduce((x, y) => x + y, 0) / worst.length)).toFixed(1) : null;
 const gpu = samples.map(s => s.gpuMs).filter(x => x > 0).sort((x, y) => x - y);
-console.log(JSON.stringify({game, res, upscaler, window: [+a.t.toFixed(1), +b.t.toFixed(1)], fps: +fps.toFixed(1), frameMs: +(1000 / fps).toFixed(2),
+console.log(JSON.stringify({game, res, upscaler, window: [+a.t.toFixed(1), +b.t.toFixed(1)], fps: +fps.toFixed(1), minFps, low1Fps: low1, framesTimed: frameTimes.length, frameMs: +(1000 / fps).toFixed(2),
   gpuMsMedian: gpu.length ? +gpu[gpu.length >> 1].toFixed(2) : null,
   // With Frame Generation, the plugin's own count of frames on screen per second (median of the samples).
   presentedFps: (p => p.length ? +p[p.length >> 1].toFixed(1) : null)(samples.map(s => s.presentedFps).filter(x => x > 0).sort((x, y) => x - y))}));

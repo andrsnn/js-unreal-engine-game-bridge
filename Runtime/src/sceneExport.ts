@@ -72,12 +72,43 @@ function syncGeometry(geo: THREE.BufferGeometry, primitive = 0): number {
   return id;
 }
 
+// Games often set needsUpdate on attributes every frame without changing them. WebGL shrugs that off
+// (a small buffer upload), but here a change rebuilds an Unreal mesh. So a version bump only counts
+// when the attribute's bytes differ from the last ones sent.
+type AttrState = {version: number; effective: number; bytes: Uint32Array | Uint8Array | null};
+const attrState = new WeakMap<object, AttrState>();
+function contentVersion(attr: THREE.BufferAttribute | THREE.InterleavedBufferAttribute | null | undefined): number {
+  if (!attr) return -1;
+  const owner = ((attr as THREE.InterleavedBufferAttribute).isInterleavedBufferAttribute ? (attr as THREE.InterleavedBufferAttribute).data : attr) as {version: number; array: ArrayLike<number> & {buffer: ArrayBuffer; byteOffset: number; byteLength: number}};
+  let st = attrState.get(owner);
+  if (!st) { st = {version: owner.version, effective: 0, bytes: null}; attrState.set(owner, st); return 0; }
+  if (owner.version === st.version) return st.effective;
+  st.version = owner.version;
+  const arr = owner.array;
+  const view = arr.byteLength % 4 === 0 && arr.byteOffset % 4 === 0 ? new Uint32Array(arr.buffer, arr.byteOffset, arr.byteLength / 4) : new Uint8Array(arr.buffer, arr.byteOffset, arr.byteLength);
+  const old = st.bytes;
+  if (old && old.length === view.length && old.constructor === view.constructor) {
+    let same = true;
+    for (let i = 0; i < view.length; i++) if (old[i] !== view[i]) { same = false; break; }
+    if (same) return st.effective;
+  }
+  st.bytes = view.slice();
+  return ++st.effective;
+}
+
+const resends = new Map<number, number>();
 function syncGeometryNow(geo: THREE.BufferGeometry, primitive: number): number {
   const id = idOf(geo);
   const a = geo.attributes, idx = geo.index;
   const extras = Object.entries(a).filter(([name, attr]) => isExtraAttribute(name) && attr.itemSize <= 4);
-  const sig = `${primitive}|${a.position?.version}|${a.position?.count}|${a.normal?.version}|${a.uv?.version}|${a.color?.version}|${idx?.version}|${idx?.count}|${geo.drawRange.start},${geo.drawRange.count}|${geo.groups.length}|${extras.map(([n, x]) => n + x.version).join(',')}`;
-  if (geometrySig.get(id) === sig) return id;
+  const sig = `${primitive}|${contentVersion(a.position)}|${a.position?.count}|${contentVersion(a.normal)}|${contentVersion(a.uv)}|${contentVersion(a.color)}|${contentVersion(idx)}|${idx?.count}|${geo.drawRange.start},${geo.drawRange.count}|${geo.groups.length}|${extras.map(([n, x]) => n + contentVersion(x)).join(',')}`;
+  const previous = geometrySig.get(id);
+  if (previous === sig) return id;
+  // With tracing on, report geometry whose data keeps changing: each change rebuilds an Unreal mesh.
+  if (host.trace && previous !== undefined) {
+    const n = (resends.get(id) ?? 0) + 1; resends.set(id, n);
+    if (n === 5 || n % 200 === 0) host.log('warn', `geometry ${id} re-sent ${n} times: ${geo.type} "${geo.name}" ${a.position?.count} vertices, ${previous} -> ${sig}`);
+  }
   const out = sink();
   if (!a.position || !out) return 0;
   if (!geometryRefs.has(id)) geo.addEventListener('dispose', () => { geometryRefs.delete(id); geometrySig.delete(id); sink()?.releaseGeometry(id); });
@@ -110,8 +141,17 @@ function syncGeometryNow(geo: THREE.BufferGeometry, primitive: number): number {
 }
 
 function rgba8(w: number, h: number, data: ArrayLike<number>, channels: number, tex: THREE.Texture): Uint8Array {
-  const px = w * h, out = new Uint8Array(px * 4);
+  const px = w * h;
   const isByte = data instanceof Uint8Array || data instanceof Uint8ClampedArray;
+  // Bytes need no conversion: RGBA is copied as it is, and other channel counts are spread without per-value checks.
+  if (isByte && channels === 4) return new Uint8Array((data as Uint8Array).buffer.slice((data as Uint8Array).byteOffset, (data as Uint8Array).byteOffset + px * 4));
+  const out = new Uint8Array(px * 4);
+  if (isByte) {
+    const d = data as Uint8Array;
+    if (channels === 1) for (let i = 0, o = 0; i < px; i++, o += 4) { const v = d[i]; out[o] = v; out[o + 1] = v; out[o + 2] = v; out[o + 3] = 255; }
+    else for (let i = 0, j = 0, o = 0; i < px; i++, j += channels, o += 4) { out[o] = d[j]; out[o + 1] = d[j + 1]; out[o + 2] = channels > 2 ? d[j + 2] : 0; out[o + 3] = 255; }
+    return out;
+  }
   const isHalf = tex.type === THREE.HalfFloatType && data instanceof Uint16Array;
   for (let i = 0; i < px; i++) for (let c = 0; c < 4; c++) {
     let v = c < channels ? data[i * channels + c] : c === 3 ? (isByte ? 255 : 1) : (channels === 1 ? data[i * channels] : 0);
@@ -129,6 +169,14 @@ function textureSource(tex: THREE.Texture): {json: Record<string, unknown>; byte
   // Compressed containers transcoded to plain RGBA (KTX2 with no GPU formats advertised).
   const mip = (tex as THREE.CompressedTexture).mipmaps?.[0] as Record<string, any> | undefined;
   if ((tex as THREE.CompressedTexture).isCompressedTexture) {
+    // BC7 and DXT go to Unreal as they are, with every mip level.
+    const block = {[THREE.RGBA_BPTC_Format]: 'bc7', [THREE.RGB_S3TC_DXT1_Format]: 'dxt1', [THREE.RGBA_S3TC_DXT1_Format]: 'dxt1', [THREE.RGBA_S3TC_DXT3_Format]: 'dxt3', [THREE.RGBA_S3TC_DXT5_Format]: 'dxt5'}[tex.format as number];
+    const levels = ((tex as THREE.CompressedTexture).mipmaps ?? []) as {width: number; height: number; data: Uint8Array}[];
+    if (block && levels.length && levels.every(l => l?.data)) {
+      const total = levels.reduce((n, l) => n + l.data.byteLength, 0), bytes = new Uint8Array(total);
+      let at = 0; for (const l of levels) { bytes.set(new Uint8Array(l.data.buffer, l.data.byteOffset, l.data.byteLength), at); at += l.data.byteLength; }
+      return {json: {...base, kind: 'compressed', format: block, width: levels[0].width, height: levels[0].height, mips: levels.map(l => [l.width, l.height, l.data.byteLength])}, bytes: bytes.buffer};
+    }
     if (mip?.data && tex.format === THREE.RGBAFormat) return {json: {...base, kind: 'rgba8', width: mip.width, height: mip.height}, bytes: rgba8(mip.width, mip.height, mip.data, 4, tex).buffer as ArrayBuffer};
     return null;
   }
@@ -148,11 +196,31 @@ function textureSource(tex: THREE.Texture): {json: Record<string, unknown>; byte
 }
 
 const textureOk = new Map<number, boolean>();
+// Like vertex data, a texture marked for update is only sent again when its pixels really changed.
+const pixelState = new WeakMap<THREE.Texture, {view: Uint32Array | Uint8Array; key: string}>();
+function pixelsUnchanged(tex: THREE.Texture): boolean {
+  const img = tex.image as Record<string, any> | undefined;
+  const mip = (tex as THREE.CompressedTexture).mipmaps?.[0] as Record<string, any> | undefined;
+  const raw = img?.__ctx?.bitmap?.()?.data ?? img?.__pixels?.data ?? img?.data ?? mip?.data;
+  if (!raw || !ArrayBuffer.isView(raw)) return false;
+  const arr = raw as Uint8Array;
+  const view = arr.byteLength % 4 === 0 && arr.byteOffset % 4 === 0 ? new Uint32Array(arr.buffer, arr.byteOffset, arr.byteLength / 4) : new Uint8Array(arr.buffer, arr.byteOffset, arr.byteLength);
+  // The texture's settings count too: they travel with the pixels.
+  const key = [tex.wrapS, tex.wrapT, tex.magFilter, tex.minFilter, tex.flipY, tex.colorSpace, tex.format, tex.type, tex.repeat.x, tex.repeat.y, tex.offset.x, tex.offset.y, tex.rotation, img?.width, img?.height].join(',');
+  const old = pixelState.get(tex);
+  let same = !!old && old.key === key && old.view.length === view.length && old.view.constructor === view.constructor;
+  if (same) { const o = old!.view; for (let i = 0; i < view.length; i++) if (o[i] !== view[i]) { same = false; break; } }
+  if (!same) pixelState.set(tex, {view: view.slice(), key});
+  return same;
+}
 function textureId(tex: THREE.Texture | null | undefined): number {
   if (!tex) return 0;
   const id = idOf(tex);
   if (textureSig.get(id) !== tex.version) {
+    const first = !textureSig.has(id);
     textureSig.set(id, tex.version);
+    if (!first && textureOk.get(id) && pixelsUnchanged(tex)) return id;
+    if (first) pixelsUnchanged(tex);
     let src = null;
     try { src = textureSource(tex); } catch (error) { host.log('warn', `texture ${tex.name || id}: ${error}`); }
     textureOk.set(id, !!src);
@@ -219,11 +287,39 @@ function shaderKey(m: THREE.ShaderMaterial): string {
 // A material shared by many meshes is described once per frame.
 const materialFrame = new WeakMap<THREE.Material, number>();
 
-// Every value a plain (non-shader) material sends, as numbers: when they all match the last frame's,
+// Every value a material sends, as numbers (with its uniforms for shader materials): when they all match the last frame's,
 // the material is unchanged and its description is not built again.
 const quick = new WeakMap<THREE.Material, {values: Float64Array; name: string; key: unknown}>();
-const scratch = new Float64Array(64);
+let scratch = new Float64Array(256);
+const put = (i: number, v: number) => { if (i >= scratch.length) { const grown = new Float64Array(scratch.length * 2); grown.set(scratch); scratch = grown; } scratch[i] = v; return i + 1; };
+// Uniform values as numbers after the material's own, for shader and hooked materials. Returns -1 for a
+// value it can't compare, and the material is then described in full every frame as before.
+function quickUniforms(u: Record<string, {value: unknown}>, i: number): number {
+  for (const k in u) {
+    const v = u[k]?.value as any;
+    if (typeof v === 'number') i = put(i, v);
+    else if (typeof v === 'boolean') i = put(i, +v);
+    else if (v === null || v === undefined) i = put(i, -1.2345e-7);
+    else if (v.isColor) { i = put(i, v.r); i = put(i, v.g); i = put(i, v.b); }
+    else if (v.isVector2) { i = put(i, v.x); i = put(i, v.y); }
+    else if (v.isVector3) { i = put(i, v.x); i = put(i, v.y); i = put(i, v.z); }
+    else if (v.isVector4 || v.isQuaternion) { i = put(i, v.x); i = put(i, v.y); i = put(i, v.z); i = put(i, v.w); }
+    else if (v.isMatrix3 || v.isMatrix4) { for (const e of v.elements) i = put(i, e); }
+    else if (v.isTexture) { i = put(i, idOf(v)); i = put(i, v.version); }
+    else if (Array.isArray(v) || ArrayBuffer.isView(v)) {
+      for (const x of v as ArrayLike<any>) {
+        if (typeof x === 'number') i = put(i, x);
+        else if (x?.isVector3 || x?.isColor) { i = put(i, x.x ?? x.r); i = put(i, x.y ?? x.g); i = put(i, x.z ?? x.b); }
+        else if (x?.isVector2) { i = put(i, x.x); i = put(i, x.y); }
+        else if (x?.isVector4) { i = put(i, x.x); i = put(i, x.y); i = put(i, x.z); i = put(i, x.w); }
+        else return -1;
+      }
+    } else return -1;
+  }
+  return i;
+}
 function quickValues(m: THREE.MeshStandardMaterial & THREE.MeshPhysicalMaterial & THREE.PointsMaterial & THREE.LineBasicMaterial): number {
+  if (scratch.length < 64) scratch = new Float64Array(256);
   const s = scratch; let i = 0;
   const c = m.color, e = m.emissive;
   s[i++] = m.version; s[i++] = c ? c.r : -1; s[i++] = c ? c.g : -1; s[i++] = c ? c.b : -1;
@@ -242,10 +338,10 @@ function syncMaterial(mat: THREE.Material): number {
   materialFrame.set(mat, exportCount);
   const m = mat as THREE.MeshStandardMaterial & THREE.MeshPhysicalMaterial & THREE.ShaderMaterial & THREE.MeshBasicMaterial & THREE.PointsMaterial;
   const shader = !!m.isShaderMaterial;
-  const plain = !shader && !hookUniforms(mat);
-  let count = 0;
-  if (plain) {
-    count = quickValues(m as never);
+  const extra = shader ? m.uniforms as Record<string, {value: unknown}> : hookUniforms(mat);
+  let count = quickValues(m as never);
+  if (extra) count = quickUniforms(extra, count);
+  if (count >= 0) {
     const last = quick.get(mat), key = mat.userData?.materialKey ?? mat.userData?.assetMaterialKey;
     if (last && last.values.length === count && last.name === mat.name && last.key === key) {
       let same = true;

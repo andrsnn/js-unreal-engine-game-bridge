@@ -1,4 +1,5 @@
 import {parseHTML} from 'linkedom';
+import {installNoOpSkips} from './query';
 import {host} from './host';
 import {blobStore} from './polyfills';
 import {imageSize} from './imageSize';
@@ -26,6 +27,8 @@ const CLASSES = ['Event', 'CustomEvent', 'InputEvent', 'EventTarget', 'Node', 'E
   'NodeFilter', 'Attr', 'CharacterData', 'ShadowRoot', 'HTMLCollection', 'NodeList', 'CSSStyleDeclaration', 'Image'];
 for (const name of CLASSES) if (page[name] && !g[name]) g[name] = page[name];
 g.document = doc;
+// installFastQueries() was slower than linkedom's own engine on a game-sized DOM (its tree walk getters are costly); off.
+installNoOpSkips(doc);
 
 // UI events linkedom does not define. They carry the fields the game reads.
 const BaseEvent = page.Event as {new (type: string, init?: Record<string, unknown>): Record<string, unknown>};

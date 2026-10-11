@@ -49,13 +49,15 @@ if (has('--no-ui')) args.push('-JsgbNoUI');
 // Upscaling: --dlss dlaa|quality|balanced|performance|ultra, --tsr <percent>, --frame-gen, --vibrance <0..1>, --hud (FPS readout).
 if (has('--frame-gen')) args.push('-JsgbFrameGen');
 if (has('--hud')) args.push('-JsgbHud');
+// --js-thread runs the game's JavaScript on its own thread (Puerts built with THREAD_SAFE); --js-hz caps its frame rate.
+if (has('--js-thread')) args.push('-JsgbJsThread');
 if (has('--no-post')) args.push('-JsgbNoPost');
 if (has('--fresh')) args.push('-JsgbFresh');
 if (has('--mute')) args.push('-JsgbVolume=0');
 if (has('--trace')) args.push('-JsgbTraceMirror');
 // --ue "<args>": extra Unreal command-line arguments, e.g. --ue "-ExecCmds=r.AntiAliasingMethod 1".
 if (flag('--ue')) args.push(...flag('--ue').match(/(?:[^\s"]+|"[^"]*")+/g).map(a => a.replace(/"/g, '')));
-for (const [option, name] of [['--script', 'JsgbScript'], ['--capture', 'JsgbCapture'], ['--capture-fps', 'JsgbCaptureFps'], ['--fixed-fps', 'JsgbFixedFps'], ['--frames', 'JsgbFrames'], ['--search', 'JsgbSearch'], ['--seed', 'JsgbSeed'], ['--inspect', 'JsgbInspect'], ['--dlss', 'JsgbDLSS'], ['--tsr', 'JsgbTSR'], ['--vibrance', 'JsgbVibrance'], ['--dlss-preset', 'JsgbDLSSPreset']]) {
+for (const [option, name] of [['--script', 'JsgbScript'], ['--capture', 'JsgbCapture'], ['--capture-fps', 'JsgbCaptureFps'], ['--fixed-fps', 'JsgbFixedFps'], ['--frames', 'JsgbFrames'], ['--search', 'JsgbSearch'], ['--seed', 'JsgbSeed'], ['--inspect', 'JsgbInspect'], ['--dlss', 'JsgbDLSS'], ['--tsr', 'JsgbTSR'], ['--vibrance', 'JsgbVibrance'], ['--dlss-preset', 'JsgbDLSSPreset'], ['--js-hz', 'JsgbJsHz']]) {
   const value = flag(option); if (value !== undefined) args.push(`-${name}=${/^(--script|--capture)$/.test(option) ? path.resolve(value) : value}`);
 }
 const started = Date.now();

@@ -1,6 +1,7 @@
 /** Stand-in for THREE.WebGLRenderer on the Unreal target. Unreal draws the scene, so render calls
  *  only record what was drawn last; every other renderer API answers with plausible values. */
 const g = globalThis as Record<string, any>;
+const COMPRESSED = new Set(['EXT_texture_compression_bptc', 'WEBGL_compressed_texture_s3tc', 'WEBGL_compressed_texture_s3tc_srgb']);
 
 /** Any property is another callable no-op, so deep renderer internals (state.buffers.depth...) answer undefined. */
 export function deepNoop(): any {
@@ -52,7 +53,9 @@ export class UnrealRenderer {
         maxVertexUniforms: 4096, maxVaryings: 30, maxFragmentUniforms: 1024, precision: 'highp', logarithmicDepthBuffer: false, reverseDepthBuffer: false,
         vertexTextures: true, floatFragmentTextures: true, floatVertexTextures: true, getMaxAnisotropy: () => 16, getMaxPrecision: () => 'highp',
         textureFormatReadable: () => true, textureTypeReadable: () => true},
-      extensions: {get: () => null, has: () => false, init() {}},
+      // The GPU formats Unreal uploads as they are, as a desktop browser reports them: KTX2 and Basis
+      // textures then arrive as BC7 or DXT instead of 4x larger RGBA.
+      extensions: {get: (name: string) => COMPRESSED.has(name) ? {} : null, has: (name: string) => COMPRESSED.has(name), init() {}},
       properties: {get: (o: Record<string, unknown>) => (o.__jsgbProps ??= {}), remove() {}, update() {}, dispose() {}},
       state: deepNoop(),
       info,

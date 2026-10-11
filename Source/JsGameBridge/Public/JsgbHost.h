@@ -85,6 +85,7 @@ private:
 	void ShowReloadBanner(const FString& Text);
 	void SwapCss(double BuildMs);
 	void SetupUpscaler();
+	void ApplyUpscaler(const FString& DlssMode, const FString& TsrPercent);
 	void UpdateHud(float DeltaSeconds);
 	void StartRecording(const FString& Dir, double Fps);
 	void StopRecording();
@@ -92,6 +93,7 @@ private:
 	double GameSeconds() const;
 
 	TSharedPtr<PUERTS_NAMESPACE::FJsEnv> JsEnv;
+	TSharedPtr<class FJsgbJsThread> JsThread;
 	TSharedPtr<SWebBrowser> Browser;
 	TSharedPtr<IHttpRouter> Router;
 	FDelegateHandle RouteHandle;
@@ -131,6 +133,10 @@ private:
 	int32 HudFrames = 0;
 	double HudSeconds = 0, HudFps = 0, HudPresentedFps = -1;
 	TSharedPtr<class STextBlock> HudText;
+	/** Frame times in ms since GET /bridge/frametimes last read them. */
+	TArray<float> FrameTimesMs;
+	/** The last tick's js, mirror, build queue, builds, build stall and UI push times, for the slow-frame log. */
+	TArray<double> LastTick;
 	// CSS hot swap timing: from the request to the overlay painting the new stylesheet.
 	int32 CssVersion = 0;
 	double CssStart = -1, CssBuildMs = -1, LastCssMs = -1;

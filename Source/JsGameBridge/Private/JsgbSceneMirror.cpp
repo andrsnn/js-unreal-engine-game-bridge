@@ -27,6 +27,7 @@
 #include "ImageUtils.h"
 #include "MeshDescription.h"
 #include "StaticMeshAttributes.h"
+#include "StaticMeshResources.h"
 #include "Dom/JsonObject.h"
 #include "Serialization/JsonReader.h"
 #include "Serialization/JsonSerializer.h"
@@ -242,7 +243,8 @@ void UJsgbSceneMirror::ReleaseGeometry(int32 Id)
 	BuildQueue.Remove(Id);
 }
 
-UStaticMesh* UJsgbSceneMirror::BuildMesh(const FJsgbPendingGeometry& G, int32& OutSlots)
+// The earlier path through Unreal's mesh description, kept for comparison (-JsgbMeshDescriptionBuild).
+UStaticMesh* UJsgbSceneMirror::BuildMeshFromDescription(const FJsgbPendingGeometry& G, int32& OutSlots)
 {
 	const int32 SourceVerts = G.Positions.Num() / 3;
 	if (SourceVerts < (G.Primitive == 1 ? 1 : 3)) { return nullptr; }
@@ -365,6 +367,171 @@ UStaticMesh* UJsgbSceneMirror::BuildMesh(const FJsgbPendingGeometry& G, int32& O
 	return SM;
 }
 
+UStaticMesh* UJsgbSceneMirror::BuildMesh(const FJsgbPendingGeometry& G, int32& OutSlots)
+{
+	static const bool bDescription = FParse::Param(FCommandLine::Get(), TEXT("JsgbMeshDescriptionBuild"));
+	if (bDescription) { return BuildMeshFromDescription(G, OutSlots); }
+	const int32 SourceVerts = G.Positions.Num() / 3;
+	if (SourceVerts < (G.Primitive == 1 ? 1 : 3)) { return nullptr; }
+	const double BuildStart = FPlatformTime::Seconds();
+	const bool bPoints = G.Primitive == 1;
+	const bool bIndexed = !bPoints && G.Indices.Num() > 0;
+	const int32 ElementCount = bIndexed ? G.Indices.Num() : SourceVerts;
+	const int32 RangeStart = FMath::Clamp(G.DrawStart, 0, ElementCount);
+	const int32 RangeEnd = G.DrawCount < 0 ? ElementCount : FMath::Clamp(G.DrawStart + G.DrawCount, 0, ElementCount);
+
+	TArray<FIntVector> Groups = G.Groups;
+	if (Groups.Num() == 0 || bPoints) { Groups.Reset(); Groups.Add(FIntVector(0, ElementCount, 0)); }
+	int32 Slots = 1;
+	for (const FIntVector& Gr : Groups) { Slots = FMath::Max(Slots, Gr.Z + 1); }
+	Slots = FMath::Min(Slots, 32);
+
+	// Unreal's render buffers are written straight from the game's arrays. Filling a mesh description
+	// and building from it took about three times as long (265 ms for a 300k-vertex mesh).
+	const bool bNormals = G.Normals.Num() >= SourceVerts * 3;
+	const int32 UVN = FMath::Clamp(G.UVChannels, 1, static_cast<int32>(MAX_STATIC_TEXCOORDS));
+	const bool bUVs = G.UVs.Num() >= SourceVerts * 2 * G.UVChannels;
+	const bool bColors = G.ColorSize >= 3 && G.Colors.Num() >= SourceVerts * G.ColorSize;
+	auto UVAt = [&](int32 I, int32 Ch) { return bUVs && Ch < G.UVChannels ? FVector2f(G.UVs[(I * G.UVChannels + Ch) * 2], G.UVs[(I * G.UVChannels + Ch) * 2 + 1]) : FVector2f::ZeroVector; };
+	auto ColorAt = [&](int32 I) { return bColors ? FLinearColor(G.Colors[I * G.ColorSize], G.Colors[I * G.ColorSize + 1], G.Colors[I * G.ColorSize + 2], G.ColorSize > 3 ? G.Colors[I * G.ColorSize + 3] : 1.f).ToFColor(true) : FColor::White; };
+
+	TArray<FVector3f> Positions;
+	TArray<FVector3f> Normals;
+	TArray<int32> Source; // the game's vertex behind each Unreal vertex
+	TArray<TArray<uint32>> SlotIndices;
+	SlotIndices.SetNum(Slots);
+	if (bPoints)
+	{
+		// Each point becomes a quad whose corners share the point's position; the billboard
+		// material spreads them along the camera's axes by the material's point size.
+		static const FVector2f Corners[4] = {FVector2f(0, 0), FVector2f(1, 0), FVector2f(1, 1), FVector2f(0, 1)};
+		for (int32 P = RangeStart; P < RangeEnd; ++P)
+		{
+			const uint32 Base = Positions.Num();
+			for (int32 C = 0; C < 4; ++C)
+			{
+				// A millimetre of real extent keeps the quad from being treated as degenerate.
+				Positions.Add(Pos(&G.Positions[P * 3]) + FVector3f((Corners[C].X - 0.5f) * 0.1f, (Corners[C].Y - 0.5f) * 0.1f, 0.f));
+				Normals.Add(FVector3f::UpVector);
+				Source.Add(P);
+			}
+			SlotIndices[0].Append({Base, Base + 1, Base + 2, Base, Base + 2, Base + 3});
+		}
+	}
+	else
+	{
+		Positions.SetNumUninitialized(SourceVerts);
+		Normals.SetNumUninitialized(SourceVerts);
+		Source.SetNumUninitialized(SourceVerts);
+		for (int32 I = 0; I < SourceVerts; ++I)
+		{
+			Positions[I] = Pos(&G.Positions[I * 3]);
+			Normals[I] = bNormals ? Dir(&G.Normals[I * 3]).GetSafeNormal(1e-8f, FVector3f::UpVector) : FVector3f::UpVector;
+			Source[I] = I;
+		}
+		for (const FIntVector& Gr : Groups)
+		{
+			const int32 A = FMath::Max(Gr.X, RangeStart);
+			const int32 B = FMath::Min<int64>(static_cast<int64>(Gr.X) + Gr.Y, RangeEnd);
+			TArray<uint32>& Out = SlotIndices[FMath::Clamp(Gr.Z, 0, Slots - 1)];
+			for (int32 K = A; K + 2 < B; K += 3)
+			{
+				const uint32 I0 = bIndexed ? G.Indices[K] : K, I1 = bIndexed ? G.Indices[K + 1] : K + 1, I2 = bIndexed ? G.Indices[K + 2] : K + 2;
+				if (I0 >= static_cast<uint32>(SourceVerts) || I1 >= static_cast<uint32>(SourceVerts) || I2 >= static_cast<uint32>(SourceVerts)) { continue; }
+				if (I0 == I1 || I1 == I2 || I0 == I2) { continue; }
+				// Three.js front faces are counter-clockwise in a right-handed space. Swapping Y and Z
+				// mirrors it into Unreal's left-handed space, where the same order is the front face.
+				Out.Append({I0, I1, I2});
+			}
+		}
+	}
+	const int32 NumVerts = Positions.Num();
+	int32 Triangles = 0;
+	for (const TArray<uint32>& Out : SlotIndices) { Triangles += Out.Num() / 3; }
+	if (Triangles == 0) { return nullptr; }
+
+	// Tangents follow UV 0, as normal maps expect; without UVs any direction across the normal will do.
+	TArray<FVector3f> Tangents;
+	Tangents.SetNumZeroed(NumVerts);
+	if (bUVs && !bPoints)
+	{
+		for (const TArray<uint32>& Out : SlotIndices)
+		{
+			for (int32 K = 0; K + 2 < Out.Num(); K += 3)
+			{
+				const uint32 A = Out[K], B = Out[K + 1], C = Out[K + 2];
+				const FVector3f E1 = Positions[B] - Positions[A], E2 = Positions[C] - Positions[A];
+				const FVector2f D1 = UVAt(Source[B], 0) - UVAt(Source[A], 0), D2 = UVAt(Source[C], 0) - UVAt(Source[A], 0);
+				const float Det = D1.X * D2.Y - D2.X * D1.Y;
+				if (FMath::Abs(Det) < 1e-12f) { continue; }
+				const FVector3f T = (E1 * D2.Y - E2 * D1.Y) / Det;
+				Tangents[A] += T; Tangents[B] += T; Tangents[C] += T;
+			}
+		}
+	}
+
+	UStaticMesh* SM = NewObject<UStaticMesh>(this, NAME_None, RF_Transient);
+	for (int32 S = 0; S < Slots; ++S)
+	{
+		const FName Name(*FString::Printf(TEXT("S%d"), S));
+		SM->GetStaticMaterials().Add(FStaticMaterial(nullptr, Name, Name));
+	}
+	SM->SetRenderData(MakeUnique<FStaticMeshRenderData>());
+	FStaticMeshRenderData* RD = SM->GetRenderData();
+	RD->AllocateLODResources(1);
+	FStaticMeshLODResources& LOD = RD->LODResources[0];
+	// The buffers live in memory here, not in Unreal's derived-data cache.
+	LOD.bBuffersInlined = true;
+	LOD.VertexBuffers.PositionVertexBuffer.Init(Positions);
+	LOD.VertexBuffers.StaticMeshVertexBuffer.SetUseFullPrecisionUVs(true);
+	LOD.VertexBuffers.StaticMeshVertexBuffer.Init(NumVerts, UVN);
+	TArray<FColor> VertexColors;
+	VertexColors.SetNumUninitialized(NumVerts);
+	FBox3f Box(ForceInit);
+	for (int32 V = 0; V < NumVerts; ++V)
+	{
+		const FVector3f N = Normals[V];
+		FVector3f T = Tangents[V] - N * FVector3f::DotProduct(N, Tangents[V]);
+		if (!T.Normalize(1e-8f)) { T = FMath::Abs(N.Z) < 0.99f ? FVector3f::CrossProduct(FVector3f::UpVector, N).GetSafeNormal() : FVector3f(1, 0, 0); }
+		LOD.VertexBuffers.StaticMeshVertexBuffer.SetVertexTangents(V, T, FVector3f::CrossProduct(N, T), N);
+		const int32 I = Source[V];
+		LOD.VertexBuffers.StaticMeshVertexBuffer.SetVertexUV(V, 0, bPoints ? FVector2f(V % 4 == 1 || V % 4 == 2 ? 1.f : 0.f, V % 4 >= 2 ? 1.f : 0.f) : UVAt(I, 0));
+		for (int32 Ch = 1; Ch < UVN; ++Ch) { LOD.VertexBuffers.StaticMeshVertexBuffer.SetVertexUV(V, Ch, UVAt(I, Ch)); }
+		VertexColors[V] = ColorAt(I);
+		Box += Positions[V];
+	}
+	LOD.VertexBuffers.ColorVertexBuffer.InitFromColorArray(VertexColors);
+	// Without this flag the vertex factory binds a white color stream instead of the colors above.
+	LOD.bHasColorVertexData = bColors;
+	TArray<uint32> Indices;
+	Indices.Reserve(Triangles * 3);
+	for (int32 S = 0; S < Slots; ++S)
+	{
+		const TArray<uint32>& Out = SlotIndices[S];
+		if (Out.Num() == 0) { continue; }
+		FStaticMeshSection& Section = LOD.Sections.AddDefaulted_GetRef();
+		Section.MaterialIndex = S;
+		Section.FirstIndex = Indices.Num();
+		Section.NumTriangles = Out.Num() / 3;
+		uint32 MinV = MAX_uint32, MaxV = 0;
+		for (uint32 V : Out) { MinV = FMath::Min(MinV, V); MaxV = FMath::Max(MaxV, V); }
+		Section.MinVertexIndex = MinV;
+		Section.MaxVertexIndex = MaxV;
+		Section.bEnableCollision = false;
+		Section.bCastShadow = true;
+		Indices.Append(Out);
+	}
+	LOD.IndexBuffer.SetIndices(Indices, NumVerts > 65535 ? EIndexBufferStride::Force32Bit : EIndexBufferStride::Force16Bit);
+	RD->Bounds = FBoxSphereBounds(FBox(Box));
+	SM->CalculateExtendedBounds();
+	const double FillEnd = FPlatformTime::Seconds();
+	SM->InitResources();
+	const double BuildEnd = FPlatformTime::Seconds();
+	if (BuildEnd - BuildStart > 0.01) { UE_LOG(LogJsgbMirror, Display, TEXT("Mesh build: %d vertices, %d triangles, %d UV channels: buffers %.1f ms, render resources %.1f ms"), NumVerts, Triangles, UVN, (FillEnd - BuildStart) * 1000.0, (BuildEnd - FillEnd) * 1000.0); }
+	OutSlots = Slots;
+	return SM;
+}
+
 UStaticMesh* UJsgbSceneMirror::SpriteQuad()
 {
 	if (!Quad)
@@ -407,6 +574,42 @@ void UJsgbSceneMirror::SetTexture(int32 Id, const FString& Json, const FArrayBuf
 				FMemory::Memcpy(Mip, Bytes.Data, static_cast<SIZE_T>(W) * H * 4);
 				Tex->GetPlatformData()->Mips[0].BulkData.Unlock();
 			}
+		}
+	}
+	else if (Kind == TEXT("compressed") && Bytes.Data)
+	{
+		// Block-compressed textures (BC7, DXT) arrive with every mip level, as the GPU takes them.
+		const FString Format = Str(J, TEXT("format"));
+		const EPixelFormat Pf = Format == TEXT("bc7") ? PF_BC7 : Format == TEXT("dxt1") ? PF_DXT1 : Format == TEXT("dxt3") ? PF_DXT3 : PF_DXT5;
+		const TArray<TSharedPtr<FJsonValue>>* Levels = nullptr;
+		const int32 W = static_cast<int32>(Num(J, TEXT("width"))), H = static_cast<int32>(Num(J, TEXT("height")));
+		if (W > 0 && H > 0 && J->TryGetArrayField(TEXT("mips"), Levels) && Levels->Num() > 0)
+		{
+			FTexturePlatformData* PD = new FTexturePlatformData();
+			PD->SizeX = W; PD->SizeY = H; PD->PixelFormat = Pf; PD->SetNumSlices(1);
+			const uint8* Src = static_cast<const uint8*>(Bytes.Data);
+			int64 At = 0;
+			for (const TSharedPtr<FJsonValue>& L : *Levels)
+			{
+				const TArray<TSharedPtr<FJsonValue>>& A = L->AsArray();
+				if (A.Num() < 3) { break; }
+				const int64 Len = static_cast<int64>(A[2]->AsNumber());
+				if (At + Len > static_cast<int64>(Bytes.Length)) { break; }
+				FTexture2DMipMap* Mip = new FTexture2DMipMap(static_cast<int32>(A[0]->AsNumber()), static_cast<int32>(A[1]->AsNumber()), 1);
+				Mip->BulkData.Lock(LOCK_READ_WRITE);
+				FMemory::Memcpy(Mip->BulkData.Realloc(Len), Src + At, Len);
+				Mip->BulkData.Unlock();
+				PD->Mips.Add(Mip);
+				At += Len;
+			}
+			UE_LOG(LogJsgbMirror, Display, TEXT("Compressed texture %d: %s %dx%d, %d of %d mips, %lld bytes"), Id, *Format, W, H, PD->Mips.Num(), Levels->Num(), static_cast<int64>(Bytes.Length));
+			if (PD->Mips.Num() > 0)
+			{
+				Tex = NewObject<UTexture2D>(GetTransientPackage(), NAME_None, RF_Transient);
+				Tex->NeverStream = true;
+				Tex->SetPlatformData(PD);
+			}
+			else { delete PD; }
 		}
 	}
 	if (Tex)

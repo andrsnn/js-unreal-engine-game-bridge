@@ -134,11 +134,25 @@ function bridgePlugin(game, page) {
           else if (/^export\s*\{\s*\};?\s*$/.test(line) || /^\/\/\/\s*<reference/.test(line)) continue;
           else body.push(line.replace(/\bself\b/g, '__jsgbSelf').replace(/\bglobalThis\b/g, '__jsgbSelf').replace(/^(\s*)onmessage\s*=/, '$1__jsgbSelf.onmessage ='));
         }
-        return {contents: `${top.join('\n')}\nexport default function __jsgbWorkerMain(__jsgbSelf) {\nconst postMessage = (d, t) => __jsgbSelf.postMessage(d, t);\n${body.join('\n')}\n}\n`,
+        // The same module is also bundled on its own (workerBundles), so it can run on a worker thread.
+        const url = workerUrl(game, a.path);
+        workerEntries.set(a.path, url);
+        return {contents: `${top.join('\n')}\nexport default function __jsgbWorkerMain(__jsgbSelf) {\nconst postMessage = (d, t) => __jsgbSelf.postMessage(d, t);\n${body.join('\n')}\n}\n__jsgbWorkerMain.url = ${JSON.stringify(url)};\n`,
           loader: path.extname(a.path) === '.ts' ? 'ts' : 'js', resolveDir: path.dirname(a.path), watchFiles: [a.path]};
       });
     },
   };
+}
+
+/** Worker modules the main build met, and the URL of each one's standalone bundle. */
+const workerEntries = new Map();
+const workerUrl = (game, file) => '/jsgb/workers/' + path.relative(game.repo, file).replace(/[\\/:]+/g, '_').replace(/\.(m?[jt]sx?)$/, '') + '.js';
+
+/** Bundles each worker module as a classic script for a worker thread. */
+async function workerBundles(esbuild, game, page, options) {
+  for (const [file, url] of workerEntries) {
+    await esbuild.build({...options, entryPoints: [file], format: 'iife', splitting: false, metafile: false, outfile: path.join(game.out, url.slice(1)), plugins: [bridgePlugin(game, page)]});
+  }
 }
 
 /** import.meta.glob('./dir/*.json', {eager, import, query}) as Vite expands it. */
@@ -175,9 +189,9 @@ export async function build(game) {
   const commit = git(game.repo, 'rev-parse', 'HEAD');
   fs.mkdirSync(game.out, {recursive: true});
   const pageInfo = {title: page.title, lang: page.lang, htmlAttrs: page.htmlAttrs, bodyAttrs: page.bodyAttrs, body: page.body};
-  const result = await esbuild.build({
-    entryPoints: {[game.id]: path.join(runtime, 'src/entry.ts')}, outdir: game.out, outExtension: {'.js': '.mjs'},
-    bundle: true, format: 'esm', target: game.target ?? 'es2022', platform: 'neutral', splitting: false,
+  // Settings shared by the game bundle and the standalone worker bundles.
+  const common = {
+    bundle: true, target: game.target ?? 'es2022', platform: 'neutral',
     mainFields: ['browser', 'module', 'main'], conditions: ['browser', 'import', 'module', 'default'],
     absWorkingDir: game.repo, nodePaths: [path.join(game.repo, 'node_modules'), path.join(runtime, 'node_modules')],
     define: {
@@ -187,12 +201,18 @@ export async function build(game) {
     loader: {'.json': 'json', '.css': 'css', '.glsl': 'text', '.vert': 'text', '.frag': 'text', '.wgsl': 'text', '.txt': 'text',
       '.png': 'file', '.jpg': 'file', '.jpeg': 'file', '.webp': 'file', '.svg': 'file', '.gif': 'file', '.woff': 'file', '.woff2': 'file', '.ttf': 'file', '.otf': 'file',
       '.wasm': 'file', '.glb': 'file', '.gltf': 'file', '.ktx2': 'file', '.bin': 'file', '.ogg': 'file', '.mp3': 'file', '.wav': 'file', '.hdr': 'file', '.exr': 'file'},
-    assetNames: 'assets/[name]-[hash]', publicPath: '/', metafile: true, logLevel: 'warning', legalComments: 'none', keepNames: false, minify: false, sourcemap: false,
-    plugins: [bridgePlugin(game, page)], external: ['fs', 'path', 'crypto', 'url', 'module', 'worker_threads'],
+    assetNames: 'assets/[name]-[hash]', publicPath: '/', logLevel: 'warning', legalComments: 'none', keepNames: false, minify: false, sourcemap: false,
+    external: ['fs', 'path', 'crypto', 'url', 'module', 'worker_threads'],
     logOverride: {'direct-eval': 'silent', 'empty-import-meta': 'silent', 'import-is-undefined': 'silent', 'unsupported-dynamic-import': 'silent'},
-  });
-  // Runtime files the bundle reads at run time (the shader compiler).
+  };
+  workerEntries.clear();
+  const result = await esbuild.build({...common, entryPoints: {[game.id]: path.join(runtime, 'src/entry.ts')}, outdir: game.out, outExtension: {'.js': '.mjs'},
+    format: 'esm', splitting: false, metafile: true, plugins: [bridgePlugin(game, page)]});
+  await workerBundles(esbuild, game, page, common);
+  // Runtime files the bundle reads at run time (the shader compiler, and the runtime inside threaded Web Workers).
   fs.mkdirSync(path.join(game.out, 'jsgb'), {recursive: true});
+  await esbuild.build({entryPoints: [path.join(runtime, 'src/workerRuntime.ts')], bundle: true, format: 'iife', target: 'es2020', platform: 'neutral',
+    mainFields: ['browser', 'module', 'main'], nodePaths: [path.join(runtime, 'node_modules')], outfile: path.join(game.out, 'jsgb/worker-runtime.js'), logLevel: 'warning'});
   const wasm = path.join(runtime, 'vendor/cross-shader/CrossShader.wasm'), wasmOut = path.join(game.out, 'jsgb/CrossShader.wasm');
   if (!fs.existsSync(wasmOut) || fs.statSync(wasmOut).size !== fs.statSync(wasm).size) fs.copyFileSync(wasm, wasmOut);
   // index.html stylesheets come after the CSS the modules import, as in the page.

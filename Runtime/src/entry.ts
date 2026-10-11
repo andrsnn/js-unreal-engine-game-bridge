@@ -2,7 +2,7 @@
  *  the build resolves as 'jsgb:game'. The host drives everything through `globalThis.__jsgb`. */
 import './polyfills';
 import {host} from './host';
-import {pumpFrame, pendingTimers} from './timers';
+import {pumpFrame, pendingTimers, pumpTiming, wallNow} from './timers';
 import {setViewport} from './dom';
 import './fetch';
 import {flushAudio, audioTime} from './audio';
@@ -27,10 +27,20 @@ g.__jsgb = {
   /** One host tick: due timers and promise jobs within budgetMs, the animation frame, then the
    *  scene, UI and audio go out to the host. */
   frame: async (budgetMs = 8) => {
+    const t0 = wallNow();
     await pumpFrame(budgetMs); frames++;
+    const t1 = wallNow();
     try { exportFrame(); } catch (e) { host.log('error', 'scene export: ' + (e instanceof Error ? e.stack : e)); }
+    const t2 = wallNow();
     try { publishUI(); } catch (e) { host.log('error', 'ui publish: ' + (e instanceof Error ? e.stack : e)); }
+    const t3 = wallNow();
     try { flushAudio(audioTime()); } catch (e) { host.log('error', 'audio: ' + (e instanceof Error ? e.stack : e)); }
+    const t4 = wallNow();
+    // A JavaScript frame much longer than 60 FPS allows gets a breakdown in the log.
+    if (booted && t4 - t0 > 30) {
+      const p = pumpTiming;
+      host.log('log', `slow js frame ${frames}: ${t4 - t0} ms = worker replies ${p.workersMs} (${p.workerReplies}) + timers ${p.timersMs} (${p.timerCalls} calls, slowest ${p.slowestMs} ms in ${p.slowest}) + animation frame ${p.rafMs} (${p.rafCalls} callbacks) + scene export ${t2 - t1} + ui ${t3 - t2} + audio ${t4 - t3}`);
+    }
   },
   input, ui: uiInput, publish: () => publishUI(0), viewport: setViewport, emit: emitEvent,
   click: clickElement, find: (what: string) => !!findElement(what),

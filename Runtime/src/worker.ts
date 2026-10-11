@@ -141,4 +141,71 @@ export class UnrealWorker {
   removeEventListener(type: string, fn: Listener) { this.listeners[type] = (this.listeners[type] ?? []).filter(l => l !== fn); }
   terminate() { this.dead = true; }
 }
-(globalThis as Record<string, unknown>).Worker = UnrealWorker;
+/** A worker on its own thread with its own JavaScript engine, as in a browser (JsgbWorkers.cpp).
+ *  Messages are copied as bytes; replies arrive when the runtime polls, once per frame. */
+class ThreadWorker {
+  onmessage: Listener | null = null;
+  onerror: ((e: unknown) => void) | null = null;
+  onmessageerror: ((e: unknown) => void) | null = null;
+  private listeners: Record<string, Listener[]> = {};
+  private dead = false;
+  constructor(readonly id: number, readonly name: string) {}
+  postMessage(data: unknown) {
+    if (this.dead) return;
+    const bytes = encode(data);
+    if (!bytes) { setTimeout(() => this.fail('postMessage: this value cannot be copied to a worker thread'), 0); return; }
+    host.workerPost!(this.id, bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
+  }
+  deliver(bytes: ArrayBuffer) {
+    if (this.dead) return;
+    const e = {data: decode(bytes)};
+    this.onmessage?.(e); for (const l of this.listeners.message ?? []) l(e);
+  }
+  fail(message: string) {
+    const e = {message, error: new Error(message)};
+    this.onerror?.(e); for (const l of this.listeners.error ?? []) l(e as unknown as {data: unknown});
+  }
+  addEventListener(type: string, fn: Listener) { (this.listeners[type] ??= []).push(fn); }
+  removeEventListener(type: string, fn: Listener) { this.listeners[type] = (this.listeners[type] ?? []).filter(l => l !== fn); }
+  terminate() { if (this.dead) return; this.dead = true; threads.delete(this.id); host.workerTerminate?.(this.id); }
+}
+const threads = new Map<number, ThreadWorker>();
+
+/** Hands the replies of threaded workers to their owners; the runtime calls it once per frame. */
+export function pollWorkers(): number {
+  if (!threads.size || !host.workerPoll) return 0;
+  const buf = host.workerPoll();
+  if (!buf) return 0;
+  let replies = 0;
+  const words = new Int32Array(buf), text = new TextDecoder();
+  for (let at = 0; at + 12 <= buf.byteLength;) {
+    const id = words[at >> 2], kind = words[(at >> 2) + 1], n = words[(at >> 2) + 2];
+    const bytes = buf.slice(at + 12, at + 12 + n);
+    at = (at + 12 + n + 3) & ~3;
+    const w = threads.get(id);
+    if (!w) continue;
+    replies++;
+    try { if (kind === 1) w.fail(text.decode(new Uint8Array(bytes))); else w.deliver(bytes); }
+    catch (e) { host.log('error', `worker ${w.name || id}: ${e instanceof Error ? e.stack : e}`); }
+  }
+  return replies;
+}
+
+/** A worker given as source (a file or blob URL), or bundled with a standalone copy, runs on its own thread
+ *  when the host supports it. Otherwise it runs on the game thread, as before. */
+function WorkerFactory(code: string | URL | ((self: unknown) => void), opts?: {name?: string}) {
+  // A worker bundled into the game also has a standalone bundle (its url) for a worker thread.
+  const bundled = typeof code === 'function' ? (code as {url?: string}).url : undefined;
+  if ((typeof code !== 'function' || bundled) && host.workerCreate) {
+    const url = bundled ?? String(code), blob = blobStore.get(url) as {bytes?: Uint8Array} | undefined;
+    const bytes = blob?.bytes ?? (url.startsWith('blob:') || url.startsWith('data:') ? null : host.readFile(resolveAssetPath(url)));
+    if (bytes) {
+      const name = opts?.name ?? '';
+      const id = host.workerCreate(new TextDecoder().decode(bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes)), url, name || url.split('/').pop() || 'worker');
+      if (id > 0) { const w = new ThreadWorker(id, name); threads.set(id, w); return w; }
+    }
+  }
+  return new UnrealWorker(code as never, opts);
+}
+// `new Worker(...)` and `class extends Worker` both get a threaded or a game-thread worker.
+(globalThis as Record<string, unknown>).Worker = function Worker(this: unknown, code: string | URL | ((self: unknown) => void), opts?: {name?: string}) { return WorkerFactory(code, opts); };

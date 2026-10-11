@@ -85,7 +85,31 @@ if (!g.URLSearchParams) {
 }
 
 let blobIds = 0;
-export const blobStore = new Map<string, unknown>();
+/** Blob URLs are shared by the page and its worker threads, as in a browser. Each JavaScript engine keeps
+ *  its own blobs, and the host's registry (__jsgbBlobs, when present) holds a copy every engine can read. */
+type SharedBlobs = {put(url: string, bytes: ArrayBuffer, type: string): void; get(url: string): {bytes: ArrayBuffer; type: string} | null; revoke(url: string): void};
+const sharedBlobs = () => g.__jsgbBlobs as SharedBlobs | undefined;
+class BlobStore extends Map<string, unknown> {
+  get(url: string) {
+    const local = super.get(url);
+    if (local !== undefined) return local;
+    const s = typeof url === 'string' && url.startsWith('blob:') ? sharedBlobs()?.get(url) : null;
+    if (!s) return undefined;
+    const blob = new g.Blob([s.bytes], {type: s.type});
+    super.set(url, blob);
+    return blob;
+  }
+  set(url: string, blob: unknown) {
+    super.set(url, blob);
+    const bytes = (blob as {bytes?: Uint8Array})?.bytes, shared = sharedBlobs();
+    if (shared && bytes) shared.put(url, bytes.slice().buffer, (blob as {type?: string}).type ?? '');
+    return this;
+  }
+  delete(url: string) { sharedBlobs()?.revoke(url); return super.delete(url); }
+}
+export const blobStore = new BlobStore();
+// Each engine names its blobs with its own prefix, so URLs from a worker and the page never collide.
+const blobPrefix = () => (g.__jsgbBlobPrefix as string | undefined) ?? 'blob:jsgb/';
 
 if (!g.URL) {
   class URLImpl {
@@ -114,13 +138,13 @@ if (!g.URL) {
     get searchParams() { return new g.URLSearchParams(this.search); }
     toString() { return this.href; }
     toJSON() { return this.href; }
-    static createObjectURL(blob: unknown) { const id = 'blob:jsgb/' + (++blobIds); blobStore.set(id, blob); return id; }
+    static createObjectURL(blob: unknown) { const id = blobPrefix() + (++blobIds); blobStore.set(id, blob); return id; }
     static revokeObjectURL(id: string) { blobStore.delete(id); }
   }
   g.URL = URLImpl;
 } else {
   const native = g.URL;
-  native.createObjectURL = (blob: unknown) => { const id = 'blob:jsgb/' + (++blobIds); blobStore.set(id, blob); return id; };
+  native.createObjectURL = (blob: unknown) => { const id = blobPrefix() + (++blobIds); blobStore.set(id, blob); return id; };
   native.revokeObjectURL = (id: string) => { blobStore.delete(id); };
 }
 
