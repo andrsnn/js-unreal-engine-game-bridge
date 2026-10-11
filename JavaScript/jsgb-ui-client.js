@@ -65,6 +65,11 @@
         for (const a of [...root.attributes]) if (!next.hasAttribute(a.name)) root.removeAttribute(a.name);
         for (const a of next.attributes) if (!/^on/i.test(a.name) && root.getAttribute(a.name) !== a.value) root.setAttribute(a.name, a.value);
       }
+      // Styles the game added to its <head> at run time, kept in a stylesheet of their own after the page CSS.
+      const headCss = parsed.head?.querySelector('style[data-jsgb-head]')?.textContent ?? '';
+      let headStyle = document.getElementById('jsgb-head-css');
+      if (headCss && !headStyle) { headStyle = document.createElement('style'); headStyle.id = 'jsgb-head-css'; document.head.append(headStyle); }
+      if (headStyle && headStyle.textContent !== headCss) headStyle.textContent = headCss;
       parsed.querySelectorAll('script').forEach(n => n.remove());
       for (const n of parsed.querySelectorAll('*')) for (const a of [...n.attributes]) if (/^on/i.test(a.name)) n.removeAttribute(a.name);
       patching = true; sync(document.body, parsed.body); patching = false;

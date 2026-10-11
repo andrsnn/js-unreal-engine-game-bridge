@@ -33,7 +33,9 @@ export function publishUI(intervalMs = 100) {
   // The <html> element's attributes go too: games set CSS variables there (a HUD zoom, a theme).
   const root = g.document.documentElement as {attributes: {name: string; value: string}[]};
   const attrs = [...root.attributes].map(a => ` ${a.name}="${a.value.replaceAll('&', '&amp;').replaceAll('"', '&quot;')}"`).join('');
-  const html = `<html${attrs}><head></head>${body.outerHTML}</html>`;
+  // Styles the game adds to <head> while it runs (UI libraries such as lil-gui inject theirs) go along too.
+  const headCss = [...(g.document.head?.querySelectorAll('style') ?? [])].map((s: {textContent: string | null}) => s.textContent ?? '').join(String.fromCharCode(10));
+  const html = `<html${attrs}><head>${headCss ? `<style data-jsgb-head>${headCss}</style>` : ''}</head>${body.outerHTML}</html>`;
   // The game's own origin is http://localhost/; the overlay loads files from the host's origin, so
   // absolute links to the game origin (new URL(path, document.baseURI)) become root-relative.
   if (html !== last) { last = html; out.publish(html.replaceAll('http://localhost/', '/')); }

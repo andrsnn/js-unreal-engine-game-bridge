@@ -112,7 +112,8 @@ export async function gltf({THREE, scene}) {
   const arm = new THREE.Mesh(new THREE.BoxGeometry(3, 0.5, 0.5), new THREE.MeshStandardMaterial({color: 0x60d060}));
   arm.name = 'arm';
   source.add(arm);
-  const clip = new THREE.AnimationClip('spin', 2, [new THREE.NumberKeyframeTrack('arm.rotation[z]', [0, 1, 2], [0, Math.PI, Math.PI * 2])]);
+  const q = a => new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), a).toArray();
+  const clip = new THREE.AnimationClip('spin', 2, [new THREE.QuaternionKeyframeTrack('arm.quaternion', [0, 1, 2], [...q(0), ...q(Math.PI), ...q(Math.PI * 2)])]);
   const exported = await new GLTFExporter().parseAsync(source, {binary: true, animations: [clip]});
   const loaded = await new GLTFLoader().parseAsync(exported, '');
   scene.add(loaded.scene);

@@ -166,6 +166,34 @@ if (!g.Blob) {
   };
 }
 
+// FileReader over Blob: reads finish on a later turn and fire load and loadend, as in a browser.
+if (!g.FileReader) {
+  g.FileReader = class FileReader {
+    static EMPTY = 0; static LOADING = 1; static DONE = 2;
+    readyState = 0; result: unknown = null; error: unknown = null;
+    onload: ((e: unknown) => void) | null = null; onloadend: ((e: unknown) => void) | null = null; onerror: ((e: unknown) => void) | null = null;
+    onloadstart: ((e: unknown) => void) | null = null; onprogress: ((e: unknown) => void) | null = null; onabort: ((e: unknown) => void) | null = null;
+    private listeners: Record<string, ((e: unknown) => void)[]> = {};
+    addEventListener(type: string, fn: (e: unknown) => void) { (this.listeners[type] ??= []).push(fn); }
+    removeEventListener(type: string, fn: (e: unknown) => void) { this.listeners[type] = (this.listeners[type] ?? []).filter(f => f !== fn); }
+    private fire(type: string) {
+      const e = {type, target: this, currentTarget: this};
+      (this as unknown as Record<string, ((e: unknown) => void) | null>)['on' + type]?.(e);
+      for (const fn of this.listeners[type] ?? []) fn(e);
+    }
+    private read(blob: {bytes?: Uint8Array; arrayBuffer(): Promise<ArrayBuffer>; type?: string}, convert: (b: ArrayBuffer) => unknown) {
+      this.readyState = 1; this.fire('loadstart');
+      Promise.resolve(blob.arrayBuffer()).then(b => { this.result = convert(b); this.readyState = 2; this.fire('progress'); this.fire('load'); this.fire('loadend'); },
+        e => { this.error = e; this.readyState = 2; this.fire('error'); this.fire('loadend'); });
+    }
+    readAsArrayBuffer(blob: never) { this.read(blob, b => b); }
+    readAsText(blob: never) { this.read(blob, b => new g.TextDecoder().decode(b)); }
+    readAsBinaryString(blob: never) { this.read(blob, b => { let s = ''; for (const c of new Uint8Array(b)) s += String.fromCharCode(c); return s; }); }
+    readAsDataURL(blob: {type?: string}) { this.read(blob as never, b => { let s = ''; for (const c of new Uint8Array(b)) s += String.fromCharCode(c); return `data:${blob.type || 'application/octet-stream'};base64,${g.btoa(s)}`; }); }
+    abort() { this.readyState = 2; this.fire('abort'); this.fire('loadend'); }
+  };
+}
+
 if (!g.AbortController) {
   g.AbortSignal = class { aborted = false; reason: unknown; onabort: null | (() => void) = null; private l: (() => void)[] = [];
     addEventListener(_: string, f: () => void) { this.l.push(f); } removeEventListener(_: string, f: () => void) { this.l = this.l.filter(x => x !== f); }
