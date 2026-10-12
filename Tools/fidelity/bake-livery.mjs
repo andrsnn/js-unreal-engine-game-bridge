@@ -71,7 +71,7 @@ for (const r of rules) {
   const started = Date.now();
   try {
     const result = await page.evaluate(async ([name, key, url, style, options]) => (await import('/__jsgb_bake/page.js')).bake(name, key, url, style, options),
-      [r.name, r.keys[0], `/__jsgb_bake/source/${r.name}.glb`, style, {preview: rest.includes('--preview'), fill: !rest.includes('--no-fill')}]);
+      [r.name, r.keys[0], `/__jsgb_bake/source/${r.name}.glb`, style, {preview: rest.includes('--preview'), previewDistance: +flag('--preview-distance', 2.6), fill: !rest.includes('--no-fill')}]);
     fs.writeFileSync(path.join(out, r.name + '.png'), Buffer.from(result.png, 'base64'));
     if (result.preview) fs.writeFileSync(path.join(out, r.name + '.preview.png'), Buffer.from(result.preview, 'base64'));
     report[r.name] = {key: r.keys[0], width: result.width, height: result.height, coverage: +result.coverage.toFixed(3), plates: +result.mask.toFixed(3), material: result.material, fit: result.fit, seconds: Math.round((Date.now() - started) / 1000)};

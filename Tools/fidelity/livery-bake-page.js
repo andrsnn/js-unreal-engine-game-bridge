@@ -219,7 +219,10 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
   // The clean style paints the hull fresh instead of carrying over the source's smeared texture: the game's colours
   // from a small copy of its texture (so only its large areas of colour come through), plating laid out in the hull's
   // own coordinates, and wear where the shape says it belongs (convex edges chip, crevices collect grime).
-  const clean = style === 'clean';
+  // The game paints hulls with its livery but leaves station machinery (userData.hardware: refinery tanks, modules) in its
+  // own texture, gold bands and all. Those keep the game's texture at full resolution with the source's fine detail; the
+  // clean repaint drew them from a blurred copy, which lost the thin bands.
+  const clean = style === 'clean' && !game.material.userData.hardware;
   let blurred = null;
   if (clean) {
     // Curvature averaged over each vertex's neighbours twice, so the generator's surface noise doesn't read as edges.
@@ -346,10 +349,10 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
   // with the bake at Unreal's default half-precision uvs (right), unlit, from the same three-quarter view and mipmapped, as Unreal samples it at a distance. Their colours should agree.
   let preview = null;
   if (options.preview) {
-    const PW = 1536, PH = 512, view = new THREE.WebGLRenderTarget(PW, PH), shot = new THREE.Scene();
+    const PW = 3072, PH = 1024, view = new THREE.WebGLRenderTarget(PW, PH), shot = new THREE.Scene();
     const box = geometry.boundingBox, centre = box.getCenter(new THREE.Vector3()), radius = box.getSize(new THREE.Vector3()).length() / 2;
     const eye = new THREE.PerspectiveCamera(35, 1, radius * .05, radius * 10);
-    eye.position.copy(centre).add(new THREE.Vector3(1, .6, 1).normalize().multiplyScalar(radius * 2.6)); eye.lookAt(centre);
+    eye.position.copy(centre).add(new THREE.Vector3(1, .6, 1).normalize().multiplyScalar(radius * (options.previewDistance ?? 2.6))); eye.lookAt(centre);
     const baked = geometry.clone(); baked.setAttribute('uv', geometry.attributes.jsgbUv);
     const gameView = new THREE.Mesh(game.geometry, new THREE.MeshBasicMaterial({map: game.material.map, side: THREE.DoubleSide}));
     const result = new THREE.DataTexture(px, W, H); result.generateMipmaps = true; result.minFilter = THREE.LinearMipmapLinearFilter; result.magFilter = THREE.LinearFilter; result.anisotropy = 8; result.needsUpdate = true;
@@ -389,5 +392,5 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
   const bytes = new Uint8Array(await blob.arrayBuffer());
   let binary = '';
   for (let i = 0; i < bytes.length; i += 32768) binary += String.fromCharCode(...bytes.subarray(i, i + 32768));
-  return {png: btoa(binary), width: W, height: H, coverage: painted / (W * H), mask: mask.reduce((a, b) => a + b, 0) / mask.length, material: game.material.name, fit, preview};
+  return {png: btoa(binary), width: W, height: H, coverage: painted / (W * H), mask: mask.reduce((a, b) => a + b, 0) / mask.length, material: game.material.name + (game.material.userData.hardware ? ' (hardware: game texture)' : ''), fit, preview};
 }
