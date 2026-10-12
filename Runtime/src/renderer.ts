@@ -13,7 +13,8 @@ export function deepNoop(): any {
 
 /** The scene Unreal mirrors: the latest Scene the main renderer drew with a perspective camera
  *  (into the screen or into a post-processing target), else the latest Scene it drew at all. */
-export const lastFrame: {scene: unknown; camera: unknown; frame: number; renderer: unknown} = {scene: null, camera: null, frame: 0, renderer: null};
+/** linear: the view is drawn into a render target that post-processing shows (EffectComposer), not to the screen. */
+export const lastFrame: {scene: unknown; camera: unknown; frame: number; renderer: unknown; linear: boolean} = {scene: null, camera: null, frame: 0, renderer: null, linear: false};
 /** Post-processing the game asked for, read from its renderer and full-screen passes. */
 export const post: Record<string, number> = {exposure: 1, toneMapping: 0, bloomStrength: 0, bloomRadius: 0, bloomThreshold: 1, bloomFrame: -1};
 const renderers: Record<string, any>[] = [];
@@ -101,7 +102,7 @@ export class UnrealRenderer {
         const perspective = !!camera?.isPerspectiveCamera;
         // The scene Unreal mirrors: a perspective render, or an orthographic one in a frame without one. Within a
         // frame, an orthographic pass after the perspective scene is a HUD or overlay, not the view.
-        if (perspective || perspectiveFrame !== frameCount.animation) { lastFrame.scene = scene; lastFrame.camera = camera; lastFrame.renderer = self; lastFrame.frame++; }
+        if (perspective || perspectiveFrame !== frameCount.animation) { lastFrame.scene = scene; lastFrame.camera = camera; lastFrame.renderer = self; lastFrame.linear = !!t; lastFrame.frame++; }
         if (perspective) perspectiveFrame = frameCount.animation;
       },
       compile: () => new Set(), compileAsync: async () => {},

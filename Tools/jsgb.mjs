@@ -22,18 +22,26 @@ const has = name => rest.includes(name);
 // Notepad and Windows PowerShell save UTF-8 with a byte order mark, which JSON.parse rejects.
 export const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
 
-/** Machine settings: jsgb.local.json (not in git), overridden by JSGB_ENGINE, JSGB_PROJECT, JSGB_BUILDS. */
+/** Machine settings: jsgb.local.json (not in git), overridden by JSGB_ENGINE, JSGB_PROJECT, JSGB_BUILDS.
+ *  Optional: "captures" (where conformance frames and reports go; otherwise inside builds), "package" and
+ *  "packageProject" (where a packaged build and its packaging project go), and "ddc" (Unreal's local derived data cache for the runs these
+ *  tools start). */
 export function settings() {
   const file = path.join(bridge, 'jsgb.local.json');
   const local = fs.existsSync(file) ? readJson(file) : {};
   return {engine: process.env.JSGB_ENGINE ?? local.engine, project: process.env.JSGB_PROJECT ?? local.project,
-    builds: path.resolve(bridge, process.env.JSGB_BUILDS ?? local.builds ?? 'Builds')};
+    builds: path.resolve(bridge, process.env.JSGB_BUILDS ?? local.builds ?? 'Builds'),
+    captures: local.captures ? path.resolve(bridge, local.captures) : undefined,
+    package: local.package, packageProject: local.packageProject, ddc: local.ddc};
 }
+// Unreal reads its local derived data cache folder from this variable; the editors and cooks these tools start inherit it.
+if (settings().ddc) process.env['UE-LocalDataCachePath'] ??= settings().ddc;
 
 export function loadGame(name) {
   const file = fs.existsSync(name) ? path.resolve(name) : path.join(bridge, 'Games', name + '.json');
   const game = readJson(file);
   game.id ??= path.basename(file, '.json');
+  game.file = file;
   game.repo = path.resolve(bridge, game.repo);
   game.out = path.resolve(game.out ?? path.join(settings().builds, game.id));
   game.publicRoots = [...(game.public ?? ['public']).map(p => path.resolve(game.repo, p)), game.out, game.repo];
@@ -323,7 +331,7 @@ export async function build(game) {
 // Unreal's built-in browser: the host serves <out>/web, then the game's public folders.
 async function buildPage(game) {
   const started = performance.now();
-  const web = spawnSync(process.execPath, [path.join(bridge, 'Tools/web.mjs'), 'build', game.id], {stdio: 'inherit'});
+  const web = spawnSync(process.execPath, [path.join(bridge, 'Tools/web.mjs'), 'build', game.file ?? game.id], {stdio: 'inherit'});
   if (web.status !== 0) throw Error(`the web build of ${game.id} failed`);
   const page = readPage(game);
   const publication = {version: 1, game: game.id, sourceCommit: git(game.repo, 'rev-parse', 'HEAD') || '0'.repeat(40),

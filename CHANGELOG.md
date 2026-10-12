@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.5.0
+
+- `<select>` and `<option>` work as in a browser: `add`, `remove(index)`, `options`, `length`, `selectedIndex`,
+  `selectedOptions`, `value`, and each option's `text`, `index` and `selected`.
+- Each game keeps its own display settings in `Saved/JsGameBridge/<game>/display.json`. Unreal's shared settings
+  file isn't written any more, so a page game's 60 FPS cap no longer carries over to other games.
+- If a packaged game bundles a pipeline cache, the loading screen stays up until the GPU driver has compiled it, so
+  the game doesn't stop mid-play to compile a shader.
+- Shader materials drawn through an `EffectComposer` are no longer decoded from sRGB a second time. Before this fix
+  they came out much too dark.
+- Uniforms with names HLSL reserves (`noise`, `line`, `point` and others) are bound again. The shader translator
+  renames them, and the bridge now maps the new name back to the uniform.
+- An editor run with `-JsgbSaveMaterials` saves a captured material again when its scene parameter references are
+  out of date, because those materials failed to compile in a cook with an empty shader cache.
+- `jsgb.local.json` can set where conformance captures go (`captures`) and Unreal's local derived data cache (`ddc`).
+- A new conformance case draws a 3D-noise sky sphere through an `EffectComposer`.
+
 ## 0.4.0
 
 - Packaged builds draw a game's own shaders. An editor run with `-JsgbSaveMaterials` saves every shader material

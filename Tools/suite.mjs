@@ -19,7 +19,7 @@ const bridge = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const rest = process.argv.slice(2);
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 const has = name => rest.includes(name);
-const work = path.join(settings().builds, 'conformance-suite');
+const work = path.join(settings().captures ?? settings().builds, 'conformance-suite');
 const webOnly = has('--web-only');
 const docs = webOnly ? path.join(work, 'web-report') : path.join(bridge, 'Docs', 'conformance');
 const log = t => console.log(`[suite ${new Date().toISOString().slice(11, 19)}] ${t}`);

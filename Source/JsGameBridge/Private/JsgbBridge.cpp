@@ -454,8 +454,30 @@ void UJsgbBridge::DisplaySet(const FString& Json)
 	{
 		TSharedPtr<FJsonObject> In;
 		FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), In);
-		UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr;
-		if (!In || !S) { return; }
+		if (!In) { return; }
+		ApplyDisplay(In);
+		// Kept for this game only: merged into its display.json.
+		if (!DisplayFile.IsEmpty())
+		{
+			FString Old;
+			TSharedPtr<FJsonObject> Saved;
+			if (FFileHelper::LoadFileToString(Old, *DisplayFile)) { FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Old), Saved); }
+			if (!Saved) { Saved = MakeShared<FJsonObject>(); }
+			for (const auto& F : In->Values) { Saved->SetField(F.Key, F.Value); }
+			FString Out;
+			FJsonSerializer::Serialize(Saved.ToSharedRef(), TJsonWriterFactory<>::Create(&Out));
+			FFileHelper::SaveStringToFile(Out, *DisplayFile);
+		}
+		UpdateDisplayInfo();
+		Log(TEXT("log"), TEXT("display: ") + DisplayGet());
+	});
+}
+
+void UJsgbBridge::ApplyDisplay(const TSharedPtr<FJsonObject>& In)
+{
+	UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr;
+	if (!In || !S) { return; }
+	{
 		double W = 0, H = 0, MaxFps = -1;
 		FString Mode;
 		bool bVsync = false;
@@ -468,8 +490,25 @@ void UJsgbBridge::DisplaySet(const FString& Json)
 		}
 		if (In->TryGetBoolField(TEXT("vsync"), bVsync)) { S->SetVSyncEnabled(bVsync); }
 		if (In->TryGetNumberField(TEXT("maxFps"), MaxFps) && MaxFps >= 0) { S->SetFrameRateLimit(MaxFps); }
-		S->ApplySettings(false);
-		UpdateDisplayInfo();
-		Log(TEXT("log"), TEXT("display: ") + DisplayGet());
-	});
+		// Applied without SaveSettings: Unreal's settings file is shared by every game in this host.
+		S->ApplyResolutionSettings(false);
+		S->ApplyNonResolutionSettings();
+	}
+}
+
+void UJsgbBridge::RestoreDisplay()
+{
+	if (UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr)
+	{
+		// An earlier build saved a frame cap there for every game; each game starts uncapped unless it saved its own.
+		if (S->GetFrameRateLimit() > 0) { S->SetFrameRateLimit(0); S->ApplyNonResolutionSettings(); S->SaveSettings(); }
+	}
+	FString Saved;
+	TSharedPtr<FJsonObject> In;
+	if (!DisplayFile.IsEmpty() && FFileHelper::LoadFileToString(Saved, *DisplayFile) && FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Saved), In) && In)
+	{
+		ApplyDisplay(In);
+		Log(TEXT("log"), TEXT("display settings restored: ") + Saved);
+	}
+	UpdateDisplayInfo();
 }

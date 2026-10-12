@@ -8,7 +8,7 @@ import {execFileSync, spawnSync} from 'node:child_process';
 import {fileURLToPath, pathToFileURL} from 'node:url';
 
 const bridge = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const {loadGame, build} = await import(pathToFileURL(path.join(bridge, 'Tools/jsgb.mjs')).href);
+const {loadGame, build, settings} = await import(pathToFileURL(path.join(bridge, 'Tools/jsgb.mjs')).href);
 const [gameArg, ...rest] = process.argv.slice(2);
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 const has = name => rest.includes(name);
@@ -19,7 +19,7 @@ const seed = flag('--seed', '1234');
 // A query string both sides boot with (Games/<game>.json conformanceSearch), e.g. to fix a world seed.
 const search = flag('--search', game.conformanceSearch ?? game.search ?? '');
 // --out: where this run's frames, pairs, stills and report go (the suite runner gives each case its own).
-const root = path.resolve(flag('--out', path.join(game.out, 'conformance')));
+const root = path.resolve(flag('--out', settings().captures ? path.join(settings().captures, game.id) : path.join(game.out, 'conformance')));
 const webDir = path.join(root, 'web'), unrealDir = path.join(root, 'unreal'), pairDir = path.join(root, 'pairs');
 const film = path.resolve(flag('--film', path.join(root, `${game.id}-side-by-side.mp4`)));
 const node = process.execPath;

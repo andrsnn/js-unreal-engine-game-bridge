@@ -1,4 +1,5 @@
 #include "JsgbHost.h"
+#include "ShaderPipelineCache.h"
 #include "GameFramework/GameUserSettings.h"
 #include "JsgbBridge.h"
 #include "JsgbSceneMirror.h"
@@ -476,10 +477,10 @@ void UJsgbPagePort::DisplaySet(const FString& Json)
 	Display->DisplaySet(Json);
 	// A page game draws at the page's rate: no cap, or one above it, means the page's rate (more Unreal frames only
 	// repeat page frames unevenly, which judders).
-	if (UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr)
-	{
-		if (S->GetFrameRateLimit() <= 0 || S->GetFrameRateLimit() > PageFps) { S->SetFrameRateLimit(PageFps); S->ApplySettings(false); Display->UpdateDisplayInfo(); }
-	}
+	// The cap is a console setting only, so nothing about it is saved.
+	UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr;
+	const float Limit = S ? S->GetFrameRateLimit() : 0.f;
+	if (IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"))) { MaxFps->Set(Limit <= 0 || Limit > PageFps ? static_cast<float>(PageFps) : Limit, ECVF_SetByCode); }
 }
 
 // "KeyW", "Digit1", "Space", "ArrowUp" and the like as an Unreal key, its Windows key code and its character, for
@@ -510,11 +511,12 @@ void AJsgbHost::CreatePageView()
 	// rate, every frame on screen is a new page frame. Uncapped, each page frame stayed up for an uneven number of
 	// Unreal frames (3.8 ms frames with a 2.7 ms spread on a 240 Hz display): the motion judders.
 	if (IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"))) { MaxFps->Set(static_cast<float>(PageFps), ECVF_SetByCode); }
-	if (UGameUserSettings* S = GEngine->GetGameUserSettings()) { if (S->GetFrameRateLimit() <= 0 || S->GetFrameRateLimit() > PageFps) { S->SetFrameRateLimit(PageFps); S->ApplySettings(false); } }
 	PagePort = NewObject<UJsgbPagePort>(this);
 	PagePort->PageFps = PageFps;
 	PagePort->Display = NewObject<UJsgbBridge>(this);
-	PagePort->Display->UpdateDisplayInfo();
+	PagePort->Display->DisplayFile = FPaths::ProjectSavedDir() / TEXT("JsGameBridge") / FPaths::GetCleanFilename(GameDir) / TEXT("display.json");
+	PagePort->Display->RestoreDisplay();
+	if (IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"))) { MaxFps->Set(static_cast<float>(PageFps), ECVF_SetByCode); }
 	const FString Url = FString::Printf(TEXT("http://127.0.0.1:%d/"), Port) + PageIndex + Search;
 	SAssignNew(Browser, SWebBrowser).InitialURL(Url)
 		.ShowControls(false).ShowAddressBar(false).ShowInitialThrobber(false)
@@ -556,7 +558,9 @@ void AJsgbHost::StartJs()
 	Audio->Bridge = Bridge;
 	if (UIPort) { UIPort->Bridge = Bridge; UIPort->AppliedUIVersion = -1; }
 	Bridge->StartSeconds = FPlatformTime::Seconds();
-	Bridge->UpdateDisplayInfo();
+	Bridge->DisplayFile = FPaths::ProjectSavedDir() / TEXT("JsGameBridge") / FPaths::GetCleanFilename(GameDir) / TEXT("display.json");
+	// Once per launch (a hot reload keeps the window as it is).
+	if (Frame == 0) { Bridge->RestoreDisplay(); } else { Bridge->UpdateDisplayInfo(); }
 	double FixedFps = 0;
 	if (FParse::Value(FCommandLine::Get(), TEXT("JsgbFixedFps="), FixedFps) && FixedFps > 0) { Bridge->FixedStepMs = 1000.0 / FixedFps; }
 	Bridge->Search = Search;
@@ -673,6 +677,10 @@ void AJsgbHost::ShowLoading()
 {
 	if (Loading.IsValid() || !GEngine || !GEngine->GameViewport || FParse::Param(FCommandLine::Get(), TEXT("JsgbNoLoadingScreen"))) { return; }
 	LoadingStart = FPlatformTime::Seconds();
+	// The package's recorded pipeline states (a bundled pipeline cache) compile on this PC's GPU driver while the
+	// loading screen is up, as fast as they can, so no draw stops to compile one later.
+	FShaderPipelineCache::SetBatchMode(FShaderPipelineCache::BatchMode::Fast);
+	FShaderPipelineCache::ResumeBatching();
 	const FString Name = Title.IsEmpty() ? FString(TEXT("Loading")) : Title;
 	auto Phase = [this]() { return static_cast<float>(FMath::Fmod((FPlatformTime::Seconds() - LoadingStart) * 0.6, 1.0)); };
 	Loading = SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(0.02f, 0.025f, 0.035f, 1.f))
@@ -705,6 +713,10 @@ void AJsgbHost::ShowLoading()
 				.Text(TAttribute<FText>::CreateLambda([this]()
 				{
 					const int32 Files = Bridge ? Bridge->FilesRead.load() : 0;
+					if (FShaderPipelineCache::IsPrecompiling())
+					{
+						return FText::FromString(FString::Printf(TEXT("Preparing shaders for this PC, %u left"), FShaderPipelineCache::NumPrecompilesRemaining()));
+					}
 					return FText::FromString(Files > 0 ? FString::Printf(TEXT("Loading, %d files read"), Files) : FString(TEXT("Starting")));
 				}))
 			]
@@ -719,8 +731,10 @@ void AJsgbHost::UpdateLoading()
 	const bool bPage = !PageIndex.IsEmpty();
 	const bool bShown = bPage ? bDocumentReady
 		: (UIPort && UIPort->AppliedUIVersion > 0) || (Mirror && Mirror->DrawnEntities > 0) || (Bridge && Bridge->bReady && ReadyFrame >= 0);
-	// Two minutes at most, so a game that never reports anything isn't hidden behind it.
-	if (!bShown && FPlatformTime::Seconds() - LoadingStart < 120.0) { return; }
+	// It stays until the pipeline cache is compiled too; two minutes at most, so a game that never reports anything
+	// isn't hidden behind it.
+	if ((!bShown || FShaderPipelineCache::IsPrecompiling()) && FPlatformTime::Seconds() - LoadingStart < 120.0) { return; }
+	FShaderPipelineCache::SetBatchMode(FShaderPipelineCache::BatchMode::Background);
 	if (GEngine && GEngine->GameViewport) { GEngine->GameViewport->RemoveViewportWidgetContent(Loading.ToSharedRef()); }
 	Loading.Reset();
 	UE_LOG(LogJsgbHost, Display, TEXT("Loading screen shown for %.1f s"), FPlatformTime::Seconds() - LoadingStart);

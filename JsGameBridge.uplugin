@@ -1,7 +1,7 @@
 {
   "FileVersion": 3,
   "Version": 1,
-  "VersionName": "0.4.0",
+  "VersionName": "0.5.0",
   "FriendlyName": "JS Game Bridge",
   "Description": "Generic Three.js scene backend; gameplay stays in JavaScript.",
   "Category": "Rendering",
