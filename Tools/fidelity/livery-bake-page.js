@@ -278,40 +278,8 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
   r.render(scene, camera);
   const px = new Uint8Array(W * H * 4);
   r.readRenderTargetPixels(target, 0, 0, W, H, px);
-  // A check without Unreal: the game's model with the game's texture (left) and the source model with the bake (right),
-  // unlit, from the same three-quarter view. Their colours should agree.
-  let preview = null;
-  if (options.preview) {
-    const PW = 1024, PH = 512, view = new THREE.WebGLRenderTarget(PW, PH), shot = new THREE.Scene();
-    const box = geometry.boundingBox, centre = box.getCenter(new THREE.Vector3()), radius = box.getSize(new THREE.Vector3()).length() / 2;
-    const eye = new THREE.PerspectiveCamera(35, 1, radius * .05, radius * 10);
-    eye.position.copy(centre).add(new THREE.Vector3(1, .6, 1).normalize().multiplyScalar(radius * 2.6)); eye.lookAt(centre);
-    const baked = geometry.clone(); baked.setAttribute('uv', geometry.attributes.jsgbUv);
-    const gameView = new THREE.Mesh(game.geometry, new THREE.MeshBasicMaterial({map: game.material.map, side: THREE.DoubleSide}));
-    const bakeView = new THREE.Mesh(baked, new THREE.MeshBasicMaterial({map: target.texture, side: THREE.DoubleSide}));
-    r.setRenderTarget(view); r.toneMapping = THREE.NoToneMapping; r.setClearColor(0x202830, 1);
-    r.setScissorTest(true); const out = new Uint8Array(PW * PH * 4);
-    for (const [i, mesh] of [gameView, bakeView].entries()) {
-      shot.clear(); shot.add(mesh); r.setViewport(i * PW / 2, 0, PW / 2, PH); r.setScissor(i * PW / 2, 0, PW / 2, PH); r.clear(); r.render(shot, eye);
-    }
-    r.setScissorTest(false); r.readRenderTargetPixels(view, 0, 0, PW, PH, out);
-    const rows = new Uint8ClampedArray(PW * PH * 4); for (let y = 0; y < PH; y++) rows.set(out.subarray((PH - 1 - y) * PW * 4, (PH - y) * PW * 4), y * PW * 4);
-    const c = new OffscreenCanvas(PW, PH); c.getContext('2d').putImageData(new ImageData(rows, PW, PH), 0, 0);
-    const bytes = new Uint8Array(await (await c.convertToBlob({type: 'image/png'})).arrayBuffer());
-    let bin = ''; for (let i = 0; i < bytes.length; i += 32768) bin += String.fromCharCode(...bytes.subarray(i, i + 32768));
-    preview = btoa(bin); view.dispose(); baked.dispose(); gameView.material.dispose(); bakeView.material.dispose();
-  }
   r.setRenderTarget(before.target); r.autoClear = before.autoClear; r.toneMapping = before.tone;
-  target.dispose(); paint.dispose(); geometry.dispose(); lookup.dispose(); for (const t of softCopies.splice(0)) t.dispose(); under.material.dispose(); under.geometry.dispose(); blank.dispose();
-  // Free the source model: its 4096 textures are hundreds of megabytes each, and the bake goes through every hull.
-  gltf.scene.traverse(o => {
-    if (!o.isMesh) return;
-    o.geometry.dispose();
-    for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
-      for (const v of Object.values(m)) if (v?.isTexture) { v.dispose(); v.image?.close?.(); }
-      m.dispose();
-    }
-  });
+  target.dispose(); paint.dispose(); lookup.dispose(); for (const t of softCopies.splice(0)) t.dispose(); under.material.dispose(); under.geometry.dispose(); blank.dispose();
   let painted = 0;
   for (let i = 3; i < px.length; i += 4) if (px[i]) painted++;
   // Grow the painted islands 4 texels into their margins, so filtering at a seam never mixes in unpainted colour.
@@ -326,7 +294,80 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
       }
     }
   }
+  // Fill every texel no triangle covers with the colour of the painted texels around it (pull-push: average the painted
+  // texels into ever smaller images, then fill each gap from the smallest image that has paint there). Otherwise the
+  // source's own dark colours stay in the gaps between the UV islands, and the smaller mip levels Unreal draws at a
+  // distance mix them into small islands (the mine's white tanks drew dark).
+  if (options.fill !== false) {
+    const levels = [];
+    let w = W, h = H, read = (x, y) => { const i = (y * W + x) * 4; return px[i + 3] ? [px[i], px[i + 1], px[i + 2], 1] : null; };
+    while (w > 1 || h > 1) {
+      const lw = Math.max(1, w >> 1), lh = Math.max(1, h >> 1), c = new Float32Array(lw * lh * 3), a = new Uint8Array(lw * lh);
+      for (let y = 0; y < lh; y++) for (let x = 0; x < lw; x++) {
+        let r = 0, g = 0, b = 0, n = 0;
+        for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [1, 1]]) { const v = read(Math.min(w - 1, x * 2 + dx), Math.min(h - 1, y * 2 + dy)); if (v) { r += v[0]; g += v[1]; b += v[2]; n++; } }
+        if (n) { const k = y * lw + x; c[k * 3] = r / n; c[k * 3 + 1] = g / n; c[k * 3 + 2] = b / n; a[k] = 1; }
+      }
+      levels.push({w: lw, h: lh, c, a});
+      read = (x, y) => { const k = y * lw + x; return a[k] ? [c[k * 3], c[k * 3 + 1], c[k * 3 + 2]] : null; };
+      w = lw; h = lh;
+    }
+    for (let l = levels.length - 2; l >= 0; l--) {
+      const {w: lw, h: lh, c, a} = levels[l], up = levels[l + 1];
+      for (let y = 0; y < lh; y++) for (let x = 0; x < lw; x++) {
+        const k = y * lw + x; if (a[k]) continue;
+        const j = Math.min(up.h - 1, y >> 1) * up.w + Math.min(up.w - 1, x >> 1);
+        c[k * 3] = up.c[j * 3]; c[k * 3 + 1] = up.c[j * 3 + 1]; c[k * 3 + 2] = up.c[j * 3 + 2]; a[k] = 1;
+      }
+    }
+    const first = levels[0];
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const i = (y * W + x) * 4; if (px[i + 3]) continue;
+      const j = Math.min(first.h - 1, y >> 1) * first.w + Math.min(first.w - 1, x >> 1);
+      px[i] = first.c[j * 3]; px[i + 1] = first.c[j * 3 + 1]; px[i + 2] = first.c[j * 3 + 2];
+    }
+  }
   for (let i = 3; i < px.length; i += 4) px[i] = 255;
+  // A check without Unreal: the game's model with the game's texture (left), the source model with the bake (middle) and
+  // with the bake at Unreal's default half-precision uvs (right), unlit, from the same three-quarter view and mipmapped, as Unreal samples it at a distance. Their colours should agree.
+  let preview = null;
+  if (options.preview) {
+    const PW = 1536, PH = 512, view = new THREE.WebGLRenderTarget(PW, PH), shot = new THREE.Scene();
+    const box = geometry.boundingBox, centre = box.getCenter(new THREE.Vector3()), radius = box.getSize(new THREE.Vector3()).length() / 2;
+    const eye = new THREE.PerspectiveCamera(35, 1, radius * .05, radius * 10);
+    eye.position.copy(centre).add(new THREE.Vector3(1, .6, 1).normalize().multiplyScalar(radius * 2.6)); eye.lookAt(centre);
+    const baked = geometry.clone(); baked.setAttribute('uv', geometry.attributes.jsgbUv);
+    const gameView = new THREE.Mesh(game.geometry, new THREE.MeshBasicMaterial({map: game.material.map, side: THREE.DoubleSide}));
+    const result = new THREE.DataTexture(px, W, H); result.generateMipmaps = true; result.minFilter = THREE.LinearMipmapLinearFilter; result.magFilter = THREE.LinearFilter; result.anisotropy = 8; result.needsUpdate = true;
+    const bakeView = new THREE.Mesh(baked, new THREE.MeshBasicMaterial({map: result, side: THREE.DoubleSide}));
+    // Unreal keeps a static mesh's uvs at half precision unless told otherwise: the bake again with the uvs rounded so.
+    const half = baked.clone(), hu = half.attributes.uv.clone(); half.setAttribute('uv', hu);
+    const toHalf = x => { if (x === 0) return 0; const step = 2 ** (Math.floor(Math.log2(Math.abs(x))) - 10); return Math.round(x / step) * step; };
+    for (let i = 0; i < hu.count; i++) hu.setXY(i, toHalf(hu.getX(i)), toHalf(hu.getY(i)));
+    const sourceView = new THREE.Mesh(half, new THREE.MeshBasicMaterial({map: result, side: THREE.DoubleSide}));
+    r.setRenderTarget(view); r.toneMapping = THREE.NoToneMapping; r.setClearColor(0x202830, 1);
+    r.setScissorTest(true); const out = new Uint8Array(PW * PH * 4);
+    for (const [i, mesh] of [gameView, bakeView, sourceView].entries()) {
+      shot.clear(); shot.add(mesh); r.setViewport(i * PW / 3, 0, PW / 3, PH); r.setScissor(i * PW / 3, 0, PW / 3, PH); r.clear(); r.render(shot, eye);
+    }
+    r.setScissorTest(false); r.readRenderTargetPixels(view, 0, 0, PW, PH, out);
+    const rows = new Uint8ClampedArray(PW * PH * 4); for (let y = 0; y < PH; y++) rows.set(out.subarray((PH - 1 - y) * PW * 4, (PH - y) * PW * 4), y * PW * 4);
+    const c = new OffscreenCanvas(PW, PH); c.getContext('2d').putImageData(new ImageData(rows, PW, PH), 0, 0);
+    const bytes = new Uint8Array(await (await c.convertToBlob({type: 'image/png'})).arrayBuffer());
+    let bin = ''; for (let i = 0; i < bytes.length; i += 32768) bin += String.fromCharCode(...bytes.subarray(i, i + 32768));
+    preview = btoa(bin); view.dispose(); baked.dispose(); gameView.material.dispose(); bakeView.material.dispose(); sourceView.material.dispose(); half.dispose(); result.dispose(); r.toneMapping = before.tone;
+    r.setRenderTarget(before.target);
+  }
+  geometry.dispose();
+  // Free the source model: its 4096 textures are hundreds of megabytes each, and the bake goes through every hull.
+  gltf.scene.traverse(o => {
+    if (!o.isMesh) return;
+    o.geometry.dispose();
+    for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
+      for (const v of Object.values(m)) if (v?.isTexture) { v.dispose(); v.image?.close?.(); }
+      m.dispose();
+    }
+  });
   // Rows come back bottom first; the first row of the image is v = 0, as in the source texture (glTF, no flip).
   const canvas = new OffscreenCanvas(W, H);
   canvas.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(px.buffer), W, H), 0, 0);

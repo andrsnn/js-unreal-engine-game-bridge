@@ -2614,7 +2614,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-engine-small/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_fabrication_bay",
@@ -2647,7 +2648,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-fabrication-bay/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_flak_battery",
@@ -2680,7 +2682,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-flak-battery/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_habitat_ring",
@@ -2713,7 +2716,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-habitat-ring/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_hangar_launch_tube",
@@ -2746,7 +2750,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-hangar-launch-tube/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_heavy_kinetic_turret",
@@ -2779,7 +2784,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-heavy-kinetic-turret/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_heavy_railgun",
@@ -2812,7 +2818,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-heavy-railgun/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_light_railgun",
@@ -2845,7 +2852,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-light-railgun/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_missile_pod",
@@ -2878,7 +2886,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-missile-pod/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_point_defence",
@@ -2911,7 +2920,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-point-defence/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_reactor",
@@ -2944,7 +2954,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-reactor/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_refinery",
@@ -2977,7 +2988,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-refinery/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_sensor_array",
@@ -3010,7 +3022,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-sensor-array/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_shield_generator",
@@ -3043,7 +3056,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-shield-generator/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_spinal_mount",
@@ -3076,7 +3090,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-spinal-mount/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_torpedo_tubes",
@@ -3109,7 +3124,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-torpedo-tubes/pixal3d_textured.glb"
   },
   {
    "name": "concept_module_vls_bank",
@@ -3142,7 +3158,8 @@
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   }
+   },
+   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-vls-bank/pixal3d_textured.glb"
   },
   {
    "name": "concept_mrn_battleship",

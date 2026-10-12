@@ -34,7 +34,9 @@ const {chromium} = await import(pathToFileURL(tool('playwright')).href).then(m =
 
 // The game's dev server, plus the bake page module and each source model.
 const pageFile = path.join(bridge, 'Tools/fidelity/livery-bake-page.js'), bootFile = path.join(bridge, 'Tools/fidelity/livery-bake-boot.js');
-const sources = new Map(rules.map(r => [r.name, r.source]));
+// "imported": the file the host project's mesh was actually built from, when it isn't "source" (its UVs are the ones the
+// texture has to follow).
+const sources = new Map(rules.map(r => [r.name, r.imported ?? r.source]));
 const server = await vite.createServer({root: game.repo, logLevel: 'warn', server: {port, strictPort: true, host: '127.0.0.1'},
   plugins: [{
     name: 'jsgb-livery-bake',
@@ -69,7 +71,7 @@ for (const r of rules) {
   const started = Date.now();
   try {
     const result = await page.evaluate(async ([name, key, url, style, options]) => (await import('/__jsgb_bake/page.js')).bake(name, key, url, style, options),
-      [r.name, r.keys[0], `/__jsgb_bake/source/${r.name}.glb`, style, {preview: rest.includes('--preview')}]);
+      [r.name, r.keys[0], `/__jsgb_bake/source/${r.name}.glb`, style, {preview: rest.includes('--preview'), fill: !rest.includes('--no-fill')}]);
     fs.writeFileSync(path.join(out, r.name + '.png'), Buffer.from(result.png, 'base64'));
     if (result.preview) fs.writeFileSync(path.join(out, r.name + '.preview.png'), Buffer.from(result.preview, 'base64'));
     report[r.name] = {key: r.keys[0], width: result.width, height: result.height, coverage: +result.coverage.toFixed(3), plates: +result.mask.toFixed(3), material: result.material, fit: result.fit, seconds: Math.round((Date.now() - started) / 1000)};
