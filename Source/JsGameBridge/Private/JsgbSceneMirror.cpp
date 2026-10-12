@@ -1849,8 +1849,33 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 	if (S)
 	{
 		ParentFor(VLit);
-		// A shader captured in an earlier run already has its asset (the key is a hash of the shader).
-		const bool bCaptured = bSave && FPaths::FileExists(FPackageName::LongPackageNameToFilename(PackagePath, FPackageName::GetAssetPackageExtension()));
+		// A shader captured in an earlier run already has its asset (the key is a hash of the shader), unless the scene
+		// parameter collection changed since: the asset's references to it no longer resolve and it wouldn't compile in a
+		// cook, so it's saved again.
+		bool bCaptured = bSave && FPaths::FileExists(FPackageName::LongPackageNameToFilename(PackagePath, FPackageName::GetAssetPackageExtension()));
+		if (bCaptured)
+		{
+			UMaterial* Old = LoadObject<UMaterial>(nullptr, *(PackagePath + TEXT(".") + AssetName), nullptr, LOAD_NoWarn | LOAD_Quiet);
+			bool bStale = !Old;
+			if (Old)
+			{
+				for (UMaterialExpression* E : Old->GetExpressions())
+				{
+					const UMaterialExpressionCollectionParameter* C = Cast<UMaterialExpressionCollectionParameter>(E);
+					if (C && (!Globals || C->Collection != Globals || Globals->GetParameterName(C->ParameterId).IsNone())) { bStale = true; break; }
+				}
+			}
+			if (bStale)
+			{
+				UE_LOG(LogJsgbMirror, Display, TEXT("Saving %s again: its scene parameter references are out of date"), *AssetName);
+				if (Old)
+				{
+					Old->ClearFlags(RF_Public | RF_Standalone);
+					Old->Rename(nullptr, GetTransientPackage(), REN_DontCreateRedirectors | REN_NonTransactional);
+				}
+				bCaptured = false;
+			}
+		}
 		UPackage* Package = bSave && !bCaptured ? CreatePackage(*PackagePath) : nullptr;
 		UMaterial* Mat = Package ? NewObject<UMaterial>(Package, *AssetName, RF_Public | RF_Standalone) : NewObject<UMaterial>(this, NAME_None, RF_Transient);
 		Mat->MaterialDomain = MD_Surface;
