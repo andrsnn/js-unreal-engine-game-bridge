@@ -6,7 +6,7 @@ import {translateShaderMaterial, translateHookedMaterial, fillBuiltinUniforms, t
 import {channelFor, isExtraAttribute} from './attributes';
 import {overrideRules, overrideFor, effectFlags} from './overrides';
 import {graphicsState} from './graphics';
-import {beginEffects, noteEffect, effectLights} from './lumenEffects';
+import {beginEffects, noteEffect, effectLights, effectSystems} from './lumenEffects';
 
 /** Mirrors the game's Three.js scene into Unreal each frame. Geometry, materials and textures are
  *  sent once and again only when their version changes; transforms, instances, lights and the
@@ -747,7 +747,10 @@ function emitEffectLights() {
     // A point light's angle and penumbra fields carry its source length and radius (three.js point lights send 0).
     push(l.distance); push(2); push(l.length); push(l.radius); push(0); push(0); push(0); push(0);
   });
+  // An effect gets an id of its own: the object it plays at may also be drawn (a sprite).
+  effectSystems((o, key, m) => { let fx = effectIds.get(o); if (!fx) effectIds.set(o, fx = {}); push(EFFECT); push(idOf(fx)); push(keyId(key)); pushMatrix(m); });
 }
+const effectIds = new WeakMap<object, object>();
 function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
   if (!o.visible) return;
   if ((o as THREE.LOD).isLOD && (o as THREE.LOD).autoUpdate) (o as THREE.LOD).update(cam);

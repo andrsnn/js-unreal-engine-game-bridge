@@ -1,5 +1,7 @@
 import * as THREE from 'three-real';
 import type {EffectFlags} from './overrides';
+import {systemRules} from './overrides';
+import {host} from './host';
 
 /** Unreal effects in Lumen mode: lights that follow the objects a game already uses for its own effects, so they keep
  *  the game's look and timing. The game's sprites still draw as they are; Unreal adds the light they would cast on the
@@ -10,6 +12,9 @@ import type {EffectFlags} from './overrides';
  *    rounds in flight (userData.roundDraw: head b, tail a, colour, cores while flying).
  *  - trails: missiles and torpedoes under power (userData.plumeKey and motorActive).
  *  - explosions: every other userData.flashLight (hits, blasts).
+ *  - Niagara rules (overrides.json rules with "niagara", such as lit vapour at each of the game's vents): the system plays
+ *    at the object, pointed along userData.surfaceNormal or incomingDirection, sized from the effect's own size, for as
+ *    long as the object is in the scene, so it starts and stops with the game's effect.
  *  A flash light's intensity, reach and colour are the game's own (it lights its own three brightest flashes the same
  *  way, at a quarter of flashLight.intensity), so Unreal lights the flashes the game has no light left for. */
 
@@ -22,13 +27,14 @@ const ROUND_CANDELA = 60;
 
 type Noted = {o: THREE.Object3D; d: number};
 const plumes: Noted[] = [], flashes: Noted[] = [], rounds: Noted[] = [], motors: Noted[] = [];
+const playing: {o: THREE.Object3D; key: string}[] = [];
 const at = new THREE.Vector3(), scale = new THREE.Vector3(), back = new THREE.Vector3();
 let flags: EffectFlags | null = null, eye = new THREE.Vector3(), topScene: THREE.Object3D | null = null;
 
 /** Starts a frame: which effects are on, and where the camera is. */
 export function beginEffects(f: EffectFlags | null, cam: THREE.Camera, scene: THREE.Object3D) {
   flags = f; eye = cam.position; topScene = scene;
-  plumes.length = flashes.length = rounds.length = motors.length = 0;
+  plumes.length = flashes.length = rounds.length = motors.length = playing.length = 0;
 }
 
 /** Notes an object of the game view that one of the switched-on effects follows. */
@@ -36,6 +42,7 @@ export function noteEffect(o: THREE.Object3D) {
   const u = o.userData, f = flags;
   if (!f || !u) return;
   const key = typeof u.vfxKey === 'string' ? u.vfxKey : '';
+  if (key && !u.done) for (const r of systemRules(host.registry)) if (r.tests.every(t => t(o, undefined))) { playing.push({o, key: r.key}); break; }
   const d = () => o.getWorldPosition(at).distanceToSquared(eye);
   if (f.engineLight && key.startsWith('plume.')) { plumes.push({o, d: d()}); return; }
   if (u.done) return;
@@ -90,5 +97,20 @@ export function effectLights(out: (l: EffectLight) => void) {
     if (len <= 0) continue;
     const dir = span.normalize();
     out({id: o, color: r.color.clone(), intensity: ROUND_CANDELA * Math.max(.05, r.width) ** 2 * 25 * (r.opacity || 1), at: r.b.clone().addScaledVector(dir, -len / 2), dir, distance: len * 1.5, length: len, radius: r.width * .5});
+  }
+}
+
+const up = new THREE.Vector3(0, 1, 0), axis = new THREE.Vector3(), turn = new THREE.Quaternion(), size3 = new THREE.Vector3();
+/** The Niagara systems this frame: the registry key and the world matrix each one plays at. */
+export function effectSystems(out: (o: THREE.Object3D, key: string, matrix: THREE.Matrix4) => void) {
+  for (const {o, key} of playing) {
+    const u = o.userData;
+    const dir = (u.surfaceNormal ?? u.incomingDirection) as THREE.Vector3 | undefined;
+    axis.copy(dir && dir.lengthSq() > 1e-12 ? dir : up).normalize();
+    turn.setFromUnitVectors(up, axis);
+    // The effect's size: a flash pool slot keeps it in flashLight.distance (8 x size, at least 3); a sprite in its scale.
+    const reach = u.flashLight?.distance as number | undefined;
+    const size = reach ? Math.max(.375, reach / 8) : Math.max(1e-3, o.getWorldScale(size3).x);
+    out(o, key, new THREE.Matrix4().compose(o.getWorldPosition(new THREE.Vector3()), turn, size3.setScalar(size)));
   }
 }

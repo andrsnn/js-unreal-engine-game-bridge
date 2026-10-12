@@ -304,7 +304,7 @@ void UJsgbSceneMirror::LoadOverrides(bool bLoad, TFunction<void()> Done)
 	for (const auto& Pair : Registry)
 	{
 		if (!Pair.Key.StartsWith(TEXT("override:"))) { continue; }
-		for (const TCHAR* Field : {TEXT("mesh"), TEXT("material")})
+		for (const TCHAR* Field : {TEXT("mesh"), TEXT("material"), TEXT("niagara")})
 		{
 			FString Path;
 			if (Pair.Value.IsValid() && Pair.Value->TryGetStringField(Field, Path) && !Path.IsEmpty() && !Names.Contains(Path)) { Names.Add(Path); Paths.Add(FSoftObjectPath(Path)); }
@@ -1763,7 +1763,10 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			}
 			if (Ent.Effect)
 			{
-				Place(Ent, Ent.Effect, ToTransform(M), 0);
+				const FTransform T = ToTransform(M);
+				Place(Ent, Ent.Effect, T, 0);
+				// The effect's size in centimetres, for systems that size their sprites by it (Lumen mode's vapour).
+				Ent.Effect->SetVariableFloat(TEXT("User.SizeCm"), T.GetScale3D().X * Cm);
 				if (!Ent.Effect->IsActive()) { Ent.Effect->Activate(true); }
 				Ent.Seen = Stamp;
 				++Drawn;

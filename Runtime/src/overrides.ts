@@ -23,6 +23,11 @@ export type OverrideRule = {
   others?: 'hide' | 'keep';
   /** Draw nothing for what the rule matches (the game's object stays in the game). */
   hide?: boolean;
+  /** The rule belongs to one Unreal effect ("effects" in overrides.json) and applies only while that effect is on. */
+  effect?: keyof EffectFlags;
+  /** A Niagara system to play at each of the game's effect objects the rule matches (userData patterns), for as long as
+   *  the object is in the scene (lumenEffects.ts). */
+  niagara?: string;
 };
 
 type SourceInfo = {url: string; primary: boolean};
@@ -92,12 +97,23 @@ export function effectFlags(registryJson: string | undefined): EffectFlags {
 
 /** The rules from the registry the host loaded ("overrides" array); empty without an overrides file. */
 export function overrideRules(registryJson: string | undefined): Compiled[] {
-  if (rules) return rules;
-  rules = [];
+  if (!rules) [rules, systems] = compile(registryJson);
+  return rules;
+}
+/** The Niagara rules (with "niagara"), whose effect is on. */
+export function systemRules(registryJson: string | undefined): Compiled[] {
+  if (!systems) [rules, systems] = compile(registryJson);
+  return systems;
+}
+let systems: Compiled[] | null = null;
+function compile(registryJson: string | undefined): [Compiled[], Compiled[]] {
+  const rules: Compiled[] = [], systems: Compiled[] = [];
+  const on = effectFlags(registryJson);
   try {
     const list = (JSON.parse(registryJson || '{}').overrides ?? []) as OverrideRule[];
     for (const r of list) {
-      if (!r?.name || !r.match || (!r.mesh && !r.hide)) continue;
+      if (!r?.name || !r.match || (!r.mesh && !r.hide && !r.niagara)) continue;
+      if (r.effect && !on[r.effect]) continue;
       const tests: Compiled['tests'] = [];
       const m = r.match;
       if (m.url) { const t = glob(m.url); tests.push((_o, src) => t(src?.url.replaceAll('\\', '/'))); }
@@ -110,10 +126,10 @@ export function overrideRules(registryJson: string | undefined): Compiled[] {
         const t = glob(v);
         tests.push(o => { for (let p: THREE.Object3D | null = o; p; p = p.parent) { const x = p.userData?.[k]; if (x !== undefined && t(String(x))) return true; } return false; });
       }
-      if (tests.length) rules.push({...r, key: 'override:' + r.name, tests});
+      if (tests.length) (r.niagara ? systems : rules).push({...r, key: 'override:' + r.name, tests});
     }
-  } catch { rules = []; }
-  return rules;
+  } catch { return [[], []]; }
+  return [rules, systems];
 }
 
 function sourceOf(o: THREE.Object3D): SourceInfo | undefined {

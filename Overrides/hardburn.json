@@ -4,11 +4,32 @@
   "engineLight": true,
   "gunfire": true,
   "trails": true,
-  "smoke": false,
+  "smoke": true,
   "explosions": false,
   "debris": false
  },
  "overrides": [
+  {
+   "name": "lumen_vapour",
+   "effect": "smoke",
+   "match": {
+    "userData": {
+     "vfxKey": "venting.*"
+    }
+   },
+   "niagara": "/Game/Fidelity/VFX/Systems/NS_LumenVapour.NS_LumenVapour"
+  },
+  {
+   "name": "hide_game_vapour",
+   "effect": "smoke",
+   "match": {
+    "object": [
+     "hull-vapor-pool",
+     "sprite-vfx-gas"
+    ]
+   },
+   "hide": true
+  },
   {
    "name": "planet_moon",
    "match": {
