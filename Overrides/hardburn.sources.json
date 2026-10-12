@@ -17,7 +17,13 @@
    "params": {
     "EnvIntensity": 0.5,
     "PaintedHull": 0,
-    "LiveryWeight": 0
+    "LiveryWeight": 0,
+    "RoughnessScale": 0.7,
+    "Tint": [
+     0.86,
+     0.97,
+     1.1
+    ]
    }
   },
   {

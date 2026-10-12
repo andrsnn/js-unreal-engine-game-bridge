@@ -139,7 +139,13 @@
    "params": {
     "EnvIntensity": 0.5,
     "PaintedHull": 0,
-    "LiveryWeight": 0
+    "LiveryWeight": 0,
+    "RoughnessScale": 0.7,
+    "Tint": [
+     0.86,
+     0.97,
+     1.1
+    ]
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-frigate/originals/67dadcf78ae669ba810738e1b0c0cf9b1b03ba9c93472e2fb88e8b2fa3356fb1/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-frigate/67dadcf78ae6/symfix-sol-xhigh.json",
