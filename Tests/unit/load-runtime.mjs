@@ -16,11 +16,13 @@ process.on('exit', () => fs.rmSync(out, {recursive: true, force: true}));
 export const THREE = await import(threeUrl);
 
 let count = 0;
-/** A new copy of Runtime/src/<file>, with globalThis.__jsgbHost set to host while it loads. */
-export async function loadRuntime(file, host = {log() {}, registry: ''}) {
+/** A new copy of Runtime/src/<file>, with globalThis.__jsgbHost set to host while it loads. three: another three.js
+ *  build for 'three-real' (moduleThreeUrl has the shader chunks and ShaderLib, which three.core.js leaves out). */
+export const moduleThreeUrl = pathToFileURL(path.join(modules, 'three/build/three.module.js')).href;
+export async function loadRuntime(file, host = {log() {}, registry: ''}, three = threeUrl) {
   const outfile = path.join(out, `module-${++count}.mjs`);
   await esbuild.build({entryPoints: [path.join(root, 'Runtime/src', file)], outfile, bundle: true, format: 'esm', platform: 'node', logLevel: 'warning',
-    plugins: [{name: 'three-real', setup(b) { b.onResolve({filter: /^three-real$/}, () => ({path: threeUrl, external: true})); }}]});
+    plugins: [{name: 'three-real', setup(b) { b.onResolve({filter: /^three-real$/}, () => ({path: three, external: true})); }}]});
   globalThis.__jsgbHost = host;
   return import(pathToFileURL(outfile).href);
 }

@@ -824,6 +824,8 @@ TSharedPtr<FJsgbPreparedTexture> UJsgbSceneMirror::PrepareTexture(const FString&
 			FImageCore::CopyImage(Image, Dest);
 			Unlock();
 		}
+		// Unreal decodes PNG, JPEG, BMP, TGA, EXR and the like, not WebP: such a texture never gets its image.
+		else { UE_LOG(LogJsgbMirror, Warning, TEXT("Texture %s could not be decoded (%lld bytes)"), bFile ? *Str(J, TEXT("path")) : TEXT("(encoded)"), Size); }
 	}
 	else if (Kind == TEXT("rgba8") && Bytes.Data)
 	{
@@ -2158,6 +2160,15 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 		return Custom;
 		};
 		UMaterialExpressionCustom* Custom = MakeCustom(Str(S, TEXT("hlsl")), TEXT("inputs"), CMOT_Float4);
+		// A patched built-in material's own emitted light (totalEmissiveRadiance, such as a hot glow from a per-instance
+		// heat value) comes out of the same body as a second output, JsgbEmissive.
+		const bool bEmissiveOut = Flag(S, TEXT("emissiveOutput"));
+		if (bEmissiveOut)
+		{
+			FCustomOutput Out; Out.OutputName = TEXT("JsgbEmissive"); Out.OutputType = CMOT_Float3;
+			Custom->AdditionalOutputs.Add(Out);
+			Custom->RebuildOutputs();
+		}
 		const FString VertexCode = Str(S, TEXT("vertexHlsl"));
 		if (!VertexCode.IsEmpty()) { Mat->GetEditorOnlyData()->WorldPositionOffset.Connect(0, MakeCustom(VertexCode, TEXT("vertexInputs"), CMOT_Float3)); }
 		UMaterialExpressionComponentMask* RgbMask = NewObject<UMaterialExpressionComponentMask>(Mat);
@@ -2216,7 +2227,10 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 			UMaterialExpressionVectorParameter* EmissiveParam = NewObject<UMaterialExpressionVectorParameter>(Mat);
 			EmissiveParam->ParameterName = TEXT("Emissive"); EmissiveParam->DefaultValue = FLinearColor::Black; Add(EmissiveParam);
 			UMaterialExpressionAdd* Emissive = NewObject<UMaterialExpressionAdd>(Mat);
-			Emissive->A.Connect(0, Ambient); Emissive->B.Connect(0, EmissiveParam); Add(Emissive);
+			// The shader's emitted light starts from the material's emissive colour, so it replaces the Emissive parameter.
+			Emissive->A.Connect(0, Ambient);
+			if (bEmissiveOut) { Emissive->B.Connect(1, Custom); } else { Emissive->B.Connect(0, EmissiveParam); }
+			Add(Emissive);
 			Ed->EmissiveColor.Connect(0, Emissive);
 			Ed->Roughness.Connect(0, Scalar(TEXT("Roughness"), 0.8f));
 			Ed->Metallic.Connect(0, Scalar(TEXT("Metallic"), 0.f));

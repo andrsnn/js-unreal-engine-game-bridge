@@ -166,6 +166,21 @@ function rgba8(w: number, h: number, data: ArrayLike<number>, channels: number, 
   return out;
 }
 
+/** Unreal's image decoders read PNG, JPEG and the like, not WebP. The build writes a PNG copy of every WebP image the
+ *  game ships (jsgb/webp/<path>.png, Tools/jsgb.mjs), and a texture loads that copy instead. */
+const webpCopies = new Map<string, string>();
+export function unrealImagePath(p: string): string {
+  if (!/\.webp$/i.test(p)) return p;
+  let out = webpCopies.get(p);
+  if (out === undefined) {
+    const png = '/jsgb/webp' + p.replace(/\.webp$/i, '.png');
+    out = host.readFile(png) ? png : p;
+    if (out === p) host.log('warn', `texture ${p}: Unreal cannot decode WebP and the build wrote no PNG copy (${png}), so it stays blank`);
+    webpCopies.set(p, out);
+  }
+  return out;
+}
+
 function textureSource(tex: THREE.Texture): {json: Record<string, unknown>; bytes: ArrayBuffer | null} | null {
   const img = tex.image as Record<string, any> | undefined;
   const base = {wrapS: tex.wrapS, wrapT: tex.wrapT, repeat: [tex.repeat.x, tex.repeat.y], offset: [tex.offset.x, tex.offset.y], rotation: tex.rotation, flipY: tex.flipY,
@@ -194,7 +209,7 @@ function textureSource(tex: THREE.Texture): {json: Record<string, unknown>; byte
   if (!img) return null;
   const pixels = img.__ctx?.bitmap?.() ?? img.__pixels;
   if (pixels && pixels.width && pixels.height) return {json: {...base, kind: 'rgba8', width: pixels.width, height: pixels.height}, bytes: (pixels.data as Uint8ClampedArray).slice().buffer};
-  if (img.__jsgbAsset) return {json: {...base, kind: 'file', path: img.__jsgbAsset}, bytes: null};
+  if (img.__jsgbAsset) return {json: {...base, kind: 'file', path: unrealImagePath(img.__jsgbAsset)}, bytes: null};
   if (img.__bytes) return {json: {...base, kind: 'encoded'}, bytes: (img.__bytes as Uint8Array).slice().buffer};
   if ((tex as THREE.Data3DTexture).isData3DTexture && img.data && img.width && img.height && img.depth) {
     return {json: {...base, kind: 'rgba8_3d', width: img.width, height: img.height, depth: img.depth},
