@@ -118,6 +118,9 @@ private:
 	UPROPERTY() TObjectPtr<class UExponentialHeightFogComponent> LumenFog;
 	FString LumenPreset;
 	bool bLumenOn = false, bLumenAvailable = false;
+	/** The override models are in memory (they load each time Lumen mode turns on). */
+	bool bModelsReady = false, bLumenAtStart = false;
+	int32 LumenGeneration = 0;
 	TMap<FString, FString> LumenSaved;
 	bool SavedGiOverride = false, SavedReflectionOverride = false;
 	EDynamicGlobalIlluminationMethod::Type SavedGi = EDynamicGlobalIlluminationMethod::None;

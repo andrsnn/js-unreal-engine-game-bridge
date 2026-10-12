@@ -2,8 +2,8 @@
  "version": 1,
  "effects": {
   "engineLight": true,
-  "gunfire": false,
-  "trails": false,
+  "gunfire": true,
+  "trails": true,
   "smoke": false,
   "explosions": false,
   "debris": false

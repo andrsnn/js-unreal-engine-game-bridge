@@ -463,6 +463,7 @@ void AJsgbHost::BeginPlay()
 	const FString ScriptPath = Arg(TEXT("JsgbScript="));
 	if (!ScriptPath.IsEmpty()) { LoadScript(ScriptPath); }
 	if (!LoadPublication(Arg(TEXT("JsgbGame=")), FString())) { return; }
+	if (bLumenAtStart) { SetLumen(true); }
 	ShowLoading();
 	StartServer();
 	if (!PageIndex.IsEmpty()) { CreatePageView(); return; }
@@ -1572,7 +1573,12 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		bRestart = false;
 		if (ReloadStart < 0) { ReloadStart = FPlatformTime::Seconds(); ReloadBuildMs = -1; }
 		StopJs();
-		if (!PendingBundle.IsEmpty()) { LoadPublication(GameDir, PendingBundle); PendingBundle.Reset(); }
+		if (!PendingBundle.IsEmpty())
+		{
+			LoadPublication(GameDir, PendingBundle); PendingBundle.Reset();
+			// The new build's registry may name other override models.
+			if (bLumenOn) { SetLumen(false); SetLumen(true); }
+		}
 		StartJs();
 	}
 	UpdateLoading();

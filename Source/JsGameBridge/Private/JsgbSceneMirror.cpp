@@ -274,8 +274,10 @@ bool UJsgbSceneMirror::SetAssetRegistry(const FString& Json)
 	// frame finds it in memory instead of stopping the game thread to load it (and compile its shaders).
 	TArray<FSoftObjectPath> Paths;
 	TArray<FString> Names;
+	// Override models wait for Lumen mode (LoadOverrides): they are large, and a game starts without them.
 	for (const auto& Pair : Registry)
 	{
+		if (Pair.Key.StartsWith(TEXT("override:"))) { continue; }
 		for (const TCHAR* Field : {TEXT("mesh"), TEXT("material"), TEXT("niagara")})
 		{
 			FString Path;
@@ -293,6 +295,39 @@ bool UJsgbSceneMirror::SetAssetRegistry(const FString& Json)
 		}), FStreamableManager::AsyncLoadHighPriority);
 	}
 	return true;
+}
+
+void UJsgbSceneMirror::LoadOverrides(bool bLoad, TFunction<void()> Done)
+{
+	TArray<FSoftObjectPath> Paths;
+	TArray<FString> Names;
+	for (const auto& Pair : Registry)
+	{
+		if (!Pair.Key.StartsWith(TEXT("override:"))) { continue; }
+		for (const TCHAR* Field : {TEXT("mesh"), TEXT("material")})
+		{
+			FString Path;
+			if (Pair.Value.IsValid() && Pair.Value->TryGetStringField(Field, Path) && !Path.IsEmpty() && !Names.Contains(Path)) { Names.Add(Path); Paths.Add(FSoftObjectPath(Path)); }
+		}
+	}
+	if (!bLoad)
+	{
+		// Lumen mode off: the game draws its own models again, so the override models and their materials can go.
+		if (OverrideLoad.IsValid()) { OverrideLoad->CancelHandle(); OverrideLoad.Reset(); }
+		for (const FString& Name : Names) { LoadedAssets.Remove(Name); }
+		OverrideMaterials.Reset();
+		return;
+	}
+	if (Paths.Num() == 0) { if (Done) { Done(); } return; }
+	const double Start = FPlatformTime::Seconds();
+	OverrideLoad = Streamable.RequestAsyncLoad(Paths, FStreamableDelegate::CreateWeakLambda(this, [this, Paths, Names, Start, Done]
+	{
+		int32 Loaded = 0;
+		for (int32 I = 0; I < Paths.Num(); ++I) { if (UObject* O = Paths[I].ResolveObject()) { LoadedAssets.FindOrAdd(Names[I]) = O; ++Loaded; } }
+		UE_LOG(LogJsgbMirror, Display, TEXT("Loaded %d of %d override assets in %.1f s"), Loaded, Paths.Num(), FPlatformTime::Seconds() - Start);
+		if (Done) { Done(); }
+	}), FStreamableManager::AsyncLoadHighPriority);
+	if (!OverrideLoad.IsValid() && Done) { Done(); }
 }
 
 void UJsgbSceneMirror::UseOverrideMaterials(UStaticMeshComponent* C, int32 KeyId)
@@ -1150,6 +1185,15 @@ void UJsgbSceneMirror::ApplyLight(const float* S, uint32 FrameStamp, FLinearColo
 		ULocalLightComponent* Local = Cast<ULocalLightComponent>(C);
 		const float Distance = S[13];
 		Local->SetAttenuationRadius(Distance > 0 ? Distance * Cm : 6000.f);
+		if (Kind == 2)
+		{
+			// A point light's angle and penumbra fields carry a source length and radius (the runtime's Lumen effects:
+			// a kinetic round lights a line along its path); three.js point lights send 0.
+			UPointLightComponent* Point = Cast<UPointLightComponent>(C);
+			const float Length = FMath::Max(0.f, S[15]) * Cm, Radius = FMath::Max(0.f, S[16]) * Cm;
+			if (Point->SourceLength != Length) { Point->SetSourceLength(Length); }
+			if (Point->SourceRadius != Radius) { Point->SetSourceRadius(Radius); }
+		}
 		if (Kind == 3)
 		{
 			USpotLightComponent* Spot = Cast<USpotLightComponent>(C);

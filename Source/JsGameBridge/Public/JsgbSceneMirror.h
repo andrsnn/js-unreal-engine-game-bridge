@@ -210,6 +210,10 @@ public:
 	bool SetAssetRegistry(const FString& Json);
 	FStreamableManager Streamable;
 	TSharedPtr<struct FStreamableHandle> RegistryLoad;
+	/** Loads the override models in the background (Lumen mode on) and calls Done once they are in memory, or
+	 *  releases them (off). */
+	void LoadOverrides(bool bLoad, TFunction<void()> Done = nullptr);
+	TSharedPtr<struct FStreamableHandle> OverrideLoad;
 	void ResetAll();
 
 	UPROPERTY() TObjectPtr<UCameraComponent> Camera;

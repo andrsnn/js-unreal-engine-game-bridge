@@ -68,8 +68,9 @@ void AJsgbHost::SetupLumen()
 	SavedGiOverride = P.bOverride_DynamicGlobalIlluminationMethod; SavedGi = P.DynamicGlobalIlluminationMethod;
 	SavedReflectionOverride = P.bOverride_ReflectionMethod; SavedReflection = P.ReflectionMethod;
 	bLumenOn = false;
-	if (bStartOn && bLumenAvailable) { SetLumen(true); }
-	else { PublishGraphics(); }
+	// Turned on once the game's registry (and its override models) is known: AJsgbHost::BeginPlay.
+	bLumenAtStart = bStartOn && bLumenAvailable;
+	PublishGraphics();
 }
 
 void AJsgbHost::SetLumen(bool bOn)
@@ -132,6 +133,22 @@ void AJsgbHost::SetLumen(bool bOn)
 	if (LumenSky) { LumenSky->SetVisibility(bOn); }
 	if (LumenFog) { LumenFog->SetVisibility(bOn); }
 
+	// The override models load in the background; the game keeps drawing its own until they are in memory.
+	++LumenGeneration;
+	bModelsReady = false;
+	if (bOn)
+	{
+		TWeakObjectPtr<AJsgbHost> Self(this);
+		const int32 Generation = LumenGeneration;
+		Mirror->LoadOverrides(true, [Self, Generation]
+		{
+			if (!Self.IsValid() || Self->LumenGeneration != Generation || !Self->bLumenOn) { return; }
+			Self->bModelsReady = true;
+			Self->PublishGraphics();
+		});
+	}
+	else { Mirror->LoadOverrides(false); }
+
 	Mirror->bLumen = bOn;
 	Mirror->SunSourceAngle = bLight ? 0.6f : 1.2f;
 	// Lumen's bounce light and the sky light replace most of three.js's flat ambient.
@@ -152,7 +169,8 @@ void AJsgbHost::SetLumen(bool bOn)
 void AJsgbHost::PublishGraphics()
 {
 	if (!Bridge) { return; }
-	Bridge->SetGraphicsInfo(FString::Printf(TEXT("{\"lumen\":%s,\"available\":%s}"), bLumenOn ? TEXT("true") : TEXT("false"), bLumenAvailable ? TEXT("true") : TEXT("false")));
+	Bridge->SetGraphicsInfo(FString::Printf(TEXT("{\"lumen\":%s,\"available\":%s,\"models\":%s}"), bLumenOn ? TEXT("true") : TEXT("false"),
+		bLumenAvailable ? TEXT("true") : TEXT("false"), bModelsReady ? TEXT("true") : TEXT("false")));
 	TWeakObjectPtr<AJsgbHost> Self(this);
 	Bridge->OnGraphicsSet = [Self](const TSharedPtr<FJsonObject>& In)
 	{
