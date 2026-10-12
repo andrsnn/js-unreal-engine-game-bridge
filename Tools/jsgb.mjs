@@ -24,7 +24,7 @@ export const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8').replace
 
 /** Machine settings: jsgb.local.json (not in git), overridden by JSGB_ENGINE, JSGB_PROJECT, JSGB_BUILDS.
  *  Optional: "captures" (where conformance frames and reports go; otherwise inside builds), "package" and
- *  "packageProject" (Tools/laptop-package.mjs), and "ddc" (Unreal's local derived data cache for the runs these
+ *  "packageProject" (where a packaged build and its packaging project go), and "ddc" (Unreal's local derived data cache for the runs these
  *  tools start). */
 export function settings() {
   const file = path.join(bridge, 'jsgb.local.json');
