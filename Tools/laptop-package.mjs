@@ -2,7 +2,9 @@
 // Builds the play package for another PC from the latest game sources, smoke-tests it on this PC, then copies what
 // changed to the other PC. Nothing runs on the other PC except the copy: it is someone's machine to play on.
 //   node Tools/laptop-package.mjs [--to zeph] [--copy-only] [--host] [--no-capture] [--games hardburn,unlit,saltblade] [--no-smoke] [--shortcuts]
-//     [--out C:/JsgbPackage/JsGameBridge]
+//     [--pin saltblade=e76ad2b,...] [--out C:/JsgbPackage/JsGameBridge]
+// --pin builds a game from one of its commits instead of its working copy: the commit is exported with git archive
+// next to the package (the game's repository isn't touched) and uses the repository's node_modules.
 // --host packages the Unreal host again (after a change to the plugin's C++ or the engine plugins). Before that, an
 // editor plays each three.js game through the "captureScripts" in its Games/<game>.json and saves every shader material
 // it generates, so the package cooks them (--no-capture skips this). It needs the
@@ -14,14 +16,14 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {spawn, spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {build, loadGame, settings} from './jsgb.mjs';
+import {build, loadGame, readJson, settings} from './jsgb.mjs';
 
 const bridge = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const flag = (name, fallback) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : fallback; };
 const has = name => args.includes(name);
-const out = path.resolve(flag('--out', 'C:/JsgbPackage/JsGameBridge'));
-const project = path.resolve(flag('--project', 'F:/JsgbPackage/project'));
+const out = path.resolve(flag('--out', settings().package ?? 'C:/JsgbPackage/JsGameBridge'));
+const project = path.resolve(flag('--project', settings().packageProject ?? 'F:/JsgbPackage/project'));
 const remote = flag('--to');
 const remoteDir = 'C:\\JsgbPackage\\JsGameBridge';
 const log = t => console.log(`[package ${new Date().toTimeString().slice(0, 8)}] ${t}`);
@@ -35,6 +37,35 @@ const GAMES = {
   saltblade: {name: 'Saltblade', flags: []},
 };
 const games = flag('--games', Object.keys(GAMES).join(',')).split(',');
+const pins = Object.fromEntries((flag('--pin', '') || '').split(',').filter(Boolean).map(p => p.split('=')));
+// Windows' own tar: a GNU tar earlier on the PATH (Git's) reads "C:" in a path as a remote host.
+const winTar = process.platform === 'win32' ? path.join(process.env.SystemRoot ?? 'C:/Windows', 'System32', 'tar.exe') : 'tar';
+// A game as Games/<id>.json describes it, or its pinned commit exported to <out>/../sources/<id>-<commit>, described by a
+// copy of its Games/<id>.json next to it (the page build loads the game from that file).
+function gameFor(id) {
+  let game = loadGame(id);
+  if (!pins[id]) return game;
+  const commit = spawnSync('git', ['-C', game.repo, 'rev-parse', '--short=8', pins[id] + '^{commit}'], {encoding: 'utf8'}).stdout.trim();
+  if (!commit) throw Error(`${id}: no commit ${pins[id]} in ${game.repo}`);
+  const dir = path.join(path.dirname(out), 'sources', `${id}-${commit}`);
+  if (!fs.existsSync(path.join(dir, '.jsgb-exported'))) {
+    log(`${id}: exporting ${commit} to ${dir}`);
+    fs.rmSync(dir, {recursive: true, force: true});
+    fs.mkdirSync(dir, {recursive: true});
+    const tar = path.join(dir, '..', `${id}-${commit}.tar`);
+    const r = spawnSync('git', ['-C', game.repo, 'archive', '--format=tar', '-o', tar, commit], {stdio: 'inherit'});
+    if (r.status !== 0 || spawnSync(winTar, ['-xf', tar, '-C', dir], {stdio: 'inherit'}).status !== 0) throw Error(`${id}: exporting ${commit} failed`);
+    fs.rmSync(tar);
+    if (fs.existsSync(path.join(game.repo, 'node_modules'))) fs.symlinkSync(path.join(game.repo, 'node_modules'), path.join(dir, 'node_modules'), 'junction');
+    fs.writeFileSync(path.join(dir, '.jsgb-exported'), commit);
+  }
+  const pinned = spawnSync('git', ['-C', game.repo, 'rev-parse', commit], {encoding: 'utf8'}).stdout.trim();
+  const file = `${dir}.json`;
+  fs.writeFileSync(file, JSON.stringify({...readJson(path.join(bridge, 'Games', id + '.json')), id, repo: dir, out: game.out}, null, 1));
+  game = loadGame(file);
+  game.pinned = pinned;
+  return game;
+}
 
 // robocopy /MIR copies only what changed and removes what's gone. Exit codes under 8 mean success.
 function mirror(from, to) {
@@ -55,9 +86,10 @@ if (has('--copy-only')) {
 // the cooked materials are the ones the shipped build asks for even while the game keeps changing.
 const built = {};
 for (const id of games) {
-  const game = loadGame(id);
+  const game = gameFor(id);
   log(`building ${id} from ${game.repo}`);
   built[id] = await build(game);
+  if (game.pinned) { built[id].sourceCommit = game.pinned; built[id].sourceDirty = false; }
 }
 const hostExe = path.join(out, 'host/Windows/JsgbHost.exe');
 if (has('--host') || !fs.existsSync(hostExe)) {
@@ -65,7 +97,7 @@ if (has('--host') || !fs.existsSync(hostExe)) {
   // draws its own shaders without compiling anything.
   // First the editor plays each three.js game through its "captureScripts" and saves every material it generates.
   if (!has('--no-capture')) for (const id of games) {
-    const game = loadGame(id);
+    const game = gameFor(id);
     for (const run of game.captureScripts ?? []) {
       log(`capturing ${id}'s materials with ${run.script}`);
       spawnSync(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), id, '--offscreen', '--res', '1920x1080', '--js-thread', '--script', run.script,
@@ -88,7 +120,7 @@ if (has('--host') || !fs.existsSync(hostExe)) {
 mirror(path.join(bridge, 'JavaScript'), path.join(out, 'host/Windows/JsgbHost/Plugins/JsGameBridge/JavaScript'));
 
 for (const id of games) {
-  const game = loadGame(id);
+  const game = gameFor(id);
   const pub = built[id];
   const dest = path.join(out, 'games', id);
   fs.mkdirSync(dest, {recursive: true});
