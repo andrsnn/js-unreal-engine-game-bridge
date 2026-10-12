@@ -56,6 +56,13 @@ public:
 	UFUNCTION() void DisplaySet(const FString& Json);
 	/** Refreshes the display JSON the JavaScript thread reads. Game thread. */
 	void UpdateDisplayInfo();
+	/** Where this game's display settings are kept (Saved/JsGameBridge/<game>/display.json): each game keeps its own,
+	 *  and Unreal's shared settings file isn't written. */
+	FString DisplayFile;
+	/** Applies a display change ({width?, height?, mode?, vsync?, maxFps?}) without saving Unreal's settings. Game thread. */
+	static void ApplyDisplay(const TSharedPtr<class FJsonObject>& In);
+	/** At launch: clears any frame cap left in Unreal's shared settings, then applies this game's saved display settings. */
+	void RestoreDisplay();
 	/** Web Workers on their own threads (JsgbWorkers.h). Create returns 0 when threaded workers are off. */
 	UFUNCTION() int32 WorkerCreate(const FString& Source, const FString& Url, const FString& Name);
 	UFUNCTION() void WorkerPost(int32 Id, FArrayBuffer Bytes);

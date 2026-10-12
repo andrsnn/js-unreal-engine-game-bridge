@@ -44,6 +44,14 @@ function mirror(from, to) {
 const copy = (from, to) => { fs.mkdirSync(path.dirname(to), {recursive: true}); fs.copyFileSync(from, to); };
 
 fs.mkdirSync(out, {recursive: true});
+// Each game is built once, from its repository as it is now. The captures play that build and the package ships it, so
+// the cooked materials are the ones the shipped build asks for even while the game keeps changing.
+const built = {};
+for (const id of games) {
+  const game = loadGame(id);
+  log(`building ${id} from ${game.repo}`);
+  built[id] = await build(game);
+}
 const hostExe = path.join(out, 'host/Windows/JsgbHost.exe');
 if (has('--host') || !fs.existsSync(hostExe)) {
   // Generated shader materials captured in editor runs (-JsgbSaveMaterials) cook into the host, so a packaged game
@@ -74,8 +82,7 @@ mirror(path.join(bridge, 'JavaScript'), path.join(out, 'host/Windows/JsgbHost/Pl
 
 for (const id of games) {
   const game = loadGame(id);
-  log(`building ${id} from ${game.repo}`);
-  const pub = await build(game);
+  const pub = built[id];
   const dest = path.join(out, 'games', id);
   fs.mkdirSync(dest, {recursive: true});
   // Every file the web version can load: the game's public folder, whole.
@@ -112,7 +119,6 @@ if (!has('--no-smoke')) {
     '-Games', games.map(id => `${id}=${GAMES[id]?.name ?? id}`).join(';')], {encoding: 'utf8'});
   const lines = smoke.stdout.split('\n').map(l => l.trim()).filter(l => / (PASS|FAIL)/.test(l));
   for (const l of lines) log(`smoke: ${l}`);
-  if (lines.length !== games.length || lines.some(l => / FAIL/.test(l))) throw Error(`smoke test failed, nothing copied:\n${smoke.stdout}${smoke.stderr}`);
   // The smoke runs recorded every pipeline state the games drew with (-logPSO). With the cook's stable shader keys,
   // they go to the project's Build/Windows/PipelineCaches, and the next --host package bundles them: the player's GPU
   // driver then compiles them all behind the loading screen.
@@ -125,6 +131,7 @@ if (!has('--no-smoke')) {
     if (fs.existsSync(keys)) for (const f of fs.readdirSync(keys).filter(f => f.endsWith('.shk'))) fs.copyFileSync(path.join(keys, f), path.join(caches, f));
     log(`${kept} pipeline recordings kept for the next host package`);
   }
+  if (lines.length !== games.length || lines.some(l => / FAIL/.test(l))) throw Error(`smoke test failed, nothing copied:\n${smoke.stdout}${smoke.stderr}`);
 }
 if (remote) await sync(remote);
 log(`done: ${out}`);
