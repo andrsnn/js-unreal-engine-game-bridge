@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.4.0
+
+- Packaged builds draw a game's own shaders. An editor run with `-JsgbSaveMaterials` saves every shader material
+  the game generates, the package cooks them, and the packaged host loads them by the shader's key. The log names
+  any shader that wasn't captured.
+- `window.jsgb.display`: a game's options menu can list resolutions and set the resolution, window mode, vsync and
+  frame cap. The Fullscreen API (`requestFullscreen`, `exitFullscreen`) works on top of it.
+- 2D WebGL games (pixi.js and the like) run in Unreal's built-in browser with `"page": true`. Unreal holds its frame
+  rate to the page's, keys reach the page with the right `code`, and the page has the keyboard without a click.
+- Unlit, additive and sprite materials blend in sRGB values as WebGL does, so the transparency test passes.
+- A loading screen with the game's name and a progress bar shows until the game draws something.
+- Instanced meshes update without rebuilding Unreal's render state when their count changes, and an update with the
+  same data is skipped.
+- Objects glide between game updates by the time the JavaScript thread made each update, and a readout (F8) shows
+  frame-time spread, the 1% low, the worst frame and the game's update rate.
+- Ogg Opus audio plays (Unreal's own runtime decoder reads only Ogg Vorbis).
+- A texture background (an equirectangular sky) draws behind the scene.
+- The display stays on while a game runs, which removes 300 to 400 ms stalls when Windows would switch it off.
+- Shader translations cached on disk are keyed by the translator's build, so a newer bridge never reuses old ones.
+
 ## 0.3.0
 
 - Faster frames in Unreal: the mirror only sets the material parameters a material has, the host answers the

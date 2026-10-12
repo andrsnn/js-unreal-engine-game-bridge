@@ -37,8 +37,37 @@ export function loadGame(name) {
   game.repo = path.resolve(bridge, game.repo);
   game.out = path.resolve(game.out ?? path.join(settings().builds, game.id));
   game.publicRoots = [...(game.public ?? ['public']).map(p => path.resolve(game.repo, p)), game.out, game.repo];
+  if (game.publicCommit) game.publicRoots.unshift(pinnedPublic(game));
   game.registry = (game.registry ?? []).map(p => path.resolve(bridge, p));
   return game;
+}
+
+// "publicCommit": a game copied at an older commit whose public folder links to the live repository (Tools/demo.mjs)
+// loads its files as they were at that commit. The files changed or deleted since then are taken from git into
+// <out>/public-pinned, which comes first among the public roots; the rest come from the live folder.
+function pinnedPublic(game) {
+  const live = fs.realpathSync(path.resolve(game.repo, (game.public ?? ['public'])[0]));
+  const top = execFileSync('git', ['--no-optional-locks', '-C', live, 'rev-parse', '--show-toplevel'], {encoding: 'utf8'}).trim();
+  const rel = path.relative(top, live).replaceAll('\\', '/');
+  const changed = execFileSync('git', ['--no-optional-locks', '-C', top, 'diff', '--name-only', '--no-renames', '--diff-filter=DM', game.publicCommit, '--', rel],
+    {encoding: 'utf8', maxBuffer: 64 << 20}).split('\n').filter(Boolean).sort();
+  const dir = path.join(game.out, 'public-pinned');
+  const stamp = path.join(dir, '.pinned');
+  const key = `${game.publicCommit}\n${changed.join('\n')}`;
+  if (!fs.existsSync(stamp) || fs.readFileSync(stamp, 'utf8') !== key) {
+    fs.rmSync(dir, {recursive: true, force: true});
+    fs.mkdirSync(dir, {recursive: true});
+    for (let i = 0; i < changed.length; i += 100) {
+      const tar = path.join(dir, '.part.tar');
+      execFileSync('git', ['--no-optional-locks', '-C', top, 'archive', '--format=tar', '-o', tar, game.publicCommit, '--', ...changed.slice(i, i + 100)]);
+      // Relative names, because GNU tar reads a drive letter as a remote host.
+      execFileSync('tar', ['-xf', '.part.tar'], {cwd: dir});
+      fs.rmSync(tar);
+    }
+    fs.writeFileSync(stamp, key);
+    if (changed.length) console.log(`${game.id}: ${changed.length} public files changed since ${game.publicCommit}; serving them as they were from ${dir}`);
+  }
+  return path.join(dir, rel);
 }
 
 /** The game's index.html: shell markup, inline classic scripts, module entry and stylesheets. */
@@ -218,6 +247,7 @@ async function webglModuleDraws(esbuild, threeModule) {
 }
 
 export async function build(game) {
+  if (game.page) return buildPage(game);
   const esbuild = await import(pathToFileURL(path.join(runtime, 'node_modules/esbuild/lib/main.js')).href);
   const started = performance.now();
   const page = readPage(game);
@@ -232,6 +262,7 @@ export async function build(game) {
     define: {
       'import.meta.env': JSON.stringify({DEV: false, PROD: true, SSR: false, MODE: 'production', BASE_URL: '/', UNREAL: true, ...(game.env ?? {})}),
       __JSGB_WEBGL_MODULE_DRAWS__: String(await webglModuleDraws(esbuild, threeFiles(game).core)),
+      __JSGB_SHADER_VERSION__: JSON.stringify(sha256(Buffer.concat([fs.readFileSync(path.join(runtime, 'src/shaders.ts')), fs.readFileSync(path.join(runtime, 'vendor/cross-shader/CrossShader.wasm'))])).slice(0, 12)),
       'process.env.NODE_ENV': '"production"', 'import.meta.hot': 'undefined', 'import.meta.url': '"http://localhost/index.js"', __JSGB_PAGE__: JSON.stringify(pageInfo), __JSGB_INLINE__: JSON.stringify(page.inline), ...(game.define ?? {}),
     },
     loader: {'.json': 'json', '.css': 'css', '.glsl': 'text', '.vert': 'text', '.frag': 'text', '.wgsl': 'text', '.txt': 'text',
@@ -285,6 +316,22 @@ export async function build(game) {
     bytes: bundle.length, buildMilliseconds: Math.round(performance.now() - started), publicRoots: game.publicRoots, search: game.search ?? '', title: page.title};
   fs.writeFileSync(path.join(game.out, 'publication.json'), JSON.stringify(publication, null, 1));
   console.log(`built ${game.id}: ${publication.modules} modules, ${(bundle.length / 1e6).toFixed(1)} MB, ${publication.buildMilliseconds} ms -> ${bundlePath}`);
+  return publication;
+}
+
+// A page game ("page": true in Games/<game>.json, for 2D WebGL games such as pixi.js ones) runs its own Vite build in
+// Unreal's built-in browser: the host serves <out>/web, then the game's public folders.
+async function buildPage(game) {
+  const started = performance.now();
+  const web = spawnSync(process.execPath, [path.join(bridge, 'Tools/web.mjs'), 'build', game.id], {stdio: 'inherit'});
+  if (web.status !== 0) throw Error(`the web build of ${game.id} failed`);
+  const page = readPage(game);
+  const publication = {version: 1, game: game.id, sourceCommit: git(game.repo, 'rev-parse', 'HEAD') || '0'.repeat(40),
+    sourceDirty: !!git(game.repo, 'status', '--porcelain', '--untracked-files=no'), bridgeCommit: git(bridge, 'rev-parse', 'HEAD'),
+    page: game.index ?? 'index.html', buildMilliseconds: Math.round(performance.now() - started),
+    publicRoots: [path.join(game.out, 'web'), ...(game.public ?? ['public']).map(p => path.resolve(game.repo, p))], search: game.search ?? '', title: page.title};
+  fs.writeFileSync(path.join(game.out, 'publication.json'), JSON.stringify(publication, null, 1));
+  console.log(`built ${game.id} as a page game in ${publication.buildMilliseconds} ms -> ${path.join(game.out, 'web')}`);
   return publication;
 }
 

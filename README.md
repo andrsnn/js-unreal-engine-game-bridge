@@ -94,7 +94,9 @@ In each image the browser is on the left and Unreal is on the right, built from 
 | Browser and Unreal conformance suite | ✅ | 23 feature tests and 3 games, see [Conformance suite](#conformance-suite) |
 | Custom `EffectComposer` passes | ❌ | `UnrealBloomPass`, fog, tone mapping and exposure only |
 | WebGPU and TSL node materials | ❌ | Drawn with generic materials |
-| Packaged (shipping) builds | ⚠️ | Custom shaders need an editor build, or a registry material |
+| Packaged (shipping) builds | ✅ | The game's own shaders are cooked into the package, see [Package a game](#package-a-game) |
+| Display settings from the game | ✅ | Resolution, window mode, vsync and frame cap, plus the Fullscreen API, see [Display settings](#display-settings) |
+| 2D WebGL games (pixi.js and the like) | ✅ | Run in Unreal's built-in browser, see [Package a game](#package-a-game) |
 
 ## Quick start
 
@@ -184,10 +186,10 @@ A run passes when the pictures match (SSIM at least 0.9 and at most 2.5% of pixe
 a feature test; SSIM 0.7 and 20% for a game), Unreal draws at least the objects the browser drew on every
 frame after loading, and neither side reports a JavaScript error.
 
-On version 0.3.0, 25 of the 26 runs pass. The transparency test is the exception: WebGL blends
-transparent surfaces using sRGB values and Unreal blends them in linear light, so a transparent color over
-a dark background comes out brighter in Unreal. The full report, with a side-by-side image of every run,
-is in [docs/conformance/README.md](docs/conformance/README.md).
+In the last full run during the 0.4.0 work, all 26 runs passed. The transparency test passes now that
+unlit, additive and sprite materials blend in sRGB values as WebGL does. The report in
+[docs/conformance/README.md](docs/conformance/README.md), with a side-by-side image of every run, is still
+the one from 0.3.0.
 
 To run it, install the suite's packages and headless Chromium once, then run the suite:
 
@@ -282,25 +284,82 @@ A conformance script has one step per line, in seconds after the game starts:
 20 quit
 ```
 
+## Display settings
+
+A game's options menu can change the Unreal window through `window.jsgb.display`. In a browser the object
+doesn't exist, so check for it first.
+
+```js
+if (window.jsgb?.display?.supported) {
+  const modes = jsgb.display.modes();        // [{width: 2560, height: 1440, refresh: 165}, ...] the monitor supports
+  const now = jsgb.display.get();            // {width, height, mode: 'windowed' | 'borderless' | 'fullscreen', vsync, maxFps}
+  await jsgb.display.set({width: 1920, height: 1080, mode: 'windowed', vsync: false, maxFps: 0});  // 0: no frame cap
+}
+```
+
+Each field of `set` is optional. A change resizes the window, so the game gets a `resize` event and new
+`innerWidth` and `innerHeight`, as in a browser. The standard Fullscreen API works too:
+`element.requestFullscreen()` switches to borderless fullscreen, and `document.exitFullscreen()` returns to the
+window. Unreal saves the settings, so the next launch starts with them.
+
+## Package a game
+
+A packaged Unreal build can't compile new materials, so the bridge cooks the ones a game needs ahead of
+time:
+
+1. Play the game in an editor build with `-JsgbSaveMaterials`, for example
+   `node Tools/run-unreal.mjs <name> --script Tests/scripts/<name>.txt --ue -JsgbSaveMaterials` with a script
+   that visits each screen.
+   Every shader material the game generates is saved to `/Game/JsgbGenerated` in the host project.
+2. Add these lines to the host project's `Config/DefaultGame.ini`, so the cook includes them:
+
+   ```ini
+   [/Script/UnrealEd.ProjectPackagingSettings]
+   +DirectoriesToAlwaysCook=(Path="/JsGameBridge")
+   +DirectoriesToAlwaysCook=(Path="/Game/JsgbGenerated")
+   +DirectoriesToAlwaysCook=(Path="/Engine/BasicShapes")
+   ```
+
+3. Cook for SM6 only, since the translated shaders need the DXC compiler. In `Config/DefaultEngine.ini`:
+
+   ```ini
+   [/Script/WindowsTargetPlatform.WindowsTargetSettings]
+   DefaultGraphicsRHI=DefaultGraphicsRHI_DX12
+   -D3D12TargetedShaderFormats=PCD3D_SM5
+   +D3D12TargetedShaderFormats=PCD3D_SM6
+   -D3D11TargetedShaderFormats=PCD3D_SM5
+   ```
+
+4. Package the host as usual. At run time each generated material loads by the shader's key, and the log
+   names any shader that wasn't captured (it draws with a plain material until you capture it and package
+   again).
+
+A 2D game that draws with WebGL directly (pixi.js and the like) can't go through the scene mirror. Add
+`"page": true` to its `Games/<name>.json`: the game's own web build then runs in Unreal's built-in browser,
+full screen, and Unreal holds its frame rate to the page's, so motion stays even.
+
 ## Known limits
 
-- Generated shader materials need an editor build of the host (`UnrealEditor -game`). In a packaged
-  game they fall back to generic materials unless the registry supplies one.
+- Some shaders change with the scene (three.js builds a different variant for a different number of
+  lights, for example). A packaged build only has the variants the capture runs reached, and the log names
+  any that are missing.
+- Hard Burn's nebula, which the game draws with its own volume shaders, doesn't show in Unreal yet.
+- Without the capture step, a packaged game draws its generated shader materials with generic ones, unless
+  the registry supplies a material.
 - Loading is slower than in a browser, because V8 in Puerts (9.4) is older than Chrome's. Some Web Worker
   code runs up to 8 times slower than in Chrome. Worker results are cached on disk, so later launches are
   faster.
 - The UI overlay (CEF) can take 56 to 100 ms in a single frame right after a game loads, while the page
   lays out for the first time.
 - Plain lines are one pixel wide, as in WebGL, and have no antialiasing.
-- Transparent surfaces blend in linear light, so they come out brighter over dark backgrounds than in
-  WebGL.
+- Lit transparent surfaces, and transparent surfaces that overlap each other, still blend in linear light,
+  so they come out a little brighter over dark backgrounds than in WebGL.
 - Canvases drawn by a second renderer (minimaps, previews) show as empty in the overlay.
 - Web Audio effect nodes other than gain, pan and low-pass (delay, convolver, compressor) are skipped.
 - Windows only for now.
 
 ## Roadmap
 
-- Packaged builds with shader materials cooked ahead of time.
 - Antialiased lines.
 - A newer V8 in Puerts, for faster loading.
 - Custom post-processing passes.

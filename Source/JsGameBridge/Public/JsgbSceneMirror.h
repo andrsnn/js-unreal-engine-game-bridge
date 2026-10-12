@@ -120,6 +120,12 @@ struct FJsgbEntity
 	int32 InstanceCount = 0;
 	/** The instances moved last frame, so their previous transforms still differ from the current ones. */
 	bool bInstancesMoved = false;
+	/** The instance data (matrices, then colours) the component holds, as the game sent it; an update with the same
+	 *  bytes is skipped. */
+	TArray<float> InstanceRaw;
+	/** The transforms the component draws, all slots: the first InstanceCount are the game's, the rest are hidden spare
+	 *  slots kept so a shrinking count doesn't rebuild the render state. */
+	TArray<FTransform> InstanceDrawn;
 	/** Hash of what a line object's segments depend on (geometry, material, transform); 0 before the first draw. */
 	uint32 LineSignature = 0;
 	/** A line object's segments in world space, drawn through the mirror's one shared line component. */
@@ -310,6 +316,13 @@ private:
 	UPROPERTY() TMap<FString, TObjectPtr<UObject>> LoadedAssets;
 	TMap<FString, TSharedPtr<class FJsonObject>> Registry;
 	TMap<FString, TSharedPtr<class FJsonObject>> Shaders;
+	/** scene.background as a texture: the sky sphere, its material and the frame it was last sent. */
+	UPROPERTY() TObjectPtr<UStaticMeshComponent> Sky;
+	UPROPERTY() TObjectPtr<UMaterialInstanceDynamic> SkyMid;
+	uint32 SkySeen = 0;
+	void ApplyBackground(const float* R);
+	/** Generated materials a packaged host found no cooked asset for (they draw plainly). */
+	int32 MissingGenerated = 0;
 	UPROPERTY() TMap<FString, TObjectPtr<UMaterial>> Generated;
 	TArray<FString> GeneratedPending;
 	TMap<int32, FString> KeyNames;

@@ -1,4 +1,5 @@
 #include "JsgbHost.h"
+#include "GameFramework/GameUserSettings.h"
 #include "JsgbBridge.h"
 #include "JsgbSceneMirror.h"
 #include "JsgbAudio.h"
@@ -56,6 +57,12 @@
 #include "Misc/Base64.h"
 #include "FrameGrabber.h"
 #include "Engine/GameEngine.h"
+#include "RenderTimer.h"
+#if PLATFORM_WINDOWS
+#include "Windows/AllowWindowsPlatformTypes.h"
+#include <windows.h>
+#include "Windows/HideWindowsPlatformTypes.h"
+#endif
 THIRD_PARTY_INCLUDES_START
 #include <openssl/sha.h>
 THIRD_PARTY_INCLUDES_END
@@ -331,10 +338,15 @@ bool AJsgbHost::LoadPublication(const FString& Dir, const FString& OverrideBundl
 	GameDir = Dir;
 	// Relative paths in publication.json are relative to the game's folder, so a copied game folder runs anywhere.
 	auto InGameDir = [&Dir](const FString& P) { return FPaths::IsRelative(P) ? FPaths::ConvertRelativePathToFull(Dir / P) : P; };
-	BundlePath = OverrideBundle.IsEmpty() ? InGameDir(Pub->GetStringField(TEXT("bundle"))) : OverrideBundle;
-	SourceCommit = Pub->GetStringField(TEXT("sourceCommit"));
+	// A page game (2D WebGL, such as pixi.js) has no bundle: its own web build runs in the built-in browser.
+	PageIndex.Reset();
+	Pub->TryGetStringField(TEXT("page"), PageIndex);
+	FString Bundle;
+	Pub->TryGetStringField(TEXT("bundle"), Bundle);
+	BundlePath = !OverrideBundle.IsEmpty() ? OverrideBundle : Bundle.IsEmpty() ? FString() : InGameDir(Bundle);
+	Pub->TryGetStringField(TEXT("sourceCommit"), SourceCommit);
 	Pub->TryGetStringField(TEXT("title"), Title);
-	BundleSHA256 = Sha256File(BundlePath);
+	BundleSHA256 = BundlePath.IsEmpty() ? FString() : Sha256File(BundlePath);
 	Search = Arg(TEXT("JsgbSearch="), Pub->HasField(TEXT("search")) ? Pub->GetStringField(TEXT("search")) : FString());
 	PublicRoots.Reset();
 	const TArray<TSharedPtr<FJsonValue>>* Roots = nullptr;
@@ -366,6 +378,11 @@ void AJsgbHost::BeginPlay()
 {
 	Super::BeginPlay();
 	FApp::SetHasFocusFunction(&JsgbWindowHasFocus);
+#if PLATFORM_WINDOWS
+	// Keep the display on while a game runs, as games do. When Windows switches an idle or locked PC's display off,
+	// each switch stalls the GPU queue for 300 to 400 ms (Kernel-Power event 566 at the same second).
+	SetThreadExecutionState(ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED);
+#endif
 	UWorld* World = GetWorld();
 	// Custom depth with stencil: the scene post reads it to leave fog-free surfaces unfogged.
 	if (IConsoleVariable* CustomDepth = IConsoleManager::Get().FindConsoleVariable(TEXT("r.CustomDepth"))) { CustomDepth->Set(3, ECVF_SetByCode); }
@@ -414,9 +431,120 @@ void AJsgbHost::BeginPlay()
 	const FString ScriptPath = Arg(TEXT("JsgbScript="));
 	if (!ScriptPath.IsEmpty()) { LoadScript(ScriptPath); }
 	if (!LoadPublication(Arg(TEXT("JsgbGame=")), FString())) { return; }
+	ShowLoading();
 	StartServer();
+	if (!PageIndex.IsEmpty()) { CreatePageView(); return; }
 	StartJs();
 	CreateOverlay();
+}
+
+// Unreal's browser fills a key event's Windows key code but not its scan code, and Chromium on Windows derives
+// KeyboardEvent.code from the scan code, so a page saw code "" for every key (WASD by code did nothing). This fills
+// code from keyCode whenever Chromium left it empty.
+static const TCHAR* PageKeyCodeFix = TEXT("(function(){if(window.__jsgbKeyFix)return;window.__jsgbKeyFix=1;")
+	TEXT("var d=Object.getOwnPropertyDescriptor(KeyboardEvent.prototype,'code');")
+	TEXT("var N={8:'Backspace',9:'Tab',13:'Enter',16:'ShiftLeft',17:'ControlLeft',18:'AltLeft',19:'Pause',20:'CapsLock',27:'Escape',32:'Space',")
+	TEXT("33:'PageUp',34:'PageDown',35:'End',36:'Home',37:'ArrowLeft',38:'ArrowUp',39:'ArrowRight',40:'ArrowDown',45:'Insert',46:'Delete',")
+	TEXT("91:'MetaLeft',93:'ContextMenu',106:'NumpadMultiply',107:'NumpadAdd',109:'NumpadSubtract',110:'NumpadDecimal',111:'NumpadDivide',")
+	TEXT("160:'ShiftLeft',161:'ShiftRight',162:'ControlLeft',163:'ControlRight',164:'AltLeft',165:'AltRight',186:'Semicolon',187:'Equal',")
+	TEXT("188:'Comma',189:'Minus',190:'Period',191:'Slash',192:'Backquote',219:'BracketLeft',220:'Backslash',221:'BracketRight',222:'Quote'};")
+	TEXT("Object.defineProperty(KeyboardEvent.prototype,'code',{configurable:true,enumerable:true,get:function(){var c=d.get.call(this);if(c)return c;")
+	TEXT("var k=this.keyCode;if(k>=65&&k<=90)return 'Key'+String.fromCharCode(k);if(k>=48&&k<=57)return 'Digit'+(k-48);")
+	TEXT("if(k>=96&&k<=105)return 'Numpad'+(k-96);if(k>=112&&k<=123)return 'F'+(k-111);")
+	TEXT("if((k===16||k===17||k===18)&&this.location===2)return N[k].replace('Left','Right');return N[k]||'';}});})();");
+
+// window.jsgb.display and the Fullscreen API inside a page game, through window.ue.jsgbpage (UJsgbPagePort); the
+// browser's own fullscreen does nothing in Unreal's windowless browser.
+static const TCHAR* PageDisplayApi = TEXT("(function(){var p=window.ue&&window.ue.jsgbpage;if(!p||(window.jsgb&&window.jsgb.display))return;")
+	TEXT("var st={modes:[],cur:{}};function refresh(){return Promise.all([p.displaymodes(),p.displayget()]).then(function(r){")
+	TEXT("try{st.modes=JSON.parse(r[0]||'[]');st.cur=JSON.parse(r[1]||'{}')}catch(e){}})}")
+	TEXT("var display={supported:true,modes:function(){return st.modes},get:function(){return st.cur},set:function(c){p.displayset(JSON.stringify(c||{}));")
+	TEXT("return new Promise(function(res){setTimeout(function(){refresh().then(function(){res(st.cur)})},150)})}};")
+	TEXT("window.jsgb=Object.assign(window.jsgb||{},{display:display});refresh();var fs=null;")
+	TEXT("Object.defineProperty(document,'fullscreenElement',{get:function(){return fs},configurable:true});")
+	TEXT("Object.defineProperty(document,'fullscreenEnabled',{get:function(){return true},configurable:true});")
+	TEXT("Object.defineProperty(document,'fullscreen',{get:function(){return !!fs},configurable:true});")
+	TEXT("function fire(){document.dispatchEvent(new Event('fullscreenchange'))}")
+	TEXT("Element.prototype.requestFullscreen=function(){fs=this;return display.set({mode:'borderless'}).then(fire)};")
+	TEXT("document.exitFullscreen=function(){if(!fs)return Promise.resolve();fs=null;return display.set({mode:'windowed'}).then(fire)};})();");
+
+FString UJsgbPagePort::DisplayModes() { return Display ? Display->DisplayModes() : FString(TEXT("[]")); }
+FString UJsgbPagePort::DisplayGet() { return Display ? Display->DisplayGet() : FString(TEXT("{}")); }
+void UJsgbPagePort::DisplaySet(const FString& Json)
+{
+	if (!Display) { return; }
+	Display->DisplaySet(Json);
+	// A page game draws at the page's rate: no cap, or one above it, means the page's rate (more Unreal frames only
+	// repeat page frames unevenly, which judders).
+	if (UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr)
+	{
+		if (S->GetFrameRateLimit() <= 0 || S->GetFrameRateLimit() > PageFps) { S->SetFrameRateLimit(PageFps); S->ApplySettings(false); Display->UpdateDisplayInfo(); }
+	}
+}
+
+// "KeyW", "Digit1", "Space", "ArrowUp" and the like as an Unreal key, its Windows key code and its character, for
+// POST /bridge/key (tests press keys through Slate, the same path as a real keyboard).
+static bool KeyFromCode(const FString& Code, FKey& Key, uint32& KeyCode, uint32& Char)
+{
+	static const TCHAR* Digits[] = {TEXT("Zero"), TEXT("One"), TEXT("Two"), TEXT("Three"), TEXT("Four"), TEXT("Five"), TEXT("Six"), TEXT("Seven"), TEXT("Eight"), TEXT("Nine")};
+	if (Code.Len() == 4 && Code.StartsWith(TEXT("Key")) && FChar::IsUpper(Code[3])) { Key = FKey(FName(*Code.Mid(3))); KeyCode = Code[3]; Char = FChar::ToLower(Code[3]); return true; }
+	if (Code.Len() == 6 && Code.StartsWith(TEXT("Digit")) && FChar::IsDigit(Code[5])) { Key = FKey(Digits[Code[5] - '0']); KeyCode = Code[5]; Char = Code[5]; return true; }
+	struct FNamed { const TCHAR* Code; FKey Key; uint32 Vk, Char; };
+	static const FNamed Named[] = {{TEXT("Space"), EKeys::SpaceBar, 32, ' '}, {TEXT("Enter"), EKeys::Enter, 13, 13}, {TEXT("Escape"), EKeys::Escape, 27, 0},
+		{TEXT("Tab"), EKeys::Tab, 9, 0}, {TEXT("ShiftLeft"), EKeys::LeftShift, 16, 0}, {TEXT("ControlLeft"), EKeys::LeftControl, 17, 0},
+		{TEXT("ArrowUp"), EKeys::Up, 38, 0}, {TEXT("ArrowDown"), EKeys::Down, 40, 0}, {TEXT("ArrowLeft"), EKeys::Left, 37, 0}, {TEXT("ArrowRight"), EKeys::Right, 39, 0}};
+	for (const FNamed& N : Named) { if (Code == N.Code) { Key = N.Key; KeyCode = N.Vk; Char = N.Char; return true; } }
+	return false;
+}
+
+void AJsgbHost::CreatePageView()
+{
+	if (!GEngine || !GEngine->GameViewport) { return; }
+	if (!IWebBrowserModule::Get().IsWebModuleAvailable()) { UE_LOG(LogJsgbHost, Error, TEXT("CEF is not available, so the page game can't run")); return; }
+	// Frame Generation takes the whole frame, including this page, as the image it interpolates. With the page tagged as
+	// UI, generated frames would repeat it unchanged.
+	if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Streamline.TagUIColorAlpha"))) { V->Set(0, ECVF_SetByCode); }
+	int32 PageFps = 60;
+	FParse::Value(FCommandLine::Get(), TEXT("JsgbPageFps="), PageFps);
+	// Unreal draws no scene of its own here, so it shows a new page frame each time it presents: capped at the page's
+	// rate, every frame on screen is a new page frame. Uncapped, each page frame stayed up for an uneven number of
+	// Unreal frames (3.8 ms frames with a 2.7 ms spread on a 240 Hz display): the motion judders.
+	if (IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"))) { MaxFps->Set(static_cast<float>(PageFps), ECVF_SetByCode); }
+	if (UGameUserSettings* S = GEngine->GetGameUserSettings()) { if (S->GetFrameRateLimit() <= 0 || S->GetFrameRateLimit() > PageFps) { S->SetFrameRateLimit(PageFps); S->ApplySettings(false); } }
+	PagePort = NewObject<UJsgbPagePort>(this);
+	PagePort->PageFps = PageFps;
+	PagePort->Display = NewObject<UJsgbBridge>(this);
+	PagePort->Display->UpdateDisplayInfo();
+	const FString Url = FString::Printf(TEXT("http://127.0.0.1:%d/"), Port) + PageIndex + Search;
+	SAssignNew(Browser, SWebBrowser).InitialURL(Url)
+		.ShowControls(false).ShowAddressBar(false).ShowInitialThrobber(false)
+		.SupportsTransparency(false).BackgroundColor(FColor::Black).BrowserFrameRate(PageFps)
+		.PopupMenuMethod(EPopupMethod::UseCurrentWindow)
+		.OnLoadCompleted_Lambda([this]()
+		{
+			bDocumentReady = true;
+			Browser->ExecuteJavascript(PageKeyCodeFix);
+			Browser->ExecuteJavascript(PageDisplayApi);
+			FSlateApplication::Get().SetAllUserFocus(Browser.ToSharedRef(), EFocusCause::SetDirectly);
+			UE_LOG(LogJsgbHost, Display, TEXT("Page game loaded"));
+		})
+		.OnLoadError_Lambda([Url]() { UE_LOG(LogJsgbHost, Error, TEXT("Page game failed to load from %s"), *Url); })
+		.OnConsoleMessage_Lambda([](const FString& Message, const FString& Source, int32 Line, EWebBrowserConsoleLogSeverity Severity)
+		{
+			UE_LOG(LogJsgbHost, Display, TEXT("Page console %d %s:%d %s"), static_cast<int32>(Severity), *Source, Line, *Message.Left(2048));
+		})
+		.OnBeforePopup_Lambda([](FString, FString) { return true; });
+	Browser->BindUObject(TEXT("jsgbpage"), PagePort, true);
+	GEngine->GameViewport->AddViewportWidgetContent(Browser.ToSharedRef(), 100);
+	FSlateApplication::Get().SetAllUserFocus(Browser.ToSharedRef(), EFocusCause::SetDirectly);
+	if (APlayerController* Pc = UGameplayStatics::GetPlayerController(GetWorld(), 0))
+	{
+		FInputModeUIOnly Mode;
+		Mode.SetWidgetToFocus(Browser);
+		Mode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		Pc->SetInputMode(Mode);
+	}
+	UE_LOG(LogJsgbHost, Display, TEXT("Page game %s at %s, drawn by the built-in browser at up to %d frames per second"), *Title, *Url, PageFps);
 }
 
 void AJsgbHost::StartJs()
@@ -428,6 +556,7 @@ void AJsgbHost::StartJs()
 	Audio->Bridge = Bridge;
 	if (UIPort) { UIPort->Bridge = Bridge; UIPort->AppliedUIVersion = -1; }
 	Bridge->StartSeconds = FPlatformTime::Seconds();
+	Bridge->UpdateDisplayInfo();
 	double FixedFps = 0;
 	if (FParse::Value(FCommandLine::Get(), TEXT("JsgbFixedFps="), FixedFps) && FixedFps > 0) { Bridge->FixedStepMs = 1000.0 / FixedFps; }
 	Bridge->Search = Search;
@@ -537,6 +666,66 @@ void AJsgbHost::CreateOverlay()
 	}
 }
 
+// A loading screen over the whole window while the game's JavaScript and files load: its name, a bar that moves,
+// and how many files it has read. It goes once the game shows something itself: its own HTML in the overlay (often
+// its own loading screen), a drawn scene, or for a page game the loaded page.
+void AJsgbHost::ShowLoading()
+{
+	if (Loading.IsValid() || !GEngine || !GEngine->GameViewport || FParse::Param(FCommandLine::Get(), TEXT("JsgbNoLoadingScreen"))) { return; }
+	LoadingStart = FPlatformTime::Seconds();
+	const FString Name = Title.IsEmpty() ? FString(TEXT("Loading")) : Title;
+	auto Phase = [this]() { return static_cast<float>(FMath::Fmod((FPlatformTime::Seconds() - LoadingStart) * 0.6, 1.0)); };
+	Loading = SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(0.02f, 0.025f, 0.035f, 1.f))
+		.HAlign(HAlign_Center).VAlign(VAlign_Center).Visibility(EVisibility::HitTestInvisible)
+		[
+			SNew(SVerticalBox)
+			+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 0, 0, 18)
+			[
+				SNew(STextBlock).Text(FText::FromString(Name)).Font(FCoreStyle::GetDefaultFontStyle("Bold", 34)).ColorAndOpacity(FLinearColor(0.92f, 0.94f, 0.97f))
+			]
+			+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)
+			[
+				SNew(SBox).WidthOverride(420.f).HeightOverride(6.f)
+				[
+					SNew(SOverlay)
+					+ SOverlay::Slot()[SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(1.f, 1.f, 1.f, 0.12f))]
+					+ SOverlay::Slot().HAlign(HAlign_Left)
+					.Padding(TAttribute<FMargin>::CreateLambda([Phase]() { return FMargin(FMath::Max(0.f, Phase() * 520.f - 120.f), 0, 0, 0); }))
+					[
+						SNew(SBox).WidthOverride(TAttribute<FOptionalSize>::CreateLambda([Phase]() { const float X = Phase() * 520.f - 120.f; return FOptionalSize(FMath::Clamp(FMath::Min(120.f, 120.f + X), 0.f, FMath::Max(0.f, 420.f - X))); }))
+						[
+							SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(0.49f, 0.78f, 1.f))
+						]
+					]
+				]
+			]
+			+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 14, 0, 0)
+			[
+				SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular", 14)).ColorAndOpacity(FLinearColor(0.6f, 0.65f, 0.72f))
+				.Text(TAttribute<FText>::CreateLambda([this]()
+				{
+					const int32 Files = Bridge ? Bridge->FilesRead.load() : 0;
+					return FText::FromString(Files > 0 ? FString::Printf(TEXT("Loading, %d files read"), Files) : FString(TEXT("Starting")));
+				}))
+			]
+		];
+	// Above the game view and the overlay browser, below the frame rate readout.
+	GEngine->GameViewport->AddViewportWidgetContent(Loading.ToSharedRef(), 250);
+}
+
+void AJsgbHost::UpdateLoading()
+{
+	if (!Loading.IsValid()) { return; }
+	const bool bPage = !PageIndex.IsEmpty();
+	const bool bShown = bPage ? bDocumentReady
+		: (UIPort && UIPort->AppliedUIVersion > 0) || (Mirror && Mirror->DrawnEntities > 0) || (Bridge && Bridge->bReady && ReadyFrame >= 0);
+	// Two minutes at most, so a game that never reports anything isn't hidden behind it.
+	if (!bShown && FPlatformTime::Seconds() - LoadingStart < 120.0) { return; }
+	if (GEngine && GEngine->GameViewport) { GEngine->GameViewport->RemoveViewportWidgetContent(Loading.ToSharedRef()); }
+	Loading.Reset();
+	UE_LOG(LogJsgbHost, Display, TEXT("Loading screen shown for %.1f s"), FPlatformTime::Seconds() - LoadingStart);
+}
+
 void AJsgbHost::ShowReloadBanner(const FString& Text)
 {
 	if (!GEngine || !GEngine->GameViewport) { return; }
@@ -599,7 +788,7 @@ void AJsgbHost::StartServer()
 			O->SetStringField(TEXT("sourceCommit"), H->SourceCommit);
 			O->SetStringField(TEXT("bundleSHA256"), H->BundleSHA256);
 			O->SetStringField(TEXT("bundle"), H->BundlePath);
-			O->SetBoolField(TEXT("ready"), H->Bridge && H->Bridge->bReady && !H->bRestart);
+			O->SetBoolField(TEXT("ready"), H->Bridge ? H->Bridge->bReady && !H->bRestart : !H->PageIndex.IsEmpty() && H->bDocumentReady);
 			O->SetNumberField(TEXT("hostFrames"), H->Frame);
 			O->SetNumberField(TEXT("lastReloadMs"), H->ReloadStart >= 0 ? -1 : H->LastReloadMs);
 			O->SetNumberField(TEXT("lastBuildMs"), H->LastBuildMs);
@@ -693,6 +882,44 @@ void AJsgbHost::StartServer()
 			Json(O);
 			return true;
 		}
+		if ((Route == TEXT("/bridge/key") || Route == TEXT("/bridge/pagejs")) && bPost)
+		{
+			if (!bRemote) { Done(FHttpServerResponse::Error(EHttpServerResponseCodes::Forbidden, TEXT("start Unreal with -JsgbAllowRemote"))); return true; }
+			auto O = MakeShared<FJsonObject>();
+			const FString In = Body(R).TrimStartAndEnd();
+			if (Route == TEXT("/bridge/pagejs")) { if (H->Browser.IsValid()) { H->Browser->ExecuteJavascript(In); } O->SetBoolField(TEXT("sent"), H->Browser.IsValid()); }
+			else
+			{
+				// "down KeyW" or "up KeyW", through Slate like a real key press; "click 0.5 0.5" clicks that point of the window
+				// (fractions of its width and height) with the left mouse button.
+				FString Type, Code;
+				if (In.StartsWith(TEXT("click ")) && GEngine && GEngine->GameViewport && GEngine->GameViewport->GetWindow().IsValid())
+				{
+					TArray<FString> Parts;
+					In.ParseIntoArrayWS(Parts);
+					const TSharedPtr<SWindow> Window = GEngine->GameViewport->GetWindow();
+					const FVector2D At = Window->GetPositionInScreen() + Window->GetClientSizeInScreen() * FVector2D(Parts.Num() > 2 ? FCString::Atod(*Parts[1]) : 0.5, Parts.Num() > 2 ? FCString::Atod(*Parts[2]) : 0.5);
+					FSlateApplication::Get().SetCursorPos(At);
+					const TSet<FKey> Pressed = {EKeys::LeftMouseButton};
+					FSlateApplication::Get().ProcessMouseButtonDownEvent(nullptr, FPointerEvent(0, At, At, Pressed, EKeys::LeftMouseButton, 0, FSlateApplication::Get().GetModifierKeys()));
+					FSlateApplication::Get().ProcessMouseButtonUpEvent(FPointerEvent(0, At, At, TSet<FKey>(), EKeys::LeftMouseButton, 0, FSlateApplication::Get().GetModifierKeys()));
+					O->SetBoolField(TEXT("accepted"), true);
+					Json(O);
+					return true;
+				}
+				FKey Key; uint32 KeyCode = 0, Char = 0;
+				const bool bKnown = In.Split(TEXT(" "), &Type, &Code) && KeyFromCode(Code, Key, KeyCode, Char);
+				if (bKnown && Type == TEXT("down"))
+				{
+					FSlateApplication::Get().ProcessKeyDownEvent(FKeyEvent(Key, FSlateApplication::Get().GetModifierKeys(), 0, false, Char, KeyCode));
+					if (Char >= 32) { FSlateApplication::Get().ProcessKeyCharEvent(FCharacterEvent(static_cast<TCHAR>(Char), FSlateApplication::Get().GetModifierKeys(), 0, false)); }
+				}
+				else if (bKnown && Type == TEXT("up")) { FSlateApplication::Get().ProcessKeyUpEvent(FKeyEvent(Key, FSlateApplication::Get().GetModifierKeys(), 0, false, Char, KeyCode)); }
+				O->SetBoolField(TEXT("accepted"), bKnown);
+			}
+			Json(O);
+			return true;
+		}
 		if ((Route == TEXT("/bridge/eval") || Route == TEXT("/bridge/input") || Route == TEXT("/bridge/capture") || Route == TEXT("/bridge/close")) && bPost)
 		{
 			if (!bRemote) { Done(FHttpServerResponse::Error(EHttpServerResponseCodes::Forbidden, TEXT("start Unreal with -JsgbAllowRemote"))); return true; }
@@ -704,15 +931,24 @@ void AJsgbHost::StartServer()
 			Json(O);
 			return true;
 		}
-		if (R.Verb == EHttpServerRequestVerbs::VERB_GET && !Route.StartsWith(TEXT("/bridge/")) && H->Bridge)
+		if (R.Verb == EHttpServerRequestVerbs::VERB_GET && !Route.StartsWith(TEXT("/bridge/")) && (H->Bridge || !H->PageIndex.IsEmpty()))
 		{
-			// The overlay's page loads images and fonts from the web build's site root.
-			FArrayBufferValue File = H->Bridge->ReadFile(Route);
+			// The overlay's page loads images and fonts from the web build's site root. A page game loads everything from
+			// its public roots, in order.
+			FArrayBufferValue File;
+			if (H->Bridge) { File = H->Bridge->ReadFile(Route); }
+			else if (!Route.Contains(TEXT("..")))
+			{
+				const FString Rel = Route == TEXT("/") ? H->PageIndex : Route.RightChop(1);
+				for (const FString& Root : H->PublicRoots) { if (FFileHelper::LoadFileToArray(File.Data, *(Root / Rel), FILEREAD_Silent)) { break; } }
+			}
 			if (File.Data.Num() == 0) { Done(FHttpServerResponse::Error(EHttpServerResponseCodes::NotFound)); return true; }
 			const FString Ext = FPaths::GetExtension(Route).ToLower();
 			static const TMap<FString, FString> Mime = {{TEXT("png"), TEXT("image/png")}, {TEXT("jpg"), TEXT("image/jpeg")}, {TEXT("jpeg"), TEXT("image/jpeg")}, {TEXT("webp"), TEXT("image/webp")},
 				{TEXT("gif"), TEXT("image/gif")}, {TEXT("svg"), TEXT("image/svg+xml")}, {TEXT("woff2"), TEXT("font/woff2")}, {TEXT("woff"), TEXT("font/woff")}, {TEXT("ttf"), TEXT("font/ttf")},
-				{TEXT("otf"), TEXT("font/otf")}, {TEXT("css"), TEXT("text/css")}, {TEXT("json"), TEXT("application/json")}, {TEXT("ogg"), TEXT("audio/ogg")}, {TEXT("mp3"), TEXT("audio/mpeg")}};
+				{TEXT("otf"), TEXT("font/otf")}, {TEXT("css"), TEXT("text/css")}, {TEXT("json"), TEXT("application/json")}, {TEXT("ogg"), TEXT("audio/ogg")}, {TEXT("mp3"), TEXT("audio/mpeg")},
+				{TEXT("html"), TEXT("text/html")}, {TEXT("js"), TEXT("text/javascript")}, {TEXT("mjs"), TEXT("text/javascript")}, {TEXT("wasm"), TEXT("application/wasm")},
+				{TEXT("wav"), TEXT("audio/wav")}, {TEXT("m4a"), TEXT("audio/mp4")}, {TEXT("mp4"), TEXT("video/mp4")}, {TEXT("webm"), TEXT("video/webm")}, {TEXT("ktx2"), TEXT("image/ktx2")}};
 			const FString* Type = Mime.Find(Ext);
 			Done(FHttpServerResponse::Create(MoveTemp(File.Data), Type ? *Type : TEXT("application/octet-stream")));
 			return true;
@@ -726,6 +962,9 @@ void AJsgbHost::StartServer()
 void AJsgbHost::EndPlay(const EEndPlayReason::Type Reason)
 {
 	StopRecording();
+#if PLATFORM_WINDOWS
+	SetThreadExecutionState(ES_CONTINUOUS);
+#endif
 	if (Input.IsValid() && FSlateApplication::IsInitialized()) { FSlateApplication::Get().UnregisterInputPreProcessor(Input); }
 	Input.Reset();
 	if (Browser.IsValid())
@@ -773,7 +1012,8 @@ double AJsgbHost::GameSeconds() const { return Bridge ? Bridge->NowMs() / 1000.0
 //   -JsgbDLSS=dlaa|quality|balanced|performance|ultra   NVIDIA DLSS Super Resolution (DLAA renders at full resolution)
 //   -JsgbDLSS=5                                          DLSS 5 Neural Rendering where it can run, else DLSS 4.5 DLAA
 //   -JsgbTSR=<screen percentage>                         Unreal's TSR, on any GPU
-//   -JsgbFrameGen                                        DLSS Frame Generation (RTX 40 and later, needs a window)
+//   -JsgbFrameGen[=2|3|4]                                DLSS Frame Generation, 2x by default (RTX 40 and later, needs a
+//                                                        window); 3x and 4x are Multi Frame Generation on RTX 50 GPUs
 //   -JsgbVibrance=<0..1>                                 RTX Dynamic Vibrance
 // DLSS needs the NVIDIA DLSS plugin in the host project and an NVIDIA RTX GPU. Without them the same
 // render scale runs through TSR instead. With none of these, the host keeps FXAA at full resolution.
@@ -782,6 +1022,9 @@ static void SetCVar(const TCHAR* Name, const FString& Value)
 	if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(Name)) { V->Set(*Value, ECVF_SetByCode); }
 	else { UE_LOG(LogJsgbHost, Warning, TEXT("Console variable %s is missing; is its plugin enabled?"), Name); }
 }
+
+// RTX 50 GPUs generate up to three frames per rendered frame (Multi Frame Generation, 4x); RTX 40 GPUs one (2x).
+static int32 MaxGeneratedFrames() { return IsRHIDeviceNVIDIA() && FString(GRHIAdapterName).Contains(TEXT("RTX 50")) ? 3 : 1; }
 
 // DLSS 5 Neural Rendering needs an RTX 50 series GPU, GeForce driver 616.64 or newer (its launch driver), and an
 // Unreal integration from NVIDIA. NVIDIA's Unreal plugin (DLSS 4.5, plugin 8.8.0) has none, and NVIDIA has published no
@@ -810,15 +1053,19 @@ void AJsgbHost::SetupUpscaler()
 	FString Dlss, Tsr;
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbDLSS="), Dlss);
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbTSR="), Tsr);
-	bFrameGen = FParse::Param(FCommandLine::Get(), TEXT("JsgbFrameGen"));
+	int32 FrameGenFactor = 0;
+	bFrameGen = FParse::Param(FCommandLine::Get(), TEXT("JsgbFrameGen")) || FParse::Value(FCommandLine::Get(), TEXT("JsgbFrameGen="), FrameGenFactor);
+	FrameGenFrames = FMath::Clamp(FrameGenFactor - 1, 1, MaxGeneratedFrames());
 	UE_LOG(LogJsgbHost, Display, TEXT("GPU %s, driver %s"), *GRHIAdapterName, *GRHIAdapterUserDriverVersion);
 	ApplyUpscaler(Dlss, Tsr);
 	bShowHud = FParse::Param(FCommandLine::Get(), TEXT("JsgbHud"));
 	bShowKeys = FParse::Param(FCommandLine::Get(), TEXT("JsgbDlssKeys"));
+	bShowJitter = FParse::Param(FCommandLine::Get(), TEXT("JsgbJitter"));
 }
 
 bool AJsgbHost::HandleDlssKey(const FKey& Key)
 {
+	if (bShowKeys && Key == EKeys::F8) { bShowJitter = !bShowJitter; return true; }
 	if (!bShowKeys || (Key != EKeys::F6 && Key != EKeys::F7)) { return false; }
 	if (Key == EKeys::F6) { CycleUpscaler(); } else { ToggleFrameGen(); }
 	return true;
@@ -834,7 +1081,10 @@ void AJsgbHost::CycleUpscaler()
 
 void AJsgbHost::ToggleFrameGen()
 {
-	bFrameGen = !bFrameGen;
+	// Off, 2x, then 3x and 4x where the GPU has Multi Frame Generation.
+	if (!bFrameGen) { bFrameGen = true; FrameGenFrames = 1; }
+	else if (FrameGenFrames < MaxGeneratedFrames()) { ++FrameGenFrames; }
+	else { bFrameGen = false; FrameGenFrames = 1; }
 	if (!bFrameGen) { SetCVar(TEXT("r.Streamline.DLSSG.Enable"), TEXT("0")); }
 	ApplyUpscaler(DlssMode, FString());
 }
@@ -900,8 +1150,10 @@ void AJsgbHost::ApplyUpscaler(const FString& Mode, const FString& TsrPercent)
 	}
 	if (bFrameGen)
 	{
+		SetCVar(TEXT("r.Streamline.DLSSG.FramesToGenerate"), FString::FromInt(FrameGenFrames));
 		SetCVar(TEXT("r.Streamline.DLSSG.Enable"), TEXT("1"));
-		Upscaler += Upscaler.IsEmpty() ? TEXT("Frame Generation") : TEXT(" + Frame Generation");
+		const FString Label = FrameGenFrames > 1 ? FString::Printf(TEXT("Multi Frame Generation %dx"), FrameGenFrames + 1) : FString(TEXT("Frame Generation 2x"));
+		Upscaler += Upscaler.IsEmpty() ? Label : TEXT(" + ") + Label;
 	}
 	FString Vibrance;
 	if (FParse::Value(FCommandLine::Get(), TEXT("JsgbVibrance="), Vibrance))
@@ -936,11 +1188,58 @@ static float PresentedFps()
 	return Rate ? Rate->GetPropertyValue_InContainer(Params.GetData()) : -1.f;
 }
 
+// The last 90 frame times as bars, 1 pixel per ms up to 50: green under 16.7 ms, yellow under 33.4, red above.
+TSharedRef<SWidget> AJsgbHost::MakeJitterGraph()
+{
+	TSharedRef<SHorizontalBox> Bars = SNew(SHorizontalBox);
+	for (int32 I = 0; I < 90; ++I)
+	{
+		const int32 Back = 90 - I;
+		auto Ms = [this, Back]() { return JitterMs.Num() ? JitterMs[(JitterHead - Back + JitterMs.Num()) % JitterMs.Num()] : 0.f; };
+		Bars->AddSlot().AutoWidth().VAlign(VAlign_Bottom).Padding(FMargin(0, 0, 1, 0))
+		[
+			SNew(SBox).WidthOverride(3.f).HeightOverride(TAttribute<FOptionalSize>::CreateLambda([Ms]() { return FOptionalSize(FMath::Clamp(Ms(), 1.f, 50.f)); }))
+			[
+				SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush"))
+				.BorderBackgroundColor(TAttribute<FSlateColor>::CreateLambda([Ms]() { const float M = Ms(); return FSlateColor(M < 16.7f ? FLinearColor(0.3f, 0.9f, 0.4f) : M < 33.4f ? FLinearColor(1.f, 0.8f, 0.2f) : FLinearColor(1.f, 0.3f, 0.25f)); }))
+			]
+		];
+	}
+	return SNew(SBox).HeightOverride(50.f).VAlign(VAlign_Bottom).Visibility(TAttribute<EVisibility>::CreateLambda([this]() { return bShowJitter ? EVisibility::HitTestInvisible : EVisibility::Collapsed; }))
+		[
+			Bars
+		];
+}
+
 void AJsgbHost::UpdateHud(float DeltaSeconds)
 {
 	HudFrames++;
 	HudSeconds += DeltaSeconds;
+	if (JitterMs.Num() != 600) { JitterMs.Init(0.f, 600); JitterHead = 0; }
+	JitterMs[JitterHead] = DeltaSeconds * 1000.f;
+	JitterHead = (JitterHead + 1) % JitterMs.Num();
 	if (HudSeconds < 0.5) { return; }
+	{
+		// Over the last second: the spread of frame times (standard deviation) and the worst frame; over the last 600
+		// frames: the 1% low. The game's update rate is how often the JavaScript thread sends a scene.
+		const int32 N = JitterMs.Num();
+		const float Second = 1000.f;
+		double Sum = 0, Sum2 = 0, Worst = 0, Spent = 0; int32 Count = 0;
+		for (int32 I = 1; I <= N && Spent < Second; ++I)
+		{
+			const float Ms = JitterMs[(JitterHead - I + N) % N];
+			if (Ms <= 0) { break; }
+			Sum += Ms; Sum2 += Ms * Ms; Worst = FMath::Max<double>(Worst, Ms); Spent += Ms; ++Count;
+		}
+		TArray<float> Sorted = JitterMs.FilterByPredicate([](float Ms) { return Ms > 0; });
+		Sorted.Sort([](float A, float B) { return A > B; });
+		double Low = 0; const int32 Slowest = FMath::Max(1, Sorted.Num() / 100);
+		for (int32 I = 0; I < Slowest && I < Sorted.Num(); ++I) { Low += Sorted[I]; }
+		const double Mean = Count ? Sum / Count : 0, Spread = Count ? FMath::Sqrt(FMath::Max(0.0, Sum2 / Count - Mean * Mean)) : 0;
+		const FString Game = JsThread ? FString::Printf(TEXT("game %.0f Hz / draw %.0f FPS"), 1.0 / SnapshotInterval, HudFps)
+			: !PageIndex.IsEmpty() ? FString::Printf(TEXT("page up to 60 Hz / draw %.0f FPS"), HudFps) : FString::Printf(TEXT("game and draw %.0f FPS"), HudFps);
+		JitterLine = FString::Printf(TEXT("Jitter %.1f ms   1%% low %.0f FPS   worst %.0f ms\n%s   F8 hides"), Spread, Sorted.Num() ? 1000.0 * Slowest / Low : 0.0, Worst, *Game);
+	}
 	HudFps = HudFrames / HudSeconds;
 	HudFrames = 0; HudSeconds = 0;
 	HudPresentedFps = Upscaler.Contains(TEXT("Frame Generation")) ? PresentedFps() : -1.f;
@@ -951,7 +1250,15 @@ void AJsgbHost::UpdateHud(float DeltaSeconds)
 			[
 				SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(0.f, 0.f, 0.f, 0.72f)).Padding(FMargin(14, 8))
 				[
-					SAssignNew(HudText, STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 22)).ColorAndOpacity(FLinearColor(0.49f, 1.f, 0.66f))
+					SNew(SVerticalBox)
+					+ SVerticalBox::Slot().AutoHeight()
+					[
+						SAssignNew(HudText, STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Bold", 22)).ColorAndOpacity(FLinearColor(0.49f, 1.f, 0.66f))
+					]
+					+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Right).Padding(FMargin(0, 6, 0, 0))
+					[
+						MakeJitterGraph()
+					]
 				]
 			];
 		GEngine->GameViewport->AddViewportWidgetContent(Box, 300);
@@ -959,8 +1266,9 @@ void AJsgbHost::UpdateHud(float DeltaSeconds)
 	// While a capture runs, each frame waits for its screenshot, so the frame rate means nothing: show the mode only.
 	if (!CaptureDir.IsEmpty()) { HudText->SetText(FText::FromString(Upscaler)); return; }
 	const FString Rate = HudPresentedFps > 0 ? FString::Printf(TEXT("%.0f FPS on screen, %.0f rendered"), HudPresentedFps, HudFps) : FString::Printf(TEXT("%.0f FPS"), HudFps);
-	HudText->SetText(FText::FromString(FString::Printf(TEXT("%s\n%s  (GPU %.1f ms)%s%s"), *Upscaler, *Rate, FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles()),
-		NeuralNote.IsEmpty() ? TEXT("") : *(TEXT("\n") + NeuralNote), bShowKeys ? TEXT("\nF6: DLSS mode   F7: Frame Generation") : TEXT(""))));
+	HudText->SetText(FText::FromString(FString::Printf(TEXT("%s\n%s  (GPU %.1f ms)%s%s%s"), *Upscaler, *Rate, FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles()),
+		bShowJitter ? *(TEXT("\n") + JitterLine) : TEXT(""),
+		NeuralNote.IsEmpty() ? TEXT("") : *(TEXT("\n") + NeuralNote), bShowKeys ? TEXT("\nF6: DLSS mode   F7: Frame Generation   F8: jitter") : TEXT(""))));
 }
 
 void AJsgbHost::SwapCss(double BuildMs)
@@ -1219,6 +1527,14 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		if (!PendingBundle.IsEmpty()) { LoadPublication(GameDir, PendingBundle); PendingBundle.Reset(); }
 		StartJs();
 	}
+	UpdateLoading();
+	// A page game takes the keyboard whenever the window is active, so keys work without a click first.
+	if (!PageIndex.IsEmpty() && Browser.IsValid() && FSlateApplication::Get().IsActive() && !Browser->HasAnyUserFocusOrFocusedDescendants())
+	{
+		FSlateApplication::Get().SetAllUserFocus(Browser.ToSharedRef(), EFocusCause::SetDirectly);
+	}
+	// A page game has no JavaScript in Unreal; only the time limit applies.
+	if (!PageIndex.IsEmpty() && MaxSeconds > 0 && FPlatformTime::Seconds() - HostStartSeconds > MaxSeconds) { FPlatformMisc::RequestExit(false); }
 	// The game's delegates belong to the JavaScript thread while it runs, so the game thread doesn't read them.
 	if (!Bridge || (!JsThread && !Bridge->OnFrame.IsBound())) { return; }
 	Audio->StartPending();
@@ -1232,31 +1548,57 @@ void AJsgbHost::Tick(float DeltaSeconds)
 
 	if (ReadyFrame < 0 && Bridge->bReady) { ReadyFrame = Frame; ReadySeconds = GameSeconds(); CaptureStart = ReadySeconds; Bridge->Log(TEXT("log"), FString::Printf(TEXT("game ready at host frame %lld"), Frame)); }
 	RunScript();
-	// A frame much longer than 60 FPS allows gets a breakdown of the tick before it.
-	if (ReadyFrame >= 0 && DeltaSeconds > 0.034f && LastTick.Num() == 6)
+	// Unreal's own times for the last finished frame: game thread, render thread, RHI thread and GPU.
+	const double Engine[4] = {FPlatformTime::ToMilliseconds(GGameThreadTime), FPlatformTime::ToMilliseconds(GRenderThreadTime),
+		FPlatformTime::ToMilliseconds(GRHIThreadTime), FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles())};
+	for (int32 I = 0; I < 4; ++I) { EngineMs[I] += Engine[I]; }
+	++EngineFrames;
+	// A frame much longer than 60 FPS allows gets a breakdown of the tick before it, and the engine's times.
+	// -JsgbSlowFrameMs=<ms> lowers the threshold, to see what the frames just over 16.7 ms are made of.
+	static const float SlowFrameMs = [] { float Ms = 34.f; FParse::Value(FCommandLine::Get(), TEXT("JsgbSlowFrameMs="), Ms); return Ms; }();
+	if (ReadyFrame >= 0 && DeltaSeconds * 1000.f > SlowFrameMs && LastTick.Num() == 11)
 	{
-		Bridge->Log(TEXT("log"), FString::Printf(TEXT("slow frame %lld: %.0f ms; previous tick: js %.1f ms (mirror %.1f, build queue %.1f in %d builds, stall %.1f), ui %.1f ms; the rest was outside the bridge"),
-			Frame, DeltaSeconds * 1000.f, LastTick[0], LastTick[1], LastTick[2], static_cast<int32>(LastTick[3]), LastTick[4], LastTick[5]));
+		Bridge->Log(TEXT("log"), FString::Printf(TEXT("slow frame %lld: %.0f ms; previous tick: js %.1f ms (mirror %.1f: materials %.1f in %d, textures %.1f, meshes %.1f, instanced %.1f, build queue %.1f in %d builds, stall %.1f), ui %.1f ms; engine: game thread %.1f, render thread %.1f, RHI thread %.1f, GPU %.1f ms"),
+			Frame, DeltaSeconds * 1000.f, LastTick[0], LastTick[1], LastTick[6], static_cast<int32>(LastTick[7]), LastTick[8], LastTick[9], LastTick[10], LastTick[2], static_cast<int32>(LastTick[3]), LastTick[4], LastTick[5],
+			Engine[0], Engine[1], Engine[2], Engine[3]));
 	}
 	const double MirrorBefore = Bridge->MirrorMs, QueueBefore = Mirror->QueueMs, StallBefore = Mirror->StallMs;
+	const double MaterialBefore = Bridge->MaterialMs, TextureBefore = Bridge->TextureMs, MeshBefore = Mirror->RecordMs[1], InstancedBefore = Mirror->RecordMs[2];
+	const int32 MaterialCallsBefore = Bridge->MaterialCalls;
 	const int32 BuildsBefore = Mirror->QueueBuilds;
 	const double T0 = FPlatformTime::Seconds();
 	if (JsThread)
 	{
 		// Snapshots arrive at the game's rate; between them objects and the camera glide (one snapshot behind).
+		// An update reaches this thread up to one Unreal frame after the JavaScript thread made it, so arrival times jitter.
+		// The glide to each update ends a fixed time after it was made (one game interval plus one Unreal frame), so the
+		// objects move at the game's own pace; it starts from where they are drawn now, so nothing jumps.
 		const double Now = FPlatformTime::Seconds();
+		DrawInterval = FMath::Clamp(0.9 * DrawInterval + 0.1 * DeltaSeconds, 0.002, 0.1);
 		if (Bridge->DrainGameCommands() > 0)
 		{
-			if (LastSnapshot > 0) { SnapshotInterval = FMath::Clamp(0.8 * SnapshotInterval + 0.2 * (Now - LastSnapshot), 0.004, 0.1); }
+			const double Produced = Bridge->LastFrameProducedAt > 0 ? Bridge->LastFrameProducedAt : Now;
+			if (LastProduced > 0) { SnapshotInterval = FMath::Clamp(0.9 * SnapshotInterval + 0.1 * (Produced - LastProduced), 0.004, 0.1); }
+			LastProduced = Produced;
 			LastSnapshot = Now;
+			SegmentStart = Now;
+			SegmentEnd = FMath::Max(Produced + SnapshotInterval + DrawInterval, Now + 0.001);
+			// -JsgbArrivalInterpolation: the earlier timing, from each update's arrival over one game interval (for comparison).
+			static const bool bArrival = FParse::Param(FCommandLine::Get(), TEXT("JsgbArrivalInterpolation"));
+			if (bArrival) { SegmentEnd = Now + SnapshotInterval; }
 		}
-		Mirror->Interpolate(LastSnapshot > 0 ? static_cast<float>((Now - LastSnapshot) / SnapshotInterval) : 1.f);
+		Mirror->Interpolate(LastSnapshot > 0 ? static_cast<float>((Now - SegmentStart) / (SegmentEnd - SegmentStart)) : 1.f);
+		const FVector CameraAt = Camera->GetComponentLocation();
+		const double Speed = DeltaSeconds > 0 ? FVector::Dist(CameraAt, LastCameraAt) / DeltaSeconds : 0;
+		if (Speed > 10.0 && Speed < 100000.0) { CamSpeedSum += Speed; CamSpeedSum2 += Speed * Speed; ++CamSpeedFrames; }
+		LastCameraAt = CameraAt;
 	}
 	else if (!bHeld) { Bridge->OnFrame.Execute(ReadyFrame < 0 ? 40.f : 8.f); }
 	const double T1 = FPlatformTime::Seconds();
 	JsMs += (T1 - T0) * 1000.0; ++TimedFrames;
 	PushUI();
-	LastTick = {(T1 - T0) * 1000.0, Bridge->MirrorMs - MirrorBefore, Mirror->QueueMs - QueueBefore, static_cast<double>(Mirror->QueueBuilds - BuildsBefore), Mirror->StallMs - StallBefore, (FPlatformTime::Seconds() - T1) * 1000.0};
+	LastTick = {(T1 - T0) * 1000.0, Bridge->MirrorMs - MirrorBefore, Mirror->QueueMs - QueueBefore, static_cast<double>(Mirror->QueueBuilds - BuildsBefore), Mirror->StallMs - StallBefore, (FPlatformTime::Seconds() - T1) * 1000.0,
+		Bridge->MaterialMs - MaterialBefore, static_cast<double>(Bridge->MaterialCalls - MaterialCallsBefore), Bridge->TextureMs - TextureBefore, Mirror->RecordMs[1] - MeshBefore, Mirror->RecordMs[2] - InstancedBefore};
 	// The first frame the reloaded game draws stops the reload timer.
 	if (ReloadStart >= 0 && ReadyFrame >= 0 && Frame > ReadyFrame)
 	{
@@ -1277,6 +1619,18 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		Bridge->Log(TEXT("log"), FString::Printf(TEXT("host frame %lld: js+mirror %.2f ms (game js %.2f, mirror %.2f, of which lines %.2f, materials %.2f in %d updates, textures %.2f in %d updates; build queue %.2f in %d builds, meshes %.2f, instanced %.2f, sprites %.2f, points %.2f, line records %.2f), frame %.2f ms, fps %.1f, gpu %.2f ms, drawn %d, lines %d, pending builds %d, voices %d, js errors %d"),
 			Frame, JsMs / N, (JsMs - Bridge->MirrorMs) / N, Bridge->MirrorMs / N, Mirror->LinesMs / N, Bridge->MaterialMs / N, Bridge->MaterialCalls, Bridge->TextureMs / N, Bridge->TextureCalls, Mirror->QueueMs / N, Mirror->QueueBuilds, Mirror->RecordMs[1] / N, Mirror->RecordMs[2] / N, Mirror->RecordMs[4] / N, Mirror->RecordMs[5] / N, Mirror->RecordMs[6] / N, DeltaSeconds * 1000.f, HudFps, FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles()),
 			Mirror->DrawnEntities, Mirror->LineSegmentsDrawn, Mirror->PendingBuilds(), Audio->ActiveVoices(), Bridge->ErrorCount));
+		const double E = FMath::Max(1, EngineFrames);
+		Bridge->Log(TEXT("log"), FString::Printf(TEXT("engine average over %d frames: game thread %.2f ms, render thread %.2f ms, RHI thread %.2f ms, GPU %.2f ms"),
+			EngineFrames, EngineMs[0] / E, EngineMs[1] / E, EngineMs[2] / E, EngineMs[3] / E));
+		for (double& M : EngineMs) { M = 0; }
+		EngineFrames = 0;
+		if (CamSpeedFrames > 30)
+		{
+			// Spread of the camera's speed from frame to frame, as a share of its average: low means smooth motion.
+			const double Mean = CamSpeedSum / CamSpeedFrames, Spread = FMath::Sqrt(FMath::Max(0.0, CamSpeedSum2 / CamSpeedFrames - Mean * Mean));
+			Bridge->Log(TEXT("log"), FString::Printf(TEXT("camera motion over %d moving frames: speed %.0f cm/s average, frame-to-frame spread %.1f%%"), CamSpeedFrames, Mean, 100.0 * Spread / Mean));
+		}
+		CamSpeedSum = 0; CamSpeedSum2 = 0; CamSpeedFrames = 0;
 		if (JsThread)
 		{
 			double Avg = 0, Max = 0; int32 JsFrames = 0;

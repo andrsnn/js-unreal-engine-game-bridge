@@ -1,4 +1,7 @@
 #include "JsgbSceneMirror.h"
+#include "UObject/SavePackage.h"
+#include "UObject/Package.h"
+#include "Misc/PackageName.h"
 #include "Rendering/MotionVectorSimulation.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "Engine/TextureRenderTarget2D.h"
@@ -73,7 +76,7 @@ namespace
 {
 	constexpr float Cm = 100.f;
 	constexpr int32 HeaderFloats = 88;
-	enum ERecord { RMesh = 1, RInstanced = 2, RLight = 3, RSprite = 4, RPoints = 5, RLines = 6, RAsset = 7, REffect = 8, RCapture = 9, RCaptureEnd = 10 };
+	enum ERecord { RMesh = 1, RInstanced = 2, RLight = 3, RSprite = 4, RPoints = 5, RLines = 6, RAsset = 7, REffect = 8, RCapture = 9, RCaptureEnd = 10, RBackground = 11 };
 	enum EVariant { VLit, VLit2S, VMasked, VTrans, VUnlit, VUnlitTrans, VAdditive, VUnlitMasked, VBillboard, VBillboardAdd, VCount };
 	const TCHAR* VariantPaths[VCount] = {
 		TEXT("/JsGameBridge/Mirror/M_JsgbLit.M_JsgbLit"), TEXT("/JsGameBridge/Mirror/M_JsgbLit2S.M_JsgbLit2S"), TEXT("/JsGameBridge/Mirror/M_JsgbMasked.M_JsgbMasked"),
@@ -969,6 +972,43 @@ UMaterialInstanceDynamic* UJsgbSceneMirror::MaterialFor(int32 Id)
 	return M ? M->Instance.Get() : nullptr;
 }
 
+// scene.background as a texture: a sphere around the camera with M_JsgbSky, which looks the view direction up in the
+// equirectangular image as three.js does, times scene.backgroundIntensity. The material is a sky material, so Unreal
+// draws it behind everything however far away the scene reaches. Cube textures aren't drawn yet (the log says so).
+void UJsgbSceneMirror::ApplyBackground(const float* R)
+{
+	const int32 TexId = static_cast<int32>(R[1]), Mapping = static_cast<int32>(R[2]);
+	if (Mapping != 1)
+	{
+		static bool bWarned = false;
+		if (!bWarned) { bWarned = true; UE_LOG(LogJsgbMirror, Warning, TEXT("scene.background with mapping %d isn't drawn (only equirectangular textures are)"), Mapping); }
+		return;
+	}
+	const FJsgbTexture* T = Textures.Find(TexId);
+	if (!T || !T->Texture) { return; }
+	if (!Sky)
+	{
+		UStaticMesh* Sphere = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+		UMaterialInterface* SkyMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/JsGameBridge/Mirror/M_JsgbSky.M_JsgbSky"));
+		if (!Sphere || !SkyMaterial) { return; }
+		Sky = NewComponent(false);
+		Sky->SetStaticMesh(Sphere);
+		SkyMid = UMaterialInstanceDynamic::Create(SkyMaterial, this);
+		Sky->SetMaterial(0, SkyMid);
+		Sky->SetCastShadow(false);
+		Sky->SetWorldScale3D(FVector(20000.0));
+	}
+	SkySeen = Stamp;
+	if (Camera) { Sky->SetWorldLocation(Camera->GetComponentLocation()); }
+	SkyMid->SetTextureParameterValue(TEXT("Map"), T->Texture);
+	SkyMid->SetScalarParameterValue(TEXT("Intensity"), R[3]);
+	SkyMid->SetVectorParameterValue(TEXT("Rot0"), FLinearColor(R[4], R[5], R[6], 0));
+	SkyMid->SetVectorParameterValue(TEXT("Rot1"), FLinearColor(R[7], R[8], R[9], 0));
+	SkyMid->SetVectorParameterValue(TEXT("Rot2"), FLinearColor(R[10], R[11], R[12], 0));
+	SkyMid->SetScalarParameterValue(TEXT("FlipV"), R[13]);
+	if (!Sky->IsVisible()) { Sky->SetVisibility(true); }
+}
+
 UStaticMeshComponent* UJsgbSceneMirror::NewComponent(bool bInstanced)
 {
 	AActor* Owner = GetOwner();
@@ -999,7 +1039,7 @@ FJsgbEntity& UJsgbSceneMirror::EntityOf(int32 Id, int32 Kind)
 	{
 		if (Ent.Component) { Ent.Component->DestroyComponent(); Ent.Component = nullptr; }
 		if (Ent.Effect) { Ent.Effect->DestroyComponent(); Ent.Effect = nullptr; }
-		Ent.Kind = Kind; Ent.GeometryRevision = -1; Ent.Geometry = 0; Ent.Materials.Reset(); Ent.InstanceCount = -1; Ent.LineSignature = 0;
+		Ent.Kind = Kind; Ent.GeometryRevision = -1; Ent.Geometry = 0; Ent.Materials.Reset(); Ent.InstanceCount = -1; Ent.InstanceRaw.Reset(); Ent.InstanceDrawn.Reset(); Ent.LineSignature = 0;
 	}
 	return Ent;
 }
@@ -1394,44 +1434,48 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 				if (UMaterialInstanceDynamic* Mid = MaterialFor(Mat)) { for (int32 S = 0; S < Slots; ++S) { C->SetMaterial(S, Mid); } }
 			}
 			Place(Ent, C, ToTransform(M), Flags);
-			if ((bChanged || bNewMesh || Ent.InstanceCount < 0) && Offset >= 0 && Offset + N * 16 <= InstCount)
+			const int32 RawFloats = N * (bColors ? 19 : 16);
+			// A game marks instances changed whenever it touches them; the same bytes as last time change nothing.
+			const bool bSameData = !bNewMesh && Ent.InstanceCount == N && Offset >= 0 && Offset + RawFloats <= InstCount && Ent.InstanceRaw.Num() == RawFloats
+				&& FMemory::Memcmp(Ent.InstanceRaw.GetData(), &Inst[Offset], RawFloats * sizeof(float)) == 0;
+			if ((bChanged || bNewMesh || Ent.InstanceCount < 0) && !bSameData && Offset >= 0 && Offset + N * 16 <= InstCount)
 			{
-				TArray<FTransform> Ts;
-				Ts.SetNumUninitialized(N);
-				for (int32 I = 0; I < N; ++I) { Ts[I] = ToTransform(&Inst[Offset + I * 16]); }
-				// Each instance's previous transform is where it was drawn last frame, so Unreal draws per-instance
-				// motion vectors for DLSS and TSR; a jump over 50 m has none. The update goes to the existing
-				// render proxy instead of a new one.
-				const bool bSameCount = C->GetInstanceCount() == N;
-				if (bSameCount)
+				if (bNewMesh || C->GetInstanceCount() != Ent.InstanceDrawn.Num()) { C->ClearInstances(); Ent.InstanceDrawn.Reset(); }
+				// Each instance's previous transform is where it was drawn last frame, so Unreal draws per-instance motion
+				// vectors for DLSS and TSR; a jump over 50 m has none. A count that shrinks hides the spare slots (zero
+				// scale) and one that grows appends slots, so the render state isn't rebuilt each time it changes.
+				const int32 Used = FMath::Max(N, Ent.InstanceDrawn.Num());
+				TArray<FTransform> Ts, Prev;
+				Ts.SetNumUninitialized(Used);
+				Prev.SetNumUninitialized(Used);
+				const FTransform Hidden(FQuat::Identity, FVector::ZeroVector, FVector::ZeroVector);
+				for (int32 I = 0; I < Used; ++I)
 				{
-					TArray<FTransform> Prev;
-					Prev.SetNumUninitialized(N);
-					for (int32 I = 0; I < N; ++I)
-					{
-						C->GetInstanceTransform(I, Prev[I], false);
-						if (FVector::DistSquared(Prev[I].GetLocation(), Ts[I].GetLocation()) > FMath::Square(5000.0)) { Prev[I] = Ts[I]; }
-					}
-					C->BatchUpdateInstancesTransforms(0, Ts, Prev, false, false, false);
+					Ts[I] = I < N ? ToTransform(&Inst[Offset + I * 16]) : Hidden;
+					const bool bHad = I < Ent.InstanceDrawn.Num() && I < Ent.InstanceCount;
+					Prev[I] = bHad && FVector::DistSquared(Ent.InstanceDrawn[I].GetLocation(), Ts[I].GetLocation()) <= FMath::Square(5000.0) ? Ent.InstanceDrawn[I] : Ts[I];
 				}
-				else { C->ClearInstances(); C->AddInstances(Ts, false, false, false); }
-				Ent.bInstancesMoved = bSameCount;
-				if (bColors && Offset + N * 19 <= InstCount)
+				const int32 Existing = Ent.InstanceDrawn.Num();
+				if (Used > Existing) { C->AddInstances(TArray<FTransform>(Ts.GetData() + Existing, Used - Existing), false, false, false); }
+				C->BatchUpdateInstancesTransforms(0, Ts, Prev, false, false, false);
+				const bool bColorsChanged = bColors && Offset + N * 19 <= InstCount
+					&& (Ent.InstanceRaw.Num() != RawFloats || FMemory::Memcmp(Ent.InstanceRaw.GetData() + N * 16, &Inst[Offset + N * 16], N * 3 * sizeof(float)) != 0);
+				if (bColorsChanged)
 				{
 					const float* Col = &Inst[Offset + N * 16];
 					for (int32 I = 0; I < N; ++I) { C->SetCustomData(I, TArray<float>({Col[I * 3], Col[I * 3 + 1], Col[I * 3 + 2]}), false); }
 					if (UMaterialInstanceDynamic* Mid = MaterialFor(Mat)) { Mid->SetScalarParameterValue(TEXT("InstanceColorMix"), 1.f); }
 				}
-				if (!bSameCount) { C->MarkRenderStateDirty(); }
+				Ent.InstanceDrawn = MoveTemp(Ts);
+				Ent.InstanceRaw.SetNumUninitialized(FMath::Min(RawFloats, InstCount - Offset));
+				FMemory::Memcpy(Ent.InstanceRaw.GetData(), &Inst[Offset], Ent.InstanceRaw.Num() * sizeof(float));
+				Ent.bInstancesMoved = Existing > 0;
 				Ent.InstanceCount = N;
 			}
 			else if (Ent.bInstancesMoved)
 			{
 				// Unreal keeps previous transforms until told otherwise: instances that stopped get still ones.
-				TArray<FTransform> Ts;
-				Ts.SetNumUninitialized(C->GetInstanceCount());
-				for (int32 I = 0; I < Ts.Num(); ++I) { C->GetInstanceTransform(I, Ts[I], false); }
-				C->BatchUpdateInstancesTransforms(0, Ts, Ts, false, false, false);
+				C->BatchUpdateInstancesTransforms(0, Ent.InstanceDrawn, Ent.InstanceDrawn, false, false, false);
 				Ent.bInstancesMoved = false;
 			}
 			Show(Ent, C, Flags);
@@ -1599,6 +1643,12 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			K += 27;
 		}
 		else if (Type == RCaptureEnd) { CurrentCapture = 0; K += 1; }
+		else if (Type == RBackground)
+		{
+			if (K + 15 > Count) { break; }
+			ApplyBackground(&D[K]);
+			K += 15;
+		}
 		else
 		{
 			UE_LOG(LogJsgbMirror, Warning, TEXT("Unknown record %d at %d of %d"), Type, K, Count);
@@ -1607,6 +1657,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	}
 	CurrentCapture = 0;
 	DrawnEntities = Drawn;
+	if (Sky && SkySeen != Stamp && Sky->IsVisible()) { Sky->SetVisibility(false); }
 	// Each scene capture draws only its scene's objects, and stops when the game stops drawing into its target.
 	for (TPair<int32, FJsgbCapture>& It : Captures)
 	{
@@ -1774,17 +1825,34 @@ void UJsgbSceneMirror::SetShader(const FString& Key, const FString& Json)
 	if (bDump) { FFileHelper::SaveStringToFile(Json, *(FPaths::ProjectSavedDir() / TEXT("JsGameBridge/Shaders") / (Key + TEXT(".json")))); }
 }
 
+// Generated materials as cooked assets: an editor run with -JsgbSaveMaterials saves each one to /Game/JsgbGenerated
+// under this name (the shader's key, its blend mode and whether it draws both faces), packaging cooks
+// them into the package, and a packaged host, which can't compile materials, loads them by the same name.
+static const TCHAR* GeneratedRoot = TEXT("/Game/JsgbGenerated");
+static FString GeneratedAssetName(const FString& Key, int32 Blend, bool bTwoSided)
+{
+	FString Name = TEXT("M_") + Key;
+	for (TCHAR& Ch : Name) { if (!FChar::IsAlnum(Ch) && Ch != '_') { Ch = '_'; } }
+	return FString::Printf(TEXT("%s_B%d%s"), *Name.Left(90), Blend, bTwoSided ? TEXT("_2S") : TEXT(""));
+}
+
 UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 Blend, bool bTwoSided)
 {
 	const FString CacheKey = FString::Printf(TEXT("%s|%d|%d"), *Key, Blend, bTwoSided ? 1 : 0);
 	if (TObjectPtr<UMaterial>* Found = Generated.Find(CacheKey)) { return *Found; }
 	UMaterial* Result = nullptr;
+	const FString AssetName = GeneratedAssetName(Key, Blend, bTwoSided);
+	const FString PackagePath = FString(GeneratedRoot) / AssetName;
 #if WITH_EDITOR
 	const TSharedPtr<FJsonObject> S = Shaders.FindRef(Key);
+	static const bool bSave = FParse::Param(FCommandLine::Get(), TEXT("JsgbSaveMaterials"));
 	if (S)
 	{
 		ParentFor(VLit);
-		UMaterial* Mat = NewObject<UMaterial>(this, NAME_None, RF_Transient);
+		// A shader captured in an earlier run already has its asset (the key is a hash of the shader).
+		const bool bCaptured = bSave && FPaths::FileExists(FPackageName::LongPackageNameToFilename(PackagePath, FPackageName::GetAssetPackageExtension()));
+		UPackage* Package = bSave && !bCaptured ? CreatePackage(*PackagePath) : nullptr;
+		UMaterial* Mat = Package ? NewObject<UMaterial>(Package, *AssetName, RF_Public | RF_Standalone) : NewObject<UMaterial>(this, NAME_None, RF_Transient);
 		Mat->MaterialDomain = MD_Surface;
 		Mat->BlendMode = Blend == 2 ? BLEND_Additive : Blend == 1 ? BLEND_Translucent : BLEND_Opaque;
 		Mat->TwoSided = bTwoSided;
@@ -1960,7 +2028,7 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 		// A new material has no components to update, so it skips PostEditChange, which flushes the render
 		// thread and re-registers every component in the scene (tens of milliseconds with a thousand objects).
 		static const bool bPostEditChange = FParse::Param(FCommandLine::Get(), TEXT("JsgbMaterialPostEditChange"));
-		if (bPostEditChange) { Mat->PreEditChange(nullptr); Mat->PostEditChange(); }
+		if (bPostEditChange || Package) { Mat->PreEditChange(nullptr); Mat->PostEditChange(); }
 		else { Mat->ForceRecompileForRendering(EMaterialShaderPrecompileMode::None); }
 		// Finish compiling now, so the first frame that uses it draws the game's shader and not
 		// Unreal's default material. The time comes off the game clock (StallMs).
@@ -1974,7 +2042,26 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 		}
 		GeneratedPending.Add(CacheKey);
 		UE_LOG(LogJsgbMirror, Display, TEXT("Generated material for shader %s (%d inputs, blend %d)"), *Key, Custom->Inputs.Num(), Blend);
+		if (Package)
+		{
+			const FString File = FPackageName::LongPackageNameToFilename(PackagePath, FPackageName::GetAssetPackageExtension());
+			FSavePackageArgs Args;
+			Args.TopLevelFlags = RF_Public | RF_Standalone;
+			Args.SaveFlags = SAVE_NoError;
+			const bool bSaved = UPackage::SavePackage(Package, Mat, *File, Args);
+			UE_LOG(LogJsgbMirror, Display, TEXT("Saved generated material %s for shader %s: %s"), *PackagePath, *Key, bSaved ? TEXT("ok") : TEXT("FAILED"));
+		}
 		Result = Mat;
+	}
+#else
+	// A packaged host loads the material cooked from an editor capture run.
+	Result = LoadObject<UMaterial>(nullptr, *(PackagePath + TEXT(".") + AssetName), nullptr, LOAD_NoWarn | LOAD_Quiet);
+	if (Result) { UE_LOG(LogJsgbMirror, Display, TEXT("Cooked material %s for shader %s"), *AssetName, *Key); }
+	else
+	{
+		++MissingGenerated;
+		UE_LOG(LogJsgbMirror, Warning, TEXT("No cooked material for shader %s (blend %d%s): it draws with a plain material. Capture it with an editor run and -JsgbSaveMaterials, then package again"),
+			*Key, Blend, bTwoSided ? TEXT(", both faces") : TEXT(""));
 	}
 #endif
 	Generated.Add(CacheKey, Result);

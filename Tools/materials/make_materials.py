@@ -141,6 +141,20 @@ def billboard_offset(g):
     MEL.connect_material_property(custom, '', unreal.MaterialProperty.MP_WORLD_POSITION_OFFSET)
 
 
+# S: the surface colour (linear), A: its opacity, D: the opaque scene behind it (linear). Translucent: the colour C with
+# A*C + (1-A)*D = decode(A*encode(S) + (1-A)*encode(D)). Additive (three.js: source times alpha, plus destination): the
+# colour to add, decode(A*encode(S) + encode(D)) - D. encode and decode are the exact sRGB curves three.js uses.
+SRGB_BLEND = '''
+float3 s = max(S, 0), d = max(D, 0);
+float3 es = lerp(1.055 * pow(s, 1.0 / 2.4) - 0.055, s * 12.92, step(s, 0.0031308));
+float3 ed = lerp(1.055 * pow(d, 1.0 / 2.4) - 0.055, d * 12.92, step(d, 0.0031308));
+float a = saturate(A);
+float3 o = ADDITIVE ? a * es + ed : a * es + (1 - a) * ed;
+float3 f = lerp(pow((o + 0.055) / 1.055, 2.4), o / 12.92, step(o, 0.04045));
+return ADDITIVE ? max(f - d, 0) : (a < 0.002 ? s : max((f - (1 - a) * d) / a, 0));
+'''
+
+
 def make_surface(name, mpc, shading='lit', blend='opaque', two_sided=False, billboard=False):
     mat = fresh(name, unreal.Material, unreal.MaterialFactoryNew())
     g = Graph(mat)
@@ -184,7 +198,24 @@ def make_surface(name, mpc, shading='lit', blend='opaque', two_sided=False, bill
     emissive = g.vector('Emissive', unreal.LinearColor(0, 0, 0, 1))
     alpha = g.mul(g.scalar('Opacity', 1), g.lerp(one, tex, g.scalar('MapMix', 0), bout='A'))
 
-    if shading == 'unlit':
+    if shading == 'unlit' and blend in ('translucent', 'additive'):
+        # WebGL blends a transparent surface with what's behind it in sRGB values (three.js encodes the output
+        # before blending); Unreal blends in linear light, so over a dark background the surface came out brighter.
+        # The node reads the opaque scene behind the pixel and outputs the colour that, blended linearly with the
+        # same opacity, gives WebGL's result. Two transparent layers over each other still blend linearly.
+        sws = g.node(unreal.MaterialExpressionCustom, output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3,
+                     description='sRGB blend', code=SRGB_BLEND.replace('ADDITIVE', '1' if blend == 'additive' else '0'))
+        inputs = []
+        for n in ('S', 'A', 'D'):
+            ci = unreal.CustomInput()
+            ci.set_editor_property('input_name', n)
+            inputs.append(ci)
+        sws.set_editor_property('inputs', inputs)
+        g.link(g.add(base, emissive), '', sws, 'S')
+        g.link(alpha, '', sws, 'A')
+        g.link(g.node(unreal.MaterialExpressionSceneColor), '', sws, 'D')
+        MEL.connect_material_property(sws, '', unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    elif shading == 'unlit':
         MEL.connect_material_property(g.add(base, emissive), '', unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     else:
         # Three.js ambient and hemisphere light have no occlusion: add BaseColor * irradiance / pi.
@@ -202,13 +233,54 @@ def make_surface(name, mpc, shading='lit', blend='opaque', two_sided=False, bill
     elif blend == 'masked':
         clip = g.add(g.op(unreal.MaterialExpressionSubtract, alpha, g.scalar('AlphaTest', 0.5)), g.const(0.5))
         MEL.connect_material_property(clip, '', unreal.MaterialProperty.MP_OPACITY_MASK)
-    elif blend == 'additive':
+    elif blend == 'additive' and shading != 'unlit':
         MEL.connect_material_property(g.mul(g.add(base, emissive), alpha), '', unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     if billboard:
         billboard_offset(g)
     errors = MEL.recompile_material(mat)
     EAL.save_loaded_asset(mat)
     unreal.log_warning(f'JsGameBridge material {name} saved; compile messages: {list(errors)}')
+
+
+SKY = '''
+float3 d = -V;
+float3 t = float3(d.x, d.z, d.y);
+float3 r = normalize(float3(dot(R0.xyz, t), dot(R1.xyz, t), dot(R2.xyz, t)));
+float u = atan2(r.z, r.x) * 0.15915494 + 0.5;
+float v = asin(clamp(r.y, -1.0, 1.0)) * 0.31830989 + 0.5;
+if (Flip > 0.5) v = 1.0 - v;
+return Tex.SampleLevel(TexSampler, float2(u, v), 0).rgb * I;
+'''
+
+
+def make_sky():
+    """scene.background as an equirectangular texture: drawn on a sphere around the camera, as a sky (behind everything).
+    The direction is converted to three.js axes (Y up), rotated by scene.backgroundRotation, and looked up as three.js's
+    equirectUv does."""
+    mat = fresh('M_JsgbSky', unreal.Material, unreal.MaterialFactoryNew())
+    g = Graph(mat)
+    mat.set_editor_property('shading_model', unreal.MaterialShadingModel.MSM_UNLIT)
+    mat.set_editor_property('two_sided', True)
+    mat.set_editor_property('is_sky', True)
+    node = g.node(unreal.MaterialExpressionCustom, output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3, description='equirect sky', code=SKY)
+    inputs = []
+    for n in ('V', 'R0', 'R1', 'R2', 'I', 'Flip', 'Tex'):
+        ci = unreal.CustomInput()
+        ci.set_editor_property('input_name', n)
+        inputs.append(ci)
+    node.set_editor_property('inputs', inputs)
+    g.link(g.node(unreal.MaterialExpressionCameraVectorWS), '', node, 'V')
+    g.link(g.vector('Rot0', unreal.LinearColor(1, 0, 0, 0)), '', node, 'R0')
+    g.link(g.vector('Rot1', unreal.LinearColor(0, 1, 0, 0)), '', node, 'R1')
+    g.link(g.vector('Rot2', unreal.LinearColor(0, 0, 1, 0)), '', node, 'R2')
+    g.link(g.scalar('Intensity', 1), '', node, 'I')
+    g.link(g.scalar('FlipV', 0), '', node, 'Flip')
+    tex = g.node(unreal.MaterialExpressionTextureObjectParameter, parameter_name='Map', texture=unreal.load_asset('/Engine/EngineResources/WhiteSquareTexture'))
+    g.link(tex, '', node, 'Tex')
+    MEL.connect_material_property(node, '', unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    errors = MEL.recompile_material(mat)
+    EAL.save_loaded_asset(mat)
+    unreal.log_warning(f'JsGameBridge material M_JsgbSky saved; compile messages: {list(errors)}')
 
 
 def make_post(mpc):
@@ -284,4 +356,5 @@ make_surface('M_JsgbUnlitMasked', MPC, shading='unlit', blend='masked', two_side
 make_surface('M_JsgbBillboard', MPC, shading='unlit', blend='translucent', billboard=True)
 make_surface('M_JsgbBillboardAdd', MPC, shading='unlit', blend='additive', billboard=True)
 make_post(MPC)
+make_sky()
 unreal.log('JsGameBridge materials done')

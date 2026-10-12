@@ -31,12 +31,21 @@ async function loadVite() {
 }
 
 async function build() {
-  const vite = await loadVite();
   const started = Date.now();
-  await vite.build({root: game.repo, logLevel: 'warn', cacheDir: path.join(game.out, '.vite-cache'),
+  const options = {root: game.repo, logLevel: 'warn', cacheDir: path.join(game.out, '.vite-cache'),
     // A game whose page isn't index.html (a three.js example page) builds that page.
-    build: {outDir: webOut, emptyOutDir: true, copyPublicDir: false, reportCompressedSize: false,
-      ...(game.index && game.index !== 'index.html' ? {rollupOptions: {input: path.join(game.repo, game.index)}} : {})}});
+    build: {outDir: webOut, emptyOutDir: true, copyPublicDir: false, reportCompressedSize: false, target: game.target ?? 'es2022',
+      ...(game.index && game.index !== 'index.html' ? {rollupOptions: {input: path.join(game.repo, game.index)}} : {})}};
+  try {
+    await (await loadVite()).build(options);
+  } catch (error) {
+    // A game installed from WSL or Linux has no Windows build of Rollup's native module. The suite's own Vite builds it
+    // instead, without the game's vite.config (which imports the game's Vite).
+    if (!/Cannot find module @rollup|native\.js|rolldown-binding/.test(String(error?.stack ?? error))) throw error;
+    console.log(`${game.id}'s own Vite can't run on this platform (${String(error.message).split('\n')[0]}); building with the bridge's Vite`);
+    const m = await import(pathToFileURL(requireFromSuite.resolve('vite')).href);
+    await (m.build ? m : m.default).build({...options, configFile: false});
+  }
   console.log(`web build of ${game.id} in ${Date.now() - started} ms -> ${webOut}`);
 }
 
@@ -103,7 +112,8 @@ async function capture() {
   const stopAt = (who, ms) => fixedFps ? page.evaluate(([w, v]) => window.__jsgbStopAt?.(w, v), [who, ms]).catch(() => {}) : null;
   const clock = async () => fixedFps ? (await page.evaluate(() => window.__jsgbVirtualMs?.() ?? 0).catch(() => 0)) / 1000 : Date.now() / 1000;
   page.on('pageerror', e => errors.push(String(e)));
-  page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  // A failed load names its URL (Chrome's console message doesn't).
+  page.on('console', m => { if (m.type() === 'error') errors.push(m.text().startsWith('Failed to load resource') && m.location()?.url ? `${m.text()}: ${m.location().url}` : m.text()); });
   const frames = flag('--frames'), fps = +flag('--fps', 10), shots = flag('--shots', path.join(game.out, 'web-shots'));
   if (frames) fs.mkdirSync(frames, {recursive: true});
   fs.mkdirSync(shots, {recursive: true});

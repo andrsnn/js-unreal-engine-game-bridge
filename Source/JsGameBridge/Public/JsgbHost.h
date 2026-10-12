@@ -16,6 +16,21 @@ class IHttpRouter;
 namespace PUERTS_NAMESPACE { class FJsEnv; }
 
 /** What the CEF overlay calls (window.ue.jsgb.sendinput): DOM events and layout from the mirrored UI. */
+/** What a page game (one running in the built-in browser) can call through window.ue.jsgbpage: the display settings
+ *  behind window.jsgb.display. */
+UCLASS()
+class JSGAMEBRIDGE_API UJsgbPagePort : public UObject
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY() TObjectPtr<class UJsgbBridge> Display;
+	/** The page's frame rate, which Unreal's frame rate is held to. */
+	int32 PageFps = 60;
+	UFUNCTION() FString DisplayModes();
+	UFUNCTION() FString DisplayGet();
+	UFUNCTION() void DisplaySet(const FString& Json);
+};
+
 UCLASS()
 class JSGAMEBRIDGE_API UJsgbUIPort : public UObject
 {
@@ -93,12 +108,16 @@ private:
 	void SwapCss(double BuildMs);
 	void SetupUpscaler();
 	void ApplyUpscaler(const FString& Mode, const FString& TsrPercent);
-	/** F6: the next DLSS mode (off, DLAA, Quality, Balanced, Performance, DLSS 5). F7: Frame Generation on or off. */
+	/** F6: the next DLSS mode (off, DLAA, Quality, Balanced, Performance, DLSS 5). F7: Frame Generation off, 2x, and on RTX 50
+	 *  GPUs 3x and 4x (Multi Frame Generation). */
 	void CycleUpscaler();
 	void ToggleFrameGen();
+	/** Page mode: the game's own web build runs in the built-in browser (for 2D WebGL games such as pixi.js ones). */
+	void CreatePageView();
 	/** Whether DLSS 5 Neural Rendering can run here; when it can't, why (for the log) and the short form (for the readout). */
 	bool NeuralRenderingCheck(FString& Why, FString& Short) const;
 	void UpdateHud(float DeltaSeconds);
+	TSharedRef<SWidget> MakeJitterGraph();
 	void StartRecording(const FString& Dir, double Fps);
 	void StopRecording();
 	void OnRecordedFrame(int32 Width, int32 Height, const TArray<FColor>& Bitmap);
@@ -109,12 +128,22 @@ private:
 	TSharedPtr<PUERTS_NAMESPACE::FJsEnv> JsEnv;
 	TSharedPtr<class FJsgbJsThread> JsThread;
 	double LastSnapshot = 0, SnapshotInterval = 1.0 / 60.0;
+	/** The glide between game updates: from the pose on screen when an update arrived (at SegmentStart) to the update's
+	 *  pose at SegmentEnd, which is the time the JavaScript thread made it plus one game interval and one Unreal frame. */
+	double SegmentStart = 0, SegmentEnd = 0, LastProduced = 0, DrawInterval = 1.0 / 60.0;
+	/** How evenly the camera moves: its speed each frame while it moves, summed for the frame log. */
+	FVector LastCameraAt = FVector::ZeroVector;
+	double CamSpeedSum = 0, CamSpeedSum2 = 0;
+	int32 CamSpeedFrames = 0;
 	TSharedPtr<SWebBrowser> Browser;
+	UPROPERTY() TObjectPtr<UJsgbPagePort> PagePort;
 	TSharedPtr<IHttpRouter> Router;
 	FDelegateHandle RouteHandle;
 	TSharedPtr<class FJsgbInputProcessor> Input;
 	TArray<FString> PublicRoots;
 	FString Search, RegistryJson, PageCss;
+	/** The web build's page, relative to the first public root, when publication.json has "page"; empty otherwise. */
+	FString PageIndex;
 	bool bDocumentReady = false;
 	int64 PushedUIVersion = -1;
 	bool bRestart = false;
@@ -156,9 +185,16 @@ private:
 	FString DlssMode;
 	FString NeuralNote;
 	bool bFrameGen = false;
+	/** Frames generated per rendered frame: 1 (2x) to 3 (4x). */
+	int32 FrameGenFrames = 1;
 	/** -JsgbDlssKeys: F6 and F7 switch DLSS while the game runs, and the readout lists the keys. */
 	bool bShowKeys = false;
 	bool bShowHud = false;
+	/** The jitter readout under the frame rate (-JsgbJitter, F8 with -JsgbDlssKeys): the last 600 frame times in ms. */
+	bool bShowJitter = false;
+	TArray<float> JitterMs;
+	int32 JitterHead = 0;
+	FString JitterLine;
 	int32 HudFrames = 0;
 	double HudSeconds = 0, HudFps = 0, HudPresentedFps = -1;
 	TSharedPtr<class STextBlock> HudText;
@@ -166,6 +202,10 @@ private:
 	TArray<float> FrameTimesMs;
 	/** The last tick's js, mirror, build queue, builds, build stall and UI push times, for the slow-frame log. */
 	TArray<double> LastTick;
+	/** Unreal's own per-frame times (as stat unit shows them), summed since the last frame log: game thread, render thread,
+	 *  RHI thread and GPU, in ms. */
+	double EngineMs[4] = {0, 0, 0, 0};
+	int32 EngineFrames = 0;
 	// CSS hot swap timing: from the request to the overlay painting the new stylesheet.
 	int32 CssVersion = 0;
 	double CssStart = -1, CssBuildMs = -1, LastCssMs = -1;
@@ -179,6 +219,11 @@ private:
 	/** Reads recorded frames back from the GPU a few frames later, so recording doesn't make the CPU wait for the GPU. */
 	TSharedPtr<class FFrameGrabber> Grabber;
 	TSharedPtr<class SWidget> Banner;
+	/** The loading screen: the game's name and a moving bar, from launch until the game shows something. */
+	TSharedPtr<class SWidget> Loading;
+	double LoadingStart = 0;
+	void ShowLoading();
+	void UpdateLoading();
 	TSharedPtr<class STextBlock> BannerText;
 	double BannerUntil = 0;
 };

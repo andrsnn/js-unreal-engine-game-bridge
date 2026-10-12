@@ -48,6 +48,14 @@ public:
 
 	// Platform services.
 	UFUNCTION() FArrayBufferValue ReadFile(const FString& Path);
+	/** The display (window.jsgb.display): the monitor's resolutions as JSON [{width, height, refresh}], the current settings
+	 *  as JSON {width, height, mode, vsync, maxFps}, and a change ({width?, height?, mode?, vsync?, maxFps?}) applied on
+	 *  the game thread. mode is "windowed", "borderless" or "fullscreen"; maxFps 0 means no cap. */
+	UFUNCTION() FString DisplayModes();
+	UFUNCTION() FString DisplayGet();
+	UFUNCTION() void DisplaySet(const FString& Json);
+	/** Refreshes the display JSON the JavaScript thread reads. Game thread. */
+	void UpdateDisplayInfo();
 	/** Web Workers on their own threads (JsgbWorkers.h). Create returns 0 when threaded workers are off. */
 	UFUNCTION() int32 WorkerCreate(const FString& Source, const FString& Url, const FString& Name);
 	UFUNCTION() void WorkerPost(int32 Id, FArrayBuffer Bytes);
@@ -130,6 +138,12 @@ public:
 	struct FUICanvas { int32 Width = 0, Height = 0; TArray<uint8> Rgba; };
 	TMap<FString, FUICanvas> UICanvases;
 	int64 SceneFrames = 0;
+	/** Files the game has read so far (the loading screen shows it). */
+	std::atomic<int32> FilesRead{0};
+	FCriticalSection DisplayLock;
+	FString DisplayModesJson, DisplayJson;
+	/** When the JavaScript thread made the newest scene frame the game thread applied (FPlatformTime seconds). */
+	double LastFrameProducedAt = 0;
 	UPROPERTY() TObjectPtr<UJsgbSceneMirror> Mirror;
 	UPROPERTY() TObjectPtr<UJsgbAudio> Audio;
 };

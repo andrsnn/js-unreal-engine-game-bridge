@@ -1,3 +1,4 @@
+declare const __JSGB_SHADER_VERSION__: string;
 import * as THREE from 'three-real';
 import createCrossShader from '../vendor/cross-shader/CrossShader.cjs';
 import {host} from './host';
@@ -260,7 +261,9 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial): Transla
     return null;
   }
   // Compiled stages persist in the host store, so a reload or relaunch skips the compiler.
-  const stageKey = (glsl: string, label: string) => 'jsgb-shader-v1:' + label + ':' + textHash(glsl);
+  // Translations are stored across launches; the key names the translator build (Tools/jsgb.mjs hashes this file and the
+  // shader compiler), so a newer bridge never reuses an older bridge's HLSL.
+  const stageKey = (glsl: string, label: string) => 'jsgb-shader-' + (typeof __JSGB_SHADER_VERSION__ === 'string' ? __JSGB_SHADER_VERSION__ : 'dev') + ':' + label + ':' + textHash(glsl);
   const compiled = (out: string) => /\bvoid\s+(vert|frag)_main\b/.test(out);
   const stored = (glsl: string, label: string) => { const out = host.storage?.load(stageKey(glsl, label)) ?? ''; return compiled(out) ? out : ''; };
   let vh = stored(vs.glsl, 'vertex'), fh = stored(fs.glsl, 'fragment');

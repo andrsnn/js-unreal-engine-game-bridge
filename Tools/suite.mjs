@@ -132,7 +132,8 @@ fs.writeFileSync(path.join(docs, 'results.json'), JSON.stringify({commit, date: 
 const cell = v => v === null || v === undefined ? '' : String(v);
 // Differences that come from how the two renderers work, not from a bridge bug, with the cases they affect.
 const known = [
-  ['transparency', 'WebGL blends transparent surfaces using sRGB values, and Unreal blends them in linear light. Over a dark background a transparent colour comes out brighter in Unreal, and over a light one darker. No single change to opacity matches both.'],
+  ['lit transparent surfaces', 'WebGL blends transparent surfaces using sRGB values. The bridge matches that for unlit, additive and sprite materials, but lit transparent materials (MeshStandardMaterial and the like) still blend in linear light, so over a dark background they come out a little brighter in Unreal.'],
+  ['overlapping transparent surfaces', 'Where two transparent surfaces overlap, the nearer one blends with the opaque scene behind both, not with the farther transparent surface.'],
 ];
 const md = [
   '# Conformance results', '',

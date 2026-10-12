@@ -1,4 +1,6 @@
 #include "JsgbBridge.h"
+#include "GameFramework/GameUserSettings.h"
+#include "RHI.h"
 #include "JsgbWorkers.h"
 #include "JsgbSceneMirror.h"
 #include "JsgbAudio.h"
@@ -143,6 +145,7 @@ void UJsgbBridge::StopWorkers()
 
 FArrayBufferValue UJsgbBridge::ReadFile(const FString& Path)
 {
+	++FilesRead;
 	FArrayBufferValue Out;
 	FString Rel = Path;
 	Rel.ReplaceInline(TEXT("\\"), TEXT("/"));
@@ -312,7 +315,8 @@ void UJsgbBridge::Frame(FArrayBuffer Floats, int32 Count, FArrayBuffer Instances
 	};
 	if (!bJsThread || IsInGameThread()) { Apply(static_cast<const float*>(Floats.Data), N, static_cast<const float*>(Instances.Data), NI); return; }
 	TArray<float> D(static_cast<const float*>(Floats.Data), N), I(static_cast<const float*>(Instances.Data), NI);
-	RunOnGame([Apply, D = MoveTemp(D), I = MoveTemp(I)] { Apply(D.GetData(), D.Num(), I.GetData(), I.Num()); }, true);
+	const double Produced = FPlatformTime::Seconds();
+	RunOnGame([this, Apply, Produced, D = MoveTemp(D), I = MoveTemp(I)] { LastFrameProducedAt = Produced; Apply(D.GetData(), D.Num(), I.GetData(), I.Num()); }, true);
 }
 
 void UJsgbBridge::PublishUI(const FString& Html)
@@ -408,4 +412,64 @@ FArrayBufferValue UJsgbBridge::Text(const FString& FontPath, float SizePx, const
 		}
 	}
 	return Out;
+}
+
+// The display settings, through Unreal's game user settings (resolution, window mode, vsync, frame cap).
+FString UJsgbBridge::DisplayModes() { FScopeLock Lock(&DisplayLock); return DisplayModesJson; }
+FString UJsgbBridge::DisplayGet() { FScopeLock Lock(&DisplayLock); return DisplayJson; }
+
+void UJsgbBridge::UpdateDisplayInfo()
+{
+	FScreenResolutionArray Resolutions;
+	FString Modes = TEXT("[");
+	if (RHIGetAvailableResolutions(Resolutions, true))
+	{
+		TSet<FIntVector> Seen;
+		for (const FScreenResolutionRHI& R : Resolutions)
+		{
+			const FIntVector Key(R.Width, R.Height, R.RefreshRate);
+			if (Seen.Contains(Key)) { continue; }
+			Seen.Add(Key);
+			Modes += FString::Printf(TEXT("%s{\"width\":%u,\"height\":%u,\"refresh\":%u}"), Modes.Len() > 1 ? TEXT(",") : TEXT(""), R.Width, R.Height, R.RefreshRate);
+		}
+	}
+	Modes += TEXT("]");
+	FString Current = TEXT("{}");
+	if (UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr)
+	{
+		const FIntPoint Res = S->GetScreenResolution();
+		const EWindowMode::Type Mode = S->GetFullscreenMode();
+		Current = FString::Printf(TEXT("{\"width\":%d,\"height\":%d,\"mode\":\"%s\",\"vsync\":%s,\"maxFps\":%.0f}"), Res.X, Res.Y,
+			Mode == EWindowMode::Fullscreen ? TEXT("fullscreen") : Mode == EWindowMode::WindowedFullscreen ? TEXT("borderless") : TEXT("windowed"),
+			S->IsVSyncEnabled() ? TEXT("true") : TEXT("false"), S->GetFrameRateLimit());
+	}
+	FScopeLock Lock(&DisplayLock);
+	DisplayModesJson = Modes;
+	DisplayJson = Current;
+}
+
+void UJsgbBridge::DisplaySet(const FString& Json)
+{
+	RunOnGame([this, Json]
+	{
+		TSharedPtr<FJsonObject> In;
+		FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), In);
+		UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr;
+		if (!In || !S) { return; }
+		double W = 0, H = 0, MaxFps = -1;
+		FString Mode;
+		bool bVsync = false;
+		if (In->TryGetNumberField(TEXT("width"), W) && In->TryGetNumberField(TEXT("height"), H) && W > 0 && H > 0) { S->SetScreenResolution(FIntPoint(W, H)); }
+		if (In->TryGetStringField(TEXT("mode"), Mode))
+		{
+			S->SetFullscreenMode(Mode == TEXT("fullscreen") ? EWindowMode::Fullscreen : Mode == TEXT("borderless") ? EWindowMode::WindowedFullscreen : EWindowMode::Windowed);
+			// Borderless covers the whole monitor at its own resolution.
+			if (Mode == TEXT("borderless")) { S->SetScreenResolution(S->GetDesktopResolution()); }
+		}
+		if (In->TryGetBoolField(TEXT("vsync"), bVsync)) { S->SetVSyncEnabled(bVsync); }
+		if (In->TryGetNumberField(TEXT("maxFps"), MaxFps) && MaxFps >= 0) { S->SetFrameRateLimit(MaxFps); }
+		S->ApplySettings(false);
+		UpdateDisplayInfo();
+		Log(TEXT("log"), TEXT("display: ") + DisplayGet());
+	});
 }
