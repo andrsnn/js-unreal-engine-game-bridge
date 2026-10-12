@@ -12,6 +12,10 @@ Keys
   off. On the RTX 5080 laptop the graphics card drops to a low clock speed while DLSS runs, and about one frame in
   ten then takes 17 to 40 ms. With DLSS off the games run at 260 to 380 FPS on that laptop.
 - F7 switches Frame Generation: off, 2x, then 3x and 4x on RTX 50 series cards (Multi Frame Generation).
+- F9 turns Lumen mode on and off. Each game starts with it off. In Hard Burn it is also in Options > Display, as
+  "Lumen lighting". Lumen mode lights the game with Unreal's Lumen, swaps in the full-detail ship models (they take a
+  few seconds to load the first time) and adds Unreal's own engine light, gunfire light and lit smoke. It needs a
+  fast graphics card.
 - The box in the top right shows the mode, the frame rate and the GPU time per frame.
 
 What each mode needs
