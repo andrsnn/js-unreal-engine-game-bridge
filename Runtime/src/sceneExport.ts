@@ -748,7 +748,8 @@ function emitEffectLights() {
     push(l.distance); push(2); push(l.length); push(l.radius); push(0); push(0); push(0); push(0);
   });
   // An effect gets an id of its own: the object it plays at may also be drawn (a sprite).
-  effectSystems((o, key, m) => { let fx = effectIds.get(o); if (!fx) effectIds.set(o, fx = {}); push(EFFECT); push(idOf(fx)); push(keyId(key)); pushMatrix(m); });
+  // Niagara rules are override assets, which are in memory only once the models have loaded.
+  if (lumenModels) effectSystems((o, key, m) => { let fx = effectIds.get(o); if (!fx) effectIds.set(o, fx = {}); push(EFFECT); push(idOf(fx)); push(keyId(key)); pushMatrix(m); });
 }
 const effectIds = new WeakMap<object, object>();
 function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {

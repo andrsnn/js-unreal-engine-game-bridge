@@ -1575,9 +1575,12 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		StopJs();
 		if (!PendingBundle.IsEmpty())
 		{
+			// The old registry's override models are released before the new build's registry replaces it, and the new
+			// build's are loaded after.
+			const bool bWasLumen = bLumenOn;
+			if (bWasLumen) { SetLumen(false); }
 			LoadPublication(GameDir, PendingBundle); PendingBundle.Reset();
-			// The new build's registry may name other override models.
-			if (bLumenOn) { SetLumen(false); SetLumen(true); }
+			if (bWasLumen) { SetLumen(true); }
 		}
 		StartJs();
 	}

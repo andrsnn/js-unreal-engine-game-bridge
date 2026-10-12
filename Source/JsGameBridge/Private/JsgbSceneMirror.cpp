@@ -1179,7 +1179,9 @@ void UJsgbSceneMirror::ApplyLight(const float* S, uint32 FrameStamp, FLinearColo
 	}
 	const FVector Loc(Pos(&S[7]));
 	const FVector Forward(Dir(&S[10]));
-	C->SetWorldLocationAndRotation(Loc, Forward.IsNearlyZero() ? FRotator(-90, 0, 0) : Forward.Rotation());
+	// A point light's source length runs along its local Z, so a line light (a kinetic round) points Z along its path;
+	// spot and directional lights point X along their direction.
+	C->SetWorldLocationAndRotation(Loc, Forward.IsNearlyZero() ? FRotator(-90, 0, 0) : Kind == 2 ? FRotationMatrix::MakeFromZ(Forward).Rotator() : Forward.Rotation());
 	if (Kind == 2 || Kind == 3)
 	{
 		ULocalLightComponent* Local = Cast<ULocalLightComponent>(C);
@@ -1424,6 +1426,11 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	}
 
 	FLinearColor Ambient(0, 0, 0, 0), HemiSky(0, 0, 0, 0), HemiGround(0, 0, 0, 0);
+	// Override models and effects belong to Lumen mode. With JavaScript on its own thread, a frame built before Lumen
+	// turned off can still arrive; its override records are skipped, so the released models don't load again.
+	auto OverrideKey = [this](int32 KeyId) { const FString* Name = KeyNames.Find(KeyId); return Name && Name->StartsWith(TEXT("override:")); };
+	// A hull whose override materials were released (Lumen off) and whose component kept the mesh gets them again.
+	auto MaterialsReleased = [this](int32 KeyId) { const FString* Name = KeyNames.Find(KeyId); return Name && !OverrideMaterials.Contains(*Name); };
 	int32 K = HeaderFloats;
 	int32 Drawn = 0;
 	auto SetSlots = [this](FJsgbEntity& Ent, UStaticMeshComponent* C, int32 Slots, const float* Mats, int32 NumMats)
@@ -1528,6 +1535,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			const int32 Extra = ColorBits >> 1;
 			const int32 Offset = static_cast<int32>(D[K + 24]);
 			K += 25;
+			if (Geo < 0 && !bLumen && OverrideKey(-Geo)) { continue; }
 			// A negative geometry id names a registry mesh (asset key) instead of mirrored geometry.
 			UStaticMesh* Mesh = nullptr; int32 Slots = 1, Revision = 0;
 			if (Geo < 0)
@@ -1548,6 +1556,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 				C->SetStaticMesh(Mesh); Ent.Geometry = Geo; Ent.GeometryRevision = Revision; Ent.Materials.Reset();
 				if (Geo < 0 && Str(Asset(-Geo), TEXT("name")).Len() > 0) { UseOverrideMaterials(C, -Geo); }
 			}
+			else if (Geo < 0 && OverrideKey(-Geo) && MaterialsReleased(-Geo)) { UseOverrideMaterials(C, -Geo); }
 			if (Geo >= 0 && (Ent.Materials.Num() == 0 || Ent.Materials[0] != Mat || (MaterialFor(Mat) && C->GetMaterial(0) != MaterialFor(Mat))))
 			{
 				Ent.Materials.SetNum(1); Ent.Materials[0] = Mat;
@@ -1723,6 +1732,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			const int32 Id = static_cast<int32>(D[K + 1]), KeyId = static_cast<int32>(D[K + 2]);
 			const float* M = &D[K + 4];
 			K += 20;
+			if (!bLumen && OverrideKey(KeyId)) { continue; }
 			TSharedPtr<FJsonObject> A = Asset(KeyId);
 			const FString Path = Str(A, TEXT("mesh"));
 			if (Path.IsEmpty()) { continue; }
@@ -1741,6 +1751,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 					if (UMaterialInterface* MI = Resolve<UMaterialInterface>(MatPath)) { for (int32 S = 0; S < C->GetNumMaterials(); ++S) { C->SetMaterial(S, MI); } }
 				}
 			}
+			else if (OverrideKey(KeyId) && MaterialsReleased(KeyId)) { UseOverrideMaterials(C, KeyId); }
 			Place(Ent, C, ToTransform(M), 0);
 			Show(Ent, C, 1);
 		}
@@ -1750,6 +1761,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			const int32 Id = static_cast<int32>(D[K + 1]), KeyId = static_cast<int32>(D[K + 2]);
 			const float* M = &D[K + 3];
 			K += 19;
+			if (!bLumen && OverrideKey(KeyId)) { continue; }
 			TSharedPtr<FJsonObject> A = Asset(KeyId);
 			const FString Path = Str(A, TEXT("niagara"));
 			if (Path.IsEmpty() || Defer(Id)) { continue; }
