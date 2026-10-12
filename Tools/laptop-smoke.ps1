@@ -25,7 +25,7 @@ foreach ($pair in $Games.Split(';')) {
   $log = "$R\host\Windows\JsgbHost\Saved\Logs\jsgb-$id.log"
   Remove-Item $log -ErrorAction SilentlyContinue
   # A scheduled task with /IT runs in the signed-in desktop session, so the game window is on screen.
-  Set-Content -Encoding ascii "$R\smoke\run.cmd" "call `"$R\Play $name.cmd`" -JsgbAllowRemote -JsgbMaxSeconds=240"
+  Set-Content -Encoding ascii "$R\smoke\run.cmd" "call `"$R\Play $name.cmd`" -JsgbAllowRemote -JsgbMaxSeconds=240 -logPSO"
   schtasks /Create /F /TN JsgbSmoke /SC ONCE /ST 23:59 /TR "$R\smoke\run.cmd" /IT | Out-Null
   schtasks /Run /TN JsgbSmoke | Out-Null
   $t0 = Get-Date; $s = $null

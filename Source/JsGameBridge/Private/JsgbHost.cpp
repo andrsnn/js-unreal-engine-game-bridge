@@ -1,4 +1,5 @@
 #include "JsgbHost.h"
+#include "ShaderPipelineCache.h"
 #include "GameFramework/GameUserSettings.h"
 #include "JsgbBridge.h"
 #include "JsgbSceneMirror.h"
@@ -673,6 +674,10 @@ void AJsgbHost::ShowLoading()
 {
 	if (Loading.IsValid() || !GEngine || !GEngine->GameViewport || FParse::Param(FCommandLine::Get(), TEXT("JsgbNoLoadingScreen"))) { return; }
 	LoadingStart = FPlatformTime::Seconds();
+	// The package's recorded pipeline states (a bundled pipeline cache) compile on this PC's GPU driver while the
+	// loading screen is up, as fast as they can, so no draw stops to compile one later.
+	FShaderPipelineCache::SetBatchMode(FShaderPipelineCache::BatchMode::Fast);
+	FShaderPipelineCache::ResumeBatching();
 	const FString Name = Title.IsEmpty() ? FString(TEXT("Loading")) : Title;
 	auto Phase = [this]() { return static_cast<float>(FMath::Fmod((FPlatformTime::Seconds() - LoadingStart) * 0.6, 1.0)); };
 	Loading = SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(0.02f, 0.025f, 0.035f, 1.f))
@@ -705,6 +710,10 @@ void AJsgbHost::ShowLoading()
 				.Text(TAttribute<FText>::CreateLambda([this]()
 				{
 					const int32 Files = Bridge ? Bridge->FilesRead.load() : 0;
+					if (FShaderPipelineCache::IsPrecompiling())
+					{
+						return FText::FromString(FString::Printf(TEXT("Preparing shaders for this PC, %u left"), FShaderPipelineCache::NumPrecompilesRemaining()));
+					}
 					return FText::FromString(Files > 0 ? FString::Printf(TEXT("Loading, %d files read"), Files) : FString(TEXT("Starting")));
 				}))
 			]
@@ -719,8 +728,10 @@ void AJsgbHost::UpdateLoading()
 	const bool bPage = !PageIndex.IsEmpty();
 	const bool bShown = bPage ? bDocumentReady
 		: (UIPort && UIPort->AppliedUIVersion > 0) || (Mirror && Mirror->DrawnEntities > 0) || (Bridge && Bridge->bReady && ReadyFrame >= 0);
-	// Two minutes at most, so a game that never reports anything isn't hidden behind it.
-	if (!bShown && FPlatformTime::Seconds() - LoadingStart < 120.0) { return; }
+	// It stays until the pipeline cache is compiled too; two minutes at most, so a game that never reports anything
+	// isn't hidden behind it.
+	if ((!bShown || FShaderPipelineCache::IsPrecompiling()) && FPlatformTime::Seconds() - LoadingStart < 120.0) { return; }
+	FShaderPipelineCache::SetBatchMode(FShaderPipelineCache::BatchMode::Background);
 	if (GEngine && GEngine->GameViewport) { GEngine->GameViewport->RemoveViewportWidgetContent(Loading.ToSharedRef()); }
 	Loading.Reset();
 	UE_LOG(LogJsgbHost, Display, TEXT("Loading screen shown for %.1f s"), FPlatformTime::Seconds() - LoadingStart);

@@ -113,6 +113,18 @@ if (!has('--no-smoke')) {
   const lines = smoke.stdout.split('\n').map(l => l.trim()).filter(l => / (PASS|FAIL)/.test(l));
   for (const l of lines) log(`smoke: ${l}`);
   if (lines.length !== games.length || lines.some(l => / FAIL/.test(l))) throw Error(`smoke test failed, nothing copied:\n${smoke.stdout}${smoke.stderr}`);
+  // The smoke runs recorded every pipeline state the games drew with (-logPSO). With the cook's stable shader keys,
+  // they go to the project's Build/Windows/PipelineCaches, and the next --host package bundles them: the player's GPU
+  // driver then compiles them all behind the loading screen.
+  const recorded = path.join(out, 'host/Windows/JsgbHost/Saved/CollectedPSOs'), caches = path.join(project, 'Build/Windows/PipelineCaches');
+  const keys = path.join(project, 'Saved/Cooked/Windows/JsgbHost/Metadata/PipelineCaches');
+  if (fs.existsSync(recorded)) {
+    fs.mkdirSync(caches, {recursive: true});
+    let kept = 0;
+    for (const f of fs.readdirSync(recorded).filter(f => f.endsWith('.rec.upipelinecache'))) { fs.copyFileSync(path.join(recorded, f), path.join(caches, f)); ++kept; }
+    if (fs.existsSync(keys)) for (const f of fs.readdirSync(keys).filter(f => f.endsWith('.shk'))) fs.copyFileSync(path.join(keys, f), path.join(caches, f));
+    log(`${kept} pipeline recordings kept for the next host package`);
+  }
 }
 if (remote) await sync(remote);
 log(`done: ${out}`);
