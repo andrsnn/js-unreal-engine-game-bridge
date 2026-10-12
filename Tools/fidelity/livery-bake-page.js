@@ -3,7 +3,7 @@
 // (faction colours, stripes, panels and tint: scene/hull-livery.js or the fleet paint in pixal3d.js), and draws the
 // override's source model flat in its texture space through that material, with the source's own colour texture as
 // the map. The result is the source's colour texture with the game's livery painted on, exactly as the browser
-// computes it, including the class's registration marks (hull number and service tag).
+// computes it. The registration marks are left out (see bake below).
 // Vite serves this module, so these resolve to the same module instances the game's page uses.
 import * as pixal from '/src/scene/pixal3d.js';
 import {hullPlateMask} from '/src/scene/hull-plate-mask.js';
@@ -204,11 +204,13 @@ export async function bake(name, key, sourceUrl, style = 'clean') {
     geometry.setAttribute('jsgbCurvature', new THREE.BufferAttribute(bend, 1));
     blurred = downsample(paintSource(game.material) ?? map, 256);
     // Paint goes on every broad, smooth, light part of the hull, not only on the game's plates: the game's plate mask
-    // comes from its low-detail model and leaves most of the detailed one unpainted. Dark machinery keeps its colour.
+    // comes from its low-detail model and leaves most of the detailed one unpainted. Dark machinery keeps its colour,
+    // judged against the hull's own median brightness: a dark texture (the TDF capital's brown camo) still gets painted.
     const light = brightnessAt(blurred, gameUv, 256);
+    const median = Float32Array.from(light).sort()[Math.floor(n / 2)] || .2, dark = Math.min(.18, median * .45);
     for (let v = 0; v < n; v++) {
       const flat = 1 - Math.min(1, Math.max(0, (Math.abs(bend[v]) - .15) / .35));
-      const pale = Math.min(1, Math.max(0, (light[v] - .18) / .17));
+      const pale = Math.min(1, Math.max(0, (light[v] - dark) / (dark * .95)));
       weight[v] = Math.max(weight[v], flat * pale);
     }
     geometry.attributes.hullPaintWeight.needsUpdate = true;
@@ -228,14 +230,13 @@ export async function bake(name, key, sourceUrl, style = 'clean') {
   if (!paint.map) paint.map = map;
   if (clean) paint.map = blurred;
   paint.side = THREE.DoubleSide; paint.depthTest = paint.depthWrite = false; paint.transparent = false;
+  // The registration marks (hull number and service tag) are left out: the source models are symmetry-repaired
+  // (Tools/fidelity/symfix.mjs), so both halves share the same texels and text would read backwards on one side.
+  const blank = new THREE.DataTexture(new Uint8Array(4), 1, 1); blank.needsUpdate = true;
   const gamePaint = game.material.onBeforeCompile;
   paint.onBeforeCompile = (shader, renderer) => {
     gamePaint.call(game.material, shader, renderer);
-    // The registration marks (hull number and service tag) belong to the class, so they go into its texture. Drawn
-    // flat in texture space, screen derivatives mean nothing, so a mark faces the way the vertex normal does.
-    shader.fragmentShader = shader.fragmentShader.replace('vec3 faceNormal=normalize(cross(dFdx(liveryPosition),dFdy(liveryPosition)));', 'vec3 faceNormal=normalize(liveryNormal);')
-      .replace('if(!gl_FrontFacing)faceNormal=-faceNormal;', '');
-    shader.uniforms.jsgbOriginal = {value: map};
+    if (shader.uniforms.liveryRegistration) shader.uniforms.liveryRegistration.value = blank;    shader.uniforms.jsgbOriginal = {value: map};
     shader.uniforms.jsgbFrame = {value: frame};
     shader.uniforms.jsgbShipLength = {value: shipLength};
     shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nattribute vec2 jsgbUv; varying vec2 vJsgbUv;' +
@@ -268,7 +269,7 @@ export async function bake(name, key, sourceUrl, style = 'clean') {
   const px = new Uint8Array(W * H * 4);
   r.readRenderTargetPixels(target, 0, 0, W, H, px);
   r.setRenderTarget(before.target); r.autoClear = before.autoClear; r.toneMapping = before.tone;
-  target.dispose(); paint.dispose(); geometry.dispose(); lookup.dispose(); for (const t of softCopies.splice(0)) t.dispose(); under.material.dispose(); under.geometry.dispose();
+  target.dispose(); paint.dispose(); geometry.dispose(); lookup.dispose(); for (const t of softCopies.splice(0)) t.dispose(); under.material.dispose(); under.geometry.dispose(); blank.dispose();
   // Free the source model: its 4096 textures are hundreds of megabytes each, and the bake goes through every hull.
   gltf.scene.traverse(o => {
     if (!o.isMesh) return;
