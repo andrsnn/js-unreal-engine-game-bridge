@@ -16,14 +16,7 @@
    ],
    "params": {
     "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0,
-    "RoughnessScale": 0.7,
-    "Tint": [
-     0.86,
-     0.97,
-     1.1
-    ]
+    "RoughnessScale": 0.7
    }
   },
   {
@@ -40,9 +33,7 @@
     "concept_helion_destroyer"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -58,9 +49,7 @@
     "concept_tdf_corvette"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -76,9 +65,7 @@
     "concept_tdf_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -94,9 +81,7 @@
     "concept_tdf_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -112,9 +97,7 @@
     "concept_mrn_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -130,9 +113,7 @@
     "concept_mrn_destroyer"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -148,9 +129,7 @@
     "concept_mrn_corvette"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -166,9 +145,7 @@
     "concept_mrn_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -184,9 +161,7 @@
     "concept_mrn_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -201,9 +176,7 @@
     "concept_tdf_starbase"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -218,9 +191,7 @@
     "concept_mrn_starbase"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -235,9 +206,7 @@
     "concept_asteroid_shipyard"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -253,9 +222,7 @@
     "concept_cartel_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -271,9 +238,7 @@
     "concept_cartel_boarding_craft"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -289,9 +254,7 @@
     "concept_cartel_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -307,9 +270,7 @@
     "concept_cartel_corvette"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -325,9 +286,7 @@
     "concept_cartel_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -343,9 +302,7 @@
     "concept_cartel_destroyer"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -361,9 +318,7 @@
     "concept_cartel_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -379,9 +334,7 @@
     "concept_cartel_flagship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -397,9 +350,7 @@
     "concept_cartel_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -414,9 +365,7 @@
     "concept_cartel_kinetic_harpoon"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -432,9 +381,7 @@
     "concept_cartel_missile_barge"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -450,9 +397,7 @@
     "concept_cartel_ransom_freighter"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -468,9 +413,7 @@
     "concept_cartel_scout"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -486,9 +429,7 @@
     "concept_cartel_signature_unit"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -503,9 +444,7 @@
     "concept_cartel_station"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -521,9 +460,7 @@
     "concept_corsair_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -539,9 +476,7 @@
     "concept_corsair_boarding_craft"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -557,9 +492,7 @@
     "concept_corsair_boarding_pod"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -575,9 +508,7 @@
     "concept_corsair_boarding_tender"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -593,9 +524,7 @@
     "concept_corsair_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -611,9 +540,7 @@
     "concept_corsair_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -628,9 +555,7 @@
     "concept_corsair_decoy_drone"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -646,9 +571,7 @@
     "concept_corsair_destroyer"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -664,9 +587,7 @@
     "concept_corsair_ew_ship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -682,9 +603,7 @@
     "concept_corsair_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -700,9 +619,7 @@
     "concept_corsair_heavy_ambusher"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -717,9 +634,7 @@
     "concept_corsair_hidden_base"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -734,9 +649,7 @@
     "concept_corsair_jammer_array"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -753,9 +666,7 @@
     "concept_corsair_ore_hauler"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -771,9 +682,7 @@
     "concept_corsair_raider"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -790,9 +699,7 @@
     "concept_corsair_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -807,9 +714,7 @@
     "concept_derelict_battleship_hulk"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -824,9 +729,7 @@
     "concept_derelict_wreck"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -842,9 +745,7 @@
     "concept_helion_armed_mining_drone"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -860,9 +761,7 @@
     "concept_helion_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -878,9 +777,7 @@
     "concept_helion_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -896,9 +793,7 @@
     "concept_helion_colony_ship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -914,9 +809,7 @@
     "concept_helion_constructor"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -932,9 +825,7 @@
     "concept_helion_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -949,9 +840,7 @@
     "concept_helion_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -967,9 +856,7 @@
     "concept_helion_flagship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -985,9 +872,7 @@
     "concept_helion_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1003,9 +888,7 @@
     "concept_helion_marine_shuttle"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1020,9 +903,7 @@
     "concept_helion_mining_laser"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1038,9 +919,7 @@
     "concept_helion_mining_ship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1056,9 +935,7 @@
     "concept_helion_ore_hauler"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1075,9 +952,7 @@
     "concept_helion_scout"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1092,9 +967,7 @@
     "concept_helion_shipyard"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1110,9 +983,7 @@
     "concept_helion_signature_unit"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1127,9 +998,7 @@
     "concept_helion_station"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1144,9 +1013,7 @@
     "concept_hero_asteroid_fortress"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1161,9 +1028,7 @@
     "concept_hero_moon_observatory"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1178,9 +1043,7 @@
     "concept_module_armour_plate_set"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1195,9 +1058,7 @@
     "concept_module_beam_lance"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1212,9 +1073,7 @@
     "concept_module_cargo_pod"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1229,9 +1088,7 @@
     "concept_module_comms_mast"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1246,9 +1103,7 @@
     "concept_module_docking_arm"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1263,9 +1118,7 @@
     "concept_module_engine_large"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1280,9 +1133,7 @@
     "concept_module_engine_medium"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1297,9 +1148,7 @@
     "concept_module_engine_small"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1314,9 +1163,7 @@
     "concept_module_fabrication_bay"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1331,9 +1178,7 @@
     "concept_module_flak_battery"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1348,9 +1193,7 @@
     "concept_module_habitat_ring"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1365,9 +1208,7 @@
     "concept_module_hangar_launch_tube"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1382,9 +1223,7 @@
     "concept_module_heavy_kinetic_turret"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1399,9 +1238,7 @@
     "concept_module_heavy_railgun"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1416,9 +1253,7 @@
     "concept_module_light_railgun"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1433,9 +1268,7 @@
     "concept_module_missile_pod"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1450,9 +1283,7 @@
     "concept_module_point_defence"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1467,9 +1298,7 @@
     "concept_module_reactor"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1484,9 +1313,7 @@
     "concept_module_refinery"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1501,9 +1328,7 @@
     "concept_module_sensor_array"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1518,9 +1343,7 @@
     "concept_module_shield_generator"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1535,9 +1358,7 @@
     "concept_module_spinal_mount"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1552,9 +1373,7 @@
     "concept_module_torpedo_tubes"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1569,9 +1388,7 @@
     "concept_module_vls_bank"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1587,9 +1404,7 @@
     "concept_mrn_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1605,9 +1420,7 @@
     "concept_mrn_capital_titan"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1623,9 +1436,7 @@
     "concept_mrn_colony_ship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1641,9 +1452,7 @@
     "concept_mrn_constructor"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1658,9 +1467,7 @@
     "concept_mrn_defence_platform"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1676,9 +1483,7 @@
     "concept_mrn_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1693,9 +1498,7 @@
     "concept_mrn_gun_turret"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1710,9 +1513,7 @@
     "concept_mrn_heavy_vls_bank"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1728,9 +1529,7 @@
     "concept_mrn_marine_shuttle"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1745,9 +1544,7 @@
     "concept_mrn_mining_outpost"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1763,9 +1560,7 @@
     "concept_mrn_mining_ship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1780,9 +1575,7 @@
     "concept_mrn_missile_battery"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1797,9 +1590,7 @@
     "concept_mrn_orbital_habitat"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1815,9 +1606,7 @@
     "concept_mrn_ore_hauler"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1832,9 +1621,7 @@
     "concept_mrn_research_station"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1850,9 +1637,7 @@
     "concept_mrn_scout"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1867,9 +1652,7 @@
     "concept_mrn_shield_generator"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1884,9 +1667,7 @@
     "concept_mrn_shipyard"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1901,9 +1682,7 @@
     "concept_mrn_surface_colony"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1919,9 +1698,7 @@
     "concept_mrn_torpedo_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1936,9 +1713,7 @@
     "concept_mrn_torpedo_launcher"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1953,9 +1728,7 @@
     "concept_mrn_trade_refinery"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1971,9 +1744,7 @@
     "concept_mrn_troop_transport"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -1988,9 +1759,7 @@
     "concept_pirate_base"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2006,9 +1775,7 @@
     "concept_tdf_assault_transport"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2024,9 +1791,7 @@
     "concept_tdf_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2042,9 +1807,7 @@
     "concept_tdf_boarding_pod"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2061,9 +1824,7 @@
     "concept_tdf_capital_titan"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2078,9 +1839,7 @@
     "concept_tdf_coilgun_pdc_grid"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2097,9 +1856,7 @@
     "concept_tdf_colony_ship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2115,9 +1872,7 @@
     "concept_tdf_constructor"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2132,9 +1887,7 @@
     "concept_tdf_defence_platform"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2150,9 +1903,7 @@
     "concept_tdf_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2167,9 +1918,7 @@
     "concept_tdf_gun_turret"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2185,9 +1934,7 @@
     "concept_tdf_marine_shuttle"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2202,9 +1949,7 @@
     "concept_tdf_mining_outpost"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2220,9 +1965,7 @@
     "concept_tdf_mining_ship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2237,9 +1980,7 @@
     "concept_tdf_missile_battery"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2254,9 +1995,7 @@
     "concept_tdf_orbital_habitat"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2272,9 +2011,7 @@
     "concept_tdf_ore_hauler"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2290,9 +2027,7 @@
     "concept_tdf_repair_tender"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2307,9 +2042,7 @@
     "concept_tdf_research_station"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2325,9 +2058,7 @@
     "concept_tdf_scout"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2343,9 +2074,7 @@
     "concept_tdf_sensor_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2360,9 +2089,7 @@
     "concept_tdf_shield_generator"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2377,9 +2104,7 @@
     "concept_tdf_shipyard"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2394,9 +2119,7 @@
     "concept_tdf_surface_colony"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2411,9 +2134,7 @@
     "concept_tdf_trade_refinery"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2429,9 +2150,7 @@
     "concept_tdf_troop_transport"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2447,9 +2166,7 @@
     "concept_ueg_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2465,9 +2182,7 @@
     "concept_ueg_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2483,9 +2198,7 @@
     "concept_ueg_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2501,9 +2214,7 @@
     "concept_ueg_destroyer"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2519,9 +2230,7 @@
     "concept_ueg_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2537,9 +2246,7 @@
     "concept_ueg_flagship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2555,9 +2262,7 @@
     "concept_ueg_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2573,9 +2278,7 @@
     "concept_ueg_gun_monitor"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2591,9 +2294,7 @@
     "concept_ueg_marine_shuttle"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2609,9 +2310,7 @@
     "concept_ueg_scout"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2627,9 +2326,7 @@
     "concept_ueg_signature_unit"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2644,9 +2341,7 @@
     "concept_ueg_spinal_flak_battery"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2661,9 +2356,7 @@
     "concept_ueg_starbase"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2678,9 +2371,7 @@
     "concept_ueg_station"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2696,9 +2387,7 @@
     "concept_ueg_troop_transport"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2714,9 +2403,7 @@
     "concept_veil_battleship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2732,9 +2419,7 @@
     "concept_veil_carrier"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2750,9 +2435,7 @@
     "concept_veil_crisis_mothership"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2768,9 +2451,7 @@
     "concept_veil_cruiser"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2786,9 +2467,7 @@
     "concept_veil_destroyer"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2804,9 +2483,7 @@
     "concept_veil_fighter_bomber"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2822,9 +2499,7 @@
     "concept_veil_flagship"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2840,9 +2515,7 @@
     "concept_veil_frigate"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2857,9 +2530,7 @@
     "concept_veil_plasma_arc_emitter"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2875,9 +2546,7 @@
     "concept_veil_scout"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2893,9 +2562,7 @@
     "concept_veil_signature_unit"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
@@ -2910,9 +2577,7 @@
     "concept_veil_station"
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    }
   },
   {
