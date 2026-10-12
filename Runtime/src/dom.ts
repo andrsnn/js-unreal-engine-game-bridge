@@ -264,16 +264,74 @@ reflect(page.HTMLInputElement?.prototype, 'checked', el => el.hasAttribute('chec
 reflect(page.HTMLProgressElement?.prototype, 'max', el => Number(el.getAttribute('max') ?? 1), (el, v) => el.setAttribute('max', String(v)));
 reflect(page.HTMLProgressElement?.prototype, 'value', el => Number(el.getAttribute('value') ?? 0), (el, v) => el.setAttribute('value', String(v)));
 reflect(page.HTMLMeterElement?.prototype, 'value', el => Number(el.getAttribute('value') ?? 0), (el, v) => el.setAttribute('value', String(v)));
-reflect(page.HTMLSelectElement?.prototype, 'value',
-  el => el.querySelector('option[selected]')?.value ?? el.querySelector('option')?.value ?? '',
-  (el, v) => { for (const o of el.querySelectorAll('option')) { if (o.value === String(v)) o.setAttribute('selected', ''); else o.removeAttribute('selected'); } });
-reflect(page.HTMLSelectElement?.prototype, 'selectedIndex',
-  el => [...el.querySelectorAll('option')].findIndex((o: Record<string, any>) => o.hasAttribute('selected')),
-  (el, v) => [...el.querySelectorAll('option')].forEach((o: Record<string, any>, i) => o.toggleAttribute('selected', i === v)));
-reflect(page.HTMLOptionElement?.prototype, 'selected', el => el.hasAttribute('selected'), (el, v) => el.toggleAttribute('selected', !!v));
-g.Option ??= function (text = '', value?: string, defaultSelected = false, selected = defaultSelected) {
-  const o = doc.createElement('option'); o.textContent = text; o.value = value ?? text; if (selected) o.setAttribute('selected', ''); return o;
+// <select> and <option> as browsers have them (linkedom keeps only the markup). Which option is selected lives in the
+// "selected" attribute, so the overlay's copy of the page shows it. A single-choice select with nothing marked shows
+// its first option, as in a browser.
+const selectProto = Object.getPrototypeOf(doc.createElement('select')) as Record<string, any>;
+const optionProto = Object.getPrototypeOf(doc.createElement('option')) as Record<string, any>;
+const optionsOf = (el: Record<string, any>): Record<string, any>[] => [...el.querySelectorAll('option')];
+const selectedOf = (el: Record<string, any>): Record<string, any>[] => {
+  const opts = optionsOf(el), marked = opts.filter(o => o.hasAttribute('selected'));
+  return marked.length || el.multiple || Number(el.getAttribute('size') ?? 0) > 1 || !opts.length ? marked : [opts[0]];
 };
+const selectOf = (o: Record<string, any>): Record<string, any> | null => o.closest?.('select') ?? null;
+const choose = (o: Record<string, any>, on: boolean) => {
+  const sel = selectOf(o);
+  if (on && sel && !sel.multiple) for (const other of optionsOf(sel)) if (other !== o) other.removeAttribute('selected');
+  o.toggleAttribute('selected', on);
+};
+const define = (proto: Record<string, any>, props: Record<string, PropertyDescriptor>) => {
+  for (const [k, d] of Object.entries(props)) Object.defineProperty(proto, k, {configurable: true, ...d});
+};
+// select.options: a live list with add, remove, item and namedItem, as an HTMLOptionsCollection.
+const optionsCollection = (el: Record<string, any>) => {
+  const list = optionsOf(el) as Record<string, any>[] & Record<string, any>;
+  list.item = (i: number) => list[i] ?? null;
+  list.namedItem = (name: string) => list.find(o => o.id === name || o.getAttribute('name') === name) ?? null;
+  list.add = (o: unknown, before?: unknown) => el.add(o, before);
+  list.remove = (i: number) => el.remove(i);
+  Object.defineProperty(list, 'selectedIndex', {get: () => el.selectedIndex, set: v => { el.selectedIndex = v; }});
+  return list;
+};
+const removeElement = selectProto.remove;
+define(selectProto, {
+  options: {get() { return optionsCollection(this); }},
+  length: {get() { return optionsOf(this).length; }, set(n: number) { const opts = optionsOf(this); for (let i = opts.length - 1; i >= n; i--) opts[i].remove(); for (let i = opts.length; i < n; i++) this.appendChild(doc.createElement('option')); }},
+  selectedOptions: {get() { return selectedOf(this); }},
+  selectedIndex: {get() { const first = selectedOf(this)[0]; return first ? optionsOf(this).indexOf(first) : -1; },
+    set(i: number) { optionsOf(this).forEach((o, k) => o.toggleAttribute('selected', k === Number(i))); }},
+  value: {get() { return selectedOf(this)[0]?.value ?? ''; },
+    set(v: unknown) { let found = false; for (const o of optionsOf(this)) { const hit = !found && o.value === String(v); o.toggleAttribute('selected', hit); found ||= hit; } }},
+  type: {get() { return this.multiple ? 'select-multiple' : 'select-one'; }},
+  multiple: {get() { return this.hasAttribute('multiple'); }, set(v: boolean) { this.toggleAttribute('multiple', !!v); }},
+  item: {value(i: number) { return optionsOf(this)[i] ?? null; }, writable: true},
+  namedItem: {value(name: string) { return optionsCollection(this).namedItem(name); }, writable: true},
+  // add(option or optgroup, before): before is an element or an index; without it the option goes last.
+  add: {value(o: Record<string, any>, before?: number | Record<string, any> | null) {
+    const ref = typeof before === 'number' ? optionsOf(this)[before] ?? null : before ?? null;
+    if (ref && ref.parentNode) ref.parentNode.insertBefore(o, ref); else this.appendChild(o);
+    if (o.hasAttribute?.('selected') && !this.multiple) choose(o, true);
+  }, writable: true},
+  // remove(index) drops that option; remove() with no index removes the select itself, as Element.remove does.
+  remove: {value(this: Record<string, any>, ...args: unknown[]) {
+    if (!args.length) return removeElement.call(this);
+    optionsOf(this)[Number(args[0])]?.remove();
+  }, writable: true},
+});
+define(optionProto, {
+  value: {get() { return this.getAttribute('value') ?? (this.textContent ?? '').replace(/\s+/g, ' ').trim(); }, set(v: unknown) { this.setAttribute('value', String(v)); }},
+  text: {get() { return (this.textContent ?? '').replace(/\s+/g, ' ').trim(); }, set(v: unknown) { this.textContent = String(v); }},
+  label: {get() { return this.getAttribute('label') ?? this.text; }, set(v: unknown) { this.setAttribute('label', String(v)); }},
+  selected: {get() { const sel = selectOf(this); return sel ? selectedOf(sel).includes(this) : this.hasAttribute('selected'); }, set(v: boolean) { choose(this, !!v); }},
+  defaultSelected: {get() { return this.hasAttribute('selected'); }, set(v: boolean) { this.toggleAttribute('selected', !!v); }},
+  index: {get() { const sel = selectOf(this); return sel ? optionsOf(sel).indexOf(this) : 0; }},
+  form: {get() { return selectOf(this)?.closest?.('form') ?? null; }},
+});
+g.Option ??= function (text = '', value?: string, defaultSelected = false, selected = defaultSelected) {
+  const o = doc.createElement('option'); o.textContent = text; if (value !== undefined) o.setAttribute('value', value); if (selected) o.setAttribute('selected', ''); return o;
+};
+g.HTMLSelectElement ??= selectProto.constructor;
+g.HTMLOptionElement ??= optionProto.constructor;
 
 // FormData over a form's named controls, as a browser collects them on submit.
 class FormDataImpl {

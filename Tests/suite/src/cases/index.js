@@ -4,6 +4,6 @@ import textures from './textures.js';
 import ktx2 from './ktx2.js';
 import {basics, materials, transparency, lines, billboards, shadows, fog, fogExp2, ortho} from './scenes.js';
 import {instances, batched, churn, skinning, gltf, postprocess, motion} from './dynamic.js';
-import {ui, input, timers, audio} from './page.js';
+import {ui, input, timers, audio, forms} from './page.js';
 
-export const cases = {basics, materials, textures, ktx2, transparency, lines, billboards, shadows, fog, fogExp2, ortho, instances, batched, churn, motion, skinning, gltf, postprocess, hooks, ui, input, timers, audio};
+export const cases = {basics, materials, textures, ktx2, transparency, lines, billboards, shadows, fog, fogExp2, ortho, instances, batched, churn, motion, skinning, gltf, postprocess, hooks, ui, forms, input, timers, audio};

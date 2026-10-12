@@ -102,3 +102,30 @@ export function audio({THREE, scene, camera}) {
     status.textContent = `audio ${listener.context.state} at ${ball.position.x.toFixed(1)}`;
   };
 }
+
+// Form controls built in code: a <select> filled with add(new Option()), an option put first with options.add(o, 0),
+// one removed by index and the value set. The text under it shows what the select reports.
+export function forms({THREE, scene}) {
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x303030, 1.5));
+  const panel = document.createElement('div');
+  panel.style.cssText = 'position:fixed;left:16px;top:60px;width:360px;padding:12px;background:rgba(20,30,40,0.85);border:1px solid #4b6b7c;font:15px system-ui,sans-serif;color:#e8eef2';
+  const select = document.createElement('select');
+  select.style.cssText = 'font:15px system-ui,sans-serif;padding:4px;margin-bottom:10px';
+  for (const [text, value] of [['Railgun', 'rail'], ['Coilgun', 'coil'], ['Missile', 'missile'], ['Torpedo', 'torpedo']]) select.add(new Option(text, value));
+  select.options.add(new Option('Point defence', 'pd'), 0);
+  select.remove(4);
+  select.value = 'coil';
+  const out = document.createElement('div');
+  const show = () => {
+    const o = select.options[select.selectedIndex];
+    out.textContent = `${select.length} options, #${select.selectedIndex} ${select.value} (${o.text}), first ${select.item(0).value}, ${select.type}`;
+  };
+  select.addEventListener('change', show);
+  show();
+  panel.append(select, out);
+  document.body.append(panel);
+  const cube = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.5, 1.5), new THREE.MeshStandardMaterial({color: 0xc08040}));
+  cube.position.set(2, 0, 0);
+  scene.add(cube);
+  return dt => { cube.rotation.y += dt; };
+}
