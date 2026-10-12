@@ -106,6 +106,7 @@ if (has('--host') || !fs.existsSync(hostExe)) {
   }
   const captured = path.join(path.dirname(settings().project), 'Content', 'JsgbGenerated');
   if (fs.existsSync(captured)) { mirror(captured, path.join(project, 'Content', 'JsgbGenerated')); log(`${fs.readdirSync(captured).length} captured materials to cook`); }
+  linkFidelityContent();
   log(`packaging the Unreal host from ${project}`);
   const uat = path.resolve(path.dirname(settings().engine), '../../Build/BatchFiles/RunUAT.bat');
   // Puerts' build rules copy its scripts into the project's Content folder from more than one rules instance at once,
@@ -131,7 +132,7 @@ for (const id of games) {
     pub.publicRoots = ['web', 'public'];
   } else {
     const bundle = path.basename(pub.bundle);
-    for (const name of [bundle, bundle.replace(/\.mjs$/, '.css'), 'page.json', 'registry.json']) {
+    for (const name of [bundle, bundle.replace(/\.mjs$/, '.css'), 'page.json', 'registry.json', 'overrides.json']) {
       if (fs.existsSync(path.join(game.out, name))) copy(path.join(game.out, name), path.join(dest, name));
     }
     mirror(path.join(game.out, 'jsgb'), path.join(dest, 'jsgb'));
@@ -179,6 +180,25 @@ if (!has('--no-smoke')) {
 }
 if (remote) await sync(remote);
 log(`done: ${out}`);
+
+// Lumen mode's override models (Games/<game>.json "overrides") are Unreal assets under /Game/Fidelity, imported into the
+// project jsgb.local.json "fidelityContent" names (Tools/fidelity/build-overrides.mjs). The packaging project links that
+// folder into its Content folder and always cooks it (the runtime loads the models by path), with the mesh distance
+// fields Lumen traces.
+function linkFidelityContent() {
+  if (!games.some(id => gameFor(id).overrides)) return;
+  const source = settings().fidelityContent;
+  if (!source || !fs.existsSync(source)) { log('no fidelity content (jsgb.local.json "fidelityContent"): Lumen mode draws the games\' own models'); return; }
+  const link = path.join(project, 'Content', 'Fidelity');
+  if (!fs.existsSync(link)) fs.symlinkSync(path.resolve(source), link, 'junction');
+  const addTo = (file, section, line) => {
+    const text = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
+    if (!text.includes(line)) fs.writeFileSync(file, `${text.replace(/\s*$/, '')}\r\n\r\n${section}\r\n${line}\r\n`);
+  };
+  addTo(path.join(project, 'Config/DefaultGame.ini'), '[/Script/UnrealEd.ProjectPackagingSettings]', '+DirectoriesToAlwaysCook=(Path="/Game/Fidelity")');
+  addTo(path.join(project, 'Config/DefaultEngine.ini'), '[/Script/Engine.RendererSettings]', 'r.GenerateMeshDistanceFields=True');
+  log(`fidelity models from ${source} cook into the host`);
+}
 
 // SHA-256 of a file of any size, read in 8 MB pieces.
 function sha256File(file) {

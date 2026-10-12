@@ -1,5 +1,13 @@
 {
  "version": 1,
+ "effects": {
+  "engineLight": true,
+  "gunfire": false,
+  "trails": false,
+  "smoke": false,
+  "explosions": false,
+  "debris": false
+ },
  "overrides": [
   {
    "name": "planet_moon",

@@ -31,7 +31,7 @@ for (const entry of ['Runtime/src/entry.ts', 'Runtime/src/workerRuntime.ts']) {
   try {
     await esbuild.build({entryPoints: [path.join(bridge, entry)], bundle: true, write: false, platform: 'neutral', format: 'esm', logLevel: 'silent',
       mainFields: ['module', 'main'], nodePaths: [path.join(bridge, 'Runtime/node_modules')],
-      external: ['jsgb:game', 'three', 'three-real', 'three/webgpu', 'fs', 'path', 'crypto', 'url', 'module', 'worker_threads'],
+      external: ['jsgb:game', 'jsgb:adapters', 'three', 'three-real', 'three/webgpu', 'fs', 'path', 'crypto', 'url', 'module', 'worker_threads'],
       define: {__JSGB_PAGE__: '{}', __JSGB_INLINE__: '""', __JSGB_WEBGL_MODULE_DRAWS__: '0', 'import.meta.env': '{}'}});
   } catch (e) { problems.push(`${entry}: ${(e.errors ?? []).map(x => x.text).join('; ') || e.message}`); }
 }

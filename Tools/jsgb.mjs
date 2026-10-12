@@ -32,7 +32,7 @@ export function settings() {
   return {engine: process.env.JSGB_ENGINE ?? local.engine, project: process.env.JSGB_PROJECT ?? local.project,
     builds: path.resolve(bridge, process.env.JSGB_BUILDS ?? local.builds ?? 'Builds'),
     captures: local.captures ? path.resolve(bridge, local.captures) : undefined,
-    package: local.package, packageProject: local.packageProject, ddc: local.ddc};
+    package: local.package, packageProject: local.packageProject, ddc: local.ddc, fidelityContent: local.fidelityContent};
 }
 // Unreal reads its local derived data cache folder from this variable; the editors and cooks these tools start inherit it.
 if (settings().ddc) process.env['UE-LocalDataCachePath'] ??= settings().ddc;
@@ -127,6 +127,11 @@ function bridgePlugin(game, page) {
     setup(b) {
       b.onResolve({filter: /^jsgb:game$/}, () => page.inlineModule === null ? {path: page.entry} : {path: page.entry, namespace: 'jsgb-page-module'});
       b.onLoad({filter: /.*/, namespace: 'jsgb-page-module'}, () => ({contents: page.inlineModule, resolveDir: game.repo, loader: 'js'}));
+      // Adapters (Games/<game>.json "adapters"): the bridge's own modules for one game, run once the game's entry has
+      // evaluated, such as a row in the game's options menu for a host feature. The game's files stay as they are.
+      b.onResolve({filter: /^jsgb:adapters$/}, () => ({path: 'adapters', namespace: 'jsgb-adapters'}));
+      b.onLoad({filter: /.*/, namespace: 'jsgb-adapters'}, () => ({resolveDir: bridge, loader: 'js',
+        contents: (game.adapters ?? []).map(f => `import ${JSON.stringify(path.resolve(bridge, f))};`).join('\n') || 'export {};'}));
       // 'three' is the real library with WebGLRenderer replaced; the runtime reaches the real one as 'three-real'.
       b.onResolve({filter: /^three$/}, a => a.importer === path.join(src, 'three.ts') ? {path: three.core} : {path: path.join(src, 'three.ts')});
       b.onResolve({filter: /^three-real$/}, () => ({path: three.core}));

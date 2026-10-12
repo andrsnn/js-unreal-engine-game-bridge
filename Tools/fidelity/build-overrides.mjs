@@ -105,7 +105,8 @@ if (!rest.includes('--skip-import')) {
   if (r.status !== 0) throw Error(`import failed (exit ${r.status}); see ${path.join(work, 'import.log')}`);
 }
 const results = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
-const old = fs.existsSync(outFile) ? JSON.parse(fs.readFileSync(outFile, 'utf8')).overrides ?? [] : [];
+const before = fs.existsSync(outFile) ? JSON.parse(fs.readFileSync(outFile, 'utf8')) : {};
+const old = before.overrides ?? [];
 const rules = new Map(old.map(r => [r.name, r]));
 // Rules written by hand (a hide rule, a material swap) go in as they are.
 for (const r of list.extraRules ?? []) rules.set(r.name, r);
@@ -120,7 +121,8 @@ for (const p of prepared) {
   rules.set(name, {name, match, mesh: meshPath, ...(p.kind === 'planet' ? {material: res.material} : {}), fit, bounds: meshSource.bounds, ...(params ? {params} : {}), ...(others ? {others} : {}),
     source: (p.rule.source ?? p.source).replaceAll('\\', '/'), ...(receipt ? {symmetryRepair: receipt} : {}), ...(keys ? {keys} : {}),  ...(p.triangles ? {triangles: Math.round(p.triangles)} : {}), textures: Object.fromEntries(Object.entries(p.textures).map(([k, t]) => [k, `${t.width}x${t.height}`]))});
 }
-fs.writeFileSync(outFile, JSON.stringify({version: 1, overrides: [...rules.values()]}, null, 1) + '\n');
+// The effect switches ("effects") stay as they were.
+fs.writeFileSync(outFile, JSON.stringify({version: 1, ...(before.effects ? {effects: before.effects} : {}), overrides: [...rules.values()]}, null, 1) + '\n');
 // --clean: the prepared PNGs and repaired glTF copies are only needed for the import.
 if (rest.includes('--clean')) for (const p of prepared) {
   if (!results.find(x => x.name === p.name && !x.error)) continue;

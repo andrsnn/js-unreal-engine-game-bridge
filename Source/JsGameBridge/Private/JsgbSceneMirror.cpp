@@ -1135,10 +1135,12 @@ void UJsgbSceneMirror::ApplyLight(const float* S, uint32 FrameStamp, FLinearColo
 	C->SetLightColor(Color, true);
 	C->SetIntensity(Intensity);
 	C->SetCastShadows(S[17] > 0.5f || (bLumen && Kind == 1));
-	if (bLumen && Kind == 1)
+	if (Kind == 1)
 	{
+		// Lumen mode softens the sun's shadows; off again, the sun is Unreal's default size.
 		UDirectionalLightComponent* Sun = Cast<UDirectionalLightComponent>(C);
-		if (Sun->LightSourceAngle != SunSourceAngle) { Sun->SetLightSourceAngle(SunSourceAngle); Sun->SetVolumetricScatteringIntensity(1.f); }
+		const float Angle = bLumen ? SunSourceAngle : GetDefault<UDirectionalLightComponent>()->LightSourceAngle;
+		if (Sun->LightSourceAngle != Angle) { Sun->SetLightSourceAngle(Angle); Sun->SetVolumetricScatteringIntensity(1.f); }
 	}
 	const FVector Loc(Pos(&S[7]));
 	const FVector Forward(Dir(&S[10]));

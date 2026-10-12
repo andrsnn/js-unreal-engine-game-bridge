@@ -34,6 +34,8 @@ export interface JsgbHost {
   ready?(info: string): void;
   /** The display: modes and current settings as JSON, and a change as JSON (see display.ts). */
   display?: {modes(): string; get(): string; set(json: string): void};
+  /** Unreal graphics: the current state as JSON {lumen, available}, and a change as JSON (see graphics.ts). */
+  graphics?: {get(): string; set(json: string): void};
   /** Persistent key/value store for localStorage and sessionStorage. */
   storage?: {load(key: string): string | null; save(key: string, data: string): void};
   /** Bytes that outlive a hot reload (the JS environment restarts, the host keeps them). */

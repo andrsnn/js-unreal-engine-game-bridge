@@ -15,5 +15,8 @@
     "file": "Registry/audio-cues-v5.json",
     "game": "hardburn"
   },
-  "conformanceSearch": "?view=black"
+  "conformanceSearch": "?view=black",
+  "adapters": [
+    "Games/adapters/hardburn-options.js"
+  ]
 }

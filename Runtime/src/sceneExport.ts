@@ -4,7 +4,8 @@ import {lastFrame, post, captures} from './renderer';
 import {frameCount} from './frameCount';
 import {translateShaderMaterial, translateHookedMaterial, fillBuiltinUniforms, type HookedShader, type TranslatedShader} from './shaders';
 import {channelFor, isExtraAttribute} from './attributes';
-import {overrideRules, overrideFor} from './overrides';
+import {overrideRules, overrideFor, effectFlags} from './overrides';
+import {graphicsState} from './graphics';
 
 /** Mirrors the game's Three.js scene into Unreal each frame. Geometry, materials and textures are
  *  sent once and again only when their version changes; transforms, instances, lights and the
@@ -735,6 +736,42 @@ function hasContentTag(o: THREE.Object3D, key: string): boolean {
 }
 
 const overrideWorld = new THREE.Matrix4();
+const noRules: ReturnType<typeof overrideRules> = [];
+// Lumen mode (jsgb.graphics, F9): the override models and the Unreal effects overrides.json turns on.
+let lumenMode = false, engineLights = false;
+
+// Engine light: in Lumen mode each drive plume the game draws (userData.vfxKey "plume.*") lights the hull and the ships
+// around it with a point light in the plume's drive colour, as bright as the plume's throttle. The nearest plumes to
+// the camera get one each; far ones would light only a few pixels.
+const MAX_ENGINE_LIGHTS = 32;
+const plumes: {o: THREE.Object3D; d: number}[] = [];
+const plumeColour = new THREE.Color(), plumeScale = new THREE.Vector3(), plumeAt = new THREE.Vector3(), plumeBack = new THREE.Vector3();
+function notePlume(o: THREE.Object3D, cam: THREE.Camera) {
+  o.getWorldPosition(plumeAt);
+  plumes.push({o, d: plumeAt.distanceToSquared(cam.position)});
+}
+function emitEngineLights() {
+  if (plumes.length > MAX_ENGINE_LIGHTS) { plumes.sort((a, b) => a.d - b.d); plumes.length = MAX_ENGINE_LIGHTS; }
+  for (const {o} of plumes) {
+    const u = o.userData;
+    const throttle = Math.min(1.2, Math.max(0, u.throttle ?? 0.65));
+    if (throttle < 0.025) continue;
+    o.getWorldScale(plumeScale);
+    // The nozzle's width in world units; the light sits one nozzle width behind it, inside the flame.
+    const width = Math.max(1e-3, (u.nozzleWidth ?? 1) * Math.max(plumeScale.x, plumeScale.y));
+    o.getWorldPosition(plumeAt);
+    plumeBack.set(0, 0, -1).transformDirection(o.matrixWorld).multiplyScalar(width);
+    plumeAt.add(plumeBack);
+    plumeColour.set(u.driveColour ?? 0xff8a3a);
+    // Candela that scale with the nozzle's area, so the light on the hull is the same for a big or small ship.
+    const intensity = ENGINE_LIGHT_CANDELA * throttle * width * width;
+    push(LIGHT); push(idOf(o)); push(2); push(plumeColour.r); push(plumeColour.g); push(plumeColour.b); push(intensity);
+    push(plumeAt.x); push(plumeAt.y); push(plumeAt.z); push(0); push(0); push(-1);
+    push(width * 30); push(2); push(0); push(0); push(0); push(0); push(0); push(0);
+  }
+  plumes.length = 0;
+}
+const ENGINE_LIGHT_CANDELA = 600;
 function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
   if (!o.visible) return;
   if ((o as THREE.LOD).isLOD && (o as THREE.LOD).autoUpdate) (o as THREE.LOD).update(cam);
@@ -748,7 +785,7 @@ function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
       const g = (o as THREE.Mesh).geometry, m = materialsOf(o as THREE.Mesh)[0];
       host.log('log', `TRACE id ${idOf(o)} ${o.type} "${o.name}" uuid ${o.uuid} parent "${o.parent?.name ?? ''}" geometry ${g ? idOf(g) : 0} ${g?.type ?? ''} material ${m ? idOf(m) : 0} ${m?.type ?? ''}`);
     }
-    const rules = overrideRules(host.registry);
+    const rules = lumenMode ? overrideRules(host.registry) : noRules;
     const ov = rules.length && (o as THREE.Mesh).isMesh && !(o as unknown as THREE.BatchedMesh).isBatchedMesh && !(o as unknown as {isLineSegments2?: boolean}).isLineSegments2 ? overrideFor(o, rules) : null;
     if (ov) {
       if (!ov.hide) {
@@ -758,6 +795,7 @@ function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
       const ch = o.children; for (let i = 0; i < ch.length; i++) walk(ch[i], cam, skipKey);
       return;
     }
+    if (engineLights && cam === lastFrame.camera && typeof o.userData?.vfxKey === 'string' && o.userData.vfxKey.startsWith('plume.')) notePlume(o, cam);
     const swap = registrySwap(o);
     if (swap?.kind === EFFECT) { push(EFFECT); push(idOf(o)); push(keyId(swap.key)); pushMatrix(o.matrixWorld); return; }
     if (swap?.kind === ASSET) {
@@ -815,7 +853,11 @@ export function exportFrame(): number {
     for (const i of [0, 4, 8, 1, 5, 9, 2, 6, 10]) push(m[i]);
     push(tex.flipY ? 1 : 0);
   }
+  const g = graphicsState();
+  lumenMode = g.lumen;
+  engineLights = lumenMode && effectFlags(host.registry).engineLight;
   walk(top, cam, null);
+  if (engineLights) emitEngineLights();
   if (cam.parent === null && cam !== top) walk(cam, cam, null);
   // Scenes drawn into render targets that a material shows, each between a capture record and its end.
   for (const [target, c] of captures) {

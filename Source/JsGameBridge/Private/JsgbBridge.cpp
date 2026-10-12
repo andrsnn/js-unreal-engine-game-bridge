@@ -496,6 +496,19 @@ void UJsgbBridge::ApplyDisplay(const TSharedPtr<FJsonObject>& In)
 	}
 }
 
+FString UJsgbBridge::GraphicsGet() { FScopeLock Lock(&DisplayLock); return GraphicsJson; }
+void UJsgbBridge::SetGraphicsInfo(const FString& Json) { FScopeLock Lock(&DisplayLock); GraphicsJson = Json; }
+
+void UJsgbBridge::GraphicsSet(const FString& Json)
+{
+	RunOnGame([this, Json]
+	{
+		TSharedPtr<FJsonObject> In;
+		FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), In);
+		if (In && OnGraphicsSet) { OnGraphicsSet(In); }
+	});
+}
+
 void UJsgbBridge::RestoreDisplay()
 {
 	if (UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr)

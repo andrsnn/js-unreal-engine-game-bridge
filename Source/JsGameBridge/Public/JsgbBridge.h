@@ -63,6 +63,14 @@ public:
 	static void ApplyDisplay(const TSharedPtr<class FJsonObject>& In);
 	/** At launch: clears any frame cap left in Unreal's shared settings, then applies this game's saved display settings. */
 	void RestoreDisplay();
+	/** Unreal graphics (window.jsgb.graphics): the current state as JSON {lumen, available}, and a change ({lumen})
+	 *  that OnGraphicsSet applies on the game thread. */
+	UFUNCTION() FString GraphicsGet();
+	UFUNCTION() void GraphicsSet(const FString& Json);
+	/** Sets the JSON GraphicsGet returns. Any thread. */
+	void SetGraphicsInfo(const FString& Json);
+	/** Applies a graphics change on the game thread (AJsgbHost::SetFidelity). */
+	TFunction<void(const TSharedPtr<class FJsonObject>&)> OnGraphicsSet;
 	/** Web Workers on their own threads (JsgbWorkers.h). Create returns 0 when threaded workers are off. */
 	UFUNCTION() int32 WorkerCreate(const FString& Source, const FString& Url, const FString& Name);
 	UFUNCTION() void WorkerPost(int32 Id, FArrayBuffer Bytes);
@@ -149,6 +157,7 @@ public:
 	std::atomic<int32> FilesRead{0};
 	FCriticalSection DisplayLock;
 	FString DisplayModesJson, DisplayJson;
+	FString GraphicsJson = TEXT("{\"lumen\":false,\"available\":false}");
 	/** When the JavaScript thread made the newest scene frame the game thread applied (FPlatformTime seconds). */
 	double LastFrameProducedAt = 0;
 	UPROPERTY() TObjectPtr<UJsgbSceneMirror> Mirror;

@@ -26,5 +26,9 @@
     {
       "script": "Tests/scripts/hardburn-keys.txt"
     }
+  ],
+  "overrides": "Overrides/hardburn.json",
+  "adapters": [
+    "Games/adapters/hardburn-options.js"
   ]
 }

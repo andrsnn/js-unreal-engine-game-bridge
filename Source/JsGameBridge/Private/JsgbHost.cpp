@@ -379,6 +379,9 @@ bool AJsgbHost::LoadPublication(const FString& Dir, const FString& OverrideBundl
 			}
 			Reg->SetObjectField(TEXT("assets"), Assets);
 			Reg->SetArrayField(TEXT("overrides"), *Rules);
+			// Which Unreal effects Lumen mode adds (Runtime/src/overrides.ts effectFlags).
+			const TSharedPtr<FJsonObject>* Effects = nullptr;
+			if (Overrides->TryGetObjectField(TEXT("effects"), Effects)) { Reg->SetObjectField(TEXT("effects"), *Effects); }
 			RegistryJson = JsonString(Reg.ToSharedRef());
 			UE_LOG(LogJsgbHost, Display, TEXT("Asset overrides: %d rules from %s"), Added, *OverridesPath);
 		}
@@ -582,6 +585,7 @@ void AJsgbHost::StartJs()
 	Bridge = NewObject<UJsgbBridge>(this);
 	Bridge->Mirror = Mirror;
 	Bridge->Audio = Audio;
+	PublishGraphics();
 	Mirror->Bridge = Bridge;
 	Audio->Bridge = Bridge;
 	if (UIPort) { UIPort->Bridge = Bridge; UIPort->AppliedUIVersion = -1; }
@@ -1107,6 +1111,8 @@ void AJsgbHost::SetupUpscaler()
 
 bool AJsgbHost::HandleDlssKey(const FKey& Key)
 {
+	// F9: Lumen mode on or off, in every game this host can light with Lumen.
+	if (Key == EKeys::F9 && bLumenAvailable) { SetLumen(!bLumenOn); return true; }
 	if (bShowKeys && Key == EKeys::F8) { bShowJitter = !bShowJitter; return true; }
 	if (!bShowKeys || (Key != EKeys::F6 && Key != EKeys::F7)) { return false; }
 	if (Key == EKeys::F6) { CycleUpscaler(); } else { ToggleFrameGen(); }
@@ -1308,9 +1314,9 @@ void AJsgbHost::UpdateHud(float DeltaSeconds)
 	// While a capture runs, each frame waits for its screenshot, so the frame rate means nothing: show the mode only.
 	if (!CaptureDir.IsEmpty()) { HudText->SetText(FText::FromString(Upscaler)); return; }
 	const FString Rate = HudPresentedFps > 0 ? FString::Printf(TEXT("%.0f FPS on screen, %.0f rendered"), HudPresentedFps, HudFps) : FString::Printf(TEXT("%.0f FPS"), HudFps);
-	HudText->SetText(FText::FromString(FString::Printf(TEXT("%s\n%s  (GPU %.1f ms)%s%s%s"), *Upscaler, *Rate, FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles()),
+	HudText->SetText(FText::FromString(FString::Printf(TEXT("%s%s\n%s  (GPU %.1f ms)%s%s%s"), *Upscaler, bLumenOn ? TEXT(", Lumen") : TEXT(""), *Rate, FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles()),
 		bShowJitter ? *(TEXT("\n") + JitterLine) : TEXT(""),
-		NeuralNote.IsEmpty() ? TEXT("") : *(TEXT("\n") + NeuralNote), bShowKeys ? TEXT("\nF6: DLSS mode   F7: Frame Generation   F8: jitter") : TEXT(""))));
+		NeuralNote.IsEmpty() ? TEXT("") : *(TEXT("\n") + NeuralNote), bShowKeys ? TEXT("\nF6: DLSS mode   F7: Frame Generation   F8: jitter   F9: Lumen") : TEXT(""))));
 }
 
 void AJsgbHost::SwapCss(double BuildMs)
