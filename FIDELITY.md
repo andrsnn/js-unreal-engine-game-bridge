@@ -76,7 +76,7 @@ The host adds the scene's ambient light to override materials that have an `Ambi
 `"effects"` switches each Unreal effect on (`true`) or off. An effect left out is off.
 
 ```json
-"effects": {"engineLight": true, "gunfire": true, "trails": true, "smoke": true, "explosions": false, "debris": false}
+"effects": {"engineLight": true, "gunfire": true, "trails": true, "smoke": true, "explosions": true, "debris": true}
 ```
 
 | Effect | What Unreal adds in Lumen mode |
@@ -85,7 +85,8 @@ The host adds the scene's ambient light to override materials that have an `Ambi
 | `gunfire` | Muzzle flashes light the hulls around them with the game's own flash intensity, reach, colour and timing (userData.flashLight on a `weapon.*` effect). The game already lights its three brightest flashes; Unreal lights up to 24 more. Kinetic rounds in flight (userData.roundDraw) are line lights along the slug, so a hull a round passes lights up along its path. |
 | `trails` | Missiles and torpedoes under power (userData.plumeKey and motorActive) carry a warm point light at the motor. |
 | `smoke` | Each of the game's vents (userData.vfxKey `venting.*`) plays NS_LumenVapour, a lit vapour jet pointed along the vent, sized to it, for as long as the vent lasts. The game's unlit vapour (hull-vapor-pool, sprite-vfx-gas) is hidden while it plays. Authored by `Tools/fidelity/author-lumen-vfx.mjs`. |
-| `explosions`, `debris` | Not built yet. They wait for Hard Burn's new sprite effects, and will follow their look and timing. |
+| `explosions` | Hits and blasts light the hulls around them with the game's own flash intensity, reach, colour and timing (userData.flashLight on anything that is not a muzzle flash). Each fireball sprite also gives an orange light while it glows. The light follows the fireball's flipbook: it is brightest about a quarter of the way through and goes out when the sprite turns to smoke. So a torpedo's second fireball and each of a dying ship's chained blasts light up at their own time. Blasts share the 24 flash lights with gunfire, and up to 12 fireballs get a light. The game already lights its three brightest flashes and its first nuclear detonation, so Unreal skips those. |
+| `debris` | The hottest blast fragments (instances of `ballistic-blast-metal`) each get a small point light in their glow colour. The light moves with its fragment, gets redder and dimmer as the fragment cools, and goes out when the fragment is cold or fades away. The 8 brightest fragments get a light. |
 
 A rule can belong to one effect (`"effect": "smoke"`) and applies only while that effect is on, and a rule with
 `"niagara"` plays that system at each game object it matches.

@@ -5,8 +5,8 @@
   "gunfire": true,
   "trails": true,
   "smoke": true,
-  "explosions": false,
-  "debris": false
+  "explosions": true,
+  "debris": true
  },
  "overrides": [
   {
