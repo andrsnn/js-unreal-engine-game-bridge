@@ -98,31 +98,55 @@ function downsample(texture, size) {
   return target.texture;
 }
 
-// The clean style's plating and wear, in the ship's own frame and game units: plates 1.6 by 0.8, laid like bricks, with a
-// structural seam every four plates.
+// The clean style's hull panelling and wear, in the ship's own frame and game units. The hull is cut into sections a
+// tenth of the ship's length, and each section is split at random two or three times, so panels are large, vary in
+// size and line up like real plating, not like bricks. Seams are thin; some panels carry an access hatch or a vent;
+// grime collects along seams and in crevices, and paint chips off convex edges.
 const CLEAN_FUNCTIONS = `
 float jsgbHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 float jsgbNoise(vec2 p) { vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
   return mix(mix(jsgbHash(i), jsgbHash(i + vec2(1., 0.)), f.x), mix(jsgbHash(i + vec2(0., 1.)), jsgbHash(i + vec2(1., 1.)), f.x), f.y); }
-// Plates laid like bricks: 1 on a seam, 0 inside a plate, and the plate's own id.
-float jsgbSeams(vec2 q, float width, out vec2 id) {
-  q.x += floor(q.y) * .5; id = floor(q);
-  vec2 d = .5 - abs(fract(q) - .5), w = max(fwidth(q), vec2(1e-4));
-  vec2 l = 1. - smoothstep(vec2(width), vec2(width) + w * 1.5, d);
-  return max(l.x, l.y);
+// The panel at p: its corners lo and hi, from a section of size S split up to three times along its longer side.
+void jsgbPanel(vec2 p, float S, out vec2 lo, out vec2 hi) {
+  lo = floor(p / S) * S; hi = lo + S;
+  for (int i = 0; i < 3; i++) {
+    vec2 size = hi - lo;
+    if (i > 0 && jsgbHash(lo * .731 + float(i) * 3.17) < .3) break;
+    float t = .28 + .44 * jsgbHash(lo * 1.913 + float(i) * 7.31);
+    if (size.x >= size.y) { float m = lo.x + size.x * t; if (p.x < m) hi.x = m; else lo.x = m; }
+    else { float m = lo.y + size.y * t; if (p.y < m) hi.y = m; else lo.y = m; }
+  }
 }`;
 const CLEAN_PAINT = `{
   vec3 P = vJsgbPos, N = normalize(vJsgbNormal), A = abs(N);
   vec2 q = A.x > A.y && A.x > A.z ? P.zy : A.y > A.z ? P.xz : P.xy;
-  vec2 plateId, panelId;
-  float seam = jsgbSeams(q * vec2(.625, 1.25), .03, plateId);
-  float major = jsgbSeams(q * vec2(.15625, .3125), .012, panelId);
-  vec3 c = diffuseColor.rgb * (1. + (jsgbHash(plateId) - .5) * .07);
-  c *= 1. - .38 * seam - .15 * major;
-  float grain = jsgbNoise(q * 24.) * .6 + jsgbNoise(q * 6.) * .4;
+  float S = clamp(jsgbShipLength / 10., 1.5, 80.);
+  vec2 lo, hi; jsgbPanel(q, S, lo, hi);
+  vec2 size = hi - lo, local = (q - lo) / size;
+  float px = max(length(fwidth(q)), 1e-5);
+  float edge = min(min(q.x - lo.x, hi.x - q.x), min(q.y - lo.y, hi.y - q.y));
+  float seamWidth = max(S * .004, px * .7);
+  float seam = 1. - smoothstep(seamWidth, seamWidth + px, edge);
+  float grain = jsgbNoise(q / S * 40.) * .6 + jsgbNoise(q / S * 9.) * .4;
+  vec3 c = diffuseColor.rgb * (1. + (jsgbHash(lo) - .5) * .05);
+  c *= 1. - .14 * (1. - smoothstep(seamWidth, seamWidth + S * .06, edge)) * (.5 + .5 * grain);
+  c *= 1. - .5 * seam;
+  float kind = jsgbHash(lo + 17.3), small = min(size.x, size.y);
+  if (kind < .22 && small > S * .25) {
+    vec2 centre = lo + size * vec2(.3 + .4 * jsgbHash(lo + 2.1), .3 + .4 * jsgbHash(lo + 4.7));
+    vec2 ext = vec2(small * .16, small * .11);
+    vec2 d = abs(q - centre) - ext; float box = max(d.x, d.y);
+    c *= 1. - .45 * (1. - smoothstep(seamWidth * .8, seamWidth * .8 + px, abs(box)));
+    if (box < 0.) c *= .94;
+  } else if (kind > .86 && small > S * .25) {
+    vec2 centre = lo + size * vec2(.5, .3 + .4 * jsgbHash(lo + 8.9));
+    vec2 ext = vec2(small * .2, small * .09);
+    vec2 d = abs(q - centre) - ext;
+    if (max(d.x, d.y) < 0.) { float slats = smoothstep(.35, .5, abs(fract((q.y - centre.y) / (ext.y * .4)) - .5)); c *= .55 + .3 * slats; }
+  }
   float chip = smoothstep(.35, .95, vJsgbCurvature) * smoothstep(.45, .75, grain);
-  c = mix(c, vec3(.36, .37, .39) * (.85 + .3 * grain), chip * .7);
-  c *= 1. - .4 * smoothstep(.15, .8, -vJsgbCurvature) * (.6 + .4 * grain);
+  c = mix(c, vec3(.36, .37, .39) * (.85 + .3 * grain), chip * .65);
+  c *= 1. - .35 * smoothstep(.15, .8, -vJsgbCurvature) * (.6 + .4 * grain);
   float o = dot(texture2D(jsgbOriginal, vJsgbUv).rgb, vec3(.2126, .7152, .0722));
   float oa = dot(textureLod(jsgbOriginal, vJsgbUv, 4.).rgb, vec3(.2126, .7152, .0722));
   c *= mix(1., clamp((o + .02) / (oa + .02), .7, 1.2), .08);
@@ -194,6 +218,7 @@ export async function bake(name, key, sourceUrl, style = 'clean') {
   let root = level; while (root.parent) root = root.parent;
   root.updateMatrixWorld(true);
   const frame = game.matrixWorld.clone();
+  const shipLength = Math.max(...game.geometry.boundingBox.clone().applyMatrix4(frame).getSize(new THREE.Vector3()).toArray());
 
   // The game's material for this hull, with its own texture, drawn at each texel's place in the source's texture. The
   // source's fine detail (each texel's brightness against its neighbourhood's) is multiplied in, so the colours stay
@@ -210,12 +235,13 @@ export async function bake(name, key, sourceUrl, style = 'clean') {
     if (shader.uniforms.liveryRegistration) shader.uniforms.liveryRegistration.value = blank;
     shader.uniforms.jsgbOriginal = {value: map};
     shader.uniforms.jsgbFrame = {value: frame};
+    shader.uniforms.jsgbShipLength = {value: shipLength};
     shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nattribute vec2 jsgbUv; varying vec2 vJsgbUv;' +
         (clean ? '\nattribute float jsgbCurvature; varying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal; uniform mat4 jsgbFrame;' : ''))
       .replace('#include <project_vertex>', '#include <project_vertex>\n vJsgbUv = jsgbUv; gl_Position = vec4(jsgbUv * 2. - 1., 0., 1.);' +
         (clean ? '\n vJsgbCurvature = jsgbCurvature; vJsgbPos = (jsgbFrame * vec4(position, 1.)).xyz; vJsgbNormal = mat3(jsgbFrame) * normal;' : ''));
     shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\n' + oetf + '\nuniform sampler2D jsgbOriginal; varying vec2 vJsgbUv;' +
-        (clean ? '\nvarying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal;\n' + CLEAN_FUNCTIONS : ''))
+        (clean ? '\nvarying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal; uniform float jsgbShipLength;\n' + CLEAN_FUNCTIONS : ''))
       .replace('#include <roughnessmap_fragment>', (clean ? CLEAN_PAINT : `float jsgbLum = dot(texture2D(jsgbOriginal, vJsgbUv).rgb, vec3(.2126, .7152, .0722));
         float jsgbAround = dot(textureLod(jsgbOriginal, vJsgbUv, 4.).rgb, vec3(.2126, .7152, .0722));
         diffuseColor.rgb *= mix(1., clamp((jsgbLum + .02) / (jsgbAround + .02), .55, 1.3), DETAIL);`.replace('DETAIL', String(DETAIL))) + `
