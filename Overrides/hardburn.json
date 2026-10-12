@@ -131,7 +131,7 @@
      -0.359816312789917
     ],
     [
-     0.3954111933708191,
+     0.39168137311935425,
      0.2985123097896576,
      0.33274051547050476
     ]
@@ -152,7 +152,7 @@
    "keys": [
     "concept_tdf_frigate"
    ],
-   "triangles": 949276,
+   "triangles": 1000113,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
@@ -2208,6 +2208,3624 @@
     "concept_helion_scout"
    ],
    "triangles": 118619,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_helion_shipyard",
+   "match": {
+    "url": "*/concept-helion-shipyard/ee497f6d3b82/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_helion_shipyard/concept_helion_shipyard/StaticMeshes/SM_concept_helion_shipyard.SM_concept_helion_shipyard",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4946499466896057,
+     -0.2505931854248047,
+     -0.4917350113391876
+    ],
+    [
+     0.3603576719760895,
+     0.33381256461143494,
+     0.3785947561264038
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-shipyard/originals/ee497f6d3b82606ed1aa4f5ead43f3533419693de44a37e4db1474e666e7987e/pixal3d_textured.glb",
+   "keys": [
+    "concept_helion_shipyard"
+   ],
+   "triangles": 995093,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_helion_signature_unit",
+   "match": {
+    "url": "*/concept-helion-signature-unit/8aad5a03e630/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_helion_signature_unit/concept_helion_signature_unit/StaticMeshes/SM_concept_helion_signature_unit.SM_concept_helion_signature_unit",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49316850304603577,
+     -0.20357081294059753,
+     -0.4091326892375946
+    ],
+    [
+     0.3899446129798889,
+     0.24447613954544067,
+     0.4907712936401367
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-signature-unit/originals/8aad5a03e630fcc8db85577f643b3f83be00c6582edfdde50f90c071f30c351c/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_signature_unit.json",
+   "keys": [
+    "concept_helion_signature_unit"
+   ],
+   "triangles": 989772,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_helion_station",
+   "match": {
+    "url": "*/concept-helion-station/80c3637e7900/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_helion_station/concept_helion_station/StaticMeshes/SM_concept_helion_station.SM_concept_helion_station",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49962103366851807,
+     -0.2984233796596527,
+     -0.34461504220962524
+    ],
+    [
+     0.3780137300491333,
+     0.3135078251361847,
+     0.3054245412349701
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-helion-station/originals/80c3637e7900db11ce0d638e80efd8f3750295d17b549256078ef717a31dcf6a/pixal3d_textured.glb",
+   "keys": [
+    "concept_helion_station"
+   ],
+   "triangles": 981882,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_hero_asteroid_fortress",
+   "match": {
+    "url": "*/concept-hero-asteroid-fortress/02dea49d8ff0/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_hero_asteroid_fortress/concept_hero_asteroid_fortress/StaticMeshes/SM_concept_hero_asteroid_fortress.SM_concept_hero_asteroid_fortress",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4173513352870941,
+     -0.2733447551727295,
+     -0.3207588493824005
+    ],
+    [
+     0.4782230257987976,
+     0.3441438674926758,
+     0.48976802825927734
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-hero-asteroid-fortress/originals/02dea49d8ff0bf051ccdb34feeab3bb532cdd9ffe29a7d15a1b7c5e14261c49a/pixal3d_textured.glb",
+   "keys": [
+    "concept_hero_asteroid_fortress"
+   ],
+   "triangles": 970945,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_hero_moon_observatory",
+   "match": {
+    "url": "*/concept-hero-moon-observatory/ce083c6c5d72/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_hero_moon_observatory/concept_hero_moon_observatory/StaticMeshes/SM_concept_hero_moon_observatory.SM_concept_hero_moon_observatory",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4381580650806427,
+     -0.3112029433250427,
+     -0.3938215672969818
+    ],
+    [
+     0.46608030796051025,
+     0.38861143589019775,
+     0.3380820155143738
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-hero-moon-observatory/originals/ce083c6c5d72066b22c00525eae42047cf1da4466ab1f9a9b2ee04e0371d8d63/pixal3d_textured.glb",
+   "keys": [
+    "concept_hero_moon_observatory"
+   ],
+   "triangles": 961656,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_armour_plate_set",
+   "match": {
+    "url": "*/concept-module-armour-plate-set/827494aa5bbb/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_armour_plate_set/concept_module_armour_plate_set/StaticMeshes/SM_concept_module_armour_plate_set.SM_concept_module_armour_plate_set",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4943586587905884,
+     -0.203953817486763,
+     -0.39381173253059387
+    ],
+    [
+     0.37519973516464233,
+     0.2007978856563568,
+     0.31414368748664856
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-armour-plate-set/originals/827494aa5bbbd7bd4a4265210688e03c869687372eb2e53dece5b7de2c928399/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_armour_plate_set"
+   ],
+   "triangles": 951471,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_beam_lance",
+   "match": {
+    "url": "*/concept-module-beam-lance/a3d2ddfafa84/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_beam_lance/concept_module_beam_lance/StaticMeshes/SM_concept_module_beam_lance.SM_concept_module_beam_lance",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49892592430114746,
+     -0.266116201877594,
+     -0.41107088327407837
+    ],
+    [
+     0.31899362802505493,
+     0.28575319051742554,
+     0.4471345543861389
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-beam-lance/originals/a3d2ddfafa84931b242be81f83bc3184f730c4e816fef95eb2eaf944a960f157/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_beam_lance"
+   ],
+   "triangles": 974818,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_cargo_pod",
+   "match": {
+    "url": "*/concept-module-cargo-pod/a84a1b8973a7/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_cargo_pod/concept_module_cargo_pod/StaticMeshes/SM_concept_module_cargo_pod.SM_concept_module_cargo_pod",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4861734211444855,
+     -0.20470792055130005,
+     -0.49129873514175415
+    ],
+    [
+     0.38495558500289917,
+     0.3029761016368866,
+     0.4033675789833069
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-cargo-pod/originals/a84a1b8973a78231813727e4354def4cc10852c4d1f3b263fb9a8c0aa27063f2/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_cargo_pod"
+   ],
+   "triangles": 944914,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_comms_mast",
+   "match": {
+    "url": "*/concept-module-comms-mast/0dc0004e4fbe/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_comms_mast/concept_module_comms_mast/StaticMeshes/SM_concept_module_comms_mast.SM_concept_module_comms_mast",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.2643356919288635,
+     -0.43543070554733276,
+     -0.3276485502719879
+    ],
+    [
+     0.2651018500328064,
+     0.5010484457015991,
+     0.17861995100975037
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-comms-mast/originals/0dc0004e4fbe69d20ab99e03bb63912edbd2846bd6ba217bbb2067c42085fcec/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_comms_mast"
+   ],
+   "triangles": 948598,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_docking_arm",
+   "match": {
+    "url": "*/concept-module-docking-arm/e9f4952cd9b3/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_docking_arm/concept_module_docking_arm/StaticMeshes/SM_concept_module_docking_arm.SM_concept_module_docking_arm",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.3365173935890198,
+     -0.26969224214553833,
+     -0.4071568250656128
+    ],
+    [
+     0.4915178716182709,
+     0.2664549946784973,
+     0.2688860595226288
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-docking-arm/originals/e9f4952cd9b3976d8e29e6974ab0133a9c15eaf325db58ba158a6e0bd9635986/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_docking_arm"
+   ],
+   "triangles": 965950,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_engine_large",
+   "match": {
+    "url": "*/concept-module-engine-large/b7245bfd7768/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_engine_large/concept_module_engine_large/StaticMeshes/SM_concept_module_engine_large.SM_concept_module_engine_large",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.3343501687049866,
+     -0.22031019628047943,
+     -0.4074769616127014
+    ],
+    [
+     0.46963822841644287,
+     0.26121705770492554,
+     0.4882795512676239
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-engine-large/originals/b7245bfd7768e0f88e2cbee27b56963917e7b55f24934fb9e6cd90ad412e4c17/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_engine_large"
+   ],
+   "triangles": 975722,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_engine_medium",
+   "match": {
+    "url": "*/concept-module-engine-medium/db125cc017a6/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_engine_medium/concept_module_engine_medium/StaticMeshes/SM_concept_module_engine_medium.SM_concept_module_engine_medium",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.3130123019218445,
+     -0.1905701607465744,
+     -0.43011990189552307
+    ],
+    [
+     0.5004838109016418,
+     0.2756885290145874,
+     0.47630277276039124
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-engine-medium/originals/db125cc017a686bc5b2b61ed7067c5bda3d653ea1f241e43c29d0aa7198b88a4/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_engine_medium"
+   ],
+   "triangles": 965436,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_engine_small",
+   "match": {
+    "url": "*/concept-module-engine-small/f65255b56f36/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_engine_small/concept_module_engine_small/StaticMeshes/SM_concept_module_engine_small.SM_concept_module_engine_small",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.3994094729423523,
+     -0.23910784721374512,
+     -0.399597704410553
+    ],
+    [
+     0.4692288041114807,
+     0.30841711163520813,
+     0.49610304832458496
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-engine-small/originals/f65255b56f36f7c74083fbadde66170fb2a613720401579bfedeb239b1bbefca/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_engine_small"
+   ],
+   "triangles": 957739,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_fabrication_bay",
+   "match": {
+    "url": "*/concept-module-fabrication-bay/383bf5660cad/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_fabrication_bay/concept_module_fabrication_bay/StaticMeshes/SM_concept_module_fabrication_bay.SM_concept_module_fabrication_bay",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4937136173248291,
+     -0.2590026259422302,
+     -0.4543721675872803
+    ],
+    [
+     0.40508708357810974,
+     0.2504885792732239,
+     0.4189274311065674
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-fabrication-bay/originals/383bf5660cad28817df7920e829204735d5402952c9883cb35ed95e9e01e40f2/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_fabrication_bay"
+   ],
+   "triangles": 939136,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_flak_battery",
+   "match": {
+    "url": "*/concept-module-flak-battery/dfd6b5e840c1/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_flak_battery/concept_module_flak_battery/StaticMeshes/SM_concept_module_flak_battery.SM_concept_module_flak_battery",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.450150728225708,
+     -0.2502301335334778,
+     -0.46198463439941406
+    ],
+    [
+     0.49425286054611206,
+     0.23595991730690002,
+     0.47589096426963806
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-flak-battery/originals/dfd6b5e840c1843ba48a098d58a155666dad8a196ed623f199c68aecc158ad96/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_flak_battery"
+   ],
+   "triangles": 948533,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_habitat_ring",
+   "match": {
+    "url": "*/concept-module-habitat-ring/d7ed0321143d/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_habitat_ring/concept_module_habitat_ring/StaticMeshes/SM_concept_module_habitat_ring.SM_concept_module_habitat_ring",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.44851768016815186,
+     -0.24842143058776855,
+     -0.41586440801620483
+    ],
+    [
+     0.4272167384624481,
+     0.36282575130462646,
+     0.3711690306663513
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-habitat-ring/originals/d7ed0321143d8873e0f6575a0240df27f328d76fe6b651ef0ec5f1d921ae123c/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_habitat_ring"
+   ],
+   "triangles": 973782,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_hangar_launch_tube",
+   "match": {
+    "url": "*/concept-module-hangar-launch-tube/8f1a511e1d18/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_hangar_launch_tube/concept_module_hangar_launch_tube/StaticMeshes/SM_concept_module_hangar_launch_tube.SM_concept_module_hangar_launch_tube",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4882485866546631,
+     -0.21150247752666473,
+     -0.46696609258651733
+    ],
+    [
+     0.3856561779975891,
+     0.3162083923816681,
+     0.49265816807746887
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-hangar-launch-tube/originals/8f1a511e1d18726edfabb9cb390d93b63a3cbaf4199f371e3e16256d7304737b/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_hangar_launch_tube"
+   ],
+   "triangles": 970115,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_heavy_kinetic_turret",
+   "match": {
+    "url": "*/concept-module-heavy-kinetic-turret/6bb3c0af4ce5/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_heavy_kinetic_turret/concept_module_heavy_kinetic_turret/StaticMeshes/SM_concept_module_heavy_kinetic_turret.SM_concept_module_heavy_kinetic_turret",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.36707404255867004,
+     -0.21673879027366638,
+     -0.4751293957233429
+    ],
+    [
+     0.4837131202220917,
+     0.29463571310043335,
+     0.4931895136833191
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-heavy-kinetic-turret/originals/6bb3c0af4ce505c2bc1b9d1c2add93fdfa273e40c013643444fc61415a6a8763/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_heavy_kinetic_turret"
+   ],
+   "triangles": 947967,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_heavy_railgun",
+   "match": {
+    "url": "*/concept-module-heavy-railgun/2190980d4d77/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_heavy_railgun/concept_module_heavy_railgun/StaticMeshes/SM_concept_module_heavy_railgun.SM_concept_module_heavy_railgun",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.48322951793670654,
+     -0.263832688331604,
+     -0.44232892990112305
+    ],
+    [
+     0.39070188999176025,
+     0.3010072410106659,
+     0.49494606256484985
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-heavy-railgun/originals/2190980d4d7791917ac37228f21a8869ddcd8e58bacc7f25e11183d315c7e067/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_heavy_railgun"
+   ],
+   "triangles": 961051,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_light_railgun",
+   "match": {
+    "url": "*/concept-module-light-railgun/1ea849af93cc/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_light_railgun/concept_module_light_railgun/StaticMeshes/SM_concept_module_light_railgun.SM_concept_module_light_railgun",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.2922131419181824,
+     -0.25485357642173767,
+     -0.44804903864860535
+    ],
+    [
+     0.5005795359611511,
+     0.3279953598976135,
+     0.39860284328460693
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-light-railgun/originals/1ea849af93ccefa7389f1f1b2907496aa1f7b02662defcc55c88faefc2481405/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_light_railgun"
+   ],
+   "triangles": 995129,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_missile_pod",
+   "match": {
+    "url": "*/concept-module-missile-pod/deb21b67a50f/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_missile_pod/concept_module_missile_pod/StaticMeshes/SM_concept_module_missile_pod.SM_concept_module_missile_pod",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49515867233276367,
+     -0.34435710310935974,
+     -0.48844945430755615
+    ],
+    [
+     0.3842477798461914,
+     0.34414559602737427,
+     0.4653796851634979
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-missile-pod/originals/deb21b67a50f4e08d33290a901225e637b80373dce3c27643268e37b1c9ff1eb/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_missile_pod"
+   ],
+   "triangles": 977217,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_point_defence",
+   "match": {
+    "url": "*/concept-module-point-defence/bd6d1156cf52/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_point_defence/concept_module_point_defence/StaticMeshes/SM_concept_module_point_defence.SM_concept_module_point_defence",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.35372698307037354,
+     -0.3230164051055908,
+     -0.41132253408432007
+    ],
+    [
+     0.46324536204338074,
+     0.4213903546333313,
+     0.49462369084358215
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-point-defence/originals/bd6d1156cf5293ddcf95a2f2de058d647203af5c9e2b288be45701e84cb69f3f/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_point_defence"
+   ],
+   "triangles": 983535,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_reactor",
+   "match": {
+    "url": "*/concept-module-reactor/99544c93bb4b/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_reactor/concept_module_reactor/StaticMeshes/SM_concept_module_reactor.SM_concept_module_reactor",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4902745485305786,
+     -0.285534143447876,
+     -0.41902363300323486
+    ],
+    [
+     0.42242246866226196,
+     0.32089972496032715,
+     0.4896852374076843
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-reactor/originals/99544c93bb4b79d24a44e5b8358eee08c528a61314eac8efb6c0fcf6ee917c66/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_reactor"
+   ],
+   "triangles": 956326,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_refinery",
+   "match": {
+    "url": "*/concept-module-refinery/953ac7d2c748/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_refinery/concept_module_refinery/StaticMeshes/SM_concept_module_refinery.SM_concept_module_refinery",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5001663565635681,
+     -0.25454819202423096,
+     -0.4383048415184021
+    ],
+    [
+     0.36916524171829224,
+     0.31471118330955505,
+     0.357178270816803
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-refinery/originals/953ac7d2c748bc8169c1458a54bbe6170f284ab47cf44e7db7a4ecaaddbf5004/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_refinery"
+   ],
+   "triangles": 936436,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_sensor_array",
+   "match": {
+    "url": "*/concept-module-sensor-array/e1778f06d1ff/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_sensor_array/concept_module_sensor_array/StaticMeshes/SM_concept_module_sensor_array.SM_concept_module_sensor_array",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.41290509700775146,
+     -0.31624555587768555,
+     -0.3422166705131531
+    ],
+    [
+     0.44063007831573486,
+     0.28385448455810547,
+     0.496357262134552
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-sensor-array/originals/e1778f06d1ff9b1e853b887708b6e67e4a05a035a243d71fb311198bf592a3f2/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_sensor_array"
+   ],
+   "triangles": 935528,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_shield_generator",
+   "match": {
+    "url": "*/concept-module-shield-generator/08e230fc3150/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_shield_generator/concept_module_shield_generator/StaticMeshes/SM_concept_module_shield_generator.SM_concept_module_shield_generator",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4692418575286865,
+     -0.3633274435997009,
+     -0.382273405790329
+    ],
+    [
+     0.4696381390094757,
+     0.37910473346710205,
+     0.49600234627723694
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-shield-generator/originals/08e230fc3150b82e5e7312525aaddc76bec5d31b1bc84449c29f0c5e89940369/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_shield_generator"
+   ],
+   "triangles": 951162,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_spinal_mount",
+   "match": {
+    "url": "*/concept-module-spinal-mount/c01946e7bdb6/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_spinal_mount/concept_module_spinal_mount/StaticMeshes/SM_concept_module_spinal_mount.SM_concept_module_spinal_mount",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.3649004101753235,
+     -0.27032598853111267,
+     -0.5004526376724243
+    ],
+    [
+     0.5004975199699402,
+     0.2738890051841736,
+     0.3747166395187378
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-spinal-mount/originals/c01946e7bdb67b61425d5b24834a4ab3608fd1b857363a0c22468cd3fb6540a8/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_spinal_mount"
+   ],
+   "triangles": 950740,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_torpedo_tubes",
+   "match": {
+    "url": "*/concept-module-torpedo-tubes/2f55393af64b/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_torpedo_tubes/concept_module_torpedo_tubes/StaticMeshes/SM_concept_module_torpedo_tubes.SM_concept_module_torpedo_tubes",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.43806636333465576,
+     -0.3022594749927521,
+     -0.34140944480895996
+    ],
+    [
+     0.48191672563552856,
+     0.32575467228889465,
+     0.49344468116760254
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-torpedo-tubes/originals/2f55393af64b2879a628c56112c73937a3f76d54142490b89c4bb340f601eaf0/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_torpedo_tubes"
+   ],
+   "triangles": 968101,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_module_vls_bank",
+   "match": {
+    "url": "*/concept-module-vls-bank/d2d1e19b5efd/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_module_vls_bank/concept_module_vls_bank/StaticMeshes/SM_concept_module_vls_bank.SM_concept_module_vls_bank",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4953686594963074,
+     -0.27755945920944214,
+     -0.4694313108921051
+    ],
+    [
+     0.3920494318008423,
+     0.3717206120491028,
+     0.4168785810470581
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-module-vls-bank/originals/d2d1e19b5efdba5302b548249dea06eecbb882c8108bf1f11b1ba723e83cf723/pixal3d_textured.glb",
+   "keys": [
+    "concept_module_vls_bank"
+   ],
+   "triangles": 977569,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_battleship",
+   "match": {
+    "url": "*/concept-mrn-battleship/2841cadd5449/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_battleship/concept_mrn_battleship/StaticMeshes/SM_concept_mrn_battleship.SM_concept_mrn_battleship",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4997152090072632,
+     -0.2273714542388916,
+     -0.44268715381622314
+    ],
+    [
+     0.4720883071422577,
+     0.3151005506515503,
+     0.31286412477493286
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-battleship/originals/2841cadd5449f04240427d8b7e9e1276ac4b3a56cd0846c081508cc5414181ca/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_battleship.json",
+   "keys": [
+    "concept_mrn_battleship"
+   ],
+   "triangles": 952752,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_capital_titan",
+   "match": {
+    "url": "*/concept-mrn-capital-titan/e9e4ea100f79/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_capital_titan/concept_mrn_capital_titan/StaticMeshes/SM_concept_mrn_capital_titan.SM_concept_mrn_capital_titan",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.46330368518829346,
+     -0.28150463104248047,
+     -0.3573648929595947
+    ],
+    [
+     0.37899401783943176,
+     0.3266191780567169,
+     0.43615972995758057
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-capital-titan/originals/e9e4ea100f7929d3b50726156fe7de1751b2977ff447d6c43ed1947910fc6c73/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_capital_titan.json",
+   "keys": [
+    "concept_mrn_capital_titan"
+   ],
+   "triangles": 905620,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_colony_ship",
+   "match": {
+    "url": "*/concept-mrn-colony-ship/1989e4ae0d2f/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_colony_ship/concept_mrn_colony_ship/StaticMeshes/SM_concept_mrn_colony_ship.SM_concept_mrn_colony_ship",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5064795613288879,
+     -0.20080402493476868,
+     -0.42331475019454956
+    ],
+    [
+     0.37503355741500854,
+     0.29629239439964294,
+     0.41523295640945435
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-colony-ship/originals/1989e4ae0d2f4b6aa1dfad54d375062a3aed93fc7ac4c8d8d817dcecd7429925/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_colony_ship.json",
+   "keys": [
+    "concept_mrn_colony_ship"
+   ],
+   "triangles": 864832,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_constructor",
+   "match": {
+    "url": "*/concept-mrn-constructor/ba8bdbf68f7c/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_constructor/concept_mrn_constructor/StaticMeshes/SM_concept_mrn_constructor.SM_concept_mrn_constructor",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49409881234169006,
+     -0.21974526345729828,
+     -0.4198381304740906
+    ],
+    [
+     0.43442797660827637,
+     0.34329575300216675,
+     0.4893001317977905
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-constructor/originals/ba8bdbf68f7c2cc29671ba2a011224695cdfaeaf2626ba51f274d5bd4a156b82/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_constructor.json",
+   "keys": [
+    "concept_mrn_constructor"
+   ],
+   "triangles": 931664,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_defence_platform",
+   "match": {
+    "url": "*/concept-mrn-defence-platform/b7916300f133/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_defence_platform/concept_mrn_defence_platform/StaticMeshes/SM_concept_mrn_defence_platform.SM_concept_mrn_defence_platform",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.3754526376724243,
+     -0.2498665750026703,
+     -0.4565034806728363
+    ],
+    [
+     0.48447567224502563,
+     0.3445349931716919,
+     0.38687634468078613
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-defence-platform/originals/b7916300f13322a9ddbebf2d455c5551f4b0743ce40312c937305f42ff02aa57/pixal3d_textured.glb",
+   "keys": [
+    "concept_mrn_defence_platform"
+   ],
+   "triangles": 944036,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_fighter_bomber",
+   "match": {
+    "url": "*/concept-mrn-fighter-bomber/3f62c42b5619/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_fighter_bomber/concept_mrn_fighter_bomber/StaticMeshes/SM_concept_mrn_fighter_bomber.SM_concept_mrn_fighter_bomber",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.3966445028781891,
+     -0.20299582183361053,
+     -0.3522384464740753
+    ],
+    [
+     0.4853798449039459,
+     0.3209625482559204,
+     0.2988186180591583
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-fighter-bomber/originals/3f62c42b56193e7b49f1342ec2726d459d9dc7d9441f29c30ccaed2d173100cf/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-fighter-bomber/3f62c42b5619/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_mrn_fighter_bomber"
+   ],
+   "triangles": 938238,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_gun_turret",
+   "match": {
+    "url": "*/concept-mrn-gun-turret/4674b6d7aad0/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_gun_turret/concept_mrn_gun_turret/StaticMeshes/SM_concept_mrn_gun_turret.SM_concept_mrn_gun_turret",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4923200309276581,
+     -0.24128489196300507,
+     -0.3486372232437134
+    ],
+    [
+     0.38866540789604187,
+     0.29930877685546875,
+     0.4069005250930786
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-gun-turret/originals/4674b6d7aad02224acc24e1575271448c0bf5486a74ef19b1f5f834fbd8835d7/pixal3d_textured.glb",
+   "keys": [
+    "concept_mrn_gun_turret"
+   ],
+   "triangles": 957694,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_heavy_vls_bank",
+   "match": {
+    "url": "*/concept-mrn-heavy-vls-bank/0066db8e72cf/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_heavy_vls_bank/concept_mrn_heavy_vls_bank/StaticMeshes/SM_concept_mrn_heavy_vls_bank.SM_concept_mrn_heavy_vls_bank",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5006471872329712,
+     -0.21550767123699188,
+     -0.47996270656585693
+    ],
+    [
+     0.4015321731567383,
+     0.32086360454559326,
+     0.4198940098285675
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-heavy-vls-bank/originals/0066db8e72cfe81e3ce84b6e37c9d072aaad6e6d0636ca89c4f241d5ddf53d2d/pixal3d_textured.glb",
+   "keys": [
+    "concept_mrn_heavy_vls_bank"
+   ],
+   "triangles": 938861,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_marine_shuttle",
+   "match": {
+    "url": "*/concept-mrn-marine-shuttle/8f3e2ea73643/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_marine_shuttle/concept_mrn_marine_shuttle/StaticMeshes/SM_concept_mrn_marine_shuttle.SM_concept_mrn_marine_shuttle",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4855828583240509,
+     -0.2314910590648651,
+     -0.40353941917419434
+    ],
+    [
+     0.3603067398071289,
+     0.37985602021217346,
+     0.4535289406776428
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-marine-shuttle/originals/8f3e2ea7364353930f34f8da8d78c51d247916e2e96a133866b39ab9ab6bfd00/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-marine-shuttle/8f3e2ea73643/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_mrn_marine_shuttle"
+   ],
+   "triangles": 933656,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_mining_outpost",
+   "match": {
+    "url": "*/concept-mrn-mining-outpost/9e29223cdd38/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_mining_outpost/concept_mrn_mining_outpost/StaticMeshes/SM_concept_mrn_mining_outpost.SM_concept_mrn_mining_outpost",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4980699121952057,
+     -0.26278436183929443,
+     -0.3591674566268921
+    ],
+    [
+     0.42271754145622253,
+     0.2884921133518219,
+     0.3130512535572052
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-mining-outpost/originals/9e29223cdd381c56d34d6e6b920b47dcad02305c43ae5d1e1a337038cc25b5f1/pixal3d_textured.glb",
+   "keys": [
+    "concept_mrn_mining_outpost"
+   ],
+   "triangles": 943680,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_mining_ship",
+   "match": {
+    "url": "*/concept-mrn-mining-ship/6b4921edd0c9/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_mining_ship/concept_mrn_mining_ship/StaticMeshes/SM_concept_mrn_mining_ship.SM_concept_mrn_mining_ship",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4867410957813263,
+     -0.2243732511997223,
+     -0.3102661669254303
+    ],
+    [
+     0.3874337375164032,
+     0.2834390699863434,
+     0.4221431612968445
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-mining-ship/originals/6b4921edd0c99ae4aa6c4f55dfcbe9f67b342e1dd9ee17ba52a642f4bda119f2/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-mining-ship/6b4921edd0c9/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_mrn_mining_ship"
+   ],
+   "triangles": 932032,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_missile_battery",
+   "match": {
+    "url": "*/concept-mrn-missile-battery/e78b52715c89/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_missile_battery/concept_mrn_missile_battery/StaticMeshes/SM_concept_mrn_missile_battery.SM_concept_mrn_missile_battery",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4298689365386963,
+     -0.27669864892959595,
+     -0.45952919125556946
+    ],
+    [
+     0.47994503378868103,
+     0.27958792448043823,
+     0.48989731073379517
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-missile-battery/originals/e78b52715c8973963ee2752220a7749a18684fedd52d1827ebb2b451590ec2b0/pixal3d_textured.glb",
+   "keys": [
+    "concept_mrn_missile_battery"
+   ],
+   "triangles": 973095,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_orbital_habitat",
+   "match": {
+    "url": "*/concept-mrn-orbital-habitat/d279a883e531/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_orbital_habitat/concept_mrn_orbital_habitat/StaticMeshes/SM_concept_mrn_orbital_habitat.SM_concept_mrn_orbital_habitat",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.38375410437583923,
+     -0.3428604006767273,
+     -0.42194679379463196
+    ],
+    [
+     0.4186103940010071,
+     0.43848884105682373,
+     0.4676913321018219
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-orbital-habitat/originals/d279a883e531683cb1cbab13fbff90d96ee97d0eb1979c515a1c1fe9fe835359/pixal3d_textured.glb",
+   "keys": [
+    "concept_mrn_orbital_habitat"
+   ],
+   "triangles": 957616,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_ore_hauler",
+   "match": {
+    "url": "*/concept-mrn-ore-hauler/d55a09f1bc2c/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_ore_hauler/concept_mrn_ore_hauler/StaticMeshes/SM_concept_mrn_ore_hauler.SM_concept_mrn_ore_hauler",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.495514452457428,
+     -0.24196334183216095,
+     -0.35862815380096436
+    ],
+    [
+     0.38237130641937256,
+     0.3198683559894562,
+     0.45257145166397095
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-ore-hauler/originals/d55a09f1bc2c3019d3fc638e2200636d32c83e9a7a2074abcdabb841a3ee2f78/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-ore-hauler/d55a09f1bc2c/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_mrn_ore_hauler"
+   ],
+   "triangles": 939564,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_research_station",
+   "match": {
+    "url": "*/concept-mrn-research-station/29ced9be3826/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_research_station/concept_mrn_research_station/StaticMeshes/SM_concept_mrn_research_station.SM_concept_mrn_research_station",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.420804500579834,
+     -0.32387083768844604,
+     -0.248397558927536
+    ],
+    [
+     0.4212847054004669,
+     0.32869473099708557,
+     0.5006844997406006
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-research-station/originals/29ced9be3826e24440a0fe9b83c024b03d06a0009e3c249c62c0d7033a19dd65/pixal3d_textured.glb",
+   "keys": [
+    "concept_mrn_research_station"
+   ],
+   "triangles": 968461,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_scout",
+   "match": {
+    "url": "*/concept-mrn-scout/13027a7b30ba/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_scout/concept_mrn_scout/StaticMeshes/SM_concept_mrn_scout.SM_concept_mrn_scout",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49381232261657715,
+     -0.21448451280593872,
+     -0.3133639395236969
+    ],
+    [
+     0.39732903242111206,
+     0.3009120225906372,
+     0.34587374329566956
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-scout/originals/13027a7b30ba2796c160b06c704c56aac89a7c7c6fcfa9ff8440218ba62817bf/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-scout/13027a7b30ba/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_mrn_scout"
+   ],
+   "triangles": 1004387,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_shield_generator",
+   "match": {
+    "url": "*/concept-mrn-shield-generator/a74ea79a2098/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_shield_generator/concept_mrn_shield_generator/StaticMeshes/SM_concept_mrn_shield_generator.SM_concept_mrn_shield_generator",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.46170344948768616,
+     -0.3088771104812622,
+     -0.40674668550491333
+    ],
+    [
+     0.4345870614051819,
+     0.317182332277298,
+     0.30745449662208557
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-shield-generator/originals/a74ea79a20985de961ed33ae3c0159786948c92f8aa9b38bd7a0b406dd3a3e74/pixal3d_textured.glb",
+   "keys": [
+    "concept_mrn_shield_generator"
+   ],
+   "triangles": 947907,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_shipyard",
+   "match": {
+    "url": "*/concept-mrn-shipyard/f93c3945f7de/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_shipyard/concept_mrn_shipyard/StaticMeshes/SM_concept_mrn_shipyard.SM_concept_mrn_shipyard",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4956759810447693,
+     -0.23967468738555908,
+     -0.4626235067844391
+    ],
+    [
+     0.4056438207626343,
+     0.311303973197937,
+     0.4906601905822754
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-shipyard/originals/f93c3945f7de08b2d4fd465b909802fb2d94bac620cb6b2d147eecf46700e0a9/pixal3d_textured.glb",
+   "keys": [
+    "concept_mrn_shipyard"
+   ],
+   "triangles": 958080,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_surface_colony",
+   "match": {
+    "url": "*/concept-mrn-surface-colony/4d8a458ef4ea/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_surface_colony/concept_mrn_surface_colony/StaticMeshes/SM_concept_mrn_surface_colony.SM_concept_mrn_surface_colony",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4431960880756378,
+     -0.22631433606147766,
+     -0.43485063314437866
+    ],
+    [
+     0.46934112906455994,
+     0.2821505069732666,
+     0.4944952130317688
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-surface-colony/originals/4d8a458ef4ea48ae172ecc9dd8b6c421bbc5355b606d6be27786c45e7739abc1/pixal3d_textured.glb",
+   "keys": [
+    "concept_mrn_surface_colony"
+   ],
+   "triangles": 992909,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_torpedo_bomber",
+   "match": {
+    "url": "*/concept-mrn-torpedo-bomber/afbe44f784b9/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_torpedo_bomber/concept_mrn_torpedo_bomber/StaticMeshes/SM_concept_mrn_torpedo_bomber.SM_concept_mrn_torpedo_bomber",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49790021777153015,
+     -0.21684804558753967,
+     -0.43660056591033936
+    ],
+    [
+     0.4071974754333496,
+     0.35208940505981445,
+     0.46961504220962524
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-torpedo-bomber/originals/afbe44f784b9ce2c5ccb988f6190e4f1f7b3f8018808bbea4263d44f9ea1b00c/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-torpedo-bomber/afbe44f784b9/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_mrn_torpedo_bomber"
+   ],
+   "triangles": 961218,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_torpedo_launcher",
+   "match": {
+    "url": "*/concept-mrn-torpedo-launcher/d1d37bea56e9/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_torpedo_launcher/concept_mrn_torpedo_launcher/StaticMeshes/SM_concept_mrn_torpedo_launcher.SM_concept_mrn_torpedo_launcher",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4685003459453583,
+     -0.26460325717926025,
+     -0.4855287969112396
+    ],
+    [
+     0.4055582880973816,
+     0.28469210863113403,
+     0.4040582776069641
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-torpedo-launcher/originals/d1d37bea56e9b727ab2e3de77c953667ea26a5f972c91cc6ba0b2bc6de5d58ac/pixal3d_textured.glb",
+   "keys": [
+    "concept_mrn_torpedo_launcher"
+   ],
+   "triangles": 957801,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_trade_refinery",
+   "match": {
+    "url": "*/concept-mrn-trade-refinery/42f673c653df/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_trade_refinery/concept_mrn_trade_refinery/StaticMeshes/SM_concept_mrn_trade_refinery.SM_concept_mrn_trade_refinery",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.45342427492141724,
+     -0.26374465227127075,
+     -0.4559786915779114
+    ],
+    [
+     0.40387922525405884,
+     0.32827243208885193,
+     0.49034807085990906
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-trade-refinery/originals/42f673c653df39214d7981bf2ce32606cef3cb18fd0dd84dc68defcef717accd/pixal3d_textured.glb",
+   "keys": [
+    "concept_mrn_trade_refinery"
+   ],
+   "triangles": 998079,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_mrn_troop_transport",
+   "match": {
+    "url": "*/concept-mrn-troop-transport/a01a9c23bd25/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_mrn_troop_transport/concept_mrn_troop_transport/StaticMeshes/SM_concept_mrn_troop_transport.SM_concept_mrn_troop_transport",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5010288953781128,
+     -0.21825002133846283,
+     -0.4425620436668396
+    ],
+    [
+     0.38582685589790344,
+     0.3169238567352295,
+     0.4510694146156311
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-mrn-troop-transport/originals/a01a9c23bd257427a9075ddbbcba23fb8e6daf288fbe6fbab304a563c99052f3/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-troop-transport/a01a9c23bd25/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_mrn_troop_transport"
+   ],
+   "triangles": 974725,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_pirate_base",
+   "match": {
+    "url": "*/concept-pirate-base/51405557e93f/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_pirate_base/concept_pirate_base/StaticMeshes/SM_concept_pirate_base.SM_concept_pirate_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.34775295853614807,
+     -0.3078296184539795,
+     -0.49641215801239014
+    ],
+    [
+     0.4453921914100647,
+     0.30007773637771606,
+     0.26210010051727295
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-pirate-base/originals/51405557e93ff4e30ec3c93546872b1103880d24cc1acf79d4d764ae59f890c9/pixal3d_textured.glb",
+   "keys": [
+    "concept_pirate_base"
+   ],
+   "triangles": 976720,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_assault_transport",
+   "match": {
+    "url": "*/concept-tdf-assault-transport/e4dc31618f9c/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_assault_transport/concept_tdf_assault_transport/StaticMeshes/SM_concept_tdf_assault_transport.SM_concept_tdf_assault_transport",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4984835684299469,
+     -0.23944547772407532,
+     -0.4846581816673279
+    ],
+    [
+     0.38865289092063904,
+     0.36451026797294617,
+     0.49266913533210754
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-assault-transport/originals/e4dc31618f9c198680794ea47d135a1cf861b210cbdf9f80bf6d8eec73bb2adc/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-assault-transport/e4dc31618f9c/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_assault_transport"
+   ],
+   "triangles": 968874,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_battleship",
+   "match": {
+    "url": "*/concept-tdf-battleship/72fe85214afa/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_battleship/concept_tdf_battleship/StaticMeshes/SM_concept_tdf_battleship.SM_concept_tdf_battleship",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.48899829387664795,
+     -0.2176392674446106,
+     -0.4384021759033203
+    ],
+    [
+     0.3994685411453247,
+     0.28628575801849365,
+     0.39382675290107727
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-battleship/originals/72fe85214afa47c17b92ffcf911384267cfe3ac551b5fa3753e4a0d03056921e/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-battleship/72fe85214afa/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_battleship"
+   ],
+   "triangles": 910920,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_boarding_pod",
+   "match": {
+    "url": "*/concept-tdf-boarding-pod/c927ad9cfa9c/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_boarding_pod/concept_tdf_boarding_pod/StaticMeshes/SM_concept_tdf_boarding_pod.SM_concept_tdf_boarding_pod",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49661433696746826,
+     -0.2516081929206848,
+     -0.40829986333847046
+    ],
+    [
+     0.4082795977592468,
+     0.31390684843063354,
+     0.5049620866775513
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-boarding-pod/originals/c927ad9cfa9cb960b385f2fcb58828eba0803b63cdcfb8634e9e18bba1b87846/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-boarding-pod/c927ad9cfa9c/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_boarding_pod"
+   ],
+   "triangles": 878406,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_capital_titan",
+   "match": {
+    "url": "*/concept-tdf-capital-titan/1759afaa5e56/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_capital_titan/concept_tdf_capital_titan/StaticMeshes/SM_concept_tdf_capital_titan.SM_concept_tdf_capital_titan",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4805428683757782,
+     -0.21626459062099457,
+     -0.3334408402442932
+    ],
+    [
+     0.4114746153354645,
+     0.2935894727706909,
+     0.39279261231422424
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-capital-titan/originals/1759afaa5e563bd70ea3f0f4732c70a593b502a4cf52818e5d86273e6ba525bb/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-capital-titan/1759afaa5e56/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_capital_titan"
+   ],
+   "triangles": 113852,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_coilgun_pdc_grid",
+   "match": {
+    "url": "*/concept-tdf-coilgun-pdc-grid/b1e442fb9b6f/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_coilgun_pdc_grid/concept_tdf_coilgun_pdc_grid/StaticMeshes/SM_concept_tdf_coilgun_pdc_grid.SM_concept_tdf_coilgun_pdc_grid",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.46769437193870544,
+     -0.3676190972328186,
+     -0.485262393951416
+    ],
+    [
+     0.4064030051231384,
+     0.4359317421913147,
+     0.49004244804382324
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-coilgun-pdc-grid/originals/b1e442fb9b6ffbd188ecac29d8278ad6aeed9142c7af5ccaadbc1c8e18eedbbd/pixal3d_textured.glb",
+   "keys": [
+    "concept_tdf_coilgun_pdc_grid"
+   ],
+   "triangles": 960186,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_colony_ship",
+   "match": {
+    "url": "*/concept-tdf-colony-ship/d2333322d3e2/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_colony_ship/concept_tdf_colony_ship/StaticMeshes/SM_concept_tdf_colony_ship.SM_concept_tdf_colony_ship",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.48755452036857605,
+     -0.2415330857038498,
+     -0.34962350130081177
+    ],
+    [
+     0.3863445520401001,
+     0.31397849321365356,
+     0.3498600721359253
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-colony-ship/originals/d2333322d3e2b2e87a69400c1b541b4c2d44b4c6193600c71f80c6901da0cd9f/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-colony-ship/d2333322d3e2/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_colony_ship"
+   ],
+   "triangles": 110936,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_constructor",
+   "match": {
+    "url": "*/concept-tdf-constructor/977ea570b7aa/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_constructor/concept_tdf_constructor/StaticMeshes/SM_concept_tdf_constructor.SM_concept_tdf_constructor",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5000365972518921,
+     -0.21031448245048523,
+     -0.4851568937301636
+    ],
+    [
+     0.43194204568862915,
+     0.3242569863796234,
+     0.405925452709198
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-constructor/originals/977ea570b7aa0a632892cfae36afbcf5e5edbaf6e067b3077cb9383ea82b343e/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-constructor/977ea570b7aa/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_constructor"
+   ],
+   "triangles": 956326,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_defence_platform",
+   "match": {
+    "url": "*/concept-tdf-defence-platform/cfe029ae6439/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_defence_platform/concept_tdf_defence_platform/StaticMeshes/SM_concept_tdf_defence_platform.SM_concept_tdf_defence_platform",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49298983812332153,
+     -0.26575735211372375,
+     -0.4968188405036926
+    ],
+    [
+     0.48836952447891235,
+     0.29771703481674194,
+     0.2676329016685486
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-defence-platform/originals/cfe029ae6439cd6a3aa11afdba738855e139ba0d45db810dc2e2c237045dea4a/pixal3d_textured.glb",
+   "keys": [
+    "concept_tdf_defence_platform"
+   ],
+   "triangles": 964210,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_fighter_bomber",
+   "match": {
+    "url": "*/concept-tdf-fighter-bomber/a79aee13e8a9/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_fighter_bomber/concept_tdf_fighter_bomber/StaticMeshes/SM_concept_tdf_fighter_bomber.SM_concept_tdf_fighter_bomber",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.38127511739730835,
+     -0.19510900974273682,
+     -0.4115438163280487
+    ],
+    [
+     0.46287623047828674,
+     0.390084445476532,
+     0.4766639471054077
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-fighter-bomber/originals/a79aee13e8a9e1973239b225de5fab5450a151f884dddb09a1b2b0fe484947cb/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-fighter-bomber/a79aee13e8a9/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_fighter_bomber"
+   ],
+   "triangles": 963782,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_gun_turret",
+   "match": {
+    "url": "*/concept-tdf-gun-turret/823c7dec14c3/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_gun_turret/concept_tdf_gun_turret/StaticMeshes/SM_concept_tdf_gun_turret.SM_concept_tdf_gun_turret",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4917704463005066,
+     -0.22883062064647675,
+     -0.3659653067588806
+    ],
+    [
+     0.40455901622772217,
+     0.26112908124923706,
+     0.4345100224018097
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-gun-turret/originals/823c7dec14c3ba036600beb217f14394986542cca662abe09edf073022bf0d91/pixal3d_textured.glb",
+   "keys": [
+    "concept_tdf_gun_turret"
+   ],
+   "triangles": 959535,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_marine_shuttle",
+   "match": {
+    "url": "*/concept-tdf-marine-shuttle/5b9abf59256b/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_marine_shuttle/concept_tdf_marine_shuttle/StaticMeshes/SM_concept_tdf_marine_shuttle.SM_concept_tdf_marine_shuttle",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.48929765820503235,
+     -0.24952766299247742,
+     -0.38957539200782776
+    ],
+    [
+     0.39907845854759216,
+     0.3255887031555176,
+     0.45448654890060425
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-marine-shuttle/originals/5b9abf59256bee183efae24f7aa431bd1e1557dbcb0743a30ba350a5e0e951b5/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-marine-shuttle/5b9abf59256b/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_marine_shuttle"
+   ],
+   "triangles": 919242,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_mining_outpost",
+   "match": {
+    "url": "*/concept-tdf-mining-outpost/5ebab1965498/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_mining_outpost/concept_tdf_mining_outpost/StaticMeshes/SM_concept_tdf_mining_outpost.SM_concept_tdf_mining_outpost",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49707716703414917,
+     -0.25961539149284363,
+     -0.3740789294242859
+    ],
+    [
+     0.395567387342453,
+     0.2740635275840759,
+     0.32434260845184326
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-mining-outpost/originals/5ebab19654987629bb1235a89ccc9533bd572fbc5276e77cb210a6b2465d1edf/pixal3d_textured.glb",
+   "keys": [
+    "concept_tdf_mining_outpost"
+   ],
+   "triangles": 930367,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_mining_ship",
+   "match": {
+    "url": "*/concept-tdf-mining-ship/43c8815a9a18/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_mining_ship/concept_tdf_mining_ship/StaticMeshes/SM_concept_tdf_mining_ship.SM_concept_tdf_mining_ship",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4986567199230194,
+     -0.17157849669456482,
+     -0.42749273777008057
+    ],
+    [
+     0.4070853292942047,
+     0.3173660635948181,
+     0.4317294657230377
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-mining-ship/originals/43c8815a9a18f9e35126467dcef2152c6d73c9e6d526afd6869be4bb59994521/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-mining-ship/43c8815a9a18/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_mining_ship"
+   ],
+   "triangles": 1006068,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_missile_battery",
+   "match": {
+    "url": "*/concept-tdf-missile-battery/cd33e32ee3b7/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_missile_battery/concept_tdf_missile_battery/StaticMeshes/SM_concept_tdf_missile_battery.SM_concept_tdf_missile_battery",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4354570209980011,
+     -0.31143584847450256,
+     -0.42264726758003235
+    ],
+    [
+     0.447314977645874,
+     0.29702770709991455,
+     0.36088940501213074
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-missile-battery/originals/cd33e32ee3b7f3e74d7016fdc32bb4bb962b13dac2ae610b2a0b61808023c91e/pixal3d_textured.glb",
+   "keys": [
+    "concept_tdf_missile_battery"
+   ],
+   "triangles": 953164,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_orbital_habitat",
+   "match": {
+    "url": "*/concept-tdf-orbital-habitat/1360b01f98ae/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_orbital_habitat/concept_tdf_orbital_habitat/StaticMeshes/SM_concept_tdf_orbital_habitat.SM_concept_tdf_orbital_habitat",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4064357280731201,
+     -0.2457103729248047,
+     -0.42023766040802
+    ],
+    [
+     0.4142071008682251,
+     0.32720693945884705,
+     0.3282468914985657
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-orbital-habitat/originals/1360b01f98aeafb6fecac222761542115433bbddbc0094bb27023c865b8d3116/pixal3d_textured.glb",
+   "keys": [
+    "concept_tdf_orbital_habitat"
+   ],
+   "triangles": 931078,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_ore_hauler",
+   "match": {
+    "url": "*/concept-tdf-ore-hauler/a5e16c5bba50/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_ore_hauler/concept_tdf_ore_hauler/StaticMeshes/SM_concept_tdf_ore_hauler.SM_concept_tdf_ore_hauler",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4967285096645355,
+     -0.2160108983516693,
+     -0.30042076110839844
+    ],
+    [
+     0.38998374342918396,
+     0.2914893329143524,
+     0.3837510645389557
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-ore-hauler/originals/a5e16c5bba502f378c3772f8932527ce5453346a03e3201d7f222815d223a4a7/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-ore-hauler/a5e16c5bba50/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_ore_hauler"
+   ],
+   "triangles": 972614,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_repair_tender",
+   "match": {
+    "url": "*/concept-tdf-repair-tender/c340b44628f3/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_repair_tender/concept_tdf_repair_tender/StaticMeshes/SM_concept_tdf_repair_tender.SM_concept_tdf_repair_tender",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.501163899898529,
+     -0.20362183451652527,
+     -0.4661954641342163
+    ],
+    [
+     0.3761662542819977,
+     0.3129841685295105,
+     0.3760511875152588
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-repair-tender/originals/c340b44628f31a7b28ba0e897db6dd99b8358ca644ea3400107dc9d52a4890d2/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-repair-tender/c340b44628f3/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_repair_tender"
+   ],
+   "triangles": 1008248,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_research_station",
+   "match": {
+    "url": "*/concept-tdf-research-station/35f26489e647/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_research_station/concept_tdf_research_station/StaticMeshes/SM_concept_tdf_research_station.SM_concept_tdf_research_station",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.36003994941711426,
+     -0.2710336148738861,
+     -0.43420320749282837
+    ],
+    [
+     0.39876630902290344,
+     0.29844504594802856,
+     0.4944196939468384
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-research-station/originals/35f26489e647336998957139d00b037fe2af43d522fcbf9088dc438c029de90f/pixal3d_textured.glb",
+   "keys": [
+    "concept_tdf_research_station"
+   ],
+   "triangles": 934311,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_scout",
+   "match": {
+    "url": "*/concept-tdf-scout/ee1e8559233f/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_scout/concept_tdf_scout/StaticMeshes/SM_concept_tdf_scout.SM_concept_tdf_scout",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4980895519256592,
+     -0.21150948107242584,
+     -0.28864002227783203
+    ],
+    [
+     0.3752198815345764,
+     0.3040913939476013,
+     0.4549868106842041
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-scout/originals/ee1e8559233f24fc1b39fa3828cb855bf9229363fb7326b5a88d6d7e2a9cb908/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-scout/ee1e8559233f/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_scout"
+   ],
+   "triangles": 1015376,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_sensor_frigate",
+   "match": {
+    "url": "*/concept-tdf-sensor-frigate/c422a99f2128/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_sensor_frigate/concept_tdf_sensor_frigate/StaticMeshes/SM_concept_tdf_sensor_frigate.SM_concept_tdf_sensor_frigate",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5004627108573914,
+     -0.21942216157913208,
+     -0.26120394468307495
+    ],
+    [
+     0.3695032000541687,
+     0.27609625458717346,
+     0.28510114550590515
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-sensor-frigate/originals/c422a99f2128d2d3c7c84aba5833422bb91e990336b1024523ffe0a2cc2489b9/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-sensor-frigate/c422a99f2128/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_sensor_frigate"
+   ],
+   "triangles": 947954,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_shield_generator",
+   "match": {
+    "url": "*/concept-tdf-shield-generator/a6be5b3eb050/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_shield_generator/concept_tdf_shield_generator/StaticMeshes/SM_concept_tdf_shield_generator.SM_concept_tdf_shield_generator",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4673863649368286,
+     -0.39764875173568726,
+     -0.3589444160461426
+    ],
+    [
+     0.4973130226135254,
+     0.38283389806747437,
+     0.44087743759155273
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-shield-generator/originals/a6be5b3eb0500f1454217cd86b223c0ed2e90cbbc30181ed9abe50c2fadabd8d/pixal3d_textured.glb",
+   "keys": [
+    "concept_tdf_shield_generator"
+   ],
+   "triangles": 983522,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_shipyard",
+   "match": {
+    "url": "*/concept-tdf-shipyard/1dabe04136ec/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_shipyard/concept_tdf_shipyard/StaticMeshes/SM_concept_tdf_shipyard.SM_concept_tdf_shipyard",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4980468451976776,
+     -0.21354496479034424,
+     -0.46429112553596497
+    ],
+    [
+     0.3839739263057709,
+     0.34399333596229553,
+     0.49030801653862
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-shipyard/originals/1dabe04136ec449bf7e61fb16d7b2392f8738ebdd18a14e89bd57d0cc42298fe/pixal3d_textured.glb",
+   "keys": [
+    "concept_tdf_shipyard"
+   ],
+   "triangles": 940964,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_surface_colony",
+   "match": {
+    "url": "*/concept-tdf-surface-colony/cc45fa455186/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_surface_colony/concept_tdf_surface_colony/StaticMeshes/SM_concept_tdf_surface_colony.SM_concept_tdf_surface_colony",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4540041983127594,
+     -0.24060362577438354,
+     -0.38388606905937195
+    ],
+    [
+     0.4896875023841858,
+     0.29378029704093933,
+     0.49252694845199585
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-surface-colony/originals/cc45fa455186099e222919317c1691d891743793599e04d80e68be6dbcf6988c/pixal3d_textured.glb",
+   "keys": [
+    "concept_tdf_surface_colony"
+   ],
+   "triangles": 992194,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_trade_refinery",
+   "match": {
+    "url": "*/concept-tdf-trade-refinery/5055755693ca/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_trade_refinery/concept_tdf_trade_refinery/StaticMeshes/SM_concept_tdf_trade_refinery.SM_concept_tdf_trade_refinery",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.35713106393814087,
+     -0.19777598977088928,
+     -0.4227539896965027
+    ],
+    [
+     0.4974030554294586,
+     0.28506264090538025,
+     0.28816717863082886
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-trade-refinery/originals/5055755693cac66bd1dd28b5c6dea3c1481ea714b18ec8075ba1dbff843b7a8f/pixal3d_textured.glb",
+   "keys": [
+    "concept_tdf_trade_refinery"
+   ],
+   "triangles": 976074,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_troop_transport",
+   "match": {
+    "url": "*/concept-tdf-troop-transport/b03d1ca07e07/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_troop_transport/concept_tdf_troop_transport/StaticMeshes/SM_concept_tdf_troop_transport.SM_concept_tdf_troop_transport",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4961329698562622,
+     -0.24248641729354858,
+     -0.36849403381347656
+    ],
+    [
+     0.4007548689842224,
+     0.30304497480392456,
+     0.44372794032096863
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-troop-transport/originals/b03d1ca07e070ca5a0760af0156e133af506cc5ee6a5ee06d383e266eb25a064/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-troop-transport/b03d1ca07e07/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_troop_transport"
+   ],
+   "triangles": 928409,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_battleship",
+   "match": {
+    "url": "*/concept-ueg-battleship/837cd6b5981f/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_battleship/concept_ueg_battleship/StaticMeshes/SM_concept_ueg_battleship.SM_concept_ueg_battleship",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49683576822280884,
+     -0.21578893065452576,
+     -0.37521451711654663
+    ],
+    [
+     0.3494879901409149,
+     0.2714279890060425,
+     0.36635348200798035
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-battleship/originals/837cd6b5981f722a724c7313d5f808d2d0e3fce5bb75b9db90022d8cefd89e66/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-battleship/837cd6b5981f/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_ueg_battleship"
+   ],
+   "triangles": 993688,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_carrier",
+   "match": {
+    "url": "*/concept-ueg-carrier/a54a59782ace/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_carrier/concept_ueg_carrier/StaticMeshes/SM_concept_ueg_carrier.SM_concept_ueg_carrier",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49069178104400635,
+     -0.21166108548641205,
+     -0.4965571165084839
+    ],
+    [
+     0.4617941081523895,
+     0.2795781195163727,
+     0.47134697437286377
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-carrier/originals/a54a59782aced585837c4fa217e7dbc6166e2215f1a4f494ac6cf9b65024e7df/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-carrier/a54a59782ace/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_ueg_carrier"
+   ],
+   "triangles": 1061334,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_veil_frigate",
+   "match": {
+    "url": "*/concept-veil-frigate/523757ade948/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_veil_frigate/concept_veil_frigate/StaticMeshes/SM_concept_veil_frigate.SM_concept_veil_frigate",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.48135942220687866,
+     -0.16613243520259857,
+     -0.32140788435935974
+    ],
+    [
+     0.3491382598876953,
+     0.3441007733345032,
+     0.3537551164627075
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-frigate/originals/523757ade948266e9761821c587ab5431f413dba49cfe94d9771b4a29fd5baa1/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-frigate/523757ade948/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_veil_frigate"
+   ],
+   "triangles": 949402,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_veil_plasma_arc_emitter",
+   "match": {
+    "url": "*/concept-veil-plasma-arc-emitter/55c52c6eafb3/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_veil_plasma_arc_emitter/concept_veil_plasma_arc_emitter/StaticMeshes/SM_concept_veil_plasma_arc_emitter.SM_concept_veil_plasma_arc_emitter",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49309027194976807,
+     -0.2848247289657593,
+     -0.2413889318704605
+    ],
+    [
+     0.3403164744377136,
+     0.28176048398017883,
+     0.43880125880241394
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-plasma-arc-emitter/originals/55c52c6eafb31611cc94ac4d25d961d5553865d27f642885be13be38c309d14d/pixal3d_textured.glb",
+   "keys": [
+    "concept_veil_plasma_arc_emitter"
+   ],
+   "triangles": 948269,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_veil_scout",
+   "match": {
+    "url": "*/concept-veil-scout/bf7ce236077a/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_veil_scout/concept_veil_scout/StaticMeshes/SM_concept_veil_scout.SM_concept_veil_scout",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.3099445104598999,
+     -0.2220836728811264,
+     -0.4233284294605255
+    ],
+    [
+     0.5006296038627625,
+     0.27961471676826477,
+     0.2571205198764801
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-scout/originals/bf7ce236077a44665e442f3f647b2816132f86d323a49c7ac7af45caa5146e43/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-scout/bf7ce236077a/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_veil_scout"
+   ],
+   "triangles": 933410,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_veil_signature_unit",
+   "match": {
+    "url": "*/concept-veil-signature-unit/55c3e99d4ecc/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_veil_signature_unit/concept_veil_signature_unit/StaticMeshes/SM_concept_veil_signature_unit.SM_concept_veil_signature_unit",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.6047654747962952,
+     -0.20387810468673706,
+     -0.49256622791290283
+    ],
+    [
+     0.43828335404396057,
+     0.3752707839012146,
+     0.4466443955898285
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-signature-unit/originals/55c3e99d4ecc3ab4e71507e082d6fe72cb3727f57cb22c0f59533d3f56858f86/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-signature-unit/55c3e99d4ecc/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_veil_signature_unit"
+   ],
+   "triangles": 1075508,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_veil_station",
+   "match": {
+    "url": "*/concept-veil-station/67e218e080a4/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_veil_station/concept_veil_station/StaticMeshes/SM_concept_veil_station.SM_concept_veil_station",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.41468775272369385,
+     -0.31200626492500305,
+     -0.38879817724227905
+    ],
+    [
+     0.4227394759654999,
+     0.2974393367767334,
+     0.4922832250595093
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-station/originals/67e218e080a4e36cc6607ce0b32baea44f4abd46e333534f2c504050f3d8e4c8/pixal3d_textured.glb",
+   "keys": [
+    "concept_veil_station"
+   ],
+   "triangles": 999509,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_cruiser",
+   "match": {
+    "url": "*/concept-ueg-cruiser/c079c7029a25/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_cruiser/concept_ueg_cruiser/StaticMeshes/SM_concept_ueg_cruiser.SM_concept_ueg_cruiser",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.34853532910346985,
+     -0.20067065954208374,
+     -0.4366028308868408
+    ],
+    [
+     0.5008528232574463,
+     0.2783617377281189,
+     0.312101811170578
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-cruiser/originals/c079c7029a25d5e07330925d638723e0271bd268e9ee33543243632bc7ecf193/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-cruiser/c079c7029a25/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_ueg_cruiser"
+   ],
+   "triangles": 912982,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_destroyer",
+   "match": {
+    "url": "*/concept-ueg-destroyer/375b319618a7/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_destroyer/concept_ueg_destroyer/StaticMeshes/SM_concept_ueg_destroyer.SM_concept_ueg_destroyer",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4836174547672272,
+     -0.1975356638431549,
+     -0.39328914880752563
+    ],
+    [
+     0.38046199083328247,
+     0.26641741394996643,
+     0.3093634843826294
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-destroyer/originals/375b319618a71792a6588f3953411b4cce6242e2efb8afb6f0d30ecc4a8a463d/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-destroyer/375b319618a7/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_ueg_destroyer"
+   ],
+   "triangles": 920790,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_fighter_bomber",
+   "match": {
+    "url": "*/concept-ueg-fighter-bomber/4c593470329f/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_fighter_bomber/concept_ueg_fighter_bomber/StaticMeshes/SM_concept_ueg_fighter_bomber.SM_concept_ueg_fighter_bomber",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4915834963321686,
+     -0.20728936791419983,
+     -0.43679308891296387
+    ],
+    [
+     0.3599849343299866,
+     0.3575384020805359,
+     0.43786656856536865
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-fighter-bomber/originals/4c593470329f31408f51357f25def436b3e75026e3771ca86c24f4b56341ce31/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-fighter-bomber/4c593470329f/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_ueg_fighter_bomber"
+   ],
+   "triangles": 926970,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_flagship",
+   "match": {
+    "url": "*/concept-ueg-flagship/95aa65dad283/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_flagship/concept_ueg_flagship/StaticMeshes/SM_concept_ueg_flagship.SM_concept_ueg_flagship",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.37292054295539856,
+     -0.19036492705345154,
+     -0.3691917359828949
+    ],
+    [
+     0.49404793977737427,
+     0.26923102140426636,
+     0.42559677362442017
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-flagship/originals/95aa65dad283d15e69ecad69363e35d32c74d5d67cf8c4a2c080d8ec97e237fa/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-flagship/95aa65dad283/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_ueg_flagship"
+   ],
+   "triangles": 966028,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_frigate",
+   "match": {
+    "url": "*/concept-ueg-frigate/0be74cd0c7c9/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_frigate/concept_ueg_frigate/StaticMeshes/SM_concept_ueg_frigate.SM_concept_ueg_frigate",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4946502447128296,
+     -0.23342664539813995,
+     -0.3930201530456543
+    ],
+    [
+     0.366818904876709,
+     0.2820947468280792,
+     0.3308902382850647
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-frigate/originals/0be74cd0c7c964409700b1d42f37f32546cd0f35710a30b918cd5b9b26a47c6b/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-frigate/0be74cd0c7c9/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_ueg_frigate"
+   ],
+   "triangles": 950442,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_gun_monitor",
+   "match": {
+    "url": "*/concept-ueg-gun-monitor/042fdc22ed2a/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_gun_monitor/concept_ueg_gun_monitor/StaticMeshes/SM_concept_ueg_gun_monitor.SM_concept_ueg_gun_monitor",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.46537476778030396,
+     -0.23401962220668793,
+     -0.39686527848243713
+    ],
+    [
+     0.37521278858184814,
+     0.33811795711517334,
+     0.4411352276802063
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-gun-monitor/originals/042fdc22ed2a167bf7f735825cf5d54c13465370b41f6a82dee903e49e3528c1/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-gun-monitor/042fdc22ed2a/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_ueg_gun_monitor"
+   ],
+   "triangles": 994156,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_marine_shuttle",
+   "match": {
+    "url": "*/concept-ueg-marine-shuttle/163889eddb64/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_marine_shuttle/concept_ueg_marine_shuttle/StaticMeshes/SM_concept_ueg_marine_shuttle.SM_concept_ueg_marine_shuttle",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.48770421743392944,
+     -0.22392359375953674,
+     -0.4292926490306854
+    ],
+    [
+     0.3804345428943634,
+     0.3250029385089874,
+     0.49668169021606445
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-marine-shuttle/originals/163889eddb64cc44892b3439228b08e0267b15329f640b6ad5cfa773d5f6fb3d/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-marine-shuttle/163889eddb64/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_ueg_marine_shuttle"
+   ],
+   "triangles": 924268,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_scout",
+   "match": {
+    "url": "*/concept-ueg-scout/34af1a353eec/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_scout/concept_ueg_scout/StaticMeshes/SM_concept_ueg_scout.SM_concept_ueg_scout",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.3446824550628662,
+     -0.24052928388118744,
+     -0.4329657256603241
+    ],
+    [
+     0.49527060985565186,
+     0.3444247841835022,
+     0.4796244502067566
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-scout/originals/34af1a353eecea2b8f44f056143942d6dbfac28a5808e04e2123b84eaad74106/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-scout/34af1a353eec/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_ueg_scout"
+   ],
+   "triangles": 937036,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_signature_unit",
+   "match": {
+    "url": "*/concept-ueg-signature-unit/e3f136312c2e/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_signature_unit/concept_ueg_signature_unit/StaticMeshes/SM_concept_ueg_signature_unit.SM_concept_ueg_signature_unit",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4853954315185547,
+     -0.20406900346279144,
+     -0.3722493648529053
+    ],
+    [
+     0.3229827284812927,
+     0.2665199935436249,
+     0.21005967259407043
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-signature-unit/originals/e3f136312c2ebdf0ef4e69d28737a591626e743e3c7baec39d5acfbf9d5866a9/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-signature-unit/e3f136312c2e/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_ueg_signature_unit"
+   ],
+   "triangles": 972072,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_spinal_flak_battery",
+   "match": {
+    "url": "*/concept-ueg-spinal-flak-battery/39d6cf13ce30/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_spinal_flak_battery/concept_ueg_spinal_flak_battery/StaticMeshes/SM_concept_ueg_spinal_flak_battery.SM_concept_ueg_spinal_flak_battery",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.46748924255371094,
+     -0.2467980682849884,
+     -0.47618353366851807
+    ],
+    [
+     0.39255625009536743,
+     0.2999657392501831,
+     0.45381179451942444
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-spinal-flak-battery/originals/39d6cf13ce3017460452ad3256f6ed652717c99a8d7615d48c506c74014d7f5c/pixal3d_textured.glb",
+   "keys": [
+    "concept_ueg_spinal_flak_battery"
+   ],
+   "triangles": 952756,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_starbase",
+   "match": {
+    "url": "*/concept-ueg-starbase/b31b549a298c/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_starbase/concept_ueg_starbase/StaticMeshes/SM_concept_ueg_starbase.SM_concept_ueg_starbase",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.43019261956214905,
+     -0.3303000330924988,
+     -0.38726818561553955
+    ],
+    [
+     0.43083295226097107,
+     0.3130180537700653,
+     0.33399006724357605
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-starbase/originals/b31b549a298c5cc8db12e87f25f5ab8943afb77fcd686b4eeabf585873b9ecf5/pixal3d_textured.glb",
+   "keys": [
+    "concept_ueg_starbase"
+   ],
+   "triangles": 974043,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_station",
+   "match": {
+    "url": "*/concept-ueg-station/8d8650e5ba54/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_station/concept_ueg_station/StaticMeshes/SM_concept_ueg_station.SM_concept_ueg_station",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4382525682449341,
+     -0.2404417097568512,
+     -0.2399761974811554
+    ],
+    [
+     0.4072420001029968,
+     0.2731721103191376,
+     0.49745702743530273
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-station/originals/8d8650e5ba548d90f50bec557b8b73a59f331284a68b23d43ffa34a83b670fe9/pixal3d_textured.glb",
+   "keys": [
+    "concept_ueg_station"
+   ],
+   "triangles": 961830,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_ueg_troop_transport",
+   "match": {
+    "url": "*/concept-ueg-troop-transport/68b766cf6e63/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_ueg_troop_transport/concept_ueg_troop_transport/StaticMeshes/SM_concept_ueg_troop_transport.SM_concept_ueg_troop_transport",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.49536019563674927,
+     -0.22911337018013,
+     -0.48505353927612305
+    ],
+    [
+     0.37980926036834717,
+     0.34182775020599365,
+     0.47495099902153015
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-ueg-troop-transport/originals/68b766cf6e63c1b51df0d108db354438c91e2cf98e0cb07408b0fbe365bfb0cb/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-troop-transport/68b766cf6e63/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_ueg_troop_transport"
+   ],
+   "triangles": 1069484,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_veil_battleship",
+   "match": {
+    "url": "*/concept-veil-battleship/f4deae9b559b/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_veil_battleship/concept_veil_battleship/StaticMeshes/SM_concept_veil_battleship.SM_concept_veil_battleship",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4981256425380707,
+     -0.24570131301879883,
+     -0.3406708538532257
+    ],
+    [
+     0.36257505416870117,
+     0.2987903952598572,
+     0.46330490708351135
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-battleship/originals/f4deae9b559bb972babb0c56e4433f07c0d2e14d4e6e3dcf16d437cac3541b36/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-battleship/f4deae9b559b/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_veil_battleship"
+   ],
+   "triangles": 823236,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_veil_carrier",
+   "match": {
+    "url": "*/concept-veil-carrier/808348886558/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_veil_carrier/concept_veil_carrier/StaticMeshes/SM_concept_veil_carrier.SM_concept_veil_carrier",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.45352014899253845,
+     -0.21783921122550964,
+     -0.41609588265419006
+    ],
+    [
+     0.4197625517845154,
+     0.32908377051353455,
+     0.4599899649620056
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-carrier/originals/8083488865586b9758df4feaf593bff38a69796eb8eccbeb9a2f495c82dade69/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-carrier/808348886558/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_veil_carrier"
+   ],
+   "triangles": 964730,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_veil_crisis_mothership",
+   "match": {
+    "url": "*/concept-veil-crisis-mothership/cc99040a0e99/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_veil_crisis_mothership/concept_veil_crisis_mothership/StaticMeshes/SM_concept_veil_crisis_mothership.SM_concept_veil_crisis_mothership",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4857487380504608,
+     -0.23776395618915558,
+     -0.2946803569793701
+    ],
+    [
+     0.3878496587276459,
+     0.34737372398376465,
+     0.4091513454914093
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-crisis-mothership/originals/cc99040a0e99fb0420511b240867dfad78f35f3522f3b2076f1bb2e312b41651/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-crisis-mothership/cc99040a0e99/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_veil_crisis_mothership"
+   ],
+   "triangles": 950874,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_veil_cruiser",
+   "match": {
+    "url": "*/concept-veil-cruiser/d567e7e1024a/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_veil_cruiser/concept_veil_cruiser/StaticMeshes/SM_concept_veil_cruiser.SM_concept_veil_cruiser",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.37497055530548096,
+     -0.2522217035293579,
+     -0.3537081480026245
+    ],
+    [
+     0.49825412034988403,
+     0.3289433717727661,
+     0.4668389558792114
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-cruiser/originals/d567e7e1024a7231572a1e8f916ae0c5ec8b240a1e502357d7ac4e0a6c0ec34a/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-cruiser/d567e7e1024a/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_veil_cruiser"
+   ],
+   "triangles": 973084,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_veil_destroyer",
+   "match": {
+    "url": "*/concept-veil-destroyer/64a0b97eb4e3/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_veil_destroyer/concept_veil_destroyer/StaticMeshes/SM_concept_veil_destroyer.SM_concept_veil_destroyer",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4976094961166382,
+     -0.1784566044807434,
+     -0.2881324291229248
+    ],
+    [
+     0.40159815549850464,
+     0.2347583770751953,
+     0.2220870405435562
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-destroyer/originals/64a0b97eb4e3f7cc2dfe4c3385ff1a96030b781d17f82af5fd0178220d867eac/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-destroyer/64a0b97eb4e3/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_veil_destroyer"
+   ],
+   "triangles": 999960,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_veil_fighter_bomber",
+   "match": {
+    "url": "*/concept-veil-fighter-bomber/f0cdcd2c0598/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_veil_fighter_bomber/concept_veil_fighter_bomber/StaticMeshes/SM_concept_veil_fighter_bomber.SM_concept_veil_fighter_bomber",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5043377876281738,
+     -0.22413277626037598,
+     -0.3297765254974365
+    ],
+    [
+     0.3769634962081909,
+     0.36254167556762695,
+     0.4831678867340088
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-fighter-bomber/originals/f0cdcd2c0598b08f495448c4721dae33a9bb8181554220fd7b71a016c1a1f408/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-fighter-bomber/f0cdcd2c0598/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_veil_fighter_bomber"
+   ],
+   "triangles": 962872,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_veil_flagship",
+   "match": {
+    "url": "*/concept-veil-flagship/ffdc41f5981b/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_veil_flagship/concept_veil_flagship/StaticMeshes/SM_concept_veil_flagship.SM_concept_veil_flagship",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.3208593726158142,
+     -0.20455129444599152,
+     -0.3926564157009125
+    ],
+    [
+     0.5009889602661133,
+     0.3100861608982086,
+     0.42865341901779175
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.5,
+    "PaintedHull": 0,
+    "LiveryWeight": 0
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-veil-flagship/originals/ffdc41f5981bdc6ebc077e7d0f7cc35b838c2f09bebf1f13cc8ad26f3e70db76/pixal3d_textured.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-flagship/ffdc41f5981b/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_veil_flagship"
+   ],
+   "triangles": 981614,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"

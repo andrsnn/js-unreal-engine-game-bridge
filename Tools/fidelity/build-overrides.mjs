@@ -59,11 +59,13 @@ for (const s of sources) {
   // "geometryFrom": the game's own repaired model, with the original's textures (Tools/fidelity/retexture.mjs).
   if (s.geometryFrom) {
     input = path.join(path.dirname(work), 'hulls', s.name + '.glb');
-    if (!fs.existsSync(input)) console.log(`${s.name}: game geometry ${execFileSync(process.execPath, [path.join(bridge, 'Tools/fidelity/retexture.mjs'), s.geometryFrom, s.source, input, '--modules', list.modules], {encoding: 'utf8'}).trim()}`);
+    // Written under a temporary name and renamed when complete, so an interrupted run leaves no half-written file.
+    if (!fs.existsSync(input)) { console.log(`${s.name}: game geometry ${execFileSync(process.execPath, [path.join(bridge, 'Tools/fidelity/retexture.mjs'), s.geometryFrom, s.source, input.replace(/\.glb$/, '.part.glb'), '--modules', list.modules], {encoding: 'utf8'}).trim()}`); fs.renameSync(input.replace(/\.glb$/, '.part.glb'), input); }
   } else if (s.receipt) {
     input = path.join(path.dirname(work), 'hulls', s.name + '.glb');
     if (!fs.existsSync(input)) {
-      const r = execFileSync(process.execPath, [path.join(bridge, 'Tools/fidelity/symfix.mjs'), s.source, input, '--receipt', s.receipt, '--modules', list.modules, ...(s.check ? ['--check', s.check] : [])], {encoding: 'utf8'});
+      const r = execFileSync(process.execPath, [path.join(bridge, 'Tools/fidelity/symfix.mjs'), s.source, input.replace(/\.glb$/, '.part.glb'), '--receipt', s.receipt, '--modules', list.modules, ...(s.check ? ['--check', s.check] : [])], {encoding: 'utf8'});
+      fs.renameSync(input.replace(/\.glb$/, '.part.glb'), input);
       console.log(`${s.name}: symmetry repair ${r.trim()}`);
     }
   }

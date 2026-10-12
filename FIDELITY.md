@@ -22,9 +22,9 @@ For Hard Burn, `Games/hardburn-fidelity.json` turns on the overrides, and `run-u
       "name": "concept_tdf_frigate",
       "match": {"url": "*/concept-tdf-frigate/67dadcf78ae6/*"},
       "mesh": "/Game/Fidelity/HardBurn/concept_tdf_frigate/.../SM_concept_tdf_frigate.SM_concept_tdf_frigate",
-      "fit": "bounds",
-      "bounds": [[-0.50, -0.21, -0.36], [0.37, 0.31, 0.34]],
-      "params": {"EnvIntensity": 0.3, "Tint": [0.83, 0.95, 1.0]}
+      "fit": "none",
+      "bounds": [[-0.50, -0.21, -0.36], [0.40, 0.30, 0.33]],
+      "params": {"EnvIntensity": 0.5, "RoughnessScale": 0.7, "Tint": [0.86, 0.97, 1.1]}
     },
     {"name": "planet_moon", "match": {"texture": "*pole-safe/moon.png"}, "mesh": "/Game/.../SM_planet_sphere.SM_planet_sphere",
      "material": "/Game/.../MI_planet_moon.MI_planet_moon", "fit": "bounds", "bounds": [[-1, -1, -1], [1, 1, 1]]},
@@ -62,6 +62,7 @@ The host adds the scene's ambient light to override materials that have an `Ambi
 Unreal assets and rules. It needs the host project in `jsgb.local.json` and waits for the Unreal slot.
 
 1. `Tools/fidelity/symfix.mjs` applies a symmetry repair receipt to a full-resolution mesh, when the source names one.
+   It writes to a temporary name first, so a stopped run never leaves a half-written model for the next run to reuse.
 2. `Tools/fidelity/prepare-glb.mjs` writes the textures as PNG (Unreal's glTF importer reads no WebP) and records
    the bounds.
 3. `Tools/fidelity/import_assets.py` runs in an editor commandlet: it imports each mesh with Nanite on, imports
@@ -69,38 +70,56 @@ Unreal assets and rules. It needs the host project in `jsgb.local.json` and wait
    reflection, the scene's ambient light, and an optional faction livery).
 4. The rules go into the overrides file. `--clean` deletes the PNGs and repaired copies after the import.
 
+`Tools/fidelity/check-hulls.mjs <sources.json> <overrides.json> --out <dir>` checks that each imported hull lines up
+with the model the game draws. It lays the repaired source over the game's own model from three sides, measures how
+much the outlines overlap and how far the bounds differ, writes an overlay image per hull, and fails a hull below 93%
+overlap or above 3% bounds difference.
+
 Planets use `Tools/fidelity/make-sphere.mjs` (a dense sphere with three.js SphereGeometry's UVs) and
 `Tools/fidelity/planet_maps.py` (the colour map, and a normal map from it for rocky bodies).
 
 ## Hard Burn
 
 - `Overrides/make-hardburn-sources.mjs` reads the game's model manifest and lists every ship and station model
-  with its original Pixal3D source and the symmetry repair the game adopted for it. `Overrides/hardburn-models.md`
-  is the resulting table: 165 models, 96 with symmetry repairs. The two fast-attack hulls have no Pixal3D original.
-- The models in the fleet battle view keep their 4096 maps. The rest import with 2048 maps to fit the disk
-  budget. Nanite keeps every source triangle (about 930,000 to 1,000,000 per hull).
-- Imported so far: 52 of the 165 models (every model in the fleet battle view, both starbases, and the first 40 of
-  the rest in name order). Each takes about 50 MB in the host project, so the other 113 need about 6 GB more than
-  the 10 GB build folder allowed. To finish, run `node Tools/fidelity/build-overrides.mjs Overrides/hardburn.sources.json
-  Overrides/hardburn.json --work <dir> --only <names> --clean` on more space. Models without a rule draw the game's own.
+  with its exact original Pixal3D file: the one in `F:/AssetVault/hard-burn/assets/<model>/originals/<hash>/` whose
+  hash the manifest records. `Overrides/hardburn-models.md` is the resulting table.
+- All 165 models that have a Pixal3D original are imported. 96 have the game's symmetry repair applied to the full
+  original. 4 had their game models edited after Pixal3D made them (the Corsair ore hauler, the Helion scout, the TDF
+  capital titan and the colony ship), so they use the game's own shape with the original's textures. Every model
+  keeps its source's 4096 maps and every triangle (about 110,000 to 1,100,000 per model, drawn with Nanite). The game's
+  two fast-attack hulls have no Pixal3D original, so they use the game's own model.
+- Hulls use the same coordinates as the game's models (`fit: none`), so the game places, turns and scales them.
+- Materials use each original's own textures. The game paints a faction livery over its hulls, and the override
+  materials don't. The TDF frigate gets a cool tint and lower roughness, which keeps its red stripes and dark panels.
 - Planets use the game's own planet maps on a 260,000-triangle sphere, with normal maps for the Moon and Mars.
   Higher-resolution planet maps are requested from gen in `F:/AssetVault/hard-burn/unreal-fidelity/REQUESTS-gen.md`.
+- The host project, its cache and build output live on `H:/builds/JsgbFidelity` (`jsgb.local.json`), about 13 GB.
+  Rebuild the rules with `node Tools/fidelity/build-overrides.mjs Overrides/hardburn.sources.json Overrides/hardburn.json
+  --work <dir> --only <names> --clean`.
 
 ## What works and what doesn't yet
 
 Works:
 - The override system: rules by glTF URL, name, texture or userData, Nanite meshes placed by the game, hide rules.
-- 52 imported Hard Burn hulls from the original Pixal3D sources with the game's symmetry repairs, at full
-  triangle counts.
+- All 165 Hard Burn models from the exact Pixal3D originals with the game's symmetry repairs, at full triangle
+  counts and 4096 maps. All 165 pass the alignment check against the game's models: the outlines overlap by at
+  least 93.6% and the bounds differ by at most 2.9%.
 - Planets on a dense sphere with the game's maps and normal maps.
 - Lumen mode (`-JsgbLumen`): Lumen lighting, a sky light, soft sun shadows, volumetric fog.
+- Close-ups: the MRN cruiser, the TDF frigate and the six-armed starbase show more surface detail in Unreal than in
+  the browser (`G:/JsGameBridge-fidelity-order/shots/`).
 
 Wrong or missing:
-- Hull materials look flatter than the browser's. The game paints panels, bands and markings with a livery shader
-  that uses per-vertex weights it computes on its own lower-resolution meshes. The override material only
-  approximates that with a faction tint, so hulls lose the browser's red and black panel contrast.
+- Hull colours come from the Pixal3D originals. The game's livery isn't applied, so most hulls look warmer and less
+  blue than in the browser. Only the frigate has its own tint so far.
 - At the battle camera's distance the extra geometry is only a few pixels, so it adds little visible detail.
 - Explosion smoke and some small effects draw less than in the browser, and drive plumes cast no light on hulls.
+- Unreal needs `r.Streaming.FullyLoadUsedTextures=1` for stills: without it, a shot taken soon after loading shows
+  low-resolution mips and the hulls look beige and blurry.
+
+Taking matching shots: the designer view (`?view=designer`) turns and drifts the ship over time, and Chrome and
+Unreal don't reach the same pose at the same time. The shot scripts set the ship's pose just before each shot and
+use only the mouse wheel to frame it, since held keys pan by different amounts in each.
 
 ## Bridge fixes made along the way
 
@@ -116,6 +135,7 @@ These help every game, with or without fidelity mode:
 - Opaque surfaces drawn without depth (sky domes) no longer hide what is drawn after them.
 - `Tools/web.mjs capture --profile <dir>` keeps blobs on disk, so games that unpack many large models load in
   headless Chrome.
+- `select.add()` and `select.options` in the page's DOM. Hard Burn's ship designer failed to start without them.
 
 ## Frame rate
 
@@ -132,7 +152,12 @@ screen, 60 s from 20 s after the loading screen closes, measured with `Tools/ben
 The Lumen runs were stopped before they ran. The single slowest frames come from new objects arriving during
 the battle, not from the override models.
 
-## Film
+## Shots and film
+
+`G:/JsGameBridge-fidelity-order/shots/` holds 2560x1440 pairs, browser on the left and Unreal with Lumen on the
+right: `tdf-frigate-close`, `mrn-cruiser-close`, `tdf-starbase-close` and `fleet-battle-wide`, each as
+`-side-by-side.png`, `-browser.png` and `-unreal.png`.
 
 `G:/JsGameBridge-fidelity-order/hardburn-unreal-fidelity.mp4` (1080p) and `hardburn-unreal-fidelity-720p.mp4`: the
-same seeded fleet battle in Chrome and in Unreal fidelity mode, full views on top and 2x crops below.
+same seeded fleet battle in Chrome and in Unreal fidelity mode, full views on top and 2x crops below. The film shows
+the older materials and the first 52 models.
