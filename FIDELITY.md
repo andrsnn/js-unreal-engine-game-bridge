@@ -129,8 +129,8 @@ Planets use `Tools/fidelity/make-sphere.mjs` (a dense sphere with three.js Spher
   place in the game's texture and its plate weight. It then draws the original model flat in its own texture space
   through the exact material the game paints that hull with. So the colours are the game's, and the original
   texture's fine light and dark detail goes on top. `Tools/fidelity/import-livery.mjs` imports the results as
-  T_<hull>_Livery (the original texture stays). The per-ship registration marks are left out, since all ships of a
-  class share the texture. The bake loads hulls on request and needs about 4 GB.
+  T_<hull>_Livery (the original texture stays). The class's registration marks (hull number and service tag, such as
+  CV-08) are painted in too. The bake loads hulls on request and needs about 4 GB.
 - Painted plates are rough (PaintedHull 1.3, as the game's livery clamps them), and the studio reflection is a
   quarter strength (EnvIntensity 0.25), because Lumen adds its own reflections.
 - Planets use the game's own planet maps on a 260,000-triangle sphere, with normal maps for the Moon and Mars.

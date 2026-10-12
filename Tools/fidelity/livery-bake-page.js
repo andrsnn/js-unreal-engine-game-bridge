@@ -3,7 +3,7 @@
 // (faction colours, stripes, panels and tint: scene/hull-livery.js or the fleet paint in pixal3d.js), and draws the
 // override's source model flat in its texture space through that material, with the source's own colour texture as
 // the map. The result is the source's colour texture with the game's livery painted on, exactly as the browser
-// computes it. The per-ship registration marks are left out: the texture is shared by every ship of the class.
+// computes it, including the class's registration marks (hull number and service tag).
 // Vite serves this module, so these resolve to the same module instances the game's page uses.
 import * as pixal from '/src/scene/pixal3d.js';
 import {hullPlateMask} from '/src/scene/hull-plate-mask.js';
@@ -228,11 +228,13 @@ export async function bake(name, key, sourceUrl, style = 'clean') {
   if (!paint.map) paint.map = map;
   if (clean) paint.map = blurred;
   paint.side = THREE.DoubleSide; paint.depthTest = paint.depthWrite = false; paint.transparent = false;
-  const blank = new THREE.DataTexture(new Uint8Array(4), 1, 1); blank.needsUpdate = true;
   const gamePaint = game.material.onBeforeCompile;
   paint.onBeforeCompile = (shader, renderer) => {
     gamePaint.call(game.material, shader, renderer);
-    if (shader.uniforms.liveryRegistration) shader.uniforms.liveryRegistration.value = blank;
+    // The registration marks (hull number and service tag) belong to the class, so they go into its texture. Drawn
+    // flat in texture space, screen derivatives mean nothing, so a mark faces the way the vertex normal does.
+    shader.fragmentShader = shader.fragmentShader.replace('vec3 faceNormal=normalize(cross(dFdx(liveryPosition),dFdy(liveryPosition)));', 'vec3 faceNormal=normalize(liveryNormal);')
+      .replace('if(!gl_FrontFacing)faceNormal=-faceNormal;', '');
     shader.uniforms.jsgbOriginal = {value: map};
     shader.uniforms.jsgbFrame = {value: frame};
     shader.uniforms.jsgbShipLength = {value: shipLength};
@@ -266,7 +268,7 @@ export async function bake(name, key, sourceUrl, style = 'clean') {
   const px = new Uint8Array(W * H * 4);
   r.readRenderTargetPixels(target, 0, 0, W, H, px);
   r.setRenderTarget(before.target); r.autoClear = before.autoClear; r.toneMapping = before.tone;
-  target.dispose(); paint.dispose(); geometry.dispose(); lookup.dispose(); for (const t of softCopies.splice(0)) t.dispose(); under.material.dispose(); under.geometry.dispose(); blank.dispose();
+  target.dispose(); paint.dispose(); geometry.dispose(); lookup.dispose(); for (const t of softCopies.splice(0)) t.dispose(); under.material.dispose(); under.geometry.dispose();
   // Free the source model: its 4096 textures are hundreds of megabytes each, and the bake goes through every hull.
   gltf.scene.traverse(o => {
     if (!o.isMesh) return;
