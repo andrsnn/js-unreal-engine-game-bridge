@@ -25,7 +25,8 @@ import {host} from './host';
 export type EffectLight = {id: object; color: THREE.Color; intensity: number; at: THREE.Vector3; dir: THREE.Vector3; distance: number; length: number; radius: number};
 
 const MAX = {engine: 32, flash: 24, round: 16, motor: 16, fireball: 12, shard: 8};
-const ENGINE_CANDELA = 100;
+// An engine light at full throttle, per square nozzle width; 100 washed a capital's own red hull in its purple drive light.
+const ENGINE_CANDELA = 30;
 const MOTOR_CANDELA = 400;
 const ROUND_CANDELA = 60;
 // A fireball at the peak of its glow, per square world unit of the sprite: a size 1 missile blast's fireball (about 1.2
@@ -100,7 +101,7 @@ export function effectLights(out: (l: EffectLight) => void) {
     // scale with the nozzle's area light a big or small ship's stern the same.
     const width = Math.max(1e-3, (u.nozzleWidth ?? 1) * Math.max(scale.x, scale.y));
     const p = o.getWorldPosition(new THREE.Vector3()).add(back.set(0, 0, -1).transformDirection(o.matrixWorld).multiplyScalar(width));
-    out({id: o, color: new THREE.Color(u.driveColour ?? 0xff8a3a), intensity: ENGINE_CANDELA * throttle * width * width, at: p, dir: new THREE.Vector3(0, 0, -1), distance: width * 15, length: 0, radius: width * .5});
+    out({id: o, color: new THREE.Color(u.driveColour ?? 0xff8a3a), intensity: ENGINE_CANDELA * throttle * width * width, at: p, dir: new THREE.Vector3(0, 0, -1), distance: width * 10, length: 0, radius: width * .5});
   }
   // The game already lights its three brightest top-level flashes and its brightest nuclear detonation (main.js
   // impactLights and nuclearLight, ranked among all its flashes, muzzle flashes too): skip those.
