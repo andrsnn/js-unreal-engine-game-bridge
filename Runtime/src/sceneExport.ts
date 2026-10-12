@@ -767,11 +767,11 @@ function emitEngineLights() {
     const intensity = ENGINE_LIGHT_CANDELA * throttle * width * width;
     push(LIGHT); push(idOf(o)); push(2); push(plumeColour.r); push(plumeColour.g); push(plumeColour.b); push(intensity);
     push(plumeAt.x); push(plumeAt.y); push(plumeAt.z); push(0); push(0); push(-1);
-    push(width * 30); push(2); push(0); push(0); push(0); push(0); push(0); push(0);
+    push(width * 15); push(2); push(0); push(0); push(0); push(0); push(0); push(0);
   }
   plumes.length = 0;
 }
-const ENGINE_LIGHT_CANDELA = 600;
+const ENGINE_LIGHT_CANDELA = 100;
 function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
   if (!o.visible) return;
   if ((o as THREE.LOD).isLOD && (o as THREE.LOD).autoUpdate) (o as THREE.LOD).update(cam);

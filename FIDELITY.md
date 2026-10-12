@@ -1,16 +1,27 @@
-# Fidelity mode: original models and Lumen
+# Lumen mode: original models, Lumen and Unreal effects
 
 A game running through the bridge can look better in Unreal than in the browser without changing its JavaScript.
-Two switches do it:
+Lumen mode does it, and the player turns it on and off while playing. Every game starts with it off, drawn as in
+the browser. With it on:
 
+- **Unreal's own lighting.** Lumen global illumination and reflections, a sky light, the game's directional lights
+  as suns with soft virtual shadow maps, and volumetric fog.
 - **Asset overrides.** A file named `overrides.json` beside the game's `publication.json` swaps three.js meshes
   for Unreal assets, such as Nanite meshes with full PBR materials. The game still places, turns, scales and hides
-  every object. With no file, nothing changes.
-- **`-JsgbLumen`.** Unreal's own lighting: Lumen global illumination and reflections, a sky light, the game's
-  directional lights as suns with soft virtual shadow maps, and volumetric fog. `-JsgbLumen=light` is a cheaper
-  preset. Without the switch, the bridge lights the scene as three.js does.
+  every object. With no file, nothing is swapped.
+- **Unreal effects.** Each one has its own switch in `overrides.json` (see below).
 
-For Hard Burn, `Games/hardburn-fidelity.json` turns on the overrides, and `run-unreal.mjs --lumen` adds Lumen.
+How to switch it:
+
+- **F9** in any game.
+- **A game's options menu**, through `window.jsgb.graphics`: `get()` returns `{lumen, available}`, `set({lumen})`
+  changes it, and a `jsgbgraphicschange` event on `window` follows every change. Hard Burn gets a "Lumen lighting"
+  row in Options > Display from `Games/adapters/hardburn-options.js`, an adapter the bridge adds to the game's
+  build (Games/<game>.json `"adapters"`), so the game's own files stay as they are.
+- **`-JsgbLumen`** starts a run with it on (`run-unreal.mjs --lumen`), and `-JsgbLumen=light` is a cheaper preset.
+  `-JsgbNoLumen` takes the switch away.
+
+`Games/hardburn.json` and `Games/hardburn-fidelity.json` both use `Overrides/hardburn.json`.
 
 ## The override file
 
@@ -55,6 +66,17 @@ case-insensitive, and a field can hold one pattern or a list.
 | `hide` | Draw nothing for what the rule matches |
 
 The host adds the scene's ambient light to override materials that have an `Ambient` parameter, as three.js does.
+
+`"effects"` switches each Unreal effect on (`true`) or off. An effect left out is off.
+
+```json
+"effects": {"engineLight": true, "gunfire": false, "trails": false, "smoke": false, "explosions": false, "debris": false}
+```
+
+| Effect | What Unreal adds in Lumen mode |
+| --- | --- |
+| `engineLight` | A point light in each drive plume's colour (userData.vfxKey `plume.*`), as bright as the plume's throttle, so drives light their own hull and the ships near them. The 32 plumes nearest the camera get one. |
+| `gunfire`, `trails`, `smoke`, `explosions`, `debris` | Not built yet. Hard Burn is redoing its sprite effects, and these will follow the new look and timing. |
 
 ## Building overrides from source models
 
@@ -105,7 +127,8 @@ Works:
   counts and 4096 maps. All 165 pass the alignment check against the game's models: the outlines overlap by at
   least 93.6% and the bounds differ by at most 2.9%.
 - Planets on a dense sphere with the game's maps and normal maps.
-- Lumen mode (`-JsgbLumen`): Lumen lighting, a sky light, soft sun shadows, volumetric fog.
+- Lumen mode on and off while the game runs (F9 or Options > Display), with Lumen lighting, a sky light, soft sun
+  shadows, volumetric fog, the override models and engine light on the hulls.
 - Close-ups: the MRN cruiser, the TDF frigate and the six-armed starbase show more surface detail in Unreal than in
   the browser (`G:/JsGameBridge-fidelity-order/shots/`).
 
@@ -135,7 +158,6 @@ These help every game, with or without fidelity mode:
 - Opaque surfaces drawn without depth (sky domes) no longer hide what is drawn after them.
 - `Tools/web.mjs capture --profile <dir>` keeps blobs on disk, so games that unpack many large models load in
   headless Chrome.
-- `select.add()` and `select.options` in the page's DOM. Hard Burn's ship designer failed to start without them.
 
 ## Frame rate
 
