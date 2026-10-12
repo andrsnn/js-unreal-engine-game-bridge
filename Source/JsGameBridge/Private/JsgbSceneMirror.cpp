@@ -2207,7 +2207,8 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 			UMaterialExpressionAdd* SceneLight = NewObject<UMaterialExpressionAdd>(Mat);
 			SceneLight->A.Connect(0, Collection(TEXT("Ambient"))); SceneLight->B.Connect(0, Hemi); Add(SceneLight);
 			UMaterialExpressionAdd* Irradiance = NewObject<UMaterialExpressionAdd>(Mat);
-			Irradiance->A.Connect(0, SceneLight); Irradiance->B.Connect(0, EnvLight); Add(Irradiance);
+			// The collection colours are float4, so EnvLight joins them as RGBA (output 5): float4 + float3 fails to compile.
+			Irradiance->A.Connect(0, SceneLight); Irradiance->B.Connect(5, EnvLight); Add(Irradiance);
 			UMaterialExpressionComponentMask* IrradianceRgb = NewObject<UMaterialExpressionComponentMask>(Mat);
 			IrradianceRgb->R = IrradianceRgb->G = IrradianceRgb->B = true; IrradianceRgb->A = false; IrradianceRgb->Input.Connect(0, Irradiance); Add(IrradianceRgb);
 			UMaterialExpressionMultiply* Ambient = NewObject<UMaterialExpressionMultiply>(Mat);
