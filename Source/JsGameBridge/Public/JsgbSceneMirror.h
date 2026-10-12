@@ -260,7 +260,7 @@ public:
 	float LumenAmbientScale = 1.f;
 	/** The average light of an environment map (three.js envMap, scene.environment) a material reflects; times the
 	 *  material's envMapIntensity it becomes its EnvLight. -JsgbEnvRadiance= overrides it. */
-	float EnvRadiance = 1.5f;
+	float EnvRadiance = 5.f;
 	int32 FrameCounter = 0;
 
 	FVector CameraLocation = FVector::ZeroVector;
