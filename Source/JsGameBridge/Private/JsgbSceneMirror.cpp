@@ -76,7 +76,7 @@ namespace
 {
 	constexpr float Cm = 100.f;
 	constexpr int32 HeaderFloats = 88;
-	enum ERecord { RMesh = 1, RInstanced = 2, RLight = 3, RSprite = 4, RPoints = 5, RLines = 6, RAsset = 7, REffect = 8, RCapture = 9, RCaptureEnd = 10 };
+	enum ERecord { RMesh = 1, RInstanced = 2, RLight = 3, RSprite = 4, RPoints = 5, RLines = 6, RAsset = 7, REffect = 8, RCapture = 9, RCaptureEnd = 10, RBackground = 11 };
 	enum EVariant { VLit, VLit2S, VMasked, VTrans, VUnlit, VUnlitTrans, VAdditive, VUnlitMasked, VBillboard, VBillboardAdd, VCount };
 	const TCHAR* VariantPaths[VCount] = {
 		TEXT("/JsGameBridge/Mirror/M_JsgbLit.M_JsgbLit"), TEXT("/JsGameBridge/Mirror/M_JsgbLit2S.M_JsgbLit2S"), TEXT("/JsGameBridge/Mirror/M_JsgbMasked.M_JsgbMasked"),
@@ -972,6 +972,43 @@ UMaterialInstanceDynamic* UJsgbSceneMirror::MaterialFor(int32 Id)
 	return M ? M->Instance.Get() : nullptr;
 }
 
+// scene.background as a texture: a sphere around the camera with M_JsgbSky, which looks the view direction up in the
+// equirectangular image as three.js does, times scene.backgroundIntensity. The material is a sky material, so Unreal
+// draws it behind everything however far away the scene reaches. Cube textures aren't drawn yet (the log says so).
+void UJsgbSceneMirror::ApplyBackground(const float* R)
+{
+	const int32 TexId = static_cast<int32>(R[1]), Mapping = static_cast<int32>(R[2]);
+	if (Mapping != 1)
+	{
+		static bool bWarned = false;
+		if (!bWarned) { bWarned = true; UE_LOG(LogJsgbMirror, Warning, TEXT("scene.background with mapping %d isn't drawn (only equirectangular textures are)"), Mapping); }
+		return;
+	}
+	const FJsgbTexture* T = Textures.Find(TexId);
+	if (!T || !T->Texture) { return; }
+	if (!Sky)
+	{
+		UStaticMesh* Sphere = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+		UMaterialInterface* SkyMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/JsGameBridge/Mirror/M_JsgbSky.M_JsgbSky"));
+		if (!Sphere || !SkyMaterial) { return; }
+		Sky = NewComponent(false);
+		Sky->SetStaticMesh(Sphere);
+		SkyMid = UMaterialInstanceDynamic::Create(SkyMaterial, this);
+		Sky->SetMaterial(0, SkyMid);
+		Sky->SetCastShadow(false);
+		Sky->SetWorldScale3D(FVector(20000.0));
+	}
+	SkySeen = Stamp;
+	if (Camera) { Sky->SetWorldLocation(Camera->GetComponentLocation()); }
+	SkyMid->SetTextureParameterValue(TEXT("Map"), T->Texture);
+	SkyMid->SetScalarParameterValue(TEXT("Intensity"), R[3]);
+	SkyMid->SetVectorParameterValue(TEXT("Rot0"), FLinearColor(R[4], R[5], R[6], 0));
+	SkyMid->SetVectorParameterValue(TEXT("Rot1"), FLinearColor(R[7], R[8], R[9], 0));
+	SkyMid->SetVectorParameterValue(TEXT("Rot2"), FLinearColor(R[10], R[11], R[12], 0));
+	SkyMid->SetScalarParameterValue(TEXT("FlipV"), R[13]);
+	if (!Sky->IsVisible()) { Sky->SetVisibility(true); }
+}
+
 UStaticMeshComponent* UJsgbSceneMirror::NewComponent(bool bInstanced)
 {
 	AActor* Owner = GetOwner();
@@ -1606,6 +1643,12 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			K += 27;
 		}
 		else if (Type == RCaptureEnd) { CurrentCapture = 0; K += 1; }
+		else if (Type == RBackground)
+		{
+			if (K + 15 > Count) { break; }
+			ApplyBackground(&D[K]);
+			K += 15;
+		}
 		else
 		{
 			UE_LOG(LogJsgbMirror, Warning, TEXT("Unknown record %d at %d of %d"), Type, K, Count);
@@ -1614,6 +1657,7 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 	}
 	CurrentCapture = 0;
 	DrawnEntities = Drawn;
+	if (Sky && SkySeen != Stamp && Sky->IsVisible()) { Sky->SetVisibility(false); }
 	// Each scene capture draws only its scene's objects, and stops when the game stops drawing into its target.
 	for (TPair<int32, FJsgbCapture>& It : Captures)
 	{

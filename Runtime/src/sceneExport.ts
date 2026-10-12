@@ -747,6 +747,17 @@ export function exportFrame(): number {
   push(bloomLive ? post.bloomStrength : 0); push(post.bloomRadius); push(post.bloomThreshold);
   pushMatrix(cam.matrixWorldInverse); pushMatrix(cam.projectionMatrix); pushMatrix(cam.projectionMatrixInverse);
   if (n !== HEADER_FLOATS) throw Error('scene header layout changed');
+  // A texture background (an equirectangular sky): record 11 with the texture, its mapping, scene.backgroundIntensity,
+  // the rotation three.js applies to the view direction (scene.backgroundRotation) and whether the image is flipped.
+  if (bg?.isTexture) {
+    const tex = bg as THREE.Texture & {isCubeTexture?: boolean};
+    const e = (sc as THREE.Scene & {backgroundRotation?: THREE.Euler}).backgroundRotation;
+    const m = new THREE.Matrix4().makeRotationFromEuler(new THREE.Euler(-(e?.x ?? 0), -(e?.y ?? 0), -(e?.z ?? 0), e?.order ?? 'XYZ')).elements;
+    push(11); push(textureId(tex)); push(tex.isCubeTexture ? 2 : tex.mapping === 303 || tex.mapping === 304 ? 1 : 0);
+    push((sc as THREE.Scene & {backgroundIntensity?: number}).backgroundIntensity ?? 1);
+    for (const i of [0, 4, 8, 1, 5, 9, 2, 6, 10]) push(m[i]);
+    push(tex.flipY ? 1 : 0);
+  }
   walk(top, cam, null);
   if (cam.parent === null && cam !== top) walk(cam, cam, null);
   // Scenes drawn into render targets that a material shows, each between a capture record and its end.

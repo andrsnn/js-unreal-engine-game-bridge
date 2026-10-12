@@ -316,6 +316,11 @@ private:
 	UPROPERTY() TMap<FString, TObjectPtr<UObject>> LoadedAssets;
 	TMap<FString, TSharedPtr<class FJsonObject>> Registry;
 	TMap<FString, TSharedPtr<class FJsonObject>> Shaders;
+	/** scene.background as a texture: the sky sphere, its material and the frame it was last sent. */
+	UPROPERTY() TObjectPtr<UStaticMeshComponent> Sky;
+	UPROPERTY() TObjectPtr<UMaterialInstanceDynamic> SkyMid;
+	uint32 SkySeen = 0;
+	void ApplyBackground(const float* R);
 	/** Generated materials a packaged host found no cooked asset for (they draw plainly). */
 	int32 MissingGenerated = 0;
 	UPROPERTY() TMap<FString, TObjectPtr<UMaterial>> Generated;

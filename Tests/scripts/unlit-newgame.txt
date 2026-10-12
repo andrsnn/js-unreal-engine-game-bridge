@@ -3,4 +3,5 @@
 1 click 'New Game'
 5 wait 'Begin Journey'
 6 click 'Begin Journey'
-601 shot after-newgame
+55 shot after-newgame
+60 quit

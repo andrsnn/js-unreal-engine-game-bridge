@@ -24,6 +24,8 @@ class JSGAMEBRIDGE_API UJsgbPagePort : public UObject
 	GENERATED_BODY()
 public:
 	UPROPERTY() TObjectPtr<class UJsgbBridge> Display;
+	/** The page's frame rate, which Unreal's frame rate is held to. */
+	int32 PageFps = 60;
 	UFUNCTION() FString DisplayModes();
 	UFUNCTION() FString DisplayGet();
 	UFUNCTION() void DisplaySet(const FString& Json);

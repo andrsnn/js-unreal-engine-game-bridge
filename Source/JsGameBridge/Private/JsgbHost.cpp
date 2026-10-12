@@ -1,4 +1,5 @@
 #include "JsgbHost.h"
+#include "GameFramework/GameUserSettings.h"
 #include "JsgbBridge.h"
 #include "JsgbSceneMirror.h"
 #include "JsgbAudio.h"
@@ -469,7 +470,17 @@ static const TCHAR* PageDisplayApi = TEXT("(function(){var p=window.ue&&window.u
 
 FString UJsgbPagePort::DisplayModes() { return Display ? Display->DisplayModes() : FString(TEXT("[]")); }
 FString UJsgbPagePort::DisplayGet() { return Display ? Display->DisplayGet() : FString(TEXT("{}")); }
-void UJsgbPagePort::DisplaySet(const FString& Json) { if (Display) { Display->DisplaySet(Json); } }
+void UJsgbPagePort::DisplaySet(const FString& Json)
+{
+	if (!Display) { return; }
+	Display->DisplaySet(Json);
+	// A page game draws at the page's rate: no cap, or one above it, means the page's rate (more Unreal frames only
+	// repeat page frames unevenly, which judders).
+	if (UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr)
+	{
+		if (S->GetFrameRateLimit() <= 0 || S->GetFrameRateLimit() > PageFps) { S->SetFrameRateLimit(PageFps); S->ApplySettings(false); Display->UpdateDisplayInfo(); }
+	}
+}
 
 // "KeyW", "Digit1", "Space", "ArrowUp" and the like as an Unreal key, its Windows key code and its character, for
 // POST /bridge/key (tests press keys through Slate, the same path as a real keyboard).
@@ -499,7 +510,9 @@ void AJsgbHost::CreatePageView()
 	// rate, every frame on screen is a new page frame. Uncapped, each page frame stayed up for an uneven number of
 	// Unreal frames (3.8 ms frames with a 2.7 ms spread on a 240 Hz display): the motion judders.
 	if (IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"))) { MaxFps->Set(static_cast<float>(PageFps), ECVF_SetByCode); }
+	if (UGameUserSettings* S = GEngine->GetGameUserSettings()) { if (S->GetFrameRateLimit() <= 0 || S->GetFrameRateLimit() > PageFps) { S->SetFrameRateLimit(PageFps); S->ApplySettings(false); } }
 	PagePort = NewObject<UJsgbPagePort>(this);
+	PagePort->PageFps = PageFps;
 	PagePort->Display = NewObject<UJsgbBridge>(this);
 	PagePort->Display->UpdateDisplayInfo();
 	const FString Url = FString::Printf(TEXT("http://127.0.0.1:%d/"), Port) + PageIndex + Search;

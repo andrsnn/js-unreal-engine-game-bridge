@@ -241,6 +241,47 @@ def make_surface(name, mpc, shading='lit', blend='opaque', two_sided=False, bill
     unreal.log_warning(f'JsGameBridge material {name} saved; compile messages: {list(errors)}')
 
 
+SKY = '''
+float3 d = -V;
+float3 t = float3(d.x, d.z, d.y);
+float3 r = normalize(float3(dot(R0.xyz, t), dot(R1.xyz, t), dot(R2.xyz, t)));
+float u = atan2(r.z, r.x) * 0.15915494 + 0.5;
+float v = asin(clamp(r.y, -1.0, 1.0)) * 0.31830989 + 0.5;
+if (Flip > 0.5) v = 1.0 - v;
+return Tex.SampleLevel(TexSampler, float2(u, v), 0).rgb * I;
+'''
+
+
+def make_sky():
+    """scene.background as an equirectangular texture: drawn on a sphere around the camera, as a sky (behind everything).
+    The direction is converted to three.js axes (Y up), rotated by scene.backgroundRotation, and looked up as three.js's
+    equirectUv does."""
+    mat = fresh('M_JsgbSky', unreal.Material, unreal.MaterialFactoryNew())
+    g = Graph(mat)
+    mat.set_editor_property('shading_model', unreal.MaterialShadingModel.MSM_UNLIT)
+    mat.set_editor_property('two_sided', True)
+    mat.set_editor_property('is_sky', True)
+    node = g.node(unreal.MaterialExpressionCustom, output_type=unreal.CustomMaterialOutputType.CMOT_FLOAT3, description='equirect sky', code=SKY)
+    inputs = []
+    for n in ('V', 'R0', 'R1', 'R2', 'I', 'Flip', 'Tex'):
+        ci = unreal.CustomInput()
+        ci.set_editor_property('input_name', n)
+        inputs.append(ci)
+    node.set_editor_property('inputs', inputs)
+    g.link(g.node(unreal.MaterialExpressionCameraVectorWS), '', node, 'V')
+    g.link(g.vector('Rot0', unreal.LinearColor(1, 0, 0, 0)), '', node, 'R0')
+    g.link(g.vector('Rot1', unreal.LinearColor(0, 1, 0, 0)), '', node, 'R1')
+    g.link(g.vector('Rot2', unreal.LinearColor(0, 0, 1, 0)), '', node, 'R2')
+    g.link(g.scalar('Intensity', 1), '', node, 'I')
+    g.link(g.scalar('FlipV', 0), '', node, 'Flip')
+    tex = g.node(unreal.MaterialExpressionTextureObjectParameter, parameter_name='Map', texture=unreal.load_asset('/Engine/EngineResources/WhiteSquareTexture'))
+    g.link(tex, '', node, 'Tex')
+    MEL.connect_material_property(node, '', unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    errors = MEL.recompile_material(mat)
+    EAL.save_loaded_asset(mat)
+    unreal.log_warning(f'JsGameBridge material M_JsgbSky saved; compile messages: {list(errors)}')
+
+
 def make_post(mpc):
     mat = fresh('M_JsgbScenePost', unreal.Material, unreal.MaterialFactoryNew())
     g = Graph(mat)
@@ -314,4 +355,5 @@ make_surface('M_JsgbUnlitMasked', MPC, shading='unlit', blend='masked', two_side
 make_surface('M_JsgbBillboard', MPC, shading='unlit', blend='translucent', billboard=True)
 make_surface('M_JsgbBillboardAdd', MPC, shading='unlit', blend='additive', billboard=True)
 make_post(MPC)
+make_sky()
 unreal.log('JsGameBridge materials done')

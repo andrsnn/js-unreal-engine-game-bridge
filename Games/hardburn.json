@@ -22,6 +22,9 @@
     },
     {
       "script": "Tests/scripts/hardburn-newgame.txt"
+    },
+    {
+      "script": "Tests/scripts/hardburn-keys.txt"
     }
   ]
 }

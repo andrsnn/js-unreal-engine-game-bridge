@@ -6,4 +6,4 @@
 5 objects 500
 30 key 'KeyW','down'
 85 key 'KeyW','up'
-600 quit
+95 quit
