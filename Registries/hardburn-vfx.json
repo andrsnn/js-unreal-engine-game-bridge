@@ -1,0 +1,922 @@
+{
+  "version": 1,
+  "assets": {
+    "weapon.rail": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_rail_r4.NS_weapon_rail_r4",
+      "vfxProfile": {
+        "key": "weapon.rail",
+        "category": "weapon",
+        "webKind": "rail",
+        "widthPx": 1.5,
+        "lengthPx": 18,
+        "life": 0.08,
+        "color": [
+          1.1,
+          1.07,
+          1.03
+        ],
+        "style": "thin-tracer"
+      },
+      "finiteLifeSeconds": 0.13
+    },
+    "weapon.coilgun": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_coilgun_r4.NS_weapon_coilgun_r4",
+      "vfxProfile": {
+        "key": "weapon.coilgun",
+        "category": "weapon",
+        "webKind": "coilgun",
+        "widthPx": 1.5,
+        "lengthPx": 18,
+        "life": 0.08,
+        "color": [
+          1.1,
+          1.07,
+          1.03
+        ],
+        "style": "thin-tracer"
+      },
+      "finiteLifeSeconds": 0.13
+    },
+    "weapon.mac": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_mac_r4.NS_weapon_mac_r4",
+      "vfxProfile": {
+        "key": "weapon.mac",
+        "category": "weapon",
+        "webKind": "mac",
+        "widthPx": 1.5,
+        "lengthPx": 18,
+        "life": 0.08,
+        "color": [
+          1.1,
+          1.07,
+          1.03
+        ],
+        "style": "thin-tracer"
+      },
+      "finiteLifeSeconds": 0.13
+    },
+    "weapon.spinal": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_spinal_r4.NS_weapon_spinal_r4",
+      "vfxProfile": {
+        "key": "weapon.spinal",
+        "category": "weapon",
+        "webKind": "spinal",
+        "widthPx": 1.5,
+        "lengthPx": 18,
+        "life": 0.08,
+        "color": [
+          1.1,
+          1.07,
+          1.03
+        ],
+        "style": "thin-tracer"
+      },
+      "finiteLifeSeconds": 0.13
+    },
+    "weapon.pdc": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_pdc_r4.NS_weapon_pdc_r4",
+      "vfxProfile": {
+        "key": "weapon.pdc",
+        "category": "weapon",
+        "webKind": "pdc",
+        "widthPx": 1.8,
+        "lengthPx": 14,
+        "life": 0.08,
+        "color": [
+          1.8,
+          1.5,
+          1.15
+        ],
+        "style": "tracer"
+      },
+      "finiteLifeSeconds": 0.13
+    },
+    "weapon.missile": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_missile_r4.NS_weapon_missile_r4",
+      "vfxProfile": {
+        "key": "weapon.missile",
+        "category": "weapon",
+        "webKind": "missile",
+        "widthPx": 3,
+        "lengthPx": 22,
+        "life": 0.22,
+        "color": [
+          1.5,
+          1.25,
+          0.95
+        ],
+        "style": "thin-drive"
+      },
+      "finiteLifeSeconds": 0.27
+    },
+    "weapon.torpedo": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_torpedo_r4.NS_weapon_torpedo_r4",
+      "vfxProfile": {
+        "key": "weapon.torpedo",
+        "category": "weapon",
+        "webKind": "torpedo",
+        "widthPx": 3,
+        "lengthPx": 22,
+        "life": 0.22,
+        "color": [
+          1.5,
+          1.25,
+          0.95
+        ],
+        "style": "thin-drive"
+      },
+      "finiteLifeSeconds": 0.27
+    },
+    "weapon.swarm": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_swarm_r4.NS_weapon_swarm_r4",
+      "vfxProfile": {
+        "key": "weapon.swarm",
+        "category": "weapon",
+        "webKind": "swarm",
+        "widthPx": 3,
+        "lengthPx": 22,
+        "life": 0.22,
+        "color": [
+          1.5,
+          1.25,
+          0.95
+        ],
+        "style": "thin-drive"
+      },
+      "finiteLifeSeconds": 0.27
+    },
+    "weapon.flak": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_flak_r4.NS_weapon_flak_r4",
+      "vfxProfile": {
+        "key": "weapon.flak",
+        "category": "weapon",
+        "webKind": "flak",
+        "widthPx": 1.8,
+        "lengthPx": 14,
+        "life": 0.08,
+        "color": [
+          1.8,
+          1.5,
+          1.15
+        ],
+        "style": "tracer"
+      },
+      "finiteLifeSeconds": 0.13
+    },
+    "impact.impact": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_impact_r4.NS_impact_impact_r4",
+      "vfxProfile": {
+        "key": "impact.impact",
+        "category": "impact",
+        "webKind": "impact",
+        "life": 2,
+        "lobes": 0,
+        "sparks": 10,
+        "sparkLife": 0.25,
+        "expand": 1.2,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 24,
+        "heavy": false,
+        "fireLife": 0,
+        "flashLife": 0.1,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 16,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 2.13
+    },
+    "explosion.missile": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_missile_r4.NS_explosion_missile_r4",
+      "vfxProfile": {
+        "key": "explosion.missile",
+        "category": "explosion",
+        "webKind": "missile",
+        "life": 1.6,
+        "lobes": 0,
+        "sparks": 8,
+        "sparkLife": 0.22,
+        "expand": 1.2,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 30,
+        "heavy": false,
+        "fireLife": 0,
+        "flashLife": 0.1,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 16,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 1.73
+    },
+    "explosion.torpedo": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_torpedo_r4.NS_explosion_torpedo_r4",
+      "vfxProfile": {
+        "key": "explosion.torpedo",
+        "category": "explosion",
+        "webKind": "torpedo",
+        "life": 2.5,
+        "lobes": 0,
+        "sparks": 14,
+        "sparkLife": 0.3,
+        "expand": 1.5,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 40,
+        "heavy": false,
+        "fireLife": 0,
+        "flashLife": 0.12,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 16,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 2.63
+    },
+    "impact.rail": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_rail_r4.NS_impact_rail_r4",
+      "vfxProfile": {
+        "key": "impact.rail",
+        "category": "impact",
+        "webKind": "rail",
+        "life": 0.9,
+        "lobes": 0,
+        "sparks": 7,
+        "sparkLife": 0.18,
+        "expand": 0.5,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 24,
+        "heavy": false,
+        "fireLife": 0,
+        "flashLife": 0.1,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 16,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 1.03
+    },
+    "impact.coilgun": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_coilgun_r4.NS_impact_coilgun_r4",
+      "vfxProfile": {
+        "key": "impact.coilgun",
+        "category": "impact",
+        "webKind": "coilgun",
+        "life": 1.2,
+        "lobes": 0,
+        "sparks": 10,
+        "sparkLife": 0.22,
+        "expand": 0.8,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 24,
+        "heavy": false,
+        "fireLife": 0,
+        "flashLife": 0.1,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 16,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 1.33
+    },
+    "impact.spinal": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_spinal_r4.NS_impact_spinal_r4",
+      "vfxProfile": {
+        "key": "impact.spinal",
+        "category": "impact",
+        "webKind": "spinal",
+        "life": 1.5,
+        "lobes": 0,
+        "sparks": 13,
+        "sparkLife": 0.25,
+        "expand": 1,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 28,
+        "heavy": false,
+        "fireLife": 0,
+        "flashLife": 0.1,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 16,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 1.63
+    },
+    "impact.mac": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_mac_r4.NS_impact_mac_r4",
+      "vfxProfile": {
+        "key": "impact.mac",
+        "category": "impact",
+        "webKind": "mac",
+        "life": 1.5,
+        "lobes": 0,
+        "sparks": 13,
+        "sparkLife": 0.25,
+        "expand": 1,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 28,
+        "heavy": false,
+        "fireLife": 0,
+        "flashLife": 0.1,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 16,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 1.63
+    },
+    "explosion.flak": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_flak_r4.NS_explosion_flak_r4",
+      "vfxProfile": {
+        "key": "explosion.flak",
+        "category": "explosion",
+        "webKind": "flak",
+        "life": 1.2,
+        "lobes": 0,
+        "sparks": 5,
+        "sparkLife": 0.15,
+        "expand": 1.5,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 20,
+        "heavy": false,
+        "fireLife": 0,
+        "flashLife": 0.08,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 16,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 1.33
+    },
+    "explosion.magazine": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_magazine_r4.NS_explosion_magazine_r4",
+      "vfxProfile": {
+        "key": "explosion.magazine",
+        "category": "explosion",
+        "webKind": "magazine",
+        "life": 4.8,
+        "lobes": 0,
+        "sparks": 26,
+        "sparkLife": 0.35,
+        "expand": 1.5,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 80,
+        "heavy": true,
+        "fireLife": 0,
+        "flashLife": 0.12,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 24,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 4.93
+    },
+    "explosion.reactor": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_reactor_r4.NS_explosion_reactor_r4",
+      "vfxProfile": {
+        "key": "explosion.reactor",
+        "category": "explosion",
+        "webKind": "reactor",
+        "life": 6,
+        "lobes": 0,
+        "sparks": 32,
+        "sparkLife": 0.4,
+        "expand": 1.8,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 96,
+        "heavy": true,
+        "fireLife": 0,
+        "flashLife": 0.12,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 24,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 6.13
+    },
+    "explosion.fuel": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_fuel_r4.NS_explosion_fuel_r4",
+      "vfxProfile": {
+        "key": "explosion.fuel",
+        "category": "explosion",
+        "webKind": "fuel",
+        "life": 3.5,
+        "lobes": 0,
+        "sparks": 14,
+        "sparkLife": 0.28,
+        "expand": 1.2,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 48,
+        "heavy": true,
+        "fireLife": 0,
+        "flashLife": 0.12,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 24,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 3.63
+    },
+    "explosion.fighter": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_fighter_r4.NS_explosion_fighter_r4",
+      "vfxProfile": {
+        "key": "explosion.fighter",
+        "category": "explosion",
+        "webKind": "fighter",
+        "life": 2.1,
+        "lobes": 0,
+        "sparks": 10,
+        "sparkLife": 0.25,
+        "expand": 1.2,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 40,
+        "heavy": false,
+        "fireLife": 0,
+        "flashLife": 0.1,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 16,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 2.23
+    },
+    "explosion.capital": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_capital_r4.NS_explosion_capital_r4",
+      "vfxProfile": {
+        "key": "explosion.capital",
+        "category": "explosion",
+        "webKind": "capital",
+        "life": 6,
+        "lobes": 0,
+        "sparks": 24,
+        "sparkLife": 0.35,
+        "expand": 1.4,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 72,
+        "heavy": true,
+        "fireLife": 0,
+        "flashLife": 0.12,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 24,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 6.13
+    },
+    "explosion.structure": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_explosion_structure_r4.NS_explosion_structure_r4",
+      "vfxProfile": {
+        "key": "explosion.structure",
+        "category": "explosion",
+        "webKind": "structure",
+        "life": 4.2,
+        "lobes": 0,
+        "sparks": 18,
+        "sparkLife": 0.3,
+        "expand": 1.3,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 56,
+        "heavy": true,
+        "fireLife": 0,
+        "flashLife": 0.12,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 24,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 4.33
+    },
+    "nuclear": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_nuclear_r4.NS_nuclear_r4",
+      "vfxProfile": {
+        "key": "nuclear",
+        "category": "nuclear",
+        "webKind": "nuclear",
+        "life": 8,
+        "lobes": 0,
+        "sparks": 32,
+        "sparkLife": 0.25,
+        "expand": 1.6,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 112,
+        "heavy": true,
+        "fireLife": 0,
+        "flashLife": 0.12,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 48,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 8.13
+    },
+    "plume.main": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_plume_main_r4.NS_plume_main_r4",
+      "vfxProfile": {
+        "key": "plume.main",
+        "category": "plume",
+        "webKind": "main",
+        "life": 0.22,
+        "widthPx": 3,
+        "lengthPx": 22,
+        "color": [
+          1.8,
+          0.6,
+          0.2
+        ]
+      },
+      "finiteLifeSeconds": 0.27
+    },
+    "plume.rcs": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_plume_rcs_r4.NS_plume_rcs_r4",
+      "vfxProfile": {
+        "key": "plume.rcs",
+        "category": "plume",
+        "webKind": "rcs",
+        "life": 0.12,
+        "widthPx": 3,
+        "lengthPx": 12,
+        "color": [
+          0.5,
+          1.2,
+          2
+        ]
+      },
+      "finiteLifeSeconds": 0.16999999999999998
+    },
+    "plume.missile": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_plume_missile_r4.NS_plume_missile_r4",
+      "vfxProfile": {
+        "key": "plume.missile",
+        "category": "plume",
+        "webKind": "missile",
+        "life": 0.22,
+        "widthPx": 3,
+        "lengthPx": 22,
+        "color": [
+          1.5,
+          1.25,
+          0.95
+        ],
+        "style": "thin-drive"
+      },
+      "finiteLifeSeconds": 0.27
+    },
+    "plume.torpedo": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_plume_torpedo_r4.NS_plume_torpedo_r4",
+      "vfxProfile": {
+        "key": "plume.torpedo",
+        "category": "plume",
+        "webKind": "torpedo",
+        "life": 0.22,
+        "widthPx": 3,
+        "lengthPx": 22,
+        "color": [
+          1.5,
+          1.25,
+          0.95
+        ],
+        "style": "thin-drive"
+      },
+      "finiteLifeSeconds": 0.27
+    },
+    "venting.hull": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_venting_hull_r4.NS_venting_hull_r4",
+      "vfxProfile": {
+        "key": "venting.hull",
+        "category": "venting",
+        "webKind": "hull",
+        "life": 1.2,
+        "widthPx": 18,
+        "lengthPx": 18,
+        "color": [
+          0.65,
+          0.69,
+          0.72
+        ],
+        "style": "cold-gas",
+        "alpha": 0.35
+      },
+      "finiteLifeSeconds": 1.25
+    },
+    "venting.gas": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_venting_gas_r4.NS_venting_gas_r4",
+      "vfxProfile": {
+        "key": "venting.gas",
+        "category": "venting",
+        "webKind": "gas",
+        "life": 2,
+        "widthPx": 18,
+        "lengthPx": 18,
+        "color": [
+          0.65,
+          0.69,
+          0.72
+        ],
+        "style": "cold-gas",
+        "alpha": 0.35
+      },
+      "finiteLifeSeconds": 2.05
+    },
+    "venting.wreck": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_venting_wreck_r4.NS_venting_wreck_r4",
+      "vfxProfile": {
+        "key": "venting.wreck",
+        "category": "venting",
+        "webKind": "wreck",
+        "life": 3,
+        "widthPx": 18,
+        "lengthPx": 18,
+        "color": [
+          0.65,
+          0.69,
+          0.72
+        ],
+        "style": "cold-gas",
+        "alpha": 0.35
+      },
+      "finiteLifeSeconds": 3.05
+    },
+    "weapon.nuclear": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_nuclear_r4.NS_weapon_nuclear_r4",
+      "vfxProfile": {
+        "key": "weapon.nuclear",
+        "category": "weapon",
+        "webKind": "nuclear",
+        "widthPx": 3,
+        "lengthPx": 22,
+        "life": 0.22,
+        "color": [
+          1.5,
+          1.25,
+          0.95
+        ],
+        "style": "thin-drive"
+      },
+      "finiteLifeSeconds": 0.27
+    },
+    "weapon.emp": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_weapon_emp_r4.NS_weapon_emp_r4",
+      "vfxProfile": {
+        "key": "weapon.emp",
+        "category": "weapon",
+        "webKind": "emp",
+        "widthPx": 1.5,
+        "lengthPx": 18,
+        "life": 0.08,
+        "color": [
+          1.1,
+          1.07,
+          1.03
+        ],
+        "style": "thin-tracer"
+      },
+      "finiteLifeSeconds": 0.13
+    },
+    "impact.intercept": {
+      "niagara": "/JsGameBridge/HardBurn/VFX/Systems/NS_impact_intercept_r4.NS_impact_intercept_r4",
+      "vfxProfile": {
+        "key": "impact.intercept",
+        "category": "impact",
+        "webKind": "intercept",
+        "life": 2,
+        "lobes": 0,
+        "sparks": 10,
+        "sparkLife": 0.25,
+        "expand": 1.2,
+        "shape": [
+          1,
+          1,
+          1
+        ],
+        "color": [
+          1,
+          1,
+          0.96
+        ],
+        "widthPx": 24,
+        "heavy": false,
+        "fireLife": 0,
+        "flashLife": 0.1,
+        "style": "flash-debris-gas",
+        "flashHoldRatio": 0.6,
+        "flashEnergy": 16,
+        "gasAlpha": 0.3,
+        "gasColor": [
+          0.65,
+          0.69,
+          0.72
+        ]
+      },
+      "finiteLifeSeconds": 2.13
+    }
+  }
+}

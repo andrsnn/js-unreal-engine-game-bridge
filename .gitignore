@@ -8,3 +8,11 @@ jsgb.local.json
 Builds/
 node_modules/
 NOTES.md
+# Messages, screenshots and notes from other sessions; scratch output
+/msg-*.txt
+/*.jpg
+/*.png
+/flicker/
+/VIDEO-REQUESTS.md
+Tools/AudioImporter/ContentOnlyProject/Saved/
+Tools/AudioImporter/ContentOnlyProject/Plugins/JsGameBridge/Content
