@@ -167,14 +167,7 @@
    ],
    "params": {
     "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0,
-    "RoughnessScale": 0.7,
-    "Tint": [
-     0.86,
-     0.97,
-     1.1
-    ]
+    "RoughnessScale": 0.7
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-frigate/originals/67dadcf78ae669ba810738e1b0c0cf9b1b03ba9c93472e2fb88e8b2fa3356fb1/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-frigate/67dadcf78ae6/symfix-sol-xhigh.json",
@@ -207,9 +200,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-destroyer/originals/11407e3075f6b65d62d62036c14096b3fa56155bc753140287dab44404b13a67/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_tdf_destroyer.json",
@@ -243,9 +234,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-corvette/originals/1bcf3e1f4b0a67987d1704ad1edeeb68fe491d981bb7cc886f2f482e25ce64fc/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-corvette/1bcf3e1f4b0a/symfix-sol-xhigh.json",
@@ -278,9 +267,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-carrier/originals/2ecf7491216e122b730b845d61a6cc04ac95826ba6f7b9853b5a868addab1a87/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-carrier/2ecf7491216e/symfix-sol-xhigh.json",
@@ -313,9 +300,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-cruiser/originals/a84b2758cc3f4e2d1094b441c6948b29a13df6441efbab8e04d43de9fab8f1e4/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_tdf_cruiser.json",
@@ -348,9 +333,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-frigate/originals/ec7ab1b88b063906d6b114391ffb210135a489002bd60831a6050b759c9a0cec/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-frigate/ec7ab1b88b06/symfix-sol-xhigh.json",
@@ -383,9 +366,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-destroyer/originals/c189555ac7b7dbae6f8146f95901413ef28fd48a8d575885ec5a4311ea213d10/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_destroyer.json",
@@ -418,9 +399,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-corvette/originals/b0994902e5595985c4626d01d6c63e4f1e30b0b5c170f4d2653bb5cabd11361b/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_corvette.json",
@@ -453,9 +432,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-carrier/originals/0e17c7f0fbc10dc664c69a1ccc147010d4e356922973670ee8daea4c56095c3c/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_carrier.json",
@@ -488,9 +465,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-cruiser/originals/e2d677368923fc511c6c1635848523614692a644425eefe2eaae9f4f5e4e4e8a/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_cruiser.json",
@@ -523,9 +498,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-starbase/originals/53e5db19bf8d3676436bcb63f7916bc768c34d26015d6c0725d0bfa08b4770c2/pixal3d_textured.glb",
    "keys": [
@@ -557,9 +530,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-starbase/originals/5c2092c15d320fc07bd566e153bfe505d48bca145f8c8c3f013c82372987645f/pixal3d_textured.glb",
    "keys": [
@@ -591,9 +562,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-asteroid-shipyard/originals/9b4cf59e27b660a589cead6e46a94ec656681e22e1e48c5028ddf2201e3bda99/pixal3d_textured.glb",
    "keys": [
@@ -625,9 +594,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-battleship/originals/34e9270e785a733c9536604607b36472c9a3497f5ae575c066c0296b0d3de8ca/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_battleship.json",
@@ -660,9 +627,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-boarding-craft/originals/bf218db9458405868fb268b392bc059d8d8de8f696e36240de0c55b134fd0711/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_boarding_craft.json",
@@ -695,9 +660,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-carrier/originals/0e33c07ed99f26b303a1eca25fe0c2ee59094f93512c4237b9c4507e5873d53a/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_carrier.json",
@@ -730,9 +693,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-corvette/originals/bc1edde9037700b0e6dc47190fd6191dba6b9527f36f5f6799c2a06cdb3a1970/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_corvette.json",
@@ -765,9 +726,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-cruiser/originals/ba5a14eda4ad1fc55e0c8a3286bb5a913b657ac286705fe0f626e5b612297a2e/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_cruiser.json",
@@ -800,9 +759,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-destroyer/originals/ba53d361d0a4e7ed0005b3808bee780c354f5f12e2b2fa6c9683a4e1eadb5bf4/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_destroyer.json",
@@ -835,9 +792,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-fighter-bomber/originals/9a30faa8031e364942d25b2cbf5d1c8b5916acc4b200ea314ed871036fc9299d/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_fighter_bomber.json",
@@ -870,9 +825,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-flagship/originals/2a4a2bcbaf222c9d8186f929ed47aee4c019ed785897ddf0469b0a33ffd4fccf/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_flagship.json",
@@ -905,9 +858,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-frigate/originals/cd15b2c883eb0fa32000c61eb6a09f0cda573950f4705850ec2a4b705791d2a0/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_frigate.json",
@@ -940,9 +891,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-kinetic-harpoon/originals/2eceb0c035b238ffaa0cfba559abef4639f0af5734d5d51f70ee82a9f44df678/pixal3d_textured.glb",
    "keys": [
@@ -974,9 +923,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-missile-barge/originals/aef13c9289928b00af042551f86ff5f102c473f1e9105722c197fd753e415d0d/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_missile_barge.json",
@@ -1009,9 +956,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-ransom-freighter/originals/b318d3e3d4ba1ad2d14d075636bf2d686bcdfdb4d09026845a7f17ed2260eacd/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_ransom_freighter.json",
@@ -1044,9 +989,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-scout/originals/ecd18c434181f7ffd01e77ba7d45e1702611e7054faa79f63aa1f29b8d743227/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_scout.json",
@@ -1079,9 +1022,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-signature-unit/originals/040dea99eb6116f9c28a568d242376f59532bd69a11ff707378e9cd9e56a5b0c/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_cartel_signature_unit.json",
@@ -1114,9 +1055,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-cartel-station/originals/39b9fd96e500c6b436c0135a1c3ad5d653195e58582071267b9700fa12d5ba6c/pixal3d_textured.glb",
    "keys": [
@@ -1148,9 +1087,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-battleship/originals/d0c14f3900ae992c07999182ef2d9f0126fca3501bc6dd84563143f4528fb45c/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_battleship.json",
@@ -1183,9 +1120,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-boarding-craft/originals/9f0a56cc0d8f339de49711fcbe25d6931de82c439a6656126e596524bb9134ca/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_boarding_craft.json",
@@ -1218,9 +1153,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-boarding-pod/originals/cd0863f450a4832361718800ba3a0cbda2a8c7bd32f1c1ef6ded20ab4af95c39/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_boarding_pod.json",
@@ -1253,9 +1186,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-boarding-tender/originals/7bb07d651d2ed2c244b31b67a66a5cb2df9e9024ff2a71c2369831ae705e69dc/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_boarding_tender.json",
@@ -1288,9 +1219,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-carrier/originals/ec3f621a637058bd9ec8fd97cf8d2750ca0396efad551236c9dddfc608312226/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_carrier.json",
@@ -1323,9 +1252,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-cruiser/originals/7abc74bae2fcd65ace9060ebe61f4ccdf858b680123efa511d05778d7a41f6f6/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_cruiser.json",
@@ -1358,9 +1285,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-decoy-drone/originals/f5922b69069b7e460673761f9373bbd4e71dc2c9f38146ff5304bece09a2c1f7/pixal3d_textured.glb",
    "keys": [
@@ -1392,9 +1317,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-destroyer/originals/c1343f2bfd86a95119e1d8b9d780a4999f8040446a119fefca83d2dc3da60254/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_destroyer.json",
@@ -1427,9 +1350,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-ew-ship/originals/ce2afd1e01aee2165d8b61c73252836a4cf3ed5d78755910f396b35e78852201/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_ew_ship.json",
@@ -1462,9 +1383,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-frigate/originals/540bed39bd7e5885e289624888ad5a081b43786d816a0d2f6d89e33e137c3882/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_frigate.json",
@@ -1497,9 +1416,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-heavy-ambusher/originals/035ffd954cbae5c35d0129ba50d311b41aafcaa07cd82f113b12bb588598aa85/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_heavy_ambusher.json",
@@ -1532,9 +1449,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-hidden-base/originals/bb4130f9d31a4f612f106bdfb17f01e522dd51996c3f09a41914d6683919664c/pixal3d_textured.glb",
    "keys": [
@@ -1566,9 +1481,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-jammer-array/originals/e029774a8dd795af9f073cfd9ebcde4944812178e79b2322a2de4d8343b89e1c/pixal3d_textured.glb",
    "keys": [
@@ -1600,9 +1513,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-ore-hauler/originals/c4836594892ec7128decac388dce6bfcd4e52cdb8ec8870dc7cd82562b0746d9/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_ore_hauler.json",
@@ -1635,9 +1546,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-raider/originals/8d2a145d71985a4d5a9ab742405a64f916b7b4c4d7d4fc32a17bc83010c9df37/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_raider.json",
@@ -1670,9 +1579,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-corsair-scout/originals/f039c3c16af87bcfac0cea5afaba390d56fba92cb5f5bfe6dc74eea623e86b41/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_corsair_scout.json",
@@ -1706,9 +1613,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-derelict-battleship-hulk/originals/6a94fc80090b66d4177614c3d8ee45032e229d184ef4c00e50b65c265e432435/pixal3d_textured.glb",
    "keys": [
@@ -1740,9 +1645,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-derelict-wreck/originals/42ed61731d655f07252a8cf1179822f2594311925f8769c9268063ed1ab7ec8a/pixal3d_textured.glb",
    "keys": [
@@ -1774,9 +1677,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-armed-mining-drone/originals/100296e1f79b82fd7a863f8eac93d2627cb5ae794c5791f9832dd6577e285258/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_armed_mining_drone.json",
@@ -1809,9 +1710,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-battleship/originals/89fc76d7919c0d537ad915bdcae4f8a4877d20e664f07d9eed9a7e6fa622860a/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_battleship.json",
@@ -1844,9 +1743,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-carrier/originals/11a4b6fecefea7946749f1612c578a6c3afac6fdb34e3757cf72b01ab9dc4bf0/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_carrier.json",
@@ -1879,9 +1776,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-colony-ship/originals/e37f421da4cd44d49b92b8e436e5c65a9acbc733b87da7a891992eb6e014f4a8/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_colony_ship.json",
@@ -1914,9 +1809,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-constructor/originals/f76f9b98f188d9f65167ae9a30f50b556fa8a168b905c2fc77652b54e41c1dec/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_constructor.json",
@@ -1949,9 +1842,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-cruiser/originals/685b8d459fb8d168bbddf49174cc475763c3e17017a99a99f0cebfacafbe4a92/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_cruiser.json",
@@ -1984,9 +1875,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-fighter-bomber/originals/05bfc609007802aaff0a0d8cae038f9f5c544c1f872b009dda60f2fe2c7cf65d/pixal3d_textured.glb",
    "keys": [
@@ -2018,9 +1907,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-flagship/originals/4e3646627b3ac79ec594634bfca51d213078261dd68b7be9b07adb097f9a14b3/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_flagship.json",
@@ -2053,9 +1940,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-frigate/originals/12116322173b99aca82dfd3156ffcfe076de4cd02d1db0cb9d21544d0c50158f/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_frigate.json",
@@ -2088,9 +1973,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-marine-shuttle/originals/a7be5c5f445deaae49900f76d988cbc4f9299fd0497b392ab05114c097bf1210/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_marine_shuttle.json",
@@ -2123,9 +2006,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-mining-laser/originals/f192a5d3259a541625141888be027e1435041f8cff870cba8de017918ecd02cd/pixal3d_textured.glb",
    "keys": [
@@ -2157,9 +2038,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-mining-ship/originals/215b4c93c0e2109293a135aa76e475f0517407cf5f6576b0643071d79ba600f6/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_mining_ship.json",
@@ -2192,9 +2071,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-ore-hauler/originals/d387a6c030aa937e95c8c4c29558d63d1231206cfaed1598c309cdbdd3776869/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_ore_hauler.json",
@@ -2227,9 +2104,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-scout/originals/65c1acb05ee3c0c6cb5f6208890e876fba8f37ec7ba15e3bc871882d9e5e2a26/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_scout.json",
@@ -2262,9 +2137,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-shipyard/originals/ee497f6d3b82606ed1aa4f5ead43f3533419693de44a37e4db1474e666e7987e/pixal3d_textured.glb",
    "keys": [
@@ -2296,9 +2169,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-signature-unit/originals/8aad5a03e630fcc8db85577f643b3f83be00c6582edfdde50f90c071f30c351c/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_helion_signature_unit.json",
@@ -2331,9 +2202,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-helion-station/originals/80c3637e7900db11ce0d638e80efd8f3750295d17b549256078ef717a31dcf6a/pixal3d_textured.glb",
    "keys": [
@@ -2365,9 +2234,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-hero-asteroid-fortress/originals/02dea49d8ff0bf051ccdb34feeab3bb532cdd9ffe29a7d15a1b7c5e14261c49a/pixal3d_textured.glb",
    "keys": [
@@ -2399,9 +2266,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-hero-moon-observatory/originals/ce083c6c5d72066b22c00525eae42047cf1da4466ab1f9a9b2ee04e0371d8d63/pixal3d_textured.glb",
    "keys": [
@@ -2433,9 +2298,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-armour-plate-set/originals/827494aa5bbbd7bd4a4265210688e03c869687372eb2e53dece5b7de2c928399/pixal3d_textured.glb",
    "keys": [
@@ -2467,9 +2330,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-beam-lance/originals/a3d2ddfafa84931b242be81f83bc3184f730c4e816fef95eb2eaf944a960f157/pixal3d_textured.glb",
    "keys": [
@@ -2501,9 +2362,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-cargo-pod/originals/a84a1b8973a78231813727e4354def4cc10852c4d1f3b263fb9a8c0aa27063f2/pixal3d_textured.glb",
    "keys": [
@@ -2535,9 +2394,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-comms-mast/originals/0dc0004e4fbe69d20ab99e03bb63912edbd2846bd6ba217bbb2067c42085fcec/pixal3d_textured.glb",
    "keys": [
@@ -2569,9 +2426,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-docking-arm/originals/e9f4952cd9b3976d8e29e6974ab0133a9c15eaf325db58ba158a6e0bd9635986/pixal3d_textured.glb",
    "keys": [
@@ -2603,9 +2458,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-engine-large/originals/b7245bfd7768e0f88e2cbee27b56963917e7b55f24934fb9e6cd90ad412e4c17/pixal3d_textured.glb",
    "keys": [
@@ -2637,9 +2490,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-engine-medium/originals/db125cc017a686bc5b2b61ed7067c5bda3d653ea1f241e43c29d0aa7198b88a4/pixal3d_textured.glb",
    "keys": [
@@ -2671,9 +2522,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-engine-small/originals/f65255b56f36f7c74083fbadde66170fb2a613720401579bfedeb239b1bbefca/pixal3d_textured.glb",
    "keys": [
@@ -2705,9 +2554,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-fabrication-bay/originals/383bf5660cad28817df7920e829204735d5402952c9883cb35ed95e9e01e40f2/pixal3d_textured.glb",
    "keys": [
@@ -2739,9 +2586,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-flak-battery/originals/dfd6b5e840c1843ba48a098d58a155666dad8a196ed623f199c68aecc158ad96/pixal3d_textured.glb",
    "keys": [
@@ -2773,9 +2618,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-habitat-ring/originals/d7ed0321143d8873e0f6575a0240df27f328d76fe6b651ef0ec5f1d921ae123c/pixal3d_textured.glb",
    "keys": [
@@ -2807,9 +2650,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-hangar-launch-tube/originals/8f1a511e1d18726edfabb9cb390d93b63a3cbaf4199f371e3e16256d7304737b/pixal3d_textured.glb",
    "keys": [
@@ -2841,9 +2682,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-heavy-kinetic-turret/originals/6bb3c0af4ce505c2bc1b9d1c2add93fdfa273e40c013643444fc61415a6a8763/pixal3d_textured.glb",
    "keys": [
@@ -2875,9 +2714,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-heavy-railgun/originals/2190980d4d7791917ac37228f21a8869ddcd8e58bacc7f25e11183d315c7e067/pixal3d_textured.glb",
    "keys": [
@@ -2909,9 +2746,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-light-railgun/originals/1ea849af93ccefa7389f1f1b2907496aa1f7b02662defcc55c88faefc2481405/pixal3d_textured.glb",
    "keys": [
@@ -2943,9 +2778,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-missile-pod/originals/deb21b67a50f4e08d33290a901225e637b80373dce3c27643268e37b1c9ff1eb/pixal3d_textured.glb",
    "keys": [
@@ -2977,9 +2810,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-point-defence/originals/bd6d1156cf5293ddcf95a2f2de058d647203af5c9e2b288be45701e84cb69f3f/pixal3d_textured.glb",
    "keys": [
@@ -3011,9 +2842,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-reactor/originals/99544c93bb4b79d24a44e5b8358eee08c528a61314eac8efb6c0fcf6ee917c66/pixal3d_textured.glb",
    "keys": [
@@ -3045,9 +2874,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-refinery/originals/953ac7d2c748bc8169c1458a54bbe6170f284ab47cf44e7db7a4ecaaddbf5004/pixal3d_textured.glb",
    "keys": [
@@ -3079,9 +2906,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-sensor-array/originals/e1778f06d1ff9b1e853b887708b6e67e4a05a035a243d71fb311198bf592a3f2/pixal3d_textured.glb",
    "keys": [
@@ -3113,9 +2938,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-shield-generator/originals/08e230fc3150b82e5e7312525aaddc76bec5d31b1bc84449c29f0c5e89940369/pixal3d_textured.glb",
    "keys": [
@@ -3147,9 +2970,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-spinal-mount/originals/c01946e7bdb67b61425d5b24834a4ab3608fd1b857363a0c22468cd3fb6540a8/pixal3d_textured.glb",
    "keys": [
@@ -3181,9 +3002,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-torpedo-tubes/originals/2f55393af64b2879a628c56112c73937a3f76d54142490b89c4bb340f601eaf0/pixal3d_textured.glb",
    "keys": [
@@ -3215,9 +3034,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-module-vls-bank/originals/d2d1e19b5efdba5302b548249dea06eecbb882c8108bf1f11b1ba723e83cf723/pixal3d_textured.glb",
    "keys": [
@@ -3249,9 +3066,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-battleship/originals/2841cadd5449f04240427d8b7e9e1276ac4b3a56cd0846c081508cc5414181ca/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_battleship.json",
@@ -3284,9 +3099,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-capital-titan/originals/e9e4ea100f7929d3b50726156fe7de1751b2977ff447d6c43ed1947910fc6c73/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_capital_titan.json",
@@ -3319,9 +3132,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-colony-ship/originals/1989e4ae0d2f4b6aa1dfad54d375062a3aed93fc7ac4c8d8d817dcecd7429925/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_colony_ship.json",
@@ -3354,9 +3165,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-constructor/originals/ba8bdbf68f7c2cc29671ba2a011224695cdfaeaf2626ba51f274d5bd4a156b82/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/receipts-high/concept_mrn_constructor.json",
@@ -3389,9 +3198,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-defence-platform/originals/b7916300f13322a9ddbebf2d455c5551f4b0743ce40312c937305f42ff02aa57/pixal3d_textured.glb",
    "keys": [
@@ -3423,9 +3230,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-fighter-bomber/originals/3f62c42b56193e7b49f1342ec2726d459d9dc7d9441f29c30ccaed2d173100cf/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-fighter-bomber/3f62c42b5619/symfix-sol-xhigh.json",
@@ -3458,9 +3263,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-gun-turret/originals/4674b6d7aad02224acc24e1575271448c0bf5486a74ef19b1f5f834fbd8835d7/pixal3d_textured.glb",
    "keys": [
@@ -3492,9 +3295,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-heavy-vls-bank/originals/0066db8e72cfe81e3ce84b6e37c9d072aaad6e6d0636ca89c4f241d5ddf53d2d/pixal3d_textured.glb",
    "keys": [
@@ -3526,9 +3327,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-marine-shuttle/originals/8f3e2ea7364353930f34f8da8d78c51d247916e2e96a133866b39ab9ab6bfd00/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-marine-shuttle/8f3e2ea73643/symfix-sol-xhigh.json",
@@ -3561,9 +3360,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-mining-outpost/originals/9e29223cdd381c56d34d6e6b920b47dcad02305c43ae5d1e1a337038cc25b5f1/pixal3d_textured.glb",
    "keys": [
@@ -3595,9 +3392,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-mining-ship/originals/6b4921edd0c99ae4aa6c4f55dfcbe9f67b342e1dd9ee17ba52a642f4bda119f2/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-mining-ship/6b4921edd0c9/symfix-sol-xhigh.json",
@@ -3630,9 +3425,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-missile-battery/originals/e78b52715c8973963ee2752220a7749a18684fedd52d1827ebb2b451590ec2b0/pixal3d_textured.glb",
    "keys": [
@@ -3664,9 +3457,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-orbital-habitat/originals/d279a883e531683cb1cbab13fbff90d96ee97d0eb1979c515a1c1fe9fe835359/pixal3d_textured.glb",
    "keys": [
@@ -3698,9 +3489,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-ore-hauler/originals/d55a09f1bc2c3019d3fc638e2200636d32c83e9a7a2074abcdabb841a3ee2f78/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-ore-hauler/d55a09f1bc2c/symfix-sol-xhigh.json",
@@ -3733,9 +3522,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-research-station/originals/29ced9be3826e24440a0fe9b83c024b03d06a0009e3c249c62c0d7033a19dd65/pixal3d_textured.glb",
    "keys": [
@@ -3767,9 +3554,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-scout/originals/13027a7b30ba2796c160b06c704c56aac89a7c7c6fcfa9ff8440218ba62817bf/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-scout/13027a7b30ba/symfix-sol-xhigh.json",
@@ -3802,9 +3587,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-shield-generator/originals/a74ea79a20985de961ed33ae3c0159786948c92f8aa9b38bd7a0b406dd3a3e74/pixal3d_textured.glb",
    "keys": [
@@ -3836,9 +3619,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-shipyard/originals/f93c3945f7de08b2d4fd465b909802fb2d94bac620cb6b2d147eecf46700e0a9/pixal3d_textured.glb",
    "keys": [
@@ -3870,9 +3651,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-surface-colony/originals/4d8a458ef4ea48ae172ecc9dd8b6c421bbc5355b606d6be27786c45e7739abc1/pixal3d_textured.glb",
    "keys": [
@@ -3904,9 +3683,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-torpedo-bomber/originals/afbe44f784b9ce2c5ccb988f6190e4f1f7b3f8018808bbea4263d44f9ea1b00c/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-torpedo-bomber/afbe44f784b9/symfix-sol-xhigh.json",
@@ -3939,9 +3716,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-torpedo-launcher/originals/d1d37bea56e9b727ab2e3de77c953667ea26a5f972c91cc6ba0b2bc6de5d58ac/pixal3d_textured.glb",
    "keys": [
@@ -3973,9 +3748,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-trade-refinery/originals/42f673c653df39214d7981bf2ce32606cef3cb18fd0dd84dc68defcef717accd/pixal3d_textured.glb",
    "keys": [
@@ -4007,9 +3780,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-mrn-troop-transport/originals/a01a9c23bd257427a9075ddbbcba23fb8e6daf288fbe6fbab304a563c99052f3/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-mrn-troop-transport/a01a9c23bd25/symfix-sol-xhigh.json",
@@ -4042,9 +3813,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-pirate-base/originals/51405557e93ff4e30ec3c93546872b1103880d24cc1acf79d4d764ae59f890c9/pixal3d_textured.glb",
    "keys": [
@@ -4076,9 +3845,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-assault-transport/originals/e4dc31618f9c198680794ea47d135a1cf861b210cbdf9f80bf6d8eec73bb2adc/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-assault-transport/e4dc31618f9c/symfix-sol-xhigh.json",
@@ -4111,9 +3878,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-battleship/originals/72fe85214afa47c17b92ffcf911384267cfe3ac551b5fa3753e4a0d03056921e/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-battleship/72fe85214afa/symfix-sol-xhigh.json",
@@ -4146,9 +3911,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-boarding-pod/originals/c927ad9cfa9cb960b385f2fcb58828eba0803b63cdcfb8634e9e18bba1b87846/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-boarding-pod/c927ad9cfa9c/symfix-sol-xhigh.json",
@@ -4181,9 +3944,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-capital-titan/originals/1759afaa5e563bd70ea3f0f4732c70a593b502a4cf52818e5d86273e6ba525bb/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-capital-titan/1759afaa5e56/symfix-sol-xhigh.json",
@@ -4216,9 +3977,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-coilgun-pdc-grid/originals/b1e442fb9b6ffbd188ecac29d8278ad6aeed9142c7af5ccaadbc1c8e18eedbbd/pixal3d_textured.glb",
    "keys": [
@@ -4250,9 +4009,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-colony-ship/originals/d2333322d3e2b2e87a69400c1b541b4c2d44b4c6193600c71f80c6901da0cd9f/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-colony-ship/d2333322d3e2/symfix-sol-xhigh.json",
@@ -4285,9 +4042,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-constructor/originals/977ea570b7aa0a632892cfae36afbcf5e5edbaf6e067b3077cb9383ea82b343e/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-constructor/977ea570b7aa/symfix-sol-xhigh.json",
@@ -4320,9 +4075,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-defence-platform/originals/cfe029ae6439cd6a3aa11afdba738855e139ba0d45db810dc2e2c237045dea4a/pixal3d_textured.glb",
    "keys": [
@@ -4354,9 +4107,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-fighter-bomber/originals/a79aee13e8a9e1973239b225de5fab5450a151f884dddb09a1b2b0fe484947cb/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-fighter-bomber/a79aee13e8a9/symfix-sol-xhigh.json",
@@ -4389,9 +4140,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-gun-turret/originals/823c7dec14c3ba036600beb217f14394986542cca662abe09edf073022bf0d91/pixal3d_textured.glb",
    "keys": [
@@ -4423,9 +4172,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-marine-shuttle/originals/5b9abf59256bee183efae24f7aa431bd1e1557dbcb0743a30ba350a5e0e951b5/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-marine-shuttle/5b9abf59256b/symfix-sol-xhigh.json",
@@ -4458,9 +4205,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-mining-outpost/originals/5ebab19654987629bb1235a89ccc9533bd572fbc5276e77cb210a6b2465d1edf/pixal3d_textured.glb",
    "keys": [
@@ -4492,9 +4237,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-mining-ship/originals/43c8815a9a18f9e35126467dcef2152c6d73c9e6d526afd6869be4bb59994521/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-mining-ship/43c8815a9a18/symfix-sol-xhigh.json",
@@ -4527,9 +4270,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-missile-battery/originals/cd33e32ee3b7f3e74d7016fdc32bb4bb962b13dac2ae610b2a0b61808023c91e/pixal3d_textured.glb",
    "keys": [
@@ -4561,9 +4302,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-orbital-habitat/originals/1360b01f98aeafb6fecac222761542115433bbddbc0094bb27023c865b8d3116/pixal3d_textured.glb",
    "keys": [
@@ -4595,9 +4334,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-ore-hauler/originals/a5e16c5bba502f378c3772f8932527ce5453346a03e3201d7f222815d223a4a7/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-ore-hauler/a5e16c5bba50/symfix-sol-xhigh.json",
@@ -4630,9 +4367,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-repair-tender/originals/c340b44628f31a7b28ba0e897db6dd99b8358ca644ea3400107dc9d52a4890d2/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-repair-tender/c340b44628f3/symfix-sol-xhigh.json",
@@ -4665,9 +4400,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-research-station/originals/35f26489e647336998957139d00b037fe2af43d522fcbf9088dc438c029de90f/pixal3d_textured.glb",
    "keys": [
@@ -4699,9 +4432,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-scout/originals/ee1e8559233f24fc1b39fa3828cb855bf9229363fb7326b5a88d6d7e2a9cb908/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-scout/ee1e8559233f/symfix-sol-xhigh.json",
@@ -4734,9 +4465,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-sensor-frigate/originals/c422a99f2128d2d3c7c84aba5833422bb91e990336b1024523ffe0a2cc2489b9/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-sensor-frigate/c422a99f2128/symfix-sol-xhigh.json",
@@ -4769,9 +4498,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-shield-generator/originals/a6be5b3eb0500f1454217cd86b223c0ed2e90cbbc30181ed9abe50c2fadabd8d/pixal3d_textured.glb",
    "keys": [
@@ -4803,9 +4530,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-shipyard/originals/1dabe04136ec449bf7e61fb16d7b2392f8738ebdd18a14e89bd57d0cc42298fe/pixal3d_textured.glb",
    "keys": [
@@ -4837,9 +4562,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-surface-colony/originals/cc45fa455186099e222919317c1691d891743793599e04d80e68be6dbcf6988c/pixal3d_textured.glb",
    "keys": [
@@ -4871,9 +4594,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-trade-refinery/originals/5055755693cac66bd1dd28b5c6dea3c1481ea714b18ec8075ba1dbff843b7a8f/pixal3d_textured.glb",
    "keys": [
@@ -4905,9 +4626,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-tdf-troop-transport/originals/b03d1ca07e070ca5a0760af0156e133af506cc5ee6a5ee06d383e266eb25a064/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-troop-transport/b03d1ca07e07/symfix-sol-xhigh.json",
@@ -4940,9 +4659,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-battleship/originals/837cd6b5981f722a724c7313d5f808d2d0e3fce5bb75b9db90022d8cefd89e66/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-battleship/837cd6b5981f/symfix-sol-xhigh.json",
@@ -4975,9 +4692,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-carrier/originals/a54a59782aced585837c4fa217e7dbc6166e2215f1a4f494ac6cf9b65024e7df/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-carrier/a54a59782ace/symfix-sol-xhigh.json",
@@ -5010,9 +4725,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-veil-frigate/originals/523757ade948266e9761821c587ab5431f413dba49cfe94d9771b4a29fd5baa1/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-frigate/523757ade948/symfix-sol-xhigh.json",
@@ -5045,9 +4758,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-veil-plasma-arc-emitter/originals/55c52c6eafb31611cc94ac4d25d961d5553865d27f642885be13be38c309d14d/pixal3d_textured.glb",
    "keys": [
@@ -5079,9 +4790,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-veil-scout/originals/bf7ce236077a44665e442f3f647b2816132f86d323a49c7ac7af45caa5146e43/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-scout/bf7ce236077a/symfix-sol-xhigh.json",
@@ -5114,9 +4823,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-veil-signature-unit/originals/55c3e99d4ecc3ab4e71507e082d6fe72cb3727f57cb22c0f59533d3f56858f86/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-signature-unit/55c3e99d4ecc/symfix-sol-xhigh.json",
@@ -5149,9 +4856,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-veil-station/originals/67e218e080a4e36cc6607ce0b32baea44f4abd46e333534f2c504050f3d8e4c8/pixal3d_textured.glb",
    "keys": [
@@ -5183,9 +4888,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-cruiser/originals/c079c7029a25d5e07330925d638723e0271bd268e9ee33543243632bc7ecf193/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-cruiser/c079c7029a25/symfix-sol-xhigh.json",
@@ -5218,9 +4921,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-destroyer/originals/375b319618a71792a6588f3953411b4cce6242e2efb8afb6f0d30ecc4a8a463d/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-destroyer/375b319618a7/symfix-sol-xhigh.json",
@@ -5253,9 +4954,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-fighter-bomber/originals/4c593470329f31408f51357f25def436b3e75026e3771ca86c24f4b56341ce31/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-fighter-bomber/4c593470329f/symfix-sol-xhigh.json",
@@ -5288,9 +4987,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-flagship/originals/95aa65dad283d15e69ecad69363e35d32c74d5d67cf8c4a2c080d8ec97e237fa/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-flagship/95aa65dad283/symfix-sol-xhigh.json",
@@ -5323,9 +5020,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-frigate/originals/0be74cd0c7c964409700b1d42f37f32546cd0f35710a30b918cd5b9b26a47c6b/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-frigate/0be74cd0c7c9/symfix-sol-xhigh.json",
@@ -5358,9 +5053,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-gun-monitor/originals/042fdc22ed2a167bf7f735825cf5d54c13465370b41f6a82dee903e49e3528c1/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-gun-monitor/042fdc22ed2a/symfix-sol-xhigh.json",
@@ -5393,9 +5086,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-marine-shuttle/originals/163889eddb64cc44892b3439228b08e0267b15329f640b6ad5cfa773d5f6fb3d/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-marine-shuttle/163889eddb64/symfix-sol-xhigh.json",
@@ -5428,9 +5119,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-scout/originals/34af1a353eecea2b8f44f056143942d6dbfac28a5808e04e2123b84eaad74106/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-scout/34af1a353eec/symfix-sol-xhigh.json",
@@ -5463,9 +5152,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-signature-unit/originals/e3f136312c2ebdf0ef4e69d28737a591626e743e3c7baec39d5acfbf9d5866a9/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-signature-unit/e3f136312c2e/symfix-sol-xhigh.json",
@@ -5498,9 +5185,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-spinal-flak-battery/originals/39d6cf13ce3017460452ad3256f6ed652717c99a8d7615d48c506c74014d7f5c/pixal3d_textured.glb",
    "keys": [
@@ -5532,9 +5217,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-starbase/originals/b31b549a298c5cc8db12e87f25f5ab8943afb77fcd686b4eeabf585873b9ecf5/pixal3d_textured.glb",
    "keys": [
@@ -5566,9 +5249,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-station/originals/8d8650e5ba548d90f50bec557b8b73a59f331284a68b23d43ffa34a83b670fe9/pixal3d_textured.glb",
    "keys": [
@@ -5600,9 +5281,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-ueg-troop-transport/originals/68b766cf6e63c1b51df0d108db354438c91e2cf98e0cb07408b0fbe365bfb0cb/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-ueg-troop-transport/68b766cf6e63/symfix-sol-xhigh.json",
@@ -5635,9 +5314,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-veil-battleship/originals/f4deae9b559bb972babb0c56e4433f07c0d2e14d4e6e3dcf16d437cac3541b36/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-battleship/f4deae9b559b/symfix-sol-xhigh.json",
@@ -5670,9 +5347,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-veil-carrier/originals/8083488865586b9758df4feaf593bff38a69796eb8eccbeb9a2f495c82dade69/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-carrier/808348886558/symfix-sol-xhigh.json",
@@ -5705,9 +5380,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-veil-crisis-mothership/originals/cc99040a0e99fb0420511b240867dfad78f35f3522f3b2076f1bb2e312b41651/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-crisis-mothership/cc99040a0e99/symfix-sol-xhigh.json",
@@ -5740,9 +5413,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-veil-cruiser/originals/d567e7e1024a7231572a1e8f916ae0c5ec8b240a1e502357d7ac4e0a6c0ec34a/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-cruiser/d567e7e1024a/symfix-sol-xhigh.json",
@@ -5775,9 +5446,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-veil-destroyer/originals/64a0b97eb4e3f7cc2dfe4c3385ff1a96030b781d17f82af5fd0178220d867eac/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-destroyer/64a0b97eb4e3/symfix-sol-xhigh.json",
@@ -5810,9 +5479,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-veil-fighter-bomber/originals/f0cdcd2c0598b08f495448c4721dae33a9bb8181554220fd7b71a016c1a1f408/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-fighter-bomber/f0cdcd2c0598/symfix-sol-xhigh.json",
@@ -5845,9 +5512,7 @@
     ]
    ],
    "params": {
-    "EnvIntensity": 0.5,
-    "PaintedHull": 0,
-    "LiveryWeight": 0
+    "EnvIntensity": 0.5
    },
    "source": "F:/AssetVault/hard-burn/assets/concept-veil-flagship/originals/ffdc41f5981bdc6ebc077e7d0f7cc35b838c2f09bebf1f13cc8ad26f3e70db76/pixal3d_textured.glb",
    "symmetryRepair": "G:/hb-sol3d/symfix/concept-veil-flagship/ffdc41f5981b/symfix-sol-xhigh.json",
