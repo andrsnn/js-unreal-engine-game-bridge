@@ -12,6 +12,9 @@ import {MeshoptDecoder} from 'three/examples/jsm/libs/meshopt_decoder.module.js'
 import {MeshBVH} from 'three-mesh-bvh';
 // How much of the original texture's fine light and dark detail goes on top of the game's colours.
 const DETAIL = .8;
+// Unpainted station machinery keeps the game's own texture, which has none of the original's dark cracks: only a trace of
+// the original's relief goes on top (at .8 the cracks drew as black veins on the mine's white tanks).
+const HARDWARE_DETAIL = .15;
 const F = window.__FF, THREE = F.THREE;
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -274,7 +277,7 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
         (clean ? '\nvarying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal; uniform float jsgbShipLength;\n' + CLEAN_FUNCTIONS : ''))
       .replace('#include <roughnessmap_fragment>', (clean ? CLEAN_PAINT : `float jsgbLum = dot(texture2D(jsgbOriginal, vJsgbUv).rgb, vec3(.2126, .7152, .0722));
         float jsgbAround = dot(textureLod(jsgbOriginal, vJsgbUv, 4.).rgb, vec3(.2126, .7152, .0722));
-        diffuseColor.rgb *= mix(1., clamp((jsgbLum + .02) / (jsgbAround + .02), .55, 1.3), DETAIL);`.replace('DETAIL', String(DETAIL))) + `
+        diffuseColor.rgb *= mix(1., clamp((jsgbLum + .02) / (jsgbAround + .02), .55, 1.3), DETAIL);`.replace('DETAIL', String(game.material.userData.hardware ? HARDWARE_DETAIL : DETAIL))) + `
         gl_FragColor = vec4(jsgbOetf(diffuseColor.rgb), 1.); return;
 #include <roughnessmap_fragment>`);
   };

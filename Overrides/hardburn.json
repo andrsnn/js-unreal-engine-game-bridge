@@ -2592,14 +2592,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.3994094729423523,
-     -0.23910784721374512,
-     -0.399597704410553
+     -0.3994627296924591,
+     -0.23857396841049194,
+     -0.3975042998790741
     ],
     [
-     0.4692288041114807,
-     0.30841711163520813,
-     0.49610304832458496
+     0.4695677161216736,
+     0.30530476570129395,
+     0.4937693476676941
     ]
    ],
    "params": {
@@ -2610,12 +2610,11 @@
    "keys": [
     "concept_module_engine_small"
    ],
-   "triangles": 957739,
+   "triangles": 967549,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-engine-small/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_fabrication_bay",
@@ -2626,14 +2625,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.4937136173248291,
-     -0.2590026259422302,
-     -0.4543721675872803
+     -0.49204039573669434,
+     -0.2654419541358948,
+     -0.45710936188697815
     ],
     [
-     0.40508708357810974,
-     0.2504885792732239,
-     0.4189274311065674
+     0.40786826610565186,
+     0.25057700276374817,
+     0.43292415142059326
     ]
    ],
    "params": {
@@ -2644,12 +2643,11 @@
    "keys": [
     "concept_module_fabrication_bay"
    ],
-   "triangles": 939136,
+   "triangles": 967939,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-fabrication-bay/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_flak_battery",
@@ -2660,14 +2658,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.450150728225708,
-     -0.2502301335334778,
-     -0.46198463439941406
+     -0.44616270065307617,
+     -0.24587059020996094,
+     -0.4429197609424591
     ],
     [
-     0.49425286054611206,
-     0.23595991730690002,
-     0.47589096426963806
+     0.491703599691391,
+     0.24591116607189178,
+     0.4903998076915741
     ]
    ],
    "params": {
@@ -2678,12 +2676,11 @@
    "keys": [
     "concept_module_flak_battery"
    ],
-   "triangles": 948533,
+   "triangles": 982999,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-flak-battery/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_habitat_ring",
@@ -2694,14 +2691,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.44851768016815186,
-     -0.24842143058776855,
-     -0.41586440801620483
+     -0.44461292028427124,
+     -0.255033016204834,
+     -0.41541266441345215
     ],
     [
-     0.4272167384624481,
-     0.36282575130462646,
-     0.3711690306663513
+     0.42097002267837524,
+     0.3598422110080719,
+     0.36683130264282227
     ]
    ],
    "params": {
@@ -2712,12 +2709,11 @@
    "keys": [
     "concept_module_habitat_ring"
    ],
-   "triangles": 973782,
+   "triangles": 964945,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-habitat-ring/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_hangar_launch_tube",
@@ -2728,14 +2724,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.4882485866546631,
-     -0.21150247752666473,
-     -0.46696609258651733
+     -0.49400097131729126,
+     -0.20655569434165955,
+     -0.4803915023803711
     ],
     [
-     0.3856561779975891,
-     0.3162083923816681,
-     0.49265816807746887
+     0.38188645243644714,
+     0.3240619897842407,
+     0.48096251487731934
     ]
    ],
    "params": {
@@ -2746,12 +2742,11 @@
    "keys": [
     "concept_module_hangar_launch_tube"
    ],
-   "triangles": 970115,
+   "triangles": 945598,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-hangar-launch-tube/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_heavy_kinetic_turret",
@@ -2762,14 +2757,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.36707404255867004,
-     -0.21673879027366638,
-     -0.4751293957233429
+     -0.36992430686950684,
+     -0.21864482760429382,
+     -0.469620943069458
     ],
     [
-     0.4837131202220917,
-     0.29463571310043335,
-     0.4931895136833191
+     0.48506873846054077,
+     0.29572731256484985,
+     0.5000583529472351
     ]
    ],
    "params": {
@@ -2780,12 +2775,11 @@
    "keys": [
     "concept_module_heavy_kinetic_turret"
    ],
-   "triangles": 947967,
+   "triangles": 971838,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-heavy-kinetic-turret/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_heavy_railgun",
@@ -2796,14 +2790,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.48322951793670654,
-     -0.263832688331604,
-     -0.44232892990112305
+     -0.4789949953556061,
+     -0.26299354434013367,
+     -0.4212043285369873
     ],
     [
-     0.39070188999176025,
-     0.3010072410106659,
-     0.49494606256484985
+     0.39090126752853394,
+     0.29887205362319946,
+     0.49097543954849243
     ]
    ],
    "params": {
@@ -2814,12 +2808,11 @@
    "keys": [
     "concept_module_heavy_railgun"
    ],
-   "triangles": 961051,
+   "triangles": 934431,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-heavy-railgun/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_light_railgun",
@@ -2830,14 +2823,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.2922131419181824,
-     -0.25485357642173767,
-     -0.44804903864860535
+     -0.29711320996284485,
+     -0.2523288130760193,
+     -0.44588959217071533
     ],
     [
-     0.5005795359611511,
-     0.3279953598976135,
-     0.39860284328460693
+     0.49893906712532043,
+     0.3278319835662842,
+     0.3928133547306061
     ]
    ],
    "params": {
@@ -2848,12 +2841,11 @@
    "keys": [
     "concept_module_light_railgun"
    ],
-   "triangles": 995129,
+   "triangles": 991196,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-light-railgun/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_missile_pod",
@@ -2864,14 +2856,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.49515867233276367,
-     -0.34435710310935974,
-     -0.48844945430755615
+     -0.4965170621871948,
+     -0.33919769525527954,
+     -0.49051350355148315
     ],
     [
-     0.3842477798461914,
-     0.34414559602737427,
-     0.4653796851634979
+     0.38147786259651184,
+     0.3419950306415558,
+     0.46514013409614563
     ]
    ],
    "params": {
@@ -2882,12 +2874,11 @@
    "keys": [
     "concept_module_missile_pod"
    ],
-   "triangles": 977217,
+   "triangles": 990973,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-missile-pod/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_point_defence",
@@ -2898,14 +2889,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.35372698307037354,
-     -0.3230164051055908,
-     -0.41132253408432007
+     -0.35493195056915283,
+     -0.3223443329334259,
+     -0.409435898065567
     ],
     [
-     0.46324536204338074,
-     0.4213903546333313,
-     0.49462369084358215
+     0.4631311297416687,
+     0.4215907156467438,
+     0.49358898401260376
     ]
    ],
    "params": {
@@ -2916,12 +2907,11 @@
    "keys": [
     "concept_module_point_defence"
    ],
-   "triangles": 983535,
+   "triangles": 937216,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-point-defence/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_reactor",
@@ -2932,14 +2922,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.4902745485305786,
-     -0.285534143447876,
-     -0.41902363300323486
+     -0.4853391647338867,
+     -0.28770169615745544,
+     -0.41627413034439087
     ],
     [
-     0.42242246866226196,
-     0.32089972496032715,
-     0.4896852374076843
+     0.42189645767211914,
+     0.3206593096256256,
+     0.4834078848361969
     ]
    ],
    "params": {
@@ -2950,12 +2940,11 @@
    "keys": [
     "concept_module_reactor"
    ],
-   "triangles": 956326,
+   "triangles": 941598,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-reactor/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_refinery",
@@ -2966,14 +2955,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.5001663565635681,
-     -0.25454819202423096,
-     -0.4383048415184021
+     -0.500420868396759,
+     -0.2628796696662903,
+     -0.43767839670181274
     ],
     [
-     0.36916524171829224,
-     0.31471118330955505,
-     0.357178270816803
+     0.3660995066165924,
+     0.3123345971107483,
+     0.3498106598854065
     ]
    ],
    "params": {
@@ -2984,12 +2973,11 @@
    "keys": [
     "concept_module_refinery"
    ],
-   "triangles": 936436,
+   "triangles": 942013,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-refinery/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_sensor_array",
@@ -3000,14 +2988,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.41290509700775146,
-     -0.31624555587768555,
-     -0.3422166705131531
+     -0.4139004349708557,
+     -0.3144923746585846,
+     -0.34040385484695435
     ],
     [
-     0.44063007831573486,
-     0.28385448455810547,
-     0.496357262134552
+     0.43846309185028076,
+     0.28555577993392944,
+     0.4917137026786804
     ]
    ],
    "params": {
@@ -3018,12 +3006,11 @@
    "keys": [
     "concept_module_sensor_array"
    ],
-   "triangles": 935528,
+   "triangles": 985499,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-sensor-array/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_shield_generator",
@@ -3034,14 +3021,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.4692418575286865,
-     -0.3633274435997009,
-     -0.382273405790329
+     -0.46457022428512573,
+     -0.3580336570739746,
+     -0.3821210563182831
     ],
     [
-     0.4696381390094757,
-     0.37910473346710205,
-     0.49600234627723694
+     0.4653712511062622,
+     0.3813976049423218,
+     0.49712079763412476
     ]
    ],
    "params": {
@@ -3052,12 +3039,11 @@
    "keys": [
     "concept_module_shield_generator"
    ],
-   "triangles": 951162,
+   "triangles": 986807,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-shield-generator/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_spinal_mount",
@@ -3068,14 +3054,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.3649004101753235,
-     -0.27032598853111267,
-     -0.5004526376724243
+     -0.34464696049690247,
+     -0.21580159664154053,
+     -0.4917755126953125
     ],
     [
-     0.5004975199699402,
-     0.2738890051841736,
-     0.3747166395187378
+     0.5008066296577454,
+     0.2745893597602844,
+     0.37566667795181274
     ]
    ],
    "params": {
@@ -3086,12 +3072,11 @@
    "keys": [
     "concept_module_spinal_mount"
    ],
-   "triangles": 950740,
+   "triangles": 944393,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-spinal-mount/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_torpedo_tubes",
@@ -3102,14 +3087,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.43806636333465576,
-     -0.3022594749927521,
-     -0.34140944480895996
+     -0.44232097268104553,
+     -0.3005838394165039,
+     -0.3489381968975067
     ],
     [
-     0.48191672563552856,
-     0.32575467228889465,
-     0.49344468116760254
+     0.48215630650520325,
+     0.31259673833847046,
+     0.4916515350341797
     ]
    ],
    "params": {
@@ -3120,12 +3105,11 @@
    "keys": [
     "concept_module_torpedo_tubes"
    ],
-   "triangles": 968101,
+   "triangles": 985788,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-torpedo-tubes/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_module_vls_bank",
@@ -3136,14 +3120,14 @@
    "fit": "none",
    "bounds": [
     [
-     -0.4953686594963074,
-     -0.27755945920944214,
-     -0.4694313108921051
+     -0.49638789892196655,
+     -0.27801626920700073,
+     -0.46584945917129517
     ],
     [
-     0.3920494318008423,
-     0.3717206120491028,
-     0.4168785810470581
+     0.39151531457901,
+     0.3737659752368927,
+     0.416653037071228
     ]
    ],
    "params": {
@@ -3154,12 +3138,11 @@
    "keys": [
     "concept_module_vls_bank"
    ],
-   "triangles": 977569,
+   "triangles": 986292,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
-   },
-   "imported": "C:/AI/spark-mesh-backup/outputs/falling-frontier/concept-module-vls-bank/pixal3d_textured.glb"
+   }
   },
   {
    "name": "concept_mrn_battleship",
