@@ -18,6 +18,9 @@ const [rulesFile, ...rest] = process.argv.slice(2);
 const flag = (name, fallback) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : fallback; };
 const game = loadGame(flag('--game', 'hardburn'));
 const out = path.resolve(flag('--out')), port = +flag('--port', 5396), only = flag('--only')?.split(',');
+// --style clean (the default) paints each hull fresh: the game's colours, plating and wear. --style game keeps the
+// game's texture and the source's own detail.
+const style = flag('--style', 'clean');
 const profile = path.resolve(flag('--profile', path.join(out, 'chrome-profile')));
 fs.mkdirSync(out, {recursive: true});
 const rules = JSON.parse(fs.readFileSync(rulesFile, 'utf8')).overrides.filter(r => r.mesh && r.keys?.length && r.source && (!only || only.includes(r.name)));
@@ -63,8 +66,8 @@ for (const r of rules) {
   if (left-- <= 0) break;
   const started = Date.now();
   try {
-    const result = await page.evaluate(async ([name, key, url]) => (await import('/__jsgb_bake/page.js')).bake(name, key, url),
-      [r.name, r.keys[0], `/__jsgb_bake/source/${r.name}.glb`]);
+    const result = await page.evaluate(async ([name, key, url, style]) => (await import('/__jsgb_bake/page.js')).bake(name, key, url, style),
+      [r.name, r.keys[0], `/__jsgb_bake/source/${r.name}.glb`, style]);
     fs.writeFileSync(path.join(out, r.name + '.png'), Buffer.from(result.png, 'base64'));
     report[r.name] = {key: r.keys[0], width: result.width, height: result.height, coverage: +result.coverage.toFixed(3), plates: +result.mask.toFixed(3), material: result.material, seconds: Math.round((Date.now() - started) / 1000)};
     console.log(`${r.name}: ${result.width}x${result.height}, ${(result.coverage * 100).toFixed(0)}% of texels painted, ${(result.mask * 100).toFixed(0)}% plates, ${result.material}`);

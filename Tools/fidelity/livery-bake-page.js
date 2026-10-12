@@ -31,7 +31,105 @@ async function gameHull(key) {
 
 const oetf = `vec3 jsgbOetf(vec3 c) { c = clamp(c, 0., 1.); return mix(c * 12.92, 1.055 * pow(c, vec3(1. / 2.4)) - .055, step(.0031308, c)); }`;
 
-export async function bake(name, key, sourceUrl) {
+// Each vertex's curvature, from how the normals turn along its edges: above 0 on convex edges and corners, below 0 in
+// crevices, scaled so the sharpest 5% of the hull reach 1.
+function curvature(g) {
+  const p = g.attributes.position, nr = g.attributes.normal, idx = g.index, n = p.count;
+  const k = new Float32Array(n), w = new Float32Array(n);
+  const a = new THREE.Vector3(), b = new THREE.Vector3(), na = new THREE.Vector3(), nb = new THREE.Vector3(), d = new THREE.Vector3();
+  const edge = (i, j) => {
+    a.fromBufferAttribute(p, i); b.fromBufferAttribute(p, j); na.fromBufferAttribute(nr, i); nb.fromBufferAttribute(nr, j);
+    const l2 = d.subVectors(b, a).lengthSq(); if (l2 < 1e-14) return;
+    const v = nb.sub(na).dot(d) / l2; k[i] += v; w[i]++; k[j] += v; w[j]++;
+  };
+  const triangles = (idx ? idx.count : n) / 3;
+  for (let t = 0; t < triangles; t++) {
+    const i = idx ? idx.getX(t * 3) : t * 3, j = idx ? idx.getX(t * 3 + 1) : t * 3 + 1, l = idx ? idx.getX(t * 3 + 2) : t * 3 + 2;
+    edge(i, j); edge(j, l); edge(l, i);
+  }
+  for (let i = 0; i < n; i++) k[i] = w[i] ? k[i] / w[i] : 0;
+  const sorted = Float32Array.from(k, Math.abs).sort(), s = sorted[Math.floor(sorted.length * .95)] || 1;
+  for (let i = 0; i < n; i++) k[i] = Math.max(-1, Math.min(1, k[i] / s));
+  return k;
+}
+
+// Each vertex's value averaged with its neighbours', the given number of times.
+function smooth(g, values, times) {
+  const idx = g.index, n = values.length, triangles = (idx ? idx.count : n) / 3;
+  let a = values;
+  for (let pass = 0; pass < times; pass++) {
+    const sum = Float32Array.from(a), count = new Float32Array(n).fill(1);
+    for (let t = 0; t < triangles; t++) {
+      const v = [0, 1, 2].map(j => idx ? idx.getX(t * 3 + j) : t * 3 + j);
+      for (const [i, j] of [[v[0], v[1]], [v[1], v[2]], [v[2], v[0]]]) { sum[i] += a[j]; count[i]++; sum[j] += a[i]; count[j]++; }
+    }
+    a = sum.map((s, i) => s / count[i]);
+  }
+  return a;
+}
+
+// The brightness of a small linear texture (a render target) at each vertex's uv.
+function brightnessAt(texture, uvs, size) {
+  const target = softCopies.find(t => t.texture === texture), half = new Uint16Array(size * size * 4);
+  F.renderer.readRenderTargetPixels(target, 0, 0, size, size, half);
+  const out = new Float32Array(uvs.length / 2), h = THREE.DataUtils.fromHalfFloat;
+  for (let v = 0; v < out.length; v++) {
+    const x = Math.min(size - 1, Math.max(0, Math.floor(uvs[v * 2] * size))), y = Math.min(size - 1, Math.max(0, Math.floor(uvs[v * 2 + 1] * size)));
+    const i = (y * size + x) * 4;
+    out[v] = .2126 * h(half[i]) + .7152 * h(half[i + 1]) + .0722 * h(half[i + 2]);
+  }
+  return out;
+}
+
+const paintSource = material => material.map ?? null;
+// A small, soft copy of a texture (in linear light): only its large areas of colour survive.
+const softCopies = [];
+function downsample(texture, size) {
+  const target = new THREE.WebGLRenderTarget(size, size, {type: THREE.HalfFloatType, generateMipmaps: false, depthBuffer: false});
+  const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({uniforms: {map: {value: texture}}, depthTest: false, depthWrite: false,
+    vertexShader: 'varying vec2 q; void main() { q = uv; gl_Position = vec4(position.xy, 0., 1.); }',
+    fragmentShader: 'uniform sampler2D map; varying vec2 q; void main() { gl_FragColor = vec4(textureLod(map, q, 3.).rgb, 1.); }'}));
+  const scene = new THREE.Scene(); scene.add(quad);
+  const r = F.renderer, before = r.getRenderTarget();
+  r.setRenderTarget(target); r.render(scene, new THREE.Camera()); r.setRenderTarget(before);
+  quad.geometry.dispose(); quad.material.dispose();
+  target.texture.colorSpace = THREE.NoColorSpace;
+  softCopies.push(target);
+  return target.texture;
+}
+
+// The clean style's plating and wear, in the ship's own frame and game units: plates 1.6 by 0.8, laid like bricks, with a
+// structural seam every four plates.
+const CLEAN_FUNCTIONS = `
+float jsgbHash(vec2 p) { return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+float jsgbNoise(vec2 p) { vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
+  return mix(mix(jsgbHash(i), jsgbHash(i + vec2(1., 0.)), f.x), mix(jsgbHash(i + vec2(0., 1.)), jsgbHash(i + vec2(1., 1.)), f.x), f.y); }
+// Plates laid like bricks: 1 on a seam, 0 inside a plate, and the plate's own id.
+float jsgbSeams(vec2 q, float width, out vec2 id) {
+  q.x += floor(q.y) * .5; id = floor(q);
+  vec2 d = .5 - abs(fract(q) - .5), w = max(fwidth(q), vec2(1e-4));
+  vec2 l = 1. - smoothstep(vec2(width), vec2(width) + w * 1.5, d);
+  return max(l.x, l.y);
+}`;
+const CLEAN_PAINT = `{
+  vec3 P = vJsgbPos, N = normalize(vJsgbNormal), A = abs(N);
+  vec2 q = A.x > A.y && A.x > A.z ? P.zy : A.y > A.z ? P.xz : P.xy;
+  vec2 plateId, panelId;
+  float seam = jsgbSeams(q * vec2(.625, 1.25), .03, plateId);
+  float major = jsgbSeams(q * vec2(.15625, .3125), .012, panelId);
+  vec3 c = diffuseColor.rgb * (1. + (jsgbHash(plateId) - .5) * .07);
+  c *= 1. - .38 * seam - .15 * major;
+  float grain = jsgbNoise(q * 24.) * .6 + jsgbNoise(q * 6.) * .4;
+  float chip = smoothstep(.35, .95, vJsgbCurvature) * smoothstep(.45, .75, grain);
+  c = mix(c, vec3(.36, .37, .39) * (.85 + .3 * grain), chip * .7);
+  c *= 1. - .4 * smoothstep(.15, .8, -vJsgbCurvature) * (.6 + .4 * grain);
+  float o = dot(texture2D(jsgbOriginal, vJsgbUv).rgb, vec3(.2126, .7152, .0722));
+  float oa = dot(textureLod(jsgbOriginal, vJsgbUv, 4.).rgb, vec3(.2126, .7152, .0722));
+  c *= mix(1., clamp((o + .02) / (oa + .02), .7, 1.2), .08);
+  diffuseColor.rgb = c;
+}`;
+
+export async function bake(name, key, sourceUrl, style = 'clean') {
   const {level, mesh: game} = await gameHull(key);
   const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(sourceUrl);
   const source = largestMesh(gltf.scene);
@@ -71,12 +169,39 @@ export async function bake(name, key, sourceUrl) {
   geometry.setAttribute('uv', new THREE.BufferAttribute(gameUv, 2));
   geometry.setAttribute('hullPaintWeight', new THREE.BufferAttribute(weight, 1));
 
+  // The clean style paints the hull fresh instead of carrying over the source's smeared texture: the game's colours
+  // from a small copy of its texture (so only its large areas of colour come through), plating laid out in the hull's
+  // own coordinates, and wear where the shape says it belongs (convex edges chip, crevices collect grime).
+  const clean = style === 'clean';
+  let blurred = null;
+  if (clean) {
+    // Curvature averaged over each vertex's neighbours twice, so the generator's surface noise doesn't read as edges.
+    const bend = smooth(geometry, curvature(geometry), 2);
+    geometry.setAttribute('jsgbCurvature', new THREE.BufferAttribute(bend, 1));
+    blurred = downsample(paintSource(game.material) ?? map, 256);
+    // Paint goes on every broad, smooth, light part of the hull, not only on the game's plates: the game's plate mask
+    // comes from its low-detail model and leaves most of the detailed one unpainted. Dark machinery keeps its colour.
+    const light = brightnessAt(blurred, gameUv, 256);
+    for (let v = 0; v < n; v++) {
+      const flat = 1 - Math.min(1, Math.max(0, (Math.abs(bend[v]) - .15) / .35));
+      const pale = Math.min(1, Math.max(0, (light[v] - .18) / .17));
+      weight[v] = Math.max(weight[v], flat * pale);
+    }
+    geometry.attributes.hullPaintWeight.needsUpdate = true;
+  }
+  game.geometry.computeBoundingBox();
+  // The plating's frame: the ship's own (the game's model placed in its hull frame, in game units, as the livery uses).
+  let root = level; while (root.parent) root = root.parent;
+  root.updateMatrixWorld(true);
+  const frame = game.matrixWorld.clone();
+
   // The game's material for this hull, with its own texture, drawn at each texel's place in the source's texture. The
   // source's fine detail (each texel's brightness against its neighbourhood's) is multiplied in, so the colours stay
   // the game's and the detail is the original's.
   const paint = game.material.clone();
   for (const slot of ['normalMap', 'aoMap', 'emissiveMap', 'lightMap', 'bumpMap', 'envMap']) paint[slot] = null;
   if (!paint.map) paint.map = map;
+  if (clean) paint.map = blurred;
   paint.side = THREE.DoubleSide; paint.depthTest = paint.depthWrite = false; paint.transparent = false;
   const blank = new THREE.DataTexture(new Uint8Array(4), 1, 1); blank.needsUpdate = true;
   const gamePaint = game.material.onBeforeCompile;
@@ -84,14 +209,18 @@ export async function bake(name, key, sourceUrl) {
     gamePaint.call(game.material, shader, renderer);
     if (shader.uniforms.liveryRegistration) shader.uniforms.liveryRegistration.value = blank;
     shader.uniforms.jsgbOriginal = {value: map};
-    shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nattribute vec2 jsgbUv; varying vec2 vJsgbUv;')
-      .replace('#include <project_vertex>', '#include <project_vertex>\n vJsgbUv = jsgbUv; gl_Position = vec4(jsgbUv * 2. - 1., 0., 1.);');
-    shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\n' + oetf + '\nuniform sampler2D jsgbOriginal; varying vec2 vJsgbUv;')
-      .replace('#include <roughnessmap_fragment>', `float jsgbLum = dot(texture2D(jsgbOriginal, vJsgbUv).rgb, vec3(.2126, .7152, .0722));
+    shader.uniforms.jsgbFrame = {value: frame};
+    shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nattribute vec2 jsgbUv; varying vec2 vJsgbUv;' +
+        (clean ? '\nattribute float jsgbCurvature; varying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal; uniform mat4 jsgbFrame;' : ''))
+      .replace('#include <project_vertex>', '#include <project_vertex>\n vJsgbUv = jsgbUv; gl_Position = vec4(jsgbUv * 2. - 1., 0., 1.);' +
+        (clean ? '\n vJsgbCurvature = jsgbCurvature; vJsgbPos = (jsgbFrame * vec4(position, 1.)).xyz; vJsgbNormal = mat3(jsgbFrame) * normal;' : ''));
+    shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\n' + oetf + '\nuniform sampler2D jsgbOriginal; varying vec2 vJsgbUv;' +
+        (clean ? '\nvarying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal;\n' + CLEAN_FUNCTIONS : ''))
+      .replace('#include <roughnessmap_fragment>', (clean ? CLEAN_PAINT : `float jsgbLum = dot(texture2D(jsgbOriginal, vJsgbUv).rgb, vec3(.2126, .7152, .0722));
         float jsgbAround = dot(textureLod(jsgbOriginal, vJsgbUv, 4.).rgb, vec3(.2126, .7152, .0722));
-        diffuseColor.rgb *= mix(1., clamp((jsgbLum + .02) / (jsgbAround + .02), .55, 1.3), DETAIL);
+        diffuseColor.rgb *= mix(1., clamp((jsgbLum + .02) / (jsgbAround + .02), .55, 1.3), DETAIL);`.replace('DETAIL', String(DETAIL))) + `
         gl_FragColor = vec4(jsgbOetf(diffuseColor.rgb), 1.); return;
-#include <roughnessmap_fragment>`.replace('DETAIL', String(DETAIL)));
+#include <roughnessmap_fragment>`);
   };
   paint.customProgramCacheKey = () => 'jsgb-livery-bake-' + name;
 
@@ -111,7 +240,7 @@ export async function bake(name, key, sourceUrl) {
   const px = new Uint8Array(W * H * 4);
   r.readRenderTargetPixels(target, 0, 0, W, H, px);
   r.setRenderTarget(before.target); r.autoClear = before.autoClear; r.toneMapping = before.tone;
-  target.dispose(); paint.dispose(); geometry.dispose(); lookup.dispose(); under.material.dispose(); under.geometry.dispose(); blank.dispose();
+  target.dispose(); paint.dispose(); geometry.dispose(); lookup.dispose(); for (const t of softCopies.splice(0)) t.dispose(); under.material.dispose(); under.geometry.dispose(); blank.dispose();
   // Free the source model: its 4096 textures are hundreds of megabytes each, and the bake goes through every hull.
   gltf.scene.traverse(o => {
     if (!o.isMesh) return;
