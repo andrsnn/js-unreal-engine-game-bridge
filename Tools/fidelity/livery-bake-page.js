@@ -218,6 +218,7 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
     // judged against the hull's own median brightness: a dark texture (the TDF capital's brown camo) still gets painted.
     const light = brightnessAt(blurred, gameUv, 256);
     const median = Float32Array.from(light).sort()[Math.floor(n / 2)] || .2, dark = Math.min(.18, median * .45);
+    fit.median = +median.toFixed(3); fit.dark = +dark.toFixed(3);
     for (let v = 0; v < n; v++) {
       const flat = 1 - Math.min(1, Math.max(0, (Math.abs(bend[v]) - .15) / .35));
       const pale = Math.min(1, Math.max(0, (light[v] - dark) / (dark * .95)));
