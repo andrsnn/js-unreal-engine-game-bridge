@@ -33,7 +33,10 @@
   {
    "name": "planet_moon",
    "match": {
-    "texture": "*pole-safe/moon.png"
+    "texture": "*pole-safe/moon.png",
+    "userData": {
+     "look": "null"
+    }
    },
    "mesh": "/Game/Fidelity/HardBurn/planet_sphere/planet_sphere/StaticMeshes/SM_planet_sphere.SM_planet_sphere",
    "material": "/Game/Fidelity/HardBurn/planet_moon/MI_planet_moon.MI_planet_moon",
@@ -62,7 +65,10 @@
   {
    "name": "planet_mars",
    "match": {
-    "texture": "*pole-safe/mars.png"
+    "texture": "*pole-safe/mars.png",
+    "userData": {
+     "look": "null"
+    }
    },
    "mesh": "/Game/Fidelity/HardBurn/planet_sphere/planet_sphere/StaticMeshes/SM_planet_sphere.SM_planet_sphere",
    "material": "/Game/Fidelity/HardBurn/planet_mars/MI_planet_mars.MI_planet_mars",
@@ -91,7 +97,10 @@
   {
    "name": "planet_saturn",
    "match": {
-    "texture": "*pole-safe/saturn.png"
+    "texture": "*pole-safe/saturn.png",
+    "userData": {
+     "look": "null"
+    }
    },
    "mesh": "/Game/Fidelity/HardBurn/planet_sphere/planet_sphere/StaticMeshes/SM_planet_sphere.SM_planet_sphere",
    "material": "/Game/Fidelity/HardBurn/planet_saturn/MI_planet_saturn.MI_planet_saturn",

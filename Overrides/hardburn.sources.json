@@ -2759,7 +2759,10 @@
    "relief": 6,
    "scale": 2,
    "match": {
-    "texture": "*pole-safe/moon.png"
+    "texture": "*pole-safe/moon.png",
+    "userData": {
+     "look": "null"
+    }
    },
    "fit": "bounds",
    "params": {
@@ -2774,7 +2777,10 @@
    "relief": 3,
    "scale": 2,
    "match": {
-    "texture": "*pole-safe/mars.png"
+    "texture": "*pole-safe/mars.png",
+    "userData": {
+     "look": "null"
+    }
    },
    "fit": "bounds",
    "params": {
@@ -2789,7 +2795,10 @@
    "relief": 0,
    "scale": 1,
    "match": {
-    "texture": "*pole-safe/saturn.png"
+    "texture": "*pole-safe/saturn.png",
+    "userData": {
+     "look": "null"
+    }
    },
    "fit": "bounds",
    "params": {
