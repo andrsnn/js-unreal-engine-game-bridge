@@ -1826,7 +1826,7 @@ void UJsgbSceneMirror::SetShader(const FString& Key, const FString& Json)
 }
 
 // Generated materials as cooked assets: an editor run with -JsgbSaveMaterials saves each one to /Game/JsgbGenerated
-// under this name (the shader's key, its blend mode and whether it draws both faces), Tools/laptop-package.mjs cooks
+// under this name (the shader's key, its blend mode and whether it draws both faces), packaging cooks
 // them into the package, and a packaged host, which can't compile materials, loads them by the same name.
 static const TCHAR* GeneratedRoot = TEXT("/Game/JsgbGenerated");
 static FString GeneratedAssetName(const FString& Key, int32 Blend, bool bTwoSided)
