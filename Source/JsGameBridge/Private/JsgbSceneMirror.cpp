@@ -1017,6 +1017,10 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 	M.bDrawFirst = Flag(J, TEXT("drawFirst"));
 	Mid->SetScalarParameterValue(TEXT("Fogged"), M.bNoFog ? 0.f : 1.f);
 	Mid->SetScalarParameterValue(TEXT("Specular"), Num(J, TEXT("specular"), 0.5));
+	// The light a material reflects from its environment map (three.js envMap or scene.environment): the map's
+	// intensity times EnvRadiance, the average light of the studio and room environments games use.
+	const float Env = Num(J, TEXT("env")) > 0.5f ? Num(J, TEXT("envIntensity"), 1) * EnvRadiance : 0.f;
+	Mid->SetVectorParameterValue(TEXT("EnvLight"), FLinearColor(Env, Env, Env, 0));
 	if (bUniforms && bTrace && M.bCustom)
 	{
 		FString Names;
@@ -2020,6 +2024,13 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 					const UMaterialExpressionCollectionParameter* C = Cast<UMaterialExpressionCollectionParameter>(E);
 					if (C && (!Globals || C->Collection != Globals || Globals->GetParameterName(C->ParameterId).IsNone())) { bStale = true; break; }
 				}
+				// A lit material saved before environment light existed is saved again with it.
+				if (!bStale && Old->GetShadingModels().HasShadingModel(MSM_DefaultLit))
+				{
+					bool bEnv = false;
+					for (UMaterialExpression* E : Old->GetExpressions()) { const UMaterialExpressionVectorParameter* V = Cast<UMaterialExpressionVectorParameter>(E); bEnv |= V && V->ParameterName == TEXT("EnvLight"); }
+					bStale = !bEnv;
+				}
 			}
 			if (bStale)
 			{
@@ -2189,8 +2200,14 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 			Up->A.Connect(0, Half); Up->ConstB = 0.5f; Add(Up);
 			UMaterialExpressionLinearInterpolate* Hemi = NewObject<UMaterialExpressionLinearInterpolate>(Mat);
 			Hemi->A.Connect(0, Collection(TEXT("HemiGround"))); Hemi->B.Connect(0, Collection(TEXT("HemiSky"))); Hemi->Alpha.Connect(0, Up); Add(Hemi);
+			// A material with an environment map (its own or the scene's) also gets the light it reflects from it, as one
+			// colour per material (EnvLight, from the map's intensity), beside three's ambient and hemisphere light.
+			UMaterialExpressionVectorParameter* EnvLight = NewObject<UMaterialExpressionVectorParameter>(Mat);
+			EnvLight->ParameterName = TEXT("EnvLight"); EnvLight->DefaultValue = FLinearColor::Black; Add(EnvLight);
+			UMaterialExpressionAdd* SceneLight = NewObject<UMaterialExpressionAdd>(Mat);
+			SceneLight->A.Connect(0, Collection(TEXT("Ambient"))); SceneLight->B.Connect(0, Hemi); Add(SceneLight);
 			UMaterialExpressionAdd* Irradiance = NewObject<UMaterialExpressionAdd>(Mat);
-			Irradiance->A.Connect(0, Collection(TEXT("Ambient"))); Irradiance->B.Connect(0, Hemi); Add(Irradiance);
+			Irradiance->A.Connect(0, SceneLight); Irradiance->B.Connect(0, EnvLight); Add(Irradiance);
 			UMaterialExpressionComponentMask* IrradianceRgb = NewObject<UMaterialExpressionComponentMask>(Mat);
 			IrradianceRgb->R = IrradianceRgb->G = IrradianceRgb->B = true; IrradianceRgb->A = false; IrradianceRgb->Input.Connect(0, Irradiance); Add(IrradianceRgb);
 			UMaterialExpressionMultiply* Ambient = NewObject<UMaterialExpressionMultiply>(Mat);

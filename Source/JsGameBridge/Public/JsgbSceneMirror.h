@@ -258,6 +258,9 @@ public:
 	/** Lumen mode: extra exposure in stops, bloom and directional light multipliers on top of the game's own. */
 	float ExposureOffset = 0.f, BloomScale = 1.f, SunScale = 1.f;
 	float LumenAmbientScale = 1.f;
+	/** The average light of an environment map (three.js envMap, scene.environment) a material reflects; times the
+	 *  material's envMapIntensity it becomes its EnvLight. -JsgbEnvRadiance= overrides it. */
+	float EnvRadiance = 1.5f;
 	int32 FrameCounter = 0;
 
 	FVector CameraLocation = FVector::ZeroVector;

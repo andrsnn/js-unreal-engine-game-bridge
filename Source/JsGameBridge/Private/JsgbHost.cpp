@@ -599,6 +599,7 @@ void AJsgbHost::StartJs()
 	Bridge->Search = Search;
 	Bridge->Trace = FParse::Param(FCommandLine::Get(), TEXT("JsgbTraceMirror"));
 	Mirror->bTrace = Bridge->Trace;
+	FParse::Value(FCommandLine::Get(), TEXT("JsgbEnvRadiance="), Mirror->EnvRadiance);
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbSeed="), Bridge->Seed);
 	// Web Workers run on their own threads unless -JsgbGameThreadWorkers asks for the old single-thread mode.
 	if (!FParse::Param(FCommandLine::Get(), TEXT("JsgbGameThreadWorkers"))) { FFileHelper::LoadFileToString(Bridge->WorkerRuntime, *(GameDir / TEXT("jsgb/worker-runtime.js"))); }

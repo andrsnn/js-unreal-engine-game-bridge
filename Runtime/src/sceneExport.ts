@@ -430,6 +430,8 @@ function syncMaterial(mat: THREE.Material): number {
     uniforms: shader ? uniformValues(m.uniforms as Record<string, {value: unknown}>) : (hookUniforms(mat) ? uniformValues(hookUniforms(mat)) : undefined),
     specular: mat.type === 'MeshLambertMaterial' || mat.type === 'MeshToonMaterial' ? 0 : mat.type === 'MeshPhongMaterial' ? 0.3 : 0.5,
     envIntensity: m.envMapIntensity ?? 1, alphaHash: !!m.alphaHash,
+    // Lit by an environment map: its own, or the scene's (the mirror turns it into one colour of reflected light).
+    env: +!!(m.envMap || (lastFrame.scene as THREE.Scene | null)?.environment),
     size: m.size, sizeAttenuation: m.sizeAttenuation, linewidth: (m as unknown as THREE.LineBasicMaterial).linewidth,
     // A Line2's width (WebGL draws every other line one pixel wide): in pixels, or in world units.
     fatWidth: mat.userData?.jsgbFatWidth, fatWorld: mat.userData?.jsgbFatWorld,
