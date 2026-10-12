@@ -138,6 +138,8 @@ public:
 	struct FUICanvas { int32 Width = 0, Height = 0; TArray<uint8> Rgba; };
 	TMap<FString, FUICanvas> UICanvases;
 	int64 SceneFrames = 0;
+	/** Files the game has read so far (the loading screen shows it). */
+	std::atomic<int32> FilesRead{0};
 	FCriticalSection DisplayLock;
 	FString DisplayModesJson, DisplayJson;
 	/** When the JavaScript thread made the newest scene frame the game thread applied (FPlatformTime seconds). */

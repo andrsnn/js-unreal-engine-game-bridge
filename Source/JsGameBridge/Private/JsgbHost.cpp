@@ -430,6 +430,7 @@ void AJsgbHost::BeginPlay()
 	const FString ScriptPath = Arg(TEXT("JsgbScript="));
 	if (!ScriptPath.IsEmpty()) { LoadScript(ScriptPath); }
 	if (!LoadPublication(Arg(TEXT("JsgbGame=")), FString())) { return; }
+	ShowLoading();
 	StartServer();
 	if (!PageIndex.IsEmpty()) { CreatePageView(); return; }
 	StartJs();
@@ -450,6 +451,25 @@ static const TCHAR* PageKeyCodeFix = TEXT("(function(){if(window.__jsgbKeyFix)re
 	TEXT("var k=this.keyCode;if(k>=65&&k<=90)return 'Key'+String.fromCharCode(k);if(k>=48&&k<=57)return 'Digit'+(k-48);")
 	TEXT("if(k>=96&&k<=105)return 'Numpad'+(k-96);if(k>=112&&k<=123)return 'F'+(k-111);")
 	TEXT("if((k===16||k===17||k===18)&&this.location===2)return N[k].replace('Left','Right');return N[k]||'';}});})();");
+
+// window.jsgb.display and the Fullscreen API inside a page game, through window.ue.jsgbpage (UJsgbPagePort); the
+// browser's own fullscreen does nothing in Unreal's windowless browser.
+static const TCHAR* PageDisplayApi = TEXT("(function(){var p=window.ue&&window.ue.jsgbpage;if(!p||(window.jsgb&&window.jsgb.display))return;")
+	TEXT("var st={modes:[],cur:{}};function refresh(){return Promise.all([p.displaymodes(),p.displayget()]).then(function(r){")
+	TEXT("try{st.modes=JSON.parse(r[0]||'[]');st.cur=JSON.parse(r[1]||'{}')}catch(e){}})}")
+	TEXT("var display={supported:true,modes:function(){return st.modes},get:function(){return st.cur},set:function(c){p.displayset(JSON.stringify(c||{}));")
+	TEXT("return new Promise(function(res){setTimeout(function(){refresh().then(function(){res(st.cur)})},150)})}};")
+	TEXT("window.jsgb=Object.assign(window.jsgb||{},{display:display});refresh();var fs=null;")
+	TEXT("Object.defineProperty(document,'fullscreenElement',{get:function(){return fs},configurable:true});")
+	TEXT("Object.defineProperty(document,'fullscreenEnabled',{get:function(){return true},configurable:true});")
+	TEXT("Object.defineProperty(document,'fullscreen',{get:function(){return !!fs},configurable:true});")
+	TEXT("function fire(){document.dispatchEvent(new Event('fullscreenchange'))}")
+	TEXT("Element.prototype.requestFullscreen=function(){fs=this;return display.set({mode:'borderless'}).then(fire)};")
+	TEXT("document.exitFullscreen=function(){if(!fs)return Promise.resolve();fs=null;return display.set({mode:'windowed'}).then(fire)};})();");
+
+FString UJsgbPagePort::DisplayModes() { return Display ? Display->DisplayModes() : FString(TEXT("[]")); }
+FString UJsgbPagePort::DisplayGet() { return Display ? Display->DisplayGet() : FString(TEXT("{}")); }
+void UJsgbPagePort::DisplaySet(const FString& Json) { if (Display) { Display->DisplaySet(Json); } }
 
 // "KeyW", "Digit1", "Space", "ArrowUp" and the like as an Unreal key, its Windows key code and its character, for
 // POST /bridge/key (tests press keys through Slate, the same path as a real keyboard).
@@ -475,6 +495,13 @@ void AJsgbHost::CreatePageView()
 	if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Streamline.TagUIColorAlpha"))) { V->Set(0, ECVF_SetByCode); }
 	int32 PageFps = 60;
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbPageFps="), PageFps);
+	// Unreal draws no scene of its own here, so it shows a new page frame each time it presents: capped at the page's
+	// rate, every frame on screen is a new page frame. Uncapped, each page frame stayed up for an uneven number of
+	// Unreal frames (3.8 ms frames with a 2.7 ms spread on a 240 Hz display): the motion judders.
+	if (IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"))) { MaxFps->Set(static_cast<float>(PageFps), ECVF_SetByCode); }
+	PagePort = NewObject<UJsgbPagePort>(this);
+	PagePort->Display = NewObject<UJsgbBridge>(this);
+	PagePort->Display->UpdateDisplayInfo();
 	const FString Url = FString::Printf(TEXT("http://127.0.0.1:%d/"), Port) + PageIndex + Search;
 	SAssignNew(Browser, SWebBrowser).InitialURL(Url)
 		.ShowControls(false).ShowAddressBar(false).ShowInitialThrobber(false)
@@ -484,6 +511,7 @@ void AJsgbHost::CreatePageView()
 		{
 			bDocumentReady = true;
 			Browser->ExecuteJavascript(PageKeyCodeFix);
+			Browser->ExecuteJavascript(PageDisplayApi);
 			FSlateApplication::Get().SetAllUserFocus(Browser.ToSharedRef(), EFocusCause::SetDirectly);
 			UE_LOG(LogJsgbHost, Display, TEXT("Page game loaded"));
 		})
@@ -493,6 +521,7 @@ void AJsgbHost::CreatePageView()
 			UE_LOG(LogJsgbHost, Display, TEXT("Page console %d %s:%d %s"), static_cast<int32>(Severity), *Source, Line, *Message.Left(2048));
 		})
 		.OnBeforePopup_Lambda([](FString, FString) { return true; });
+	Browser->BindUObject(TEXT("jsgbpage"), PagePort, true);
 	GEngine->GameViewport->AddViewportWidgetContent(Browser.ToSharedRef(), 100);
 	FSlateApplication::Get().SetAllUserFocus(Browser.ToSharedRef(), EFocusCause::SetDirectly);
 	if (APlayerController* Pc = UGameplayStatics::GetPlayerController(GetWorld(), 0))
@@ -622,6 +651,66 @@ void AJsgbHost::CreateOverlay()
 		Mode.SetHideCursorDuringCapture(false);
 		Pc->SetInputMode(Mode);
 	}
+}
+
+// A loading screen over the whole window while the game's JavaScript and files load: its name, a bar that moves,
+// and how many files it has read. It goes once the game shows something itself: its own HTML in the overlay (often
+// its own loading screen), a drawn scene, or for a page game the loaded page.
+void AJsgbHost::ShowLoading()
+{
+	if (Loading.IsValid() || !GEngine || !GEngine->GameViewport || FParse::Param(FCommandLine::Get(), TEXT("JsgbNoLoadingScreen"))) { return; }
+	LoadingStart = FPlatformTime::Seconds();
+	const FString Name = Title.IsEmpty() ? FString(TEXT("Loading")) : Title;
+	auto Phase = [this]() { return static_cast<float>(FMath::Fmod((FPlatformTime::Seconds() - LoadingStart) * 0.6, 1.0)); };
+	Loading = SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(0.02f, 0.025f, 0.035f, 1.f))
+		.HAlign(HAlign_Center).VAlign(VAlign_Center).Visibility(EVisibility::HitTestInvisible)
+		[
+			SNew(SVerticalBox)
+			+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 0, 0, 18)
+			[
+				SNew(STextBlock).Text(FText::FromString(Name)).Font(FCoreStyle::GetDefaultFontStyle("Bold", 34)).ColorAndOpacity(FLinearColor(0.92f, 0.94f, 0.97f))
+			]
+			+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center)
+			[
+				SNew(SBox).WidthOverride(420.f).HeightOverride(6.f)
+				[
+					SNew(SOverlay)
+					+ SOverlay::Slot()[SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(1.f, 1.f, 1.f, 0.12f))]
+					+ SOverlay::Slot().HAlign(HAlign_Left)
+					.Padding(TAttribute<FMargin>::CreateLambda([Phase]() { return FMargin(FMath::Max(0.f, Phase() * 520.f - 120.f), 0, 0, 0); }))
+					[
+						SNew(SBox).WidthOverride(TAttribute<FOptionalSize>::CreateLambda([Phase]() { const float X = Phase() * 520.f - 120.f; return FOptionalSize(FMath::Clamp(FMath::Min(120.f, 120.f + X), 0.f, FMath::Max(0.f, 420.f - X))); }))
+						[
+							SNew(SBorder).BorderImage(FCoreStyle::Get().GetBrush("WhiteBrush")).BorderBackgroundColor(FLinearColor(0.49f, 0.78f, 1.f))
+						]
+					]
+				]
+			]
+			+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 14, 0, 0)
+			[
+				SNew(STextBlock).Font(FCoreStyle::GetDefaultFontStyle("Regular", 14)).ColorAndOpacity(FLinearColor(0.6f, 0.65f, 0.72f))
+				.Text(TAttribute<FText>::CreateLambda([this]()
+				{
+					const int32 Files = Bridge ? Bridge->FilesRead.load() : 0;
+					return FText::FromString(Files > 0 ? FString::Printf(TEXT("Loading, %d files read"), Files) : FString(TEXT("Starting")));
+				}))
+			]
+		];
+	// Above the game view and the overlay browser, below the frame rate readout.
+	GEngine->GameViewport->AddViewportWidgetContent(Loading.ToSharedRef(), 250);
+}
+
+void AJsgbHost::UpdateLoading()
+{
+	if (!Loading.IsValid()) { return; }
+	const bool bPage = !PageIndex.IsEmpty();
+	const bool bShown = bPage ? bDocumentReady
+		: (UIPort && UIPort->AppliedUIVersion > 0) || (Mirror && Mirror->DrawnEntities > 0) || (Bridge && Bridge->bReady && ReadyFrame >= 0);
+	// Two minutes at most, so a game that never reports anything isn't hidden behind it.
+	if (!bShown && FPlatformTime::Seconds() - LoadingStart < 120.0) { return; }
+	if (GEngine && GEngine->GameViewport) { GEngine->GameViewport->RemoveViewportWidgetContent(Loading.ToSharedRef()); }
+	Loading.Reset();
+	UE_LOG(LogJsgbHost, Display, TEXT("Loading screen shown for %.1f s"), FPlatformTime::Seconds() - LoadingStart);
 }
 
 void AJsgbHost::ShowReloadBanner(const FString& Text)
@@ -1425,6 +1514,7 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		if (!PendingBundle.IsEmpty()) { LoadPublication(GameDir, PendingBundle); PendingBundle.Reset(); }
 		StartJs();
 	}
+	UpdateLoading();
 	// A page game takes the keyboard whenever the window is active, so keys work without a click first.
 	if (!PageIndex.IsEmpty() && Browser.IsValid() && FSlateApplication::Get().IsActive() && !Browser->HasAnyUserFocusOrFocusedDescendants())
 	{

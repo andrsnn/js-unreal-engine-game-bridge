@@ -1,0 +1,13 @@
+# Hard Burn: the smoke test's input on the title screen (W A S D, then Enter starts a new game), for material capture.
+0 wait 'NEW GAME'
+2 key 'KeyW','down'
+2.6 key 'KeyW','up'
+2.6 key 'KeyA','down'
+3.2 key 'KeyA','up'
+3.2 key 'KeyS','down'
+3.8 key 'KeyS','up'
+3.8 key 'KeyD','down'
+4.4 key 'KeyD','up'
+4.4 key 'Enter','down'
+5 key 'Enter','up'
+50 quit

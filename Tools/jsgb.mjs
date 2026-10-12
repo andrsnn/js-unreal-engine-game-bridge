@@ -262,6 +262,7 @@ export async function build(game) {
     define: {
       'import.meta.env': JSON.stringify({DEV: false, PROD: true, SSR: false, MODE: 'production', BASE_URL: '/', UNREAL: true, ...(game.env ?? {})}),
       __JSGB_WEBGL_MODULE_DRAWS__: String(await webglModuleDraws(esbuild, threeFiles(game).core)),
+      __JSGB_SHADER_VERSION__: JSON.stringify(sha256(Buffer.concat([fs.readFileSync(path.join(runtime, 'src/shaders.ts')), fs.readFileSync(path.join(runtime, 'vendor/cross-shader/CrossShader.wasm'))])).slice(0, 12)),
       'process.env.NODE_ENV': '"production"', 'import.meta.hot': 'undefined', 'import.meta.url': '"http://localhost/index.js"', __JSGB_PAGE__: JSON.stringify(pageInfo), __JSGB_INLINE__: JSON.stringify(page.inline), ...(game.define ?? {}),
     },
     loader: {'.json': 'json', '.css': 'css', '.glsl': 'text', '.vert': 'text', '.frag': 'text', '.wgsl': 'text', '.txt': 'text',

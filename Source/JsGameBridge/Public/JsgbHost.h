@@ -16,6 +16,19 @@ class IHttpRouter;
 namespace PUERTS_NAMESPACE { class FJsEnv; }
 
 /** What the CEF overlay calls (window.ue.jsgb.sendinput): DOM events and layout from the mirrored UI. */
+/** What a page game (one running in the built-in browser) can call through window.ue.jsgbpage: the display settings
+ *  behind window.jsgb.display. */
+UCLASS()
+class JSGAMEBRIDGE_API UJsgbPagePort : public UObject
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY() TObjectPtr<class UJsgbBridge> Display;
+	UFUNCTION() FString DisplayModes();
+	UFUNCTION() FString DisplayGet();
+	UFUNCTION() void DisplaySet(const FString& Json);
+};
+
 UCLASS()
 class JSGAMEBRIDGE_API UJsgbUIPort : public UObject
 {
@@ -121,6 +134,7 @@ private:
 	double CamSpeedSum = 0, CamSpeedSum2 = 0;
 	int32 CamSpeedFrames = 0;
 	TSharedPtr<SWebBrowser> Browser;
+	UPROPERTY() TObjectPtr<UJsgbPagePort> PagePort;
 	TSharedPtr<IHttpRouter> Router;
 	FDelegateHandle RouteHandle;
 	TSharedPtr<class FJsgbInputProcessor> Input;
@@ -203,6 +217,11 @@ private:
 	/** Reads recorded frames back from the GPU a few frames later, so recording doesn't make the CPU wait for the GPU. */
 	TSharedPtr<class FFrameGrabber> Grabber;
 	TSharedPtr<class SWidget> Banner;
+	/** The loading screen: the game's name and a moving bar, from launch until the game shows something. */
+	TSharedPtr<class SWidget> Loading;
+	double LoadingStart = 0;
+	void ShowLoading();
+	void UpdateLoading();
 	TSharedPtr<class STextBlock> BannerText;
 	double BannerUntil = 0;
 };

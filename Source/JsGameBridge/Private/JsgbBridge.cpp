@@ -145,6 +145,7 @@ void UJsgbBridge::StopWorkers()
 
 FArrayBufferValue UJsgbBridge::ReadFile(const FString& Path)
 {
+	++FilesRead;
 	FArrayBufferValue Out;
 	FString Rel = Path;
 	Rel.ReplaceInline(TEXT("\\"), TEXT("/"));

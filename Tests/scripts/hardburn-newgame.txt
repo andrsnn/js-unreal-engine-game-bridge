@@ -2,3 +2,4 @@
 0 wait 'NEW GAME'
 1 click 'NEW GAME'
 60 shot after-newgame
+75 quit
