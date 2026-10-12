@@ -153,7 +153,7 @@ const CLEAN_PAINT = `{
   diffuseColor.rgb = c;
 }`;
 
-export async function bake(name, key, sourceUrl, style = 'clean') {
+export async function bake(name, key, sourceUrl, style = 'clean', options = {}) {
   const {level, mesh: game} = await gameHull(key);
   const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(sourceUrl);
   const source = largestMesh(gltf.scene);
@@ -164,6 +164,12 @@ export async function bake(name, key, sourceUrl, style = 'clean') {
   const gameNode = new THREE.Matrix4().copy(sceneRoot.matrixWorld).invert().multiply(game.matrixWorld);
   const geometry = source.geometry.clone().applyMatrix4(new THREE.Matrix4().copy(gameNode).invert().multiply(source.matrixWorld));
   if (!geometry.attributes.normal) geometry.computeVertexNormals();
+  // How well the source lines up with the game's model: per axis, the source's size over the game's and the centres'
+  // distance over the game's size. Near 1 and 0 when they match; anything else means the lookups below land wrong.
+  geometry.computeBoundingBox(); game.geometry.computeBoundingBox();
+  const gs = game.geometry.boundingBox.getSize(new THREE.Vector3()), ss = geometry.boundingBox.getSize(new THREE.Vector3());
+  const off = geometry.boundingBox.getCenter(new THREE.Vector3()).sub(game.geometry.boundingBox.getCenter(new THREE.Vector3()));
+  const fit = {size: [ss.x / gs.x, ss.y / gs.y, ss.z / gs.z].map(v => +v.toFixed(2)), offset: +(off.length() / gs.length()).toFixed(2)};
   // For each source vertex: the nearest point on the game's model, its place in the game's texture (uv) and its plate
   // weight. The bake then shows the game's own colours and paint at every point of the detailed model.
   const gp = game.geometry.attributes.position, guv = game.geometry.attributes.uv;
@@ -177,16 +183,20 @@ export async function bake(name, key, sourceUrl, style = 'clean') {
   const sp = geometry.attributes.position, n = sp.count;
   const gameUv = new Float32Array(n * 2), weight = new Float32Array(n);
   const at = new THREE.Vector3(), hit = {point: new THREE.Vector3(), faceIndex: 0, distance: 0}, tri = new THREE.Triangle(), bary = new THREE.Vector3();
-  const index = lookup.index;
+  const index = lookup.index, sn = geometry.attributes.normal, faceNormal = new THREE.Vector3(), vertexNormal = new THREE.Vector3();
+  let facing = 0, gap = 0;
   for (let v = 0; v < n; v++) {
     at.fromBufferAttribute(sp, v);
     if (!bvh.closestPointToPoint(at, hit)) continue;
     const f = hit.faceIndex * 3, a = index ? index.getX(f) : f, b = index ? index.getX(f + 1) : f + 1, c = index ? index.getX(f + 2) : f + 2;
     tri.a.fromArray(gamePositions, a * 3); tri.b.fromArray(gamePositions, b * 3); tri.c.fromArray(gamePositions, c * 3);
     tri.getBarycoord(hit.point, bary);
+    tri.getNormal(faceNormal); if (Math.abs(faceNormal.dot(vertexNormal.fromBufferAttribute(sn, v))) > .7) facing++; gap += hit.distance;
     if (guv) { gameUv[v * 2] = guv.getX(a) * bary.x + guv.getX(b) * bary.y + guv.getX(c) * bary.z; gameUv[v * 2 + 1] = guv.getY(a) * bary.x + guv.getY(b) * bary.y + guv.getY(c) * bary.z; }
     weight[v] = mask[a] * bary.x + mask[b] * bary.y + mask[c] * bary.z;
   }
+  // Share of source vertices whose nearest game face points the same way, and the mean gap over the game's size.
+  fit.facing = +(facing / n).toFixed(2); fit.gap = +(gap / n / gs.length()).toFixed(4);
   // uv: where the game's texture is sampled (the game's own uv at the nearest point); jsgbUv: the source's own uv,
   // where the result is written, and where its fine light and dark detail comes from.
   geometry.setAttribute('jsgbUv', geometry.attributes.uv.clone());
@@ -268,6 +278,29 @@ export async function bake(name, key, sourceUrl, style = 'clean') {
   r.render(scene, camera);
   const px = new Uint8Array(W * H * 4);
   r.readRenderTargetPixels(target, 0, 0, W, H, px);
+  // A check without Unreal: the game's model with the game's texture (left) and the source model with the bake (right),
+  // unlit, from the same three-quarter view. Their colours should agree.
+  let preview = null;
+  if (options.preview) {
+    const PW = 1024, PH = 512, view = new THREE.WebGLRenderTarget(PW, PH), shot = new THREE.Scene();
+    const box = geometry.boundingBox, centre = box.getCenter(new THREE.Vector3()), radius = box.getSize(new THREE.Vector3()).length() / 2;
+    const eye = new THREE.PerspectiveCamera(35, 1, radius * .05, radius * 10);
+    eye.position.copy(centre).add(new THREE.Vector3(1, .6, 1).normalize().multiplyScalar(radius * 2.6)); eye.lookAt(centre);
+    const baked = geometry.clone(); baked.setAttribute('uv', geometry.attributes.jsgbUv);
+    const gameView = new THREE.Mesh(game.geometry, new THREE.MeshBasicMaterial({map: game.material.map, side: THREE.DoubleSide}));
+    const bakeView = new THREE.Mesh(baked, new THREE.MeshBasicMaterial({map: target.texture, side: THREE.DoubleSide}));
+    r.setRenderTarget(view); r.toneMapping = THREE.NoToneMapping; r.setClearColor(0x202830, 1);
+    r.setScissorTest(true); const out = new Uint8Array(PW * PH * 4);
+    for (const [i, mesh] of [gameView, bakeView].entries()) {
+      shot.clear(); shot.add(mesh); r.setViewport(i * PW / 2, 0, PW / 2, PH); r.setScissor(i * PW / 2, 0, PW / 2, PH); r.clear(); r.render(shot, eye);
+    }
+    r.setScissorTest(false); r.readRenderTargetPixels(view, 0, 0, PW, PH, out);
+    const rows = new Uint8ClampedArray(PW * PH * 4); for (let y = 0; y < PH; y++) rows.set(out.subarray((PH - 1 - y) * PW * 4, (PH - y) * PW * 4), y * PW * 4);
+    const c = new OffscreenCanvas(PW, PH); c.getContext('2d').putImageData(new ImageData(rows, PW, PH), 0, 0);
+    const bytes = new Uint8Array(await (await c.convertToBlob({type: 'image/png'})).arrayBuffer());
+    let bin = ''; for (let i = 0; i < bytes.length; i += 32768) bin += String.fromCharCode(...bytes.subarray(i, i + 32768));
+    preview = btoa(bin); view.dispose(); baked.dispose(); gameView.material.dispose(); bakeView.material.dispose();
+  }
   r.setRenderTarget(before.target); r.autoClear = before.autoClear; r.toneMapping = before.tone;
   target.dispose(); paint.dispose(); geometry.dispose(); lookup.dispose(); for (const t of softCopies.splice(0)) t.dispose(); under.material.dispose(); under.geometry.dispose(); blank.dispose();
   // Free the source model: its 4096 textures are hundreds of megabytes each, and the bake goes through every hull.
@@ -301,5 +334,5 @@ export async function bake(name, key, sourceUrl, style = 'clean') {
   const bytes = new Uint8Array(await blob.arrayBuffer());
   let binary = '';
   for (let i = 0; i < bytes.length; i += 32768) binary += String.fromCharCode(...bytes.subarray(i, i + 32768));
-  return {png: btoa(binary), width: W, height: H, coverage: painted / (W * H), mask: mask.reduce((a, b) => a + b, 0) / mask.length, material: game.material.name};
+  return {png: btoa(binary), width: W, height: H, coverage: painted / (W * H), mask: mask.reduce((a, b) => a + b, 0) / mask.length, material: game.material.name, fit, preview};
 }

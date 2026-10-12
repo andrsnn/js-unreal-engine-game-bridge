@@ -5,8 +5,10 @@
 // Tools/fidelity/livery-bake-page.js draws each source model flat in its texture space through the material the game
 // paints that hull with. Writes <out>/<name>.png and <out>/bake.json; Tools/fidelity/import-livery.mjs brings them into
 // the host project.
-//   node Tools/fidelity/bake-livery.mjs <overrides.json> --game hardburn --out <dir> [--only a,b] [--again] [--limit n] [--port 5396] [--profile <dir>]
-// Hulls already painted in <dir> are skipped unless --again.
+//   node Tools/fidelity/bake-livery.mjs <overrides.json> --game hardburn --out <dir> [--only a,b] [--again] [--limit n] [--port 5396] [--profile <dir>] [--preview]
+// Hulls already painted in <dir> are skipped unless --again. --preview also writes <name>.preview.png: the game's model
+// with the game's texture beside the source model with the bake, unlit, from the same view. bake.json's fit says how
+// well the source lines up with the game's model.
 import fs from 'node:fs';
 import path from 'node:path';
 import {createRequire} from 'node:module';
@@ -66,11 +68,12 @@ for (const r of rules) {
   if (left-- <= 0) break;
   const started = Date.now();
   try {
-    const result = await page.evaluate(async ([name, key, url, style]) => (await import('/__jsgb_bake/page.js')).bake(name, key, url, style),
-      [r.name, r.keys[0], `/__jsgb_bake/source/${r.name}.glb`, style]);
+    const result = await page.evaluate(async ([name, key, url, style, options]) => (await import('/__jsgb_bake/page.js')).bake(name, key, url, style, options),
+      [r.name, r.keys[0], `/__jsgb_bake/source/${r.name}.glb`, style, {preview: rest.includes('--preview')}]);
     fs.writeFileSync(path.join(out, r.name + '.png'), Buffer.from(result.png, 'base64'));
-    report[r.name] = {key: r.keys[0], width: result.width, height: result.height, coverage: +result.coverage.toFixed(3), plates: +result.mask.toFixed(3), material: result.material, seconds: Math.round((Date.now() - started) / 1000)};
-    console.log(`${r.name}: ${result.width}x${result.height}, ${(result.coverage * 100).toFixed(0)}% of texels painted, ${(result.mask * 100).toFixed(0)}% plates, ${result.material}`);
+    if (result.preview) fs.writeFileSync(path.join(out, r.name + '.preview.png'), Buffer.from(result.preview, 'base64'));
+    report[r.name] = {key: r.keys[0], width: result.width, height: result.height, coverage: +result.coverage.toFixed(3), plates: +result.mask.toFixed(3), material: result.material, fit: result.fit, seconds: Math.round((Date.now() - started) / 1000)};
+    console.log(`${r.name}: ${result.width}x${result.height}, ${(result.coverage * 100).toFixed(0)}% of texels painted, ${(result.mask * 100).toFixed(0)}% plates, ${result.material}, fit ${JSON.stringify(result.fit)}`);
   } catch (e) {
     report[r.name] = {error: String(e.message ?? e).slice(0, 300)};
     console.log(`${r.name}: failed: ${report[r.name].error}`);
