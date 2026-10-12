@@ -31,39 +31,52 @@ async function gameHull(key) {
 
 const oetf = `vec3 jsgbOetf(vec3 c) { c = clamp(c, 0., 1.); return mix(c * 12.92, 1.055 * pow(c, vec3(1. / 2.4)) - .055, step(.0031308, c)); }`;
 
+// The first vertex at each position: a UV seam splits a surface's vertices into copies, and curvature and smoothing work on
+// the surface, not on each UV island (seams read as crevices and stayed unpainted, the dark zigzags on the mine's tanks).
+function welded(g) {
+  const p = g.attributes.position, n = p.count, first = new Map(), out = new Int32Array(n);
+  g.computeBoundingBox(); const q = 1e6 / Math.max(1e-9, g.boundingBox.getSize(new THREE.Vector3()).length());
+  for (let i = 0; i < n; i++) {
+    const key = Math.round(p.getX(i) * q) + ',' + Math.round(p.getY(i) * q) + ',' + Math.round(p.getZ(i) * q);
+    const f = first.get(key); if (f === undefined) { first.set(key, i); out[i] = i; } else out[i] = f;
+  }
+  return out;
+}
+
 // Each vertex's curvature, from how the normals turn along its edges: above 0 on convex edges and corners, below 0 in
 // crevices, scaled so the sharpest 5% of the hull reach 1.
-function curvature(g) {
+function curvature(g, same) {
   const p = g.attributes.position, nr = g.attributes.normal, idx = g.index, n = p.count;
   const k = new Float32Array(n), w = new Float32Array(n);
   const a = new THREE.Vector3(), b = new THREE.Vector3(), na = new THREE.Vector3(), nb = new THREE.Vector3(), d = new THREE.Vector3();
   const edge = (i, j) => {
     a.fromBufferAttribute(p, i); b.fromBufferAttribute(p, j); na.fromBufferAttribute(nr, i); nb.fromBufferAttribute(nr, j);
     const l2 = d.subVectors(b, a).lengthSq(); if (l2 < 1e-14) return;
-    const v = nb.sub(na).dot(d) / l2; k[i] += v; w[i]++; k[j] += v; w[j]++;
+    const v = nb.sub(na).dot(d) / l2; k[same[i]] += v; w[same[i]]++; k[same[j]] += v; w[same[j]]++;
   };
   const triangles = (idx ? idx.count : n) / 3;
   for (let t = 0; t < triangles; t++) {
     const i = idx ? idx.getX(t * 3) : t * 3, j = idx ? idx.getX(t * 3 + 1) : t * 3 + 1, l = idx ? idx.getX(t * 3 + 2) : t * 3 + 2;
     edge(i, j); edge(j, l); edge(l, i);
   }
-  for (let i = 0; i < n; i++) k[i] = w[i] ? k[i] / w[i] : 0;
+  for (let i = 0; i < n; i++) k[i] = w[same[i]] ? k[same[i]] / w[same[i]] : 0;
   const sorted = Float32Array.from(k, Math.abs).sort(), s = sorted[Math.floor(sorted.length * .95)] || 1;
   for (let i = 0; i < n; i++) k[i] = Math.max(-1, Math.min(1, k[i] / s));
   return k;
 }
 
-// Each vertex's value averaged with its neighbours', the given number of times.
-function smooth(g, values, times) {
+// Each vertex's value averaged with its neighbours' (across UV seams), the given number of times.
+function smooth(g, values, times, same) {
   const idx = g.index, n = values.length, triangles = (idx ? idx.count : n) / 3;
   let a = values;
   for (let pass = 0; pass < times; pass++) {
-    const sum = Float32Array.from(a), count = new Float32Array(n).fill(1);
+    const sum = new Float32Array(n), count = new Float32Array(n);
+    for (let i = 0; i < n; i++) { sum[same[i]] += a[i]; count[same[i]]++; }
     for (let t = 0; t < triangles; t++) {
       const v = [0, 1, 2].map(j => idx ? idx.getX(t * 3 + j) : t * 3 + j);
-      for (const [i, j] of [[v[0], v[1]], [v[1], v[2]], [v[2], v[0]]]) { sum[i] += a[j]; count[i]++; sum[j] += a[i]; count[j]++; }
+      for (const [i, j] of [[v[0], v[1]], [v[1], v[2]], [v[2], v[0]]]) { sum[same[i]] += a[j]; count[same[i]]++; sum[same[j]] += a[i]; count[same[j]]++; }
     }
-    a = sum.map((s, i) => s / count[i]);
+    a = Float32Array.from(a, (_, i) => sum[same[i]] / count[same[i]]);
   }
   return a;
 }
@@ -210,7 +223,7 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
   let blurred = null;
   if (clean) {
     // Curvature averaged over each vertex's neighbours twice, so the generator's surface noise doesn't read as edges.
-    const bend = smooth(geometry, curvature(geometry), 2);
+    const same = welded(geometry), bend = smooth(geometry, curvature(geometry, same), 2, same);
     geometry.setAttribute('jsgbCurvature', new THREE.BufferAttribute(bend, 1));
     blurred = downsample(paintSource(game.material) ?? map, 256);
     // Paint goes on every broad, smooth, light part of the hull, not only on the game's plates: the game's plate mask
