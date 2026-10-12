@@ -2,7 +2,7 @@ import * as THREE from 'three-real';
 import {host, assetRegistry, registrySwaps, type SceneSink} from './host';
 import {lastFrame, post, captures} from './renderer';
 import {frameCount} from './frameCount';
-import {translateShaderMaterial, translateHookedMaterial, fillBuiltinUniforms, type HookedShader} from './shaders';
+import {translateShaderMaterial, translateHookedMaterial, fillBuiltinUniforms, type HookedShader, type TranslatedShader} from './shaders';
 import {channelFor, isExtraAttribute} from './attributes';
 
 /** Mirrors the game's Three.js scene into Unreal each frame. Geometry, materials and textures are
@@ -349,6 +349,14 @@ function quickValues(m: THREE.MeshStandardMaterial & THREE.MeshPhysicalMaterial 
   return i;
 }
 
+// The same shader drawn into a post-processing target: its own key, as the generated material differs.
+const linearShaders = new WeakMap<TranslatedShader, TranslatedShader>();
+function linearShader(t: TranslatedShader): TranslatedShader {
+  let l = linearShaders.get(t);
+  if (!l) linearShaders.set(t, l = {...t, key: t.key + '_l', encoded: false});
+  return l;
+}
+
 function syncMaterial(mat: THREE.Material): number {
   const id = idOf(mat);
   if (materialFrame.get(mat) === exportCount) return id;
@@ -373,10 +381,14 @@ function syncMaterial(mat: THREE.Material): number {
   let custom: string | undefined;
   const hooked = shader ? undefined : hookShader(mat);
   if ((shader || hooked) && !registryMaterial) {
-    const t = shader ? translateShaderMaterial(m) : translateHookedMaterial(mat, hooked!.shader, hooked!.key, instancedUse.get(mat));
-    // A ShaderMaterial's gl_FragColor reaches the screen as it is, already in display (sRGB) values; Unreal
-    // decodes it to linear light so its own output encoding gives the same pixel.
-    if (t && shader) t.encoded = true;
+    let t = shader ? translateShaderMaterial(m) : translateHookedMaterial(mat, hooked!.shader, hooked!.key, instancedUse.get(mat));
+    // A ShaderMaterial's gl_FragColor drawn to the screen is already in display (sRGB) values, and Unreal decodes it
+    // to linear light so its own output encoding gives the same pixel. Drawn into a post-processing render target
+    // (EffectComposer), it's linear light, and the final pass encodes it with the rest of the scene.
+    if (t && shader) {
+      if (lastFrame.linear) t = linearShader(t);
+      else t.encoded = true;
+    }
     // Still compiling (the shader compiler loads in the background): send it again next frame, even
     // though its values haven't changed, so the generated material replaces the generic one.
     if (t === undefined) quick.delete(mat);

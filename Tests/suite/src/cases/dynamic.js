@@ -178,3 +178,44 @@ export function motion({THREE, scene}) {
     jumper.position.set(Math.floor(time * 2) % 2 ? 3.5 : -3.5, -3, 0);
   };
 }
+
+// A sky drawn from inside a sphere (BackSide, no depth write) by a ShaderMaterial that samples a 3D noise texture
+// (Data3DTexture, sampler3D) several times, as a nebula backdrop does: a 3500-unit sphere drawn first, with a far camera.
+// The scene goes through an EffectComposer, so the shader writes linear light into a half-float target.
+export async function volume({THREE, scene, renderer, camera}) {
+  const {EffectComposer} = await import('three/examples/jsm/postprocessing/EffectComposer.js');
+  const {RenderPass} = await import('three/examples/jsm/postprocessing/RenderPass.js');
+  const {OutputPass} = await import('three/examples/jsm/postprocessing/OutputPass.js');
+  camera.near = 0.08; camera.far = 120000; camera.updateProjectionMatrix();
+  const size = 32, data = new Uint8Array(size ** 3);
+  for (let z = 0, i = 0; z < size; z++) for (let y = 0; y < size; y++) for (let x = 0; x < size; x++, i++) {
+    const v = Math.sin(x * 127.1 + y * 311.7 + z * 74.7) * 43758.5453;
+    data[i] = Math.round((v - Math.floor(v)) * 255);
+  }
+  const noise = new THREE.Data3DTexture(data, size, size, size);
+  noise.format = THREE.RedFormat; noise.type = THREE.UnsignedByteType;
+  noise.minFilter = noise.magFilter = THREE.LinearFilter;
+  noise.wrapS = noise.wrapT = noise.wrapR = THREE.RepeatWrapping;
+  noise.needsUpdate = true;
+  const sky = new THREE.ShaderMaterial({
+    side: THREE.BackSide, depthWrite: false,
+    uniforms: {noise: {value: noise}, low: {value: new THREE.Color(0x28271f)}, high: {value: new THREE.Color(0xb89870)}},
+    vertexShader: 'varying vec3 direction; void main() { direction = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    fragmentShader: `uniform highp sampler3D noise; uniform vec3 low, high; varying vec3 direction;
+      float n(vec3 p) { vec3 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return texture(noise, (i + f + 0.5) / 32.0).r; }
+      float fbm(vec3 p) { float a = 0.5, s = 0.0; for (int i = 0; i < 4; i++) { s += a * n(p); p = p * 2.03 + vec3(7.1, 3.4, 11.7); a *= 0.5; } return s; }
+      void main() { float d = fbm(direction * 3.0 + 4.0); gl_FragColor = vec4(mix(low, high, smoothstep(0.25, 0.75, d)), 1.0); }`,
+  });
+  const backdrop = new THREE.Mesh(new THREE.SphereGeometry(3500, 48, 32), sky);
+  backdrop.renderOrder = -100; backdrop.frustumCulled = false;
+  scene.add(backdrop);
+  scene.add(new THREE.HemisphereLight(0xffffff, 0x303030, 1.5));
+  const cube = new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.5, 1.5), new THREE.MeshStandardMaterial({color: 0x6080c0}));
+  scene.add(cube);
+  const composer = new EffectComposer(renderer, new THREE.WebGLRenderTarget(innerWidth, innerHeight, {type: THREE.HalfFloatType}));
+  composer.addPass(new RenderPass(scene, camera));
+  composer.addPass(new OutputPass());
+  const update = dt => { cube.rotation.y += dt; composer.render(); };
+  update.skipRender = true;
+  return update;
+}

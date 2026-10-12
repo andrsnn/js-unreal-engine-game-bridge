@@ -301,17 +301,18 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial): Transla
         `${target}.projectionMatrix = float4x4(JsgbPr0, JsgbPr1, JsgbPr2, JsgbPr3);`, `${target}.cameraPosition = JsgbCam.xyz;`, `${target}.isOrthographic = JsgbPr3.w > 0.5;`);
       for (const m of S.members) {
         if (m.name in BUILTIN_UNIFORMS || DERIVED.includes(m.name) || m.array) continue;
-        const decl = [...vsDecls, ...fsDecls].find(d => d.name === m.name);
+        // SPIRV-Cross puts an underscore before a name HLSL reserves (noise, line, point, ...).
+        const decl = [...vsDecls, ...fsDecls].find(d => d.name === m.name) ?? [...vsDecls, ...fsDecls].find(d => '_' + d.name === m.name);
         if (!decl) continue;
         if (m.resource) {
-          if (!seen.has(m.name)) { seen.add(m.name); inputs.push({name: 'T_' + m.name, source: m.resource === 'cube' ? 'cube' : m.resource === 'volume' ? 'volume' : 'texture', param: m.name}); }
+          if (!seen.has(m.name)) { seen.add(m.name); inputs.push({name: 'T_' + m.name, source: m.resource === 'cube' ? 'cube' : m.resource === 'volume' ? 'volume' : 'texture', param: decl.name}); }
           glue.push(`${target}.${m.name} = T_${m.name}; ${target}.${m.name}Sampler = T_${m.name}Sampler;`);
           continue;
         }
         const n = /^(?:float|int|uint|bool)(\d)$/.exec(m.type)?.[1];
         const scalar = /^(float|int|uint|bool|half)$/.test(m.type);
         if (!scalar && !n) continue; // matrices and structs keep their zero value
-        if (!seen.has(m.name)) { seen.add(m.name); inputs.push({name: 'U_' + m.name, source: scalar ? 'scalar' : 'vector', param: m.name}); }
+        if (!seen.has(m.name)) { seen.add(m.name); inputs.push({name: 'U_' + m.name, source: scalar ? 'scalar' : 'vector', param: decl.name}); }
         glue.push(scalar ? `${target}.${m.name} = (${m.type})U_${m.name};` : `${target}.${m.name} = (${m.type})U_${m.name}.${'xyzw'.slice(0, +n!)};`);
       }
     };
@@ -338,7 +339,7 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial): Transla
     const vsGlue = glue, vsInputs = [...inputs];
     glue = [];
     glue.push('JsgbFS fs;'); bind('fs', F);
-    for (const m of F.members) if (has(V, m.name) && !(m.name in BUILTIN_UNIFORMS) && !m.resource && !DERIVED.includes(m.name) && fs.varyings.some(d => d.name === m.name)) glue.push(`fs.${m.name} = vs.${m.name};`);
+    for (const m of F.members) if (has(V, m.name) && !(m.name in BUILTIN_UNIFORMS) && !m.resource && !DERIVED.includes(m.name) && fs.varyings.some(d => d.name === m.name || '_' + d.name === m.name)) glue.push(`fs.${m.name} = vs.${m.name};`);
     if (has(F, 'gl_FragCoord')) glue.push('fs.gl_FragCoord = Parameters.SvPosition;');
     if (has(F, 'jsgb_PointCoord')) glue.push('fs.jsgb_PointCoord = JsgbUV;');
     if (has(F, 'gl_FrontFacing')) glue.push('fs.gl_FrontFacing = Parameters.TwoSidedSign > 0;');
