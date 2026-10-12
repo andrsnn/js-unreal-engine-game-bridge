@@ -124,12 +124,15 @@ Planets use `Tools/fidelity/make-sphere.mjs` (a dense sphere with three.js Spher
   two fast-attack hulls have no Pixal3D original, so they use the game's own model.
 - Hulls use the same coordinates as the game's models (`fit: none`), so the game places, turns and scales them.
 - Each hull carries the game's livery (faction colours, stripes, panels and tint), painted into its colour texture by
-  `Tools/fidelity/bake-livery.mjs`: the game's own hull loader runs in a small page in headless Chrome, and the
-  source model is drawn flat in its texture space through the exact material the game paints that hull with, with
-  the game's plate mask carried over to the source's vertices. `Tools/fidelity/import-livery.mjs` imports the
-  textures as T_<hull>_Livery and points each hull's material at them (the original texture stays). The per-ship
-  registration marks are left out, since all ships of a class share the texture. The bake loads hulls on request
-  and needs about 4 GB.
+  `Tools/fidelity/bake-livery.mjs`. The game's own hull loader runs in a small page in headless Chrome. For each
+  vertex of the original model, the bake finds the nearest point on the game's model (three-mesh-bvh) and takes its
+  place in the game's texture and its plate weight. It then draws the original model flat in its own texture space
+  through the exact material the game paints that hull with. So the colours are the game's, and the original
+  texture's fine light and dark detail goes on top. `Tools/fidelity/import-livery.mjs` imports the results as
+  T_<hull>_Livery (the original texture stays). The per-ship registration marks are left out, since all ships of a
+  class share the texture. The bake loads hulls on request and needs about 4 GB.
+- Painted plates are rough (PaintedHull 1.3, as the game's livery clamps them), and the studio reflection is a
+  quarter strength (EnvIntensity 0.25), because Lumen adds its own reflections.
 - Planets use the game's own planet maps on a 260,000-triangle sphere, with normal maps for the Moon and Mars.
   Higher-resolution planet maps are requested from gen in `F:/AssetVault/hard-burn/unreal-fidelity/REQUESTS-gen.md`.
 - The host project, its cache and build output live on `H:/builds/JsgbFidelity` (`jsgb.local.json`), about 13 GB.
