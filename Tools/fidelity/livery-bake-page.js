@@ -9,6 +9,9 @@ import * as pixal from '/src/scene/pixal3d.js';
 import {hullPlateMask} from '/src/scene/hull-plate-mask.js';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {MeshoptDecoder} from 'three/examples/jsm/libs/meshopt_decoder.module.js';
+import {MeshBVH} from 'three-mesh-bvh';
+// How much of the original texture's fine light and dark detail goes on top of the game's colours.
+const DETAIL = .8;
 const F = window.__FF, THREE = F.THREE;
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -26,30 +29,6 @@ async function gameHull(key) {
   throw Error(`${key}: the game didn't load its model`);
 }
 
-// Each source vertex takes the plate weight of the nearest game vertex (both models share coordinates).
-function transferMask(gamePositions, mask, sourcePositions, cell) {
-  const grid = new Map(), key = (x, y, z) => `${x},${y},${z}`;
-  for (let i = 0; i < mask.length; i++) {
-    const k = key(Math.floor(gamePositions[i * 3] / cell), Math.floor(gamePositions[i * 3 + 1] / cell), Math.floor(gamePositions[i * 3 + 2] / cell));
-    let list = grid.get(k); if (!list) grid.set(k, list = []); list.push(i);
-  }
-  const out = new Float32Array(sourcePositions.length / 3);
-  for (let v = 0; v < out.length; v++) {
-    const x = sourcePositions[v * 3], y = sourcePositions[v * 3 + 1], z = sourcePositions[v * 3 + 2];
-    const cx = Math.floor(x / cell), cy = Math.floor(y / cell), cz = Math.floor(z / cell);
-    let best = Infinity, w = 0;
-    for (let r = 0; r <= 3 && best === Infinity; r++) for (let dx = -r; dx <= r; dx++) for (let dy = -r; dy <= r; dy++) for (let dz = -r; dz <= r; dz++) {
-      if (Math.max(Math.abs(dx), Math.abs(dy), Math.abs(dz)) !== r) continue;
-      for (const i of grid.get(key(cx + dx, cy + dy, cz + dz)) ?? []) {
-        const d = (gamePositions[i * 3] - x) ** 2 + (gamePositions[i * 3 + 1] - y) ** 2 + (gamePositions[i * 3 + 2] - z) ** 2;
-        if (d < best) { best = d; w = mask[i]; }
-      }
-    }
-    out[v] = w;
-  }
-  return out;
-}
-
 const oetf = `vec3 jsgbOetf(vec3 c) { c = clamp(c, 0., 1.); return mix(c * 12.92, 1.055 * pow(c, vec3(1. / 2.4)) - .055, step(.0031308, c)); }`;
 
 export async function bake(name, key, sourceUrl) {
@@ -63,26 +42,56 @@ export async function bake(name, key, sourceUrl) {
   const gameNode = new THREE.Matrix4().copy(sceneRoot.matrixWorld).invert().multiply(game.matrixWorld);
   const geometry = source.geometry.clone().applyMatrix4(new THREE.Matrix4().copy(gameNode).invert().multiply(source.matrixWorld));
   if (!geometry.attributes.normal) geometry.computeVertexNormals();
-  const gp = game.geometry.attributes.position;
+  // For each source vertex: the nearest point on the game's model, its place in the game's texture (uv) and its plate
+  // weight. The bake then shows the game's own colours and paint at every point of the detailed model.
+  const gp = game.geometry.attributes.position, guv = game.geometry.attributes.uv;
   const gamePositions = new Float32Array(gp.count * 3);
   for (let i = 0; i < gp.count; i++) { gamePositions[i * 3] = gp.getX(i); gamePositions[i * 3 + 1] = gp.getY(i); gamePositions[i * 3 + 2] = gp.getZ(i); }
   const mask = hullPlateMask(gamePositions, game.geometry.index?.array, 3, 0);
-  game.geometry.computeBoundingBox();
-  const span = game.geometry.boundingBox.getSize(new THREE.Vector3()).length();
-  geometry.setAttribute('hullPaintWeight', new THREE.BufferAttribute(transferMask(gamePositions, mask, geometry.attributes.position.array, span / 200), 1));
+  const lookup = new THREE.BufferGeometry();
+  lookup.setAttribute('position', new THREE.BufferAttribute(gamePositions, 3));
+  if (game.geometry.index) lookup.setIndex(game.geometry.index.clone());
+  const bvh = new MeshBVH(lookup);
+  const sp = geometry.attributes.position, n = sp.count;
+  const gameUv = new Float32Array(n * 2), weight = new Float32Array(n);
+  const at = new THREE.Vector3(), hit = {point: new THREE.Vector3(), faceIndex: 0, distance: 0}, tri = new THREE.Triangle(), bary = new THREE.Vector3();
+  const index = lookup.index;
+  for (let v = 0; v < n; v++) {
+    at.fromBufferAttribute(sp, v);
+    if (!bvh.closestPointToPoint(at, hit)) continue;
+    const f = hit.faceIndex * 3, a = index ? index.getX(f) : f, b = index ? index.getX(f + 1) : f + 1, c = index ? index.getX(f + 2) : f + 2;
+    tri.a.fromArray(gamePositions, a * 3); tri.b.fromArray(gamePositions, b * 3); tri.c.fromArray(gamePositions, c * 3);
+    tri.getBarycoord(hit.point, bary);
+    if (guv) { gameUv[v * 2] = guv.getX(a) * bary.x + guv.getX(b) * bary.y + guv.getX(c) * bary.z; gameUv[v * 2 + 1] = guv.getY(a) * bary.x + guv.getY(b) * bary.y + guv.getY(c) * bary.z; }
+    weight[v] = mask[a] * bary.x + mask[b] * bary.y + mask[c] * bary.z;
+  }
+  // uv: where the game's texture is sampled (the game's own uv at the nearest point); jsgbUv: the source's own uv,
+  // where the result is written, and where its fine light and dark detail comes from.
+  geometry.setAttribute('jsgbUv', geometry.attributes.uv.clone());
+  geometry.setAttribute('uv', new THREE.BufferAttribute(gameUv, 2));
+  geometry.setAttribute('hullPaintWeight', new THREE.BufferAttribute(weight, 1));
 
-  // The game's material for this hull, with the source's colour texture, drawn at each texel's place in the texture.
+  // The game's material for this hull, with its own texture, drawn at each texel's place in the source's texture. The
+  // source's fine detail (each texel's brightness against its neighbourhood's) is multiplied in, so the colours stay
+  // the game's and the detail is the original's.
   const paint = game.material.clone();
   for (const slot of ['normalMap', 'aoMap', 'emissiveMap', 'lightMap', 'bumpMap', 'envMap']) paint[slot] = null;
-  paint.map = map; paint.side = THREE.DoubleSide; paint.depthTest = paint.depthWrite = false; paint.transparent = false;
+  if (!paint.map) paint.map = map;
+  paint.side = THREE.DoubleSide; paint.depthTest = paint.depthWrite = false; paint.transparent = false;
   const blank = new THREE.DataTexture(new Uint8Array(4), 1, 1); blank.needsUpdate = true;
   const gamePaint = game.material.onBeforeCompile;
   paint.onBeforeCompile = (shader, renderer) => {
     gamePaint.call(game.material, shader, renderer);
     if (shader.uniforms.liveryRegistration) shader.uniforms.liveryRegistration.value = blank;
-    shader.vertexShader = shader.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n gl_Position = vec4(uv * 2. - 1., 0., 1.);');
-    shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\n' + oetf)
-      .replace('#include <roughnessmap_fragment>', 'gl_FragColor = vec4(jsgbOetf(diffuseColor.rgb), 1.); return;\n#include <roughnessmap_fragment>');
+    shader.uniforms.jsgbOriginal = {value: map};
+    shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nattribute vec2 jsgbUv; varying vec2 vJsgbUv;')
+      .replace('#include <project_vertex>', '#include <project_vertex>\n vJsgbUv = jsgbUv; gl_Position = vec4(jsgbUv * 2. - 1., 0., 1.);');
+    shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\n' + oetf + '\nuniform sampler2D jsgbOriginal; varying vec2 vJsgbUv;')
+      .replace('#include <roughnessmap_fragment>', `float jsgbLum = dot(texture2D(jsgbOriginal, vJsgbUv).rgb, vec3(.2126, .7152, .0722));
+        float jsgbAround = dot(textureLod(jsgbOriginal, vJsgbUv, 4.).rgb, vec3(.2126, .7152, .0722));
+        diffuseColor.rgb *= mix(1., clamp((jsgbLum + .02) / (jsgbAround + .02), .55, 1.3), DETAIL);
+        gl_FragColor = vec4(jsgbOetf(diffuseColor.rgb), 1.); return;
+#include <roughnessmap_fragment>`.replace('DETAIL', String(DETAIL)));
   };
   paint.customProgramCacheKey = () => 'jsgb-livery-bake-' + name;
 
@@ -102,7 +111,7 @@ export async function bake(name, key, sourceUrl) {
   const px = new Uint8Array(W * H * 4);
   r.readRenderTargetPixels(target, 0, 0, W, H, px);
   r.setRenderTarget(before.target); r.autoClear = before.autoClear; r.toneMapping = before.tone;
-  target.dispose(); paint.dispose(); geometry.dispose(); under.material.dispose(); under.geometry.dispose(); blank.dispose();
+  target.dispose(); paint.dispose(); geometry.dispose(); lookup.dispose(); under.material.dispose(); under.geometry.dispose(); blank.dispose();
   // Free the source model: its 4096 textures are hundreds of megabytes each, and the bake goes through every hull.
   gltf.scene.traverse(o => {
     if (!o.isMesh) return;
