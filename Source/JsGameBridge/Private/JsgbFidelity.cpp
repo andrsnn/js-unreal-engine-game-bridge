@@ -34,6 +34,10 @@ namespace
 		{TEXT("r.VolumetricFog.GridPixelSize"), TEXT("8"), TEXT("16")},
 		{TEXT("r.VolumetricFog.GridSizeZ"), TEXT("128"), TEXT("64")},
 		{TEXT("r.SkyLight.RealTimeReflectionCapture"), TEXT("1"), TEXT("1")},
+		// The override models' 4096 textures, fully loaded for whatever is on screen: streamed by distance, a close-up
+		// of a hull soon after it appears shows low-resolution mips (blurry, beige hulls in stills and films).
+		{TEXT("r.Streaming.FullyLoadUsedTextures"), TEXT("1"), TEXT("1")},
+		{TEXT("r.Streaming.PoolSize"), TEXT("4000"), TEXT("3000")},
 	};
 
 	void Set(const TCHAR* Name, const FString& Value)
