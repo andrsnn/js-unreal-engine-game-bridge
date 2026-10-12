@@ -23,6 +23,12 @@ How to switch it:
 
 `Games/hardburn.json` and `Games/hardburn-fidelity.json` both use `Overrides/hardburn.json`.
 
+The host project must target Shader Model 6, as the play package's project does: in `Config/DefaultEngine.ini`,
+`[/Script/WindowsTargetPlatform.WindowsTargetSettings]` with `-D3D12TargetedShaderFormats=PCD3D_SM5` and
+`+D3D12TargetedShaderFormats=PCD3D_SM6`. At Shader Model 5 Unreal can't draw Nanite, so every override model shows its
+fallback mesh, about 2% of its triangles (the starbase drew 21,888 of its 939,695). Lumen mode logs a warning when
+Nanite is off.
+
 ## The override file
 
 ```json

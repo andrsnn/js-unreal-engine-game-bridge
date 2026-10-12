@@ -8,6 +8,7 @@
 #include "HAL/IConsoleManager.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
+#include "RenderUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogJsgbFidelity, Log, All);
 
@@ -38,6 +39,8 @@ namespace
 		// of a hull soon after it appears shows low-resolution mips (blurry, beige hulls in stills and films).
 		{TEXT("r.Streaming.FullyLoadUsedTextures"), TEXT("1"), TEXT("1")},
 		{TEXT("r.Streaming.PoolSize"), TEXT("4000"), TEXT("3000")},
+		// Lumen mode's detailed models: the tonemapper's sharpening brings out what Nanite draws at a pixel's size.
+		{TEXT("r.Tonemapper.Sharpen"), TEXT("0.8"), TEXT("0.6")},
 	};
 
 	void Set(const TCHAR* Name, const FString& Value)
@@ -142,6 +145,9 @@ void AJsgbHost::SetLumen(bool bOn)
 	bModelsReady = false;
 	if (bOn)
 	{
+		// Nanite needs Shader Model 6 (the project's D3D12TargetedShaderFormats). Without it Unreal draws each override
+		// model's fallback mesh, about 2% of its triangles, and the detailed models look low poly.
+		if (!UseNanite(GMaxRHIShaderPlatform)) { UE_LOG(LogJsgbFidelity, Warning, TEXT("Nanite is off on this renderer (Shader Model 6 needed): the override models draw their low-detail fallback meshes")); }
 		TWeakObjectPtr<AJsgbHost> Self(this);
 		const int32 Generation = LumenGeneration;
 		Mirror->LoadOverrides(true, [Self, Generation]
