@@ -119,17 +119,22 @@ if (!has('--no-smoke')) {
     '-Games', games.map(id => `${id}=${GAMES[id]?.name ?? id}`).join(';')], {encoding: 'utf8'});
   const lines = smoke.stdout.split('\n').map(l => l.trim()).filter(l => / (PASS|FAIL)/.test(l));
   for (const l of lines) log(`smoke: ${l}`);
-  // The smoke runs recorded every pipeline state the games drew with (-logPSO). With the cook's stable shader keys,
-  // they go to the project's Build/Windows/PipelineCaches, and the next --host package bundles them: the player's GPU
-  // driver then compiles them all behind the loading screen.
-  const recorded = path.join(out, 'host/Windows/JsgbHost/Saved/CollectedPSOs'), caches = path.join(project, 'Build/Windows/PipelineCaches');
-  const keys = path.join(project, 'Saved/Cooked/Windows/JsgbHost/Metadata/PipelineCaches');
+  // The smoke runs recorded every pipeline state the games drew with (-logPSO). With the cook's stable shader keys they
+  // collect in the project's Saved/JsgbPipelineRecordings, and Unreal's ShaderPipelineCacheTools turns them all into
+  // Build/Windows/PipelineCaches/JsgbHost_PCD3D_SM6.spc. The next --host package bundles that: the player's GPU driver
+  // then compiles every pipeline behind the loading screen.
+  const recorded = path.join(out, 'host/Windows/JsgbHost/Saved/CollectedPSOs'), recordings = path.join(project, 'Saved/JsgbPipelineRecordings');
+  const keys = path.join(project, 'Saved/Cooked/Windows/JsgbHost/Metadata/PipelineCaches'), caches = path.join(project, 'Build/Windows/PipelineCaches');
   if (fs.existsSync(recorded)) {
+    fs.mkdirSync(recordings, {recursive: true});
+    for (const f of fs.readdirSync(recorded).filter(f => f.endsWith('.rec.upipelinecache'))) fs.copyFileSync(path.join(recorded, f), path.join(recordings, f));
+    if (fs.existsSync(keys)) for (const f of fs.readdirSync(keys).filter(f => f.endsWith('.shk'))) fs.copyFileSync(path.join(keys, f), path.join(recordings, f));
     fs.mkdirSync(caches, {recursive: true});
-    let kept = 0;
-    for (const f of fs.readdirSync(recorded).filter(f => f.endsWith('.rec.upipelinecache'))) { fs.copyFileSync(path.join(recorded, f), path.join(caches, f)); ++kept; }
-    if (fs.existsSync(keys)) for (const f of fs.readdirSync(keys).filter(f => f.endsWith('.shk'))) fs.copyFileSync(path.join(keys, f), path.join(caches, f));
-    log(`${kept} pipeline recordings kept for the next host package`);
+    const editorCmd = path.join(path.dirname(settings().engine), 'UnrealEditor-Cmd.exe');
+    const r = spawnSync(editorCmd, [path.join(project, 'JsgbHost.uproject'), '-run=ShaderPipelineCacheTools', 'expand',
+      path.join(recordings, '*.rec.upipelinecache'), path.join(recordings, '*.shk'), path.join(caches, 'JsgbHost_PCD3D_SM6.spc'), '-unattended', '-nosplash'], {encoding: 'utf8'});
+    const total = /Generated (\d+) stable PSOs/.exec(r.stdout ?? '')?.[1];
+    log(total ? `${total} pipeline states ready for the next host package` : `expanding the pipeline recordings failed (exit ${r.status})`);
   }
   if (lines.length !== games.length || lines.some(l => / FAIL/.test(l))) throw Error(`smoke test failed, nothing copied:\n${smoke.stdout}${smoke.stderr}`);
 }
