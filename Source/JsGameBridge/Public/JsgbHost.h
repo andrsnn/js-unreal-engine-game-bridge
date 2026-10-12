@@ -85,6 +85,8 @@ public:
 	TSharedRef<FAnswer> Ask(const FString& Source);
 	bool HasOverlay() const { return Browser.IsValid(); }
 	bool IsRecording() const { return !RecordDir.IsEmpty(); }
+	/** A host script (-JsgbScript) drives the game: the desktop mouse is not passed on. */
+	bool IsScripted() const { return Script.Num() > 0; }
 
 	UPROPERTY() TObjectPtr<UJsgbBridge> Bridge;
 	UPROPERTY() TObjectPtr<UJsgbSceneMirror> Mirror;

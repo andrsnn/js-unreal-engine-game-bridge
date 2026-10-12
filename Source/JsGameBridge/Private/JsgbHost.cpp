@@ -176,7 +176,9 @@ public:
 	virtual bool HandleMouseMoveEvent(FSlateApplication& SlateApp, const FPointerEvent& E) override
 	{
 		AJsgbHost* H = Host.Get();
-		if (H && !H->HasOverlay()) { const FVector2D P = Local(E); H->SendMouse(TEXT("mousemove"), P.X, P.Y, 0, MouseButtons, E.GetCursorDelta().X, E.GetCursorDelta().Y); }
+		// A scripted capture ignores the desktop mouse: a cursor resting at the window's edge scrolled the game's
+		// camera away from the pose the script set (the gas giant shot of mine.txt showed empty space).
+		if (H && !H->HasOverlay() && !H->IsScripted()) { const FVector2D P = Local(E); H->SendMouse(TEXT("mousemove"), P.X, P.Y, 0, MouseButtons, E.GetCursorDelta().X, E.GetCursorDelta().Y); }
 		return false;
 	}
 	virtual bool HandleMouseButtonDownEvent(FSlateApplication& SlateApp, const FPointerEvent& E) override { return Button(E, true); }
@@ -185,7 +187,7 @@ public:
 	virtual bool HandleMouseWheelOrGestureEvent(FSlateApplication& SlateApp, const FPointerEvent& E, const FPointerEvent* Gesture) override
 	{
 		AJsgbHost* H = Host.Get();
-		if (H && !H->HasOverlay()) { H->SendWheel(-E.GetWheelDelta() * 100.f); }
+		if (H && !H->HasOverlay() && !H->IsScripted()) { H->SendWheel(-E.GetWheelDelta() * 100.f); }
 		return false;
 	}
 	virtual const TCHAR* GetDebugName() const override { return TEXT("JsGameBridgeInput"); }
@@ -212,7 +214,7 @@ private:
 	bool Button(const FPointerEvent& E, bool bDown)
 	{
 		AJsgbHost* H = Host.Get();
-		if (!H || H->HasOverlay()) { return false; }
+		if (!H || H->HasOverlay() || H->IsScripted()) { return false; }
 		const FKey K = E.GetEffectingButton();
 		const int32 B = K == EKeys::LeftMouseButton ? 0 : K == EKeys::MiddleMouseButton ? 1 : K == EKeys::RightMouseButton ? 2 : 3;
 		const int32 Bit = B == 0 ? 1 : B == 1 ? 4 : B == 2 ? 2 : 8;
