@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Builds the play package for another PC from the latest game sources, smoke-tests it on this PC, then copies what
 // changed to the other PC. Nothing runs on the other PC except the copy: it is someone's machine to play on.
-//   node Tools/laptop-package.mjs [--to zeph] [--host] [--no-capture] [--games hardburn,unlit,saltblade] [--no-smoke] [--shortcuts]
+//   node Tools/laptop-package.mjs [--to zeph] [--copy-only] [--host] [--no-capture] [--games hardburn,unlit,saltblade] [--no-smoke] [--shortcuts]
 //     [--out C:/JsgbPackage/JsGameBridge]
 // --host packages the Unreal host again (after a change to the plugin's C++ or the engine plugins). Before that, an
 // editor plays each three.js game through the "captureScripts" in its Games/<game>.json and saves every shader material
@@ -44,6 +44,13 @@ function mirror(from, to) {
 const copy = (from, to) => { fs.mkdirSync(path.dirname(to), {recursive: true}); fs.copyFileSync(from, to); };
 
 fs.mkdirSync(out, {recursive: true});
+// --copy-only: copy the package as it is (already built and smoke-tested) to the other PC.
+if (has('--copy-only')) {
+  if (!remote) throw Error('--copy-only needs --to <ssh host>');
+  await sync(remote);
+  log(`done: ${out}`);
+  process.exit(0);
+}
 // Each game is built once, from its repository as it is now. The captures play that build and the package ships it, so
 // the cooked materials are the ones the shipped build asks for even while the game keeps changing.
 const built = {};
