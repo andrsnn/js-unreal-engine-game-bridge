@@ -70,13 +70,19 @@ The host adds the scene's ambient light to override materials that have an `Ambi
 `"effects"` switches each Unreal effect on (`true`) or off. An effect left out is off.
 
 ```json
-"effects": {"engineLight": true, "gunfire": false, "trails": false, "smoke": false, "explosions": false, "debris": false}
+"effects": {"engineLight": true, "gunfire": true, "trails": true, "smoke": true, "explosions": false, "debris": false}
 ```
 
 | Effect | What Unreal adds in Lumen mode |
 | --- | --- |
 | `engineLight` | A point light in each drive plume's colour (userData.vfxKey `plume.*`), as bright as the plume's throttle, so drives light their own hull and the ships near them. The 32 plumes nearest the camera get one. |
-| `gunfire`, `trails`, `smoke`, `explosions`, `debris` | Not built yet. Hard Burn is redoing its sprite effects, and these will follow the new look and timing. |
+| `gunfire` | Muzzle flashes light the hulls around them with the game's own flash intensity, reach, colour and timing (userData.flashLight on a `weapon.*` effect). The game already lights its three brightest flashes; Unreal lights up to 24 more. Kinetic rounds in flight (userData.roundDraw) are line lights along the slug, so a hull a round passes lights up along its path. |
+| `trails` | Missiles and torpedoes under power (userData.plumeKey and motorActive) carry a warm point light at the motor. |
+| `smoke` | Each of the game's vents (userData.vfxKey `venting.*`) plays NS_LumenVapour, a lit vapour jet pointed along the vent, sized to it, for as long as the vent lasts. The game's unlit vapour (hull-vapor-pool, sprite-vfx-gas) is hidden while it plays. Authored by `Tools/fidelity/author-lumen-vfx.mjs`. |
+| `explosions`, `debris` | Not built yet. They wait for Hard Burn's new sprite effects, and will follow their look and timing. |
+
+A rule can belong to one effect (`"effect": "smoke"`) and applies only while that effect is on, and a rule with
+`"niagara"` plays that system at each game object it matches.
 
 ## Building overrides from source models
 
@@ -111,8 +117,13 @@ Planets use `Tools/fidelity/make-sphere.mjs` (a dense sphere with three.js Spher
   keeps its source's 4096 maps and every triangle (about 110,000 to 1,100,000 per model, drawn with Nanite). The game's
   two fast-attack hulls have no Pixal3D original, so they use the game's own model.
 - Hulls use the same coordinates as the game's models (`fit: none`), so the game places, turns and scales them.
-- Materials use each original's own textures. The game paints a faction livery over its hulls, and the override
-  materials don't. The TDF frigate gets a cool tint and lower roughness, which keeps its red stripes and dark panels.
+- Each hull carries the game's livery (faction colours, stripes, panels and tint), painted into its colour texture by
+  `Tools/fidelity/bake-livery.mjs`: the game's own hull loader runs in a small page in headless Chrome, and the
+  source model is drawn flat in its texture space through the exact material the game paints that hull with, with
+  the game's plate mask carried over to the source's vertices. `Tools/fidelity/import-livery.mjs` imports the
+  textures as T_<hull>_Livery and points each hull's material at them (the original texture stays). The per-ship
+  registration marks are left out, since all ships of a class share the texture. The bake loads hulls on request
+  and needs about 4 GB.
 - Planets use the game's own planet maps on a 260,000-triangle sphere, with normal maps for the Moon and Mars.
   Higher-resolution planet maps are requested from gen in `F:/AssetVault/hard-burn/unreal-fidelity/REQUESTS-gen.md`.
 - The host project, its cache and build output live on `H:/builds/JsgbFidelity` (`jsgb.local.json`), about 13 GB.
@@ -133,10 +144,8 @@ Works:
   the browser (`G:/JsGameBridge-fidelity-order/shots/`).
 
 Wrong or missing:
-- Hull colours come from the Pixal3D originals. The game's livery isn't applied, so most hulls look warmer and less
-  blue than in the browser. Only the frigate has its own tint so far.
 - At the battle camera's distance the extra geometry is only a few pixels, so it adds little visible detail.
-- Explosion smoke and some small effects draw less than in the browser, and drive plumes cast no light on hulls.
+- Explosion smoke and some small effects draw less than in the browser with Lumen mode off.
 - Unreal needs `r.Streaming.FullyLoadUsedTextures=1` for stills: without it, a shot taken soon after loading shows
   low-resolution mips and the hulls look beige and blurry.
 
