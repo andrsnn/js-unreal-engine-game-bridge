@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Brings the livery textures Tools/fidelity/bake-livery.mjs painted into the host project jsgb.local.json names
 // (Tools/fidelity/import_livery.py), and clears the hand-made colour adjustments in the overrides file that the
-// livery now replaces (Tint, LiveryWeight, PaintedHull).
+// livery now replaces (Tint, LiveryWeight).
 //   node Tools/fidelity/import-livery.mjs <overrides.json> <bake dir> [--root /Game/Fidelity/HardBurn]
 import fs from 'node:fs';
 import path from 'node:path';
@@ -31,7 +31,7 @@ const result = fs.existsSync(report) ? JSON.parse(fs.readFileSync(report, 'utf8'
 // The livery replaces the hand-made colour adjustments.
 const doc = JSON.parse(fs.readFileSync(rulesFile, 'utf8'));
 for (const rule of doc.overrides) if (result.done.includes(rule.name) && rule.params) {
-  for (const k of ['Tint', 'LiveryWeight', 'PaintedHull']) delete rule.params[k];
+  for (const k of ['Tint', 'LiveryWeight']) delete rule.params[k];
   if (!Object.keys(rule.params).length) delete rule.params;
 }
 fs.writeFileSync(rulesFile, JSON.stringify(doc, null, 1) + '\n');
