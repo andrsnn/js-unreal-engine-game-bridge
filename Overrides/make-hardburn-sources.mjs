@@ -33,7 +33,9 @@ const liveryParams = () => ({EnvIntensity: 0.5, PaintedHull: 0, LiveryWeight: 0}
 // Hulls whose repair includes hand edits the receipt only describes in words (a rolled cargo row, a bow correction,
 // cleanup regions). Tools/fidelity/check-hulls.mjs found the replayed repair off from the game's model by more than a
 // few percent, so these use the game's own repaired geometry with the original's 4096 textures.
-const gameGeometry = new Set(['concept-corsair-ore-hauler', 'concept-helion-scout', 'concept-tdf-capital-titan', 'concept-tdf-colony-ship']);
+// The TDF capital left this list on 13 October: up close its 113,852 triangles read as flat facets next to the guns, and
+// the replayed repair on its original (973,484 triangles) is within 2.6% of the game's hull bounds.
+const gameGeometry = new Set(['concept-corsair-ore-hauler', 'concept-helion-scout', 'concept-tdf-colony-ship']);
 const hulls = [];
 for (const m of models.values()) {
   const source = m.raw && [`${vault}/${m.dir}/originals/${m.raw}/pixal3d_textured.glb`].find(f => fs.existsSync(f));
