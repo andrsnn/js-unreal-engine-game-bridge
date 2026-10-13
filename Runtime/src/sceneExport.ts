@@ -510,6 +510,8 @@ const batchMatrix = new THREE.Matrix4(), batchWorld = new THREE.Matrix4(), batch
 // at the source's world matrix). An override rule matches the source; its batch instance is then left out. Batches are
 // emitted after the walk, when every source has been seen.
 const mountDrawn = new Set<string>();
+const mountRecords: {object: THREE.Object3D; key: string; matrix: number[]}[] = [];
+(globalThis as unknown as {__jsgbMountRecords?: unknown}).__jsgbMountRecords = mountRecords;
 const laterBatches: THREE.BatchedMesh[] = [];
 const mountKey = (m: THREE.Matrix4) => { const e = m.elements; return `${Math.round(e[12] * 100)}|${Math.round(e[13] * 100)}|${Math.round(e[14] * 100)}|${Math.round(e[0] * 1000)}|${Math.round(e[5] * 1000)}`; };
 function flushBatches() {
@@ -801,8 +803,11 @@ function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
   if (lumenModels && o.userData?.batchedMountSource && (o as THREE.Mesh).isMesh && !visibleTo(o, cam)) {
     const rules = overrideRules(host.registry), ov = rules.length ? overrideFor(o, rules) : null;
     if (ov && !ov.hide) {
-      push(ASSET); push(idOf(o)); push(keyId(ov.key)); push(0); pushMatrix(ov.fit ? overrideWorld.multiplyMatrices(o.matrixWorld, ov.fit) : o.matrixWorld);
+      const world = ov.fit ? overrideWorld.multiplyMatrices(o.matrixWorld, ov.fit) : o.matrixWorld;
+      push(ASSET); push(idOf(o)); push(keyId(ov.key)); push(0); pushMatrix(world);
       mountDrawn.add(mountKey(o.matrixWorld));
+      // For checks from a capture script: the world matrix each gun override was sent with, this frame.
+      mountRecords.push({object: o, key: ov.key, matrix: world.toArray()});
     }
   }
   if (!replaced && visibleTo(o, cam)) {
@@ -816,7 +821,11 @@ function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
     if (ov) {
       if (!ov.hide) {
         if ((o as THREE.InstancedMesh).isInstancedMesh) emitInstances(o as THREE.InstancedMesh, -keyId(ov.key), 0, ov.fit);
-        else { push(ASSET); push(idOf(o)); push(keyId(ov.key)); push(0); pushMatrix(ov.fit ? overrideWorld.multiplyMatrices(o.matrixWorld, ov.fit) : o.matrixWorld); }
+        else {
+          const world = ov.fit ? overrideWorld.multiplyMatrices(o.matrixWorld, ov.fit) : o.matrixWorld;
+          push(ASSET); push(idOf(o)); push(keyId(ov.key)); push(0); pushMatrix(world);
+          if (o.userData?.batchedMountSource || ov.key.startsWith('override:gun_')) mountRecords.push({object: o, key: ov.key, matrix: world.toArray()});
+        }
       }
       const ch = o.children; for (let i = 0; i < ch.length; i++) walk(ch[i], cam, skipKey);
       return;
@@ -884,6 +893,7 @@ export function exportFrame(): number {
   const flags = effectFlags(host.registry);
   unrealEffects = g.lumen && Object.values(flags).some(Boolean);
   if (unrealEffects) beginEffects(flags, cam, top);
+  mountRecords.length = 0;
   walk(top, cam, null);
   flushBatches();
   if (unrealEffects) emitEffectLights();
