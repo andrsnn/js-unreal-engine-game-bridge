@@ -391,8 +391,10 @@ function linearShader(t: TranslatedShader): TranslatedShader {
 }
 
 // How far a camera-facing instanced quad is pulled toward the camera in Unreal, in radii of the quad (shaders.ts,
-// depthPull). A material's userData.jsgbDepthPull sets its own.
+// depthPull). jsgbdepthpull=<number> in the run's search replaces it for every material, for tuning without a
+// rebuild; otherwise a material's userData.jsgbDepthPull sets its own.
 export const DEPTH_PULL = 0.5;
+const searchPull = () => { const v = /[?&]jsgbdepthpull=([-+0-9.eE]+)/.exec(host.search ?? '')?.[1]; return v !== undefined && Number.isFinite(+v) ? +v : undefined; };
 const drawFirst = (mat: THREE.Material) => !mat.transparent && mat.depthWrite === false && mat.blending === THREE.NormalBlending;
 function syncMaterial(mat: THREE.Material): number {
   const id = idOf(mat);
@@ -430,7 +432,7 @@ function syncMaterial(mat: THREE.Material): number {
     // Still compiling (the shader compiler loads in the background): send it again next frame, even
     // though its values haven't changed, so the generated material replaces the generic one.
     if (t === undefined) quick.delete(mat);
-    if (t) { if (!sentShaders.has(t.key)) { sentShaders.add(t.key); sink()?.shader?.(t.key, JSON.stringify(t)); } custom = t.key; if (t.depthPull) depthPull = typeof mat.userData?.jsgbDepthPull === 'number' ? mat.userData.jsgbDepthPull : DEPTH_PULL; }
+    if (t) { if (!sentShaders.has(t.key)) { sentShaders.add(t.key); sink()?.shader?.(t.key, JSON.stringify(t)); } custom = t.key; if (t.depthPull) depthPull = searchPull() ?? (typeof mat.userData?.jsgbDepthPull === 'number' ? mat.userData.jsgbDepthPull : DEPTH_PULL); }
   }
   const desc = {
     type: mat.type, name: mat.name,
