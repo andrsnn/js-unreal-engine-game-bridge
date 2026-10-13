@@ -169,6 +169,37 @@ const CLEAN_PAINT = `{
   diffuseColor.rgb = c;
 }`;
 
+// A source triangle whose corners land on different islands of the game's texture (it spans one of the game model's UV
+// seams) would sweep its interpolated game uv across whatever lies between those islands, painting thin dark lines
+// along the seams (the veins on the mine's tanks). Such triangles take, at each point, the game uv of their nearest
+// corner instead.
+const SEAM_SPREAD = .01;
+function seamSafe(indexed) {
+  const g = indexed.toNonIndexed(), uv = g.attributes.uv, n = uv.count;
+  const a = new Float32Array(n * 2), b = new Float32Array(n * 2), c = new Float32Array(n * 2), bary = new Float32Array(n * 3), seam = new Float32Array(n);
+  for (let t = 0; t < n; t += 3) {
+    const u = [0, 1, 2].map(k => [uv.getX(t + k), uv.getY(t + k)]);
+    const spread = Math.max(Math.hypot(u[0][0] - u[1][0], u[0][1] - u[1][1]), Math.hypot(u[1][0] - u[2][0], u[1][1] - u[2][1]), Math.hypot(u[0][0] - u[2][0], u[0][1] - u[2][1]));
+    for (let k = 0; k < 3; k++) {
+      a.set(u[0], (t + k) * 2); b.set(u[1], (t + k) * 2); c.set(u[2], (t + k) * 2);
+      bary[(t + k) * 3 + k] = 1; seam[t + k] = spread > SEAM_SPREAD ? 1 : 0;
+    }
+  }
+  g.setAttribute('jsgbUvA', new THREE.BufferAttribute(a, 2)); g.setAttribute('jsgbUvB', new THREE.BufferAttribute(b, 2));
+  g.setAttribute('jsgbUvC', new THREE.BufferAttribute(c, 2)); g.setAttribute('jsgbBary', new THREE.BufferAttribute(bary, 3));
+  g.setAttribute('jsgbSeam', new THREE.BufferAttribute(seam, 1));
+  return g;
+}
+const SEAM_VERTEX_DECLARE = '\nattribute vec2 jsgbUvA, jsgbUvB, jsgbUvC; attribute vec3 jsgbBary; attribute float jsgbSeam; varying vec2 vJsgbUvA, vJsgbUvB, vJsgbUvC; varying vec3 vJsgbBary; varying float vJsgbSeam;';
+const SEAM_VERTEX = '\n vJsgbUvA = jsgbUvA; vJsgbUvB = jsgbUvB; vJsgbUvC = jsgbUvC; vJsgbBary = jsgbBary; vJsgbSeam = jsgbSeam;';
+// The fragment shader reads the game's texture at jsgbMapUv: the interpolated game uv, or a seam triangle's nearest corner's.
+function seamFragment(fragment) {
+  const at = fragment.indexOf('void main() {') + 'void main() {'.length;
+  return fragment.slice(0, at).replace('#include <common>', '#include <common>\nvarying vec2 vJsgbUvA, vJsgbUvB, vJsgbUvC; varying vec3 vJsgbBary; varying float vJsgbSeam;') +
+    '\n vec2 jsgbMapUv = vMapUv; if (vJsgbSeam > .5) jsgbMapUv = vJsgbBary.x >= max(vJsgbBary.y, vJsgbBary.z) ? vJsgbUvA : vJsgbBary.y >= vJsgbBary.z ? vJsgbUvB : vJsgbUvC;' +
+    fragment.slice(at).replaceAll('vMapUv', 'jsgbMapUv');
+}
+
 export async function bake(name, key, sourceUrl, style = 'clean', options = {}) {
   const {level, mesh: game} = await gameHull(key);
   const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(sourceUrl);
@@ -266,14 +297,15 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
   const gamePaint = game.material.onBeforeCompile;
   paint.onBeforeCompile = (shader, renderer) => {
     gamePaint.call(game.material, shader, renderer);
-    if (shader.uniforms.liveryRegistration) shader.uniforms.liveryRegistration.value = blank;    shader.uniforms.jsgbOriginal = {value: map};
+    if (shader.uniforms.liveryRegistration) shader.uniforms.liveryRegistration.value = blank;
+    shader.uniforms.jsgbOriginal = {value: map};
     shader.uniforms.jsgbFrame = {value: frame};
     shader.uniforms.jsgbShipLength = {value: shipLength};
-    shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nattribute vec2 jsgbUv; varying vec2 vJsgbUv;' +
+    shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nattribute vec2 jsgbUv; varying vec2 vJsgbUv;' + SEAM_VERTEX_DECLARE +
         (clean ? '\nattribute float jsgbCurvature; varying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal; uniform mat4 jsgbFrame;' : ''))
-      .replace('#include <project_vertex>', '#include <project_vertex>\n vJsgbUv = jsgbUv; gl_Position = vec4(jsgbUv * 2. - 1., 0., 1.);' +
+      .replace('#include <project_vertex>', '#include <project_vertex>\n vJsgbUv = jsgbUv; gl_Position = vec4(jsgbUv * 2. - 1., 0., 1.);' + SEAM_VERTEX +
         (clean ? '\n vJsgbCurvature = jsgbCurvature; vJsgbPos = (jsgbFrame * vec4(position, 1.)).xyz; vJsgbNormal = mat3(jsgbFrame) * normal;' : ''));
-    shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\n' + oetf + '\nuniform sampler2D jsgbOriginal; varying vec2 vJsgbUv;' +
+    shader.fragmentShader = seamFragment(shader.fragmentShader).replace('#include <common>', '#include <common>\n' + oetf + '\nuniform sampler2D jsgbOriginal; varying vec2 vJsgbUv;' +
         (clean ? '\nvarying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal; uniform float jsgbShipLength;\n' + CLEAN_FUNCTIONS : ''))
       .replace('#include <roughnessmap_fragment>', (clean ? CLEAN_PAINT : `float jsgbLum = dot(texture2D(jsgbOriginal, vJsgbUv).rgb, vec3(.2126, .7152, .0722));
         float jsgbAround = dot(textureLod(jsgbOriginal, vJsgbUv, 4.).rgb, vec3(.2126, .7152, .0722));
@@ -290,7 +322,7 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
   const under = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({uniforms: {map: {value: map}}, depthTest: false, depthWrite: false,
     vertexShader: 'varying vec2 q; void main() { q = uv; gl_Position = vec4(position.xy, 0., 1.); }',
     fragmentShader: oetf + '\nuniform sampler2D map; varying vec2 q; void main() { gl_FragColor = vec4(jsgbOetf(texture2D(map, q).rgb), 0.); }'}));
-  const flat = new THREE.Mesh(geometry, paint);
+  const drawn = seamSafe(geometry), flat = new THREE.Mesh(drawn, paint);
   under.renderOrder = 0; flat.renderOrder = 1; flat.frustumCulled = false;
   scene.add(under, flat);
   const r = F.renderer, before = {target: r.getRenderTarget(), autoClear: r.autoClear, tone: r.toneMapping};
@@ -299,7 +331,7 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
   const px = new Uint8Array(W * H * 4);
   r.readRenderTargetPixels(target, 0, 0, W, H, px);
   r.setRenderTarget(before.target); r.autoClear = before.autoClear; r.toneMapping = before.tone;
-  target.dispose(); paint.dispose(); lookup.dispose(); for (const t of softCopies.splice(0)) t.dispose(); under.material.dispose(); under.geometry.dispose(); blank.dispose();
+  target.dispose(); paint.dispose(); drawn.dispose(); lookup.dispose(); for (const t of softCopies.splice(0)) t.dispose(); under.material.dispose(); under.geometry.dispose(); blank.dispose();
   let painted = 0;
   for (let i = 3; i < px.length; i += 4) if (px[i]) painted++;
   // Grow the painted islands 4 texels into their margins, so filtering at a seam never mixes in unpainted colour.
