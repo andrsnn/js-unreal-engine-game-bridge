@@ -5699,6 +5699,3804 @@
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
    }
+  },
+  {
+   "name": "gun_flak_battery_yaw_tdf",
+   "match": {
+    "url": "*/models/guns/pixal/flak-battery.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_tdf_*",
+      "tdf_*",
+      "tdf-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.36099278926849365,
+     0,
+     -0.4332631826400757
+    ],
+    [
+     0.44814059138298035,
+     0.7064082622528076,
+     0.4856584966182709
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.97,
+     0.92
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-flak-battery/originals/pixal3d_textured.glb",
+   "triangles": 939677,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_flak_battery_yaw_mrn",
+   "match": {
+    "url": "*/models/guns/pixal/flak-battery.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_mrn_*",
+      "mrn_*",
+      "mrn-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.36099278926849365,
+     0,
+     -0.4332631826400757
+    ],
+    [
+     0.44814059138298035,
+     0.7064082622528076,
+     0.4856584966182709
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-flak-battery/originals/pixal3d_textured.glb",
+   "triangles": 939677,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_flak_battery_yaw_enemy",
+   "match": {
+    "url": "*/models/guns/pixal/flak-battery.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_enemy_*",
+      "enemy_*",
+      "enemy-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.36099278926849365,
+     0,
+     -0.4332631826400757
+    ],
+    [
+     0.44814059138298035,
+     0.7064082622528076,
+     0.4856584966182709
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-flak-battery/originals/pixal3d_textured.glb",
+   "triangles": 939677,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_flak_battery_yaw_cartel",
+   "match": {
+    "url": "*/models/guns/pixal/flak-battery.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_cartel_*",
+      "cartel_*",
+      "cartel-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.36099278926849365,
+     0,
+     -0.4332631826400757
+    ],
+    [
+     0.44814059138298035,
+     0.7064082622528076,
+     0.4856584966182709
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.86,
+     0.9
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-flak-battery/originals/pixal3d_textured.glb",
+   "triangles": 939677,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_flak_battery_yaw_helion",
+   "match": {
+    "url": "*/models/guns/pixal/flak-battery.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_helion_*",
+      "helion_*",
+      "helion-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.36099278926849365,
+     0,
+     -0.4332631826400757
+    ],
+    [
+     0.44814059138298035,
+     0.7064082622528076,
+     0.4856584966182709
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.88,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-flak-battery/originals/pixal3d_textured.glb",
+   "triangles": 939677,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_flak_battery_yaw_ueg",
+   "match": {
+    "url": "*/models/guns/pixal/flak-battery.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_ueg_*",
+      "ueg_*",
+      "ueg-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.36099278926849365,
+     0,
+     -0.4332631826400757
+    ],
+    [
+     0.44814059138298035,
+     0.7064082622528076,
+     0.4856584966182709
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.9,
+     0.72
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-flak-battery/originals/pixal3d_textured.glb",
+   "triangles": 939677,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_flak_battery_yaw_corsair",
+   "match": {
+    "url": "*/models/guns/pixal/flak-battery.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_corsair_*",
+      "corsair_*",
+      "corsair-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.36099278926849365,
+     0,
+     -0.4332631826400757
+    ],
+    [
+     0.44814059138298035,
+     0.7064082622528076,
+     0.4856584966182709
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.6,
+     0.63,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-flak-battery/originals/pixal3d_textured.glb",
+   "triangles": 939677,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_flak_battery_yaw_veil",
+   "match": {
+    "url": "*/models/guns/pixal/flak-battery.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_veil_*",
+      "veil_*",
+      "veil-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.36099278926849365,
+     0,
+     -0.4332631826400757
+    ],
+    [
+     0.44814059138298035,
+     0.7064082622528076,
+     0.4856584966182709
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.8,
+     0.72,
+     1
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-flak-battery/originals/pixal3d_textured.glb",
+   "triangles": 939677,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_flak_battery_yaw_guardian",
+   "match": {
+    "url": "*/models/guns/pixal/flak-battery.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_guardian_*",
+      "guardian_*",
+      "guardian-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.36099278926849365,
+     0,
+     -0.4332631826400757
+    ],
+    [
+     0.44814059138298035,
+     0.7064082622528076,
+     0.4856584966182709
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.75,
+     0.78,
+     0.82
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-flak-battery/originals/pixal3d_textured.glb",
+   "triangles": 939677,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_flak_battery_yaw",
+   "match": {
+    "url": "*/models/guns/pixal/flak-battery.glb",
+    "mesh": "geometry_0"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.36099278926849365,
+     0,
+     -0.4332631826400757
+    ],
+    [
+     0.44814059138298035,
+     0.7064082622528076,
+     0.4856584966182709
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-flak-battery/originals/pixal3d_textured.glb",
+   "imported": "H:/builds/JsgbFidelity/guns/flak-battery/yaw.glb",
+   "keys": [
+    "/models/guns/pixal/flak-battery.glb"
+   ],
+   "triangles": 939677,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_heavy_spinal_mass_driver_base_tdf",
+   "match": {
+    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_tdf_*",
+      "tdf_*",
+      "tdf-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.2535681128501892,
+     -0.1863228976726532,
+     -0.5409247875213623
+    ],
+    [
+     0.2535681128501892,
+     0.18622346222400665,
+     0.5401802062988281
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.97,
+     0.92
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-heavy-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 980363,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_heavy_spinal_mass_driver_base_mrn",
+   "match": {
+    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_mrn_*",
+      "mrn_*",
+      "mrn-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.2535681128501892,
+     -0.1863228976726532,
+     -0.5409247875213623
+    ],
+    [
+     0.2535681128501892,
+     0.18622346222400665,
+     0.5401802062988281
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-heavy-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 980363,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_heavy_spinal_mass_driver_base_enemy",
+   "match": {
+    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_enemy_*",
+      "enemy_*",
+      "enemy-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.2535681128501892,
+     -0.1863228976726532,
+     -0.5409247875213623
+    ],
+    [
+     0.2535681128501892,
+     0.18622346222400665,
+     0.5401802062988281
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-heavy-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 980363,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_heavy_spinal_mass_driver_base_cartel",
+   "match": {
+    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_cartel_*",
+      "cartel_*",
+      "cartel-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.2535681128501892,
+     -0.1863228976726532,
+     -0.5409247875213623
+    ],
+    [
+     0.2535681128501892,
+     0.18622346222400665,
+     0.5401802062988281
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.86,
+     0.9
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-heavy-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 980363,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_heavy_spinal_mass_driver_base_helion",
+   "match": {
+    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_helion_*",
+      "helion_*",
+      "helion-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.2535681128501892,
+     -0.1863228976726532,
+     -0.5409247875213623
+    ],
+    [
+     0.2535681128501892,
+     0.18622346222400665,
+     0.5401802062988281
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.88,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-heavy-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 980363,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_heavy_spinal_mass_driver_base_ueg",
+   "match": {
+    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_ueg_*",
+      "ueg_*",
+      "ueg-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.2535681128501892,
+     -0.1863228976726532,
+     -0.5409247875213623
+    ],
+    [
+     0.2535681128501892,
+     0.18622346222400665,
+     0.5401802062988281
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.9,
+     0.72
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-heavy-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 980363,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_heavy_spinal_mass_driver_base_corsair",
+   "match": {
+    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_corsair_*",
+      "corsair_*",
+      "corsair-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.2535681128501892,
+     -0.1863228976726532,
+     -0.5409247875213623
+    ],
+    [
+     0.2535681128501892,
+     0.18622346222400665,
+     0.5401802062988281
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.6,
+     0.63,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-heavy-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 980363,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_heavy_spinal_mass_driver_base_veil",
+   "match": {
+    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_veil_*",
+      "veil_*",
+      "veil-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.2535681128501892,
+     -0.1863228976726532,
+     -0.5409247875213623
+    ],
+    [
+     0.2535681128501892,
+     0.18622346222400665,
+     0.5401802062988281
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.8,
+     0.72,
+     1
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-heavy-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 980363,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_heavy_spinal_mass_driver_base_guardian",
+   "match": {
+    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_guardian_*",
+      "guardian_*",
+      "guardian-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.2535681128501892,
+     -0.1863228976726532,
+     -0.5409247875213623
+    ],
+    [
+     0.2535681128501892,
+     0.18622346222400665,
+     0.5401802062988281
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.75,
+     0.78,
+     0.82
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-heavy-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 980363,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_heavy_spinal_mass_driver_base",
+   "match": {
+    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
+    "mesh": "geometry_0"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.2535681128501892,
+     -0.1863228976726532,
+     -0.5409247875213623
+    ],
+    [
+     0.2535681128501892,
+     0.18622346222400665,
+     0.5401802062988281
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-heavy-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "imported": "H:/builds/JsgbFidelity/guns/heavy-spinal-mass-driver/base.glb",
+   "keys": [
+    "/models/guns/pixal/heavy-spinal-mass-driver.glb"
+   ],
+   "triangles": 980363,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_heavy_yaw_tdf",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_tdf_*",
+      "tdf_*",
+      "tdf-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5060185194015503,
+     -0.00031834840774536133,
+     -0.34354957938194275
+    ],
+    [
+     0.3943503797054291,
+     0.809801459312439,
+     0.4670719504356384
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.97,
+     0.92
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-heavy/originals/pixal3d_textured.glb",
+   "triangles": 965762,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_heavy_yaw_mrn",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_mrn_*",
+      "mrn_*",
+      "mrn-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5060185194015503,
+     -0.00031834840774536133,
+     -0.34354957938194275
+    ],
+    [
+     0.3943503797054291,
+     0.809801459312439,
+     0.4670719504356384
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-heavy/originals/pixal3d_textured.glb",
+   "triangles": 965762,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_heavy_yaw_enemy",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_enemy_*",
+      "enemy_*",
+      "enemy-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5060185194015503,
+     -0.00031834840774536133,
+     -0.34354957938194275
+    ],
+    [
+     0.3943503797054291,
+     0.809801459312439,
+     0.4670719504356384
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-heavy/originals/pixal3d_textured.glb",
+   "triangles": 965762,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_heavy_yaw_cartel",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_cartel_*",
+      "cartel_*",
+      "cartel-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5060185194015503,
+     -0.00031834840774536133,
+     -0.34354957938194275
+    ],
+    [
+     0.3943503797054291,
+     0.809801459312439,
+     0.4670719504356384
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.86,
+     0.9
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-heavy/originals/pixal3d_textured.glb",
+   "triangles": 965762,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_heavy_yaw_helion",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_helion_*",
+      "helion_*",
+      "helion-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5060185194015503,
+     -0.00031834840774536133,
+     -0.34354957938194275
+    ],
+    [
+     0.3943503797054291,
+     0.809801459312439,
+     0.4670719504356384
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.88,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-heavy/originals/pixal3d_textured.glb",
+   "triangles": 965762,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_heavy_yaw_ueg",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_ueg_*",
+      "ueg_*",
+      "ueg-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5060185194015503,
+     -0.00031834840774536133,
+     -0.34354957938194275
+    ],
+    [
+     0.3943503797054291,
+     0.809801459312439,
+     0.4670719504356384
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.9,
+     0.72
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-heavy/originals/pixal3d_textured.glb",
+   "triangles": 965762,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_heavy_yaw_corsair",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_corsair_*",
+      "corsair_*",
+      "corsair-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5060185194015503,
+     -0.00031834840774536133,
+     -0.34354957938194275
+    ],
+    [
+     0.3943503797054291,
+     0.809801459312439,
+     0.4670719504356384
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.6,
+     0.63,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-heavy/originals/pixal3d_textured.glb",
+   "triangles": 965762,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_heavy_yaw_veil",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_veil_*",
+      "veil_*",
+      "veil-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5060185194015503,
+     -0.00031834840774536133,
+     -0.34354957938194275
+    ],
+    [
+     0.3943503797054291,
+     0.809801459312439,
+     0.4670719504356384
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.8,
+     0.72,
+     1
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-heavy/originals/pixal3d_textured.glb",
+   "triangles": 965762,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_heavy_yaw_guardian",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_guardian_*",
+      "guardian_*",
+      "guardian-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5060185194015503,
+     -0.00031834840774536133,
+     -0.34354957938194275
+    ],
+    [
+     0.3943503797054291,
+     0.809801459312439,
+     0.4670719504356384
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.75,
+     0.78,
+     0.82
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-heavy/originals/pixal3d_textured.glb",
+   "triangles": 965762,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_heavy_yaw",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-heavy.glb",
+    "mesh": "geometry_0"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5060185194015503,
+     -0.00031834840774536133,
+     -0.34354957938194275
+    ],
+    [
+     0.3943503797054291,
+     0.809801459312439,
+     0.4670719504356384
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-heavy/originals/pixal3d_textured.glb",
+   "imported": "H:/builds/JsgbFidelity/guns/pdc-heavy/yaw.glb",
+   "keys": [
+    "/models/guns/pixal/pdc-heavy.glb"
+   ],
+   "triangles": 965762,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_medium_yaw_tdf",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-medium.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_tdf_*",
+      "tdf_*",
+      "tdf-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.47851628065109253,
+     -0.00020200014114379883,
+     -0.47598302364349365
+    ],
+    [
+     0.342763751745224,
+     0.8223901987075806,
+     0.5001140832901001
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.97,
+     0.92
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-medium/originals/pixal3d_textured.glb",
+   "triangles": 962473,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_medium_yaw_mrn",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-medium.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_mrn_*",
+      "mrn_*",
+      "mrn-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.47851628065109253,
+     -0.00020200014114379883,
+     -0.47598302364349365
+    ],
+    [
+     0.342763751745224,
+     0.8223901987075806,
+     0.5001140832901001
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-medium/originals/pixal3d_textured.glb",
+   "triangles": 962473,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_medium_yaw_enemy",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-medium.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_enemy_*",
+      "enemy_*",
+      "enemy-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.47851628065109253,
+     -0.00020200014114379883,
+     -0.47598302364349365
+    ],
+    [
+     0.342763751745224,
+     0.8223901987075806,
+     0.5001140832901001
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-medium/originals/pixal3d_textured.glb",
+   "triangles": 962473,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_medium_yaw_cartel",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-medium.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_cartel_*",
+      "cartel_*",
+      "cartel-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.47851628065109253,
+     -0.00020200014114379883,
+     -0.47598302364349365
+    ],
+    [
+     0.342763751745224,
+     0.8223901987075806,
+     0.5001140832901001
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.86,
+     0.9
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-medium/originals/pixal3d_textured.glb",
+   "triangles": 962473,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_medium_yaw_helion",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-medium.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_helion_*",
+      "helion_*",
+      "helion-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.47851628065109253,
+     -0.00020200014114379883,
+     -0.47598302364349365
+    ],
+    [
+     0.342763751745224,
+     0.8223901987075806,
+     0.5001140832901001
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.88,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-medium/originals/pixal3d_textured.glb",
+   "triangles": 962473,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_medium_yaw_ueg",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-medium.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_ueg_*",
+      "ueg_*",
+      "ueg-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.47851628065109253,
+     -0.00020200014114379883,
+     -0.47598302364349365
+    ],
+    [
+     0.342763751745224,
+     0.8223901987075806,
+     0.5001140832901001
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.9,
+     0.72
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-medium/originals/pixal3d_textured.glb",
+   "triangles": 962473,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_medium_yaw_corsair",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-medium.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_corsair_*",
+      "corsair_*",
+      "corsair-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.47851628065109253,
+     -0.00020200014114379883,
+     -0.47598302364349365
+    ],
+    [
+     0.342763751745224,
+     0.8223901987075806,
+     0.5001140832901001
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.6,
+     0.63,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-medium/originals/pixal3d_textured.glb",
+   "triangles": 962473,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_medium_yaw_veil",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-medium.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_veil_*",
+      "veil_*",
+      "veil-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.47851628065109253,
+     -0.00020200014114379883,
+     -0.47598302364349365
+    ],
+    [
+     0.342763751745224,
+     0.8223901987075806,
+     0.5001140832901001
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.8,
+     0.72,
+     1
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-medium/originals/pixal3d_textured.glb",
+   "triangles": 962473,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_medium_yaw_guardian",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-medium.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_guardian_*",
+      "guardian_*",
+      "guardian-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.47851628065109253,
+     -0.00020200014114379883,
+     -0.47598302364349365
+    ],
+    [
+     0.342763751745224,
+     0.8223901987075806,
+     0.5001140832901001
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.75,
+     0.78,
+     0.82
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-medium/originals/pixal3d_textured.glb",
+   "triangles": 962473,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_medium_yaw",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-medium.glb",
+    "mesh": "geometry_0"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.47851628065109253,
+     -0.00020200014114379883,
+     -0.47598302364349365
+    ],
+    [
+     0.342763751745224,
+     0.8223901987075806,
+     0.5001140832901001
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-medium/originals/pixal3d_textured.glb",
+   "imported": "H:/builds/JsgbFidelity/guns/pdc-medium/yaw.glb",
+   "keys": [
+    "/models/guns/pixal/pdc-medium.glb"
+   ],
+   "triangles": 962473,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_small_yaw_tdf",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-small.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_tdf_*",
+      "tdf_*",
+      "tdf-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5151388049125671,
+     -0.00014206767082214355,
+     -0.4882441759109497
+    ],
+    [
+     0.2565103769302368,
+     0.7761955261230469,
+     0.5241764783859253
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.97,
+     0.92
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-small/originals/pixal3d_textured.glb",
+   "triangles": 981175,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_small_yaw_mrn",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-small.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_mrn_*",
+      "mrn_*",
+      "mrn-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5151388049125671,
+     -0.00014206767082214355,
+     -0.4882441759109497
+    ],
+    [
+     0.2565103769302368,
+     0.7761955261230469,
+     0.5241764783859253
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-small/originals/pixal3d_textured.glb",
+   "triangles": 981175,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_small_yaw_enemy",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-small.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_enemy_*",
+      "enemy_*",
+      "enemy-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5151388049125671,
+     -0.00014206767082214355,
+     -0.4882441759109497
+    ],
+    [
+     0.2565103769302368,
+     0.7761955261230469,
+     0.5241764783859253
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-small/originals/pixal3d_textured.glb",
+   "triangles": 981175,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_small_yaw_cartel",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-small.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_cartel_*",
+      "cartel_*",
+      "cartel-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5151388049125671,
+     -0.00014206767082214355,
+     -0.4882441759109497
+    ],
+    [
+     0.2565103769302368,
+     0.7761955261230469,
+     0.5241764783859253
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.86,
+     0.9
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-small/originals/pixal3d_textured.glb",
+   "triangles": 981175,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_small_yaw_helion",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-small.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_helion_*",
+      "helion_*",
+      "helion-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5151388049125671,
+     -0.00014206767082214355,
+     -0.4882441759109497
+    ],
+    [
+     0.2565103769302368,
+     0.7761955261230469,
+     0.5241764783859253
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.88,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-small/originals/pixal3d_textured.glb",
+   "triangles": 981175,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_small_yaw_ueg",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-small.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_ueg_*",
+      "ueg_*",
+      "ueg-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5151388049125671,
+     -0.00014206767082214355,
+     -0.4882441759109497
+    ],
+    [
+     0.2565103769302368,
+     0.7761955261230469,
+     0.5241764783859253
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.9,
+     0.72
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-small/originals/pixal3d_textured.glb",
+   "triangles": 981175,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_small_yaw_corsair",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-small.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_corsair_*",
+      "corsair_*",
+      "corsair-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5151388049125671,
+     -0.00014206767082214355,
+     -0.4882441759109497
+    ],
+    [
+     0.2565103769302368,
+     0.7761955261230469,
+     0.5241764783859253
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.6,
+     0.63,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-small/originals/pixal3d_textured.glb",
+   "triangles": 981175,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_small_yaw_veil",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-small.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_veil_*",
+      "veil_*",
+      "veil-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5151388049125671,
+     -0.00014206767082214355,
+     -0.4882441759109497
+    ],
+    [
+     0.2565103769302368,
+     0.7761955261230469,
+     0.5241764783859253
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.8,
+     0.72,
+     1
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-small/originals/pixal3d_textured.glb",
+   "triangles": 981175,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_small_yaw_guardian",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-small.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_guardian_*",
+      "guardian_*",
+      "guardian-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5151388049125671,
+     -0.00014206767082214355,
+     -0.4882441759109497
+    ],
+    [
+     0.2565103769302368,
+     0.7761955261230469,
+     0.5241764783859253
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.75,
+     0.78,
+     0.82
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-small/originals/pixal3d_textured.glb",
+   "triangles": 981175,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_pdc_small_yaw",
+   "match": {
+    "url": "*/models/guns/pixal/pdc-small.glb",
+    "mesh": "geometry_0"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5151388049125671,
+     -0.00014206767082214355,
+     -0.4882441759109497
+    ],
+    [
+     0.2565103769302368,
+     0.7761955261230469,
+     0.5241764783859253
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-small/originals/pixal3d_textured.glb",
+   "imported": "H:/builds/JsgbFidelity/guns/pdc-small/yaw.glb",
+   "keys": [
+    "/models/guns/pixal/pdc-small.glb"
+   ],
+   "triangles": 981175,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_railgun_heavy_yaw_tdf",
+   "match": {
+    "url": "*/models/guns/pixal/railgun-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_tdf_*",
+      "tdf_*",
+      "tdf-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5074656009674072,
+     -0.00016021728515625,
+     -0.49721744656562805
+    ],
+    [
+     0.1847103238105774,
+     0.6735185980796814,
+     0.5663044452667236
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.97,
+     0.92
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-railgun-heavy/originals/pixal3d_textured.glb",
+   "triangles": 944196,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_railgun_heavy_yaw_mrn",
+   "match": {
+    "url": "*/models/guns/pixal/railgun-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_mrn_*",
+      "mrn_*",
+      "mrn-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5074656009674072,
+     -0.00016021728515625,
+     -0.49721744656562805
+    ],
+    [
+     0.1847103238105774,
+     0.6735185980796814,
+     0.5663044452667236
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-railgun-heavy/originals/pixal3d_textured.glb",
+   "triangles": 944196,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_railgun_heavy_yaw_enemy",
+   "match": {
+    "url": "*/models/guns/pixal/railgun-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_enemy_*",
+      "enemy_*",
+      "enemy-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5074656009674072,
+     -0.00016021728515625,
+     -0.49721744656562805
+    ],
+    [
+     0.1847103238105774,
+     0.6735185980796814,
+     0.5663044452667236
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-railgun-heavy/originals/pixal3d_textured.glb",
+   "triangles": 944196,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_railgun_heavy_yaw_cartel",
+   "match": {
+    "url": "*/models/guns/pixal/railgun-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_cartel_*",
+      "cartel_*",
+      "cartel-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5074656009674072,
+     -0.00016021728515625,
+     -0.49721744656562805
+    ],
+    [
+     0.1847103238105774,
+     0.6735185980796814,
+     0.5663044452667236
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.86,
+     0.9
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-railgun-heavy/originals/pixal3d_textured.glb",
+   "triangles": 944196,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_railgun_heavy_yaw_helion",
+   "match": {
+    "url": "*/models/guns/pixal/railgun-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_helion_*",
+      "helion_*",
+      "helion-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5074656009674072,
+     -0.00016021728515625,
+     -0.49721744656562805
+    ],
+    [
+     0.1847103238105774,
+     0.6735185980796814,
+     0.5663044452667236
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.88,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-railgun-heavy/originals/pixal3d_textured.glb",
+   "triangles": 944196,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_railgun_heavy_yaw_ueg",
+   "match": {
+    "url": "*/models/guns/pixal/railgun-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_ueg_*",
+      "ueg_*",
+      "ueg-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5074656009674072,
+     -0.00016021728515625,
+     -0.49721744656562805
+    ],
+    [
+     0.1847103238105774,
+     0.6735185980796814,
+     0.5663044452667236
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.9,
+     0.72
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-railgun-heavy/originals/pixal3d_textured.glb",
+   "triangles": 944196,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_railgun_heavy_yaw_corsair",
+   "match": {
+    "url": "*/models/guns/pixal/railgun-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_corsair_*",
+      "corsair_*",
+      "corsair-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5074656009674072,
+     -0.00016021728515625,
+     -0.49721744656562805
+    ],
+    [
+     0.1847103238105774,
+     0.6735185980796814,
+     0.5663044452667236
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.6,
+     0.63,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-railgun-heavy/originals/pixal3d_textured.glb",
+   "triangles": 944196,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_railgun_heavy_yaw_veil",
+   "match": {
+    "url": "*/models/guns/pixal/railgun-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_veil_*",
+      "veil_*",
+      "veil-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5074656009674072,
+     -0.00016021728515625,
+     -0.49721744656562805
+    ],
+    [
+     0.1847103238105774,
+     0.6735185980796814,
+     0.5663044452667236
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.8,
+     0.72,
+     1
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-railgun-heavy/originals/pixal3d_textured.glb",
+   "triangles": 944196,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_railgun_heavy_yaw_guardian",
+   "match": {
+    "url": "*/models/guns/pixal/railgun-heavy.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_guardian_*",
+      "guardian_*",
+      "guardian-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5074656009674072,
+     -0.00016021728515625,
+     -0.49721744656562805
+    ],
+    [
+     0.1847103238105774,
+     0.6735185980796814,
+     0.5663044452667236
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.75,
+     0.78,
+     0.82
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-railgun-heavy/originals/pixal3d_textured.glb",
+   "triangles": 944196,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_railgun_heavy_yaw",
+   "match": {
+    "url": "*/models/guns/pixal/railgun-heavy.glb",
+    "mesh": "geometry_0"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5074656009674072,
+     -0.00016021728515625,
+     -0.49721744656562805
+    ],
+    [
+     0.1847103238105774,
+     0.6735185980796814,
+     0.5663044452667236
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-railgun-heavy/originals/pixal3d_textured.glb",
+   "imported": "H:/builds/JsgbFidelity/guns/railgun-heavy/yaw.glb",
+   "keys": [
+    "/models/guns/pixal/railgun-heavy.glb"
+   ],
+   "triangles": 944196,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_spinal_mass_driver_base_tdf",
+   "match": {
+    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_tdf_*",
+      "tdf_*",
+      "tdf-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.10827334970235825,
+     -0.10756048560142517,
+     -0.4937235116958618
+    ],
+    [
+     0.10827334970235825,
+     0.10756048560142517,
+     0.4942794442176819
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.97,
+     0.92
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 979154,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_spinal_mass_driver_base_mrn",
+   "match": {
+    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_mrn_*",
+      "mrn_*",
+      "mrn-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.10827334970235825,
+     -0.10756048560142517,
+     -0.4937235116958618
+    ],
+    [
+     0.10827334970235825,
+     0.10756048560142517,
+     0.4942794442176819
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 979154,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_spinal_mass_driver_base_enemy",
+   "match": {
+    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_enemy_*",
+      "enemy_*",
+      "enemy-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.10827334970235825,
+     -0.10756048560142517,
+     -0.4937235116958618
+    ],
+    [
+     0.10827334970235825,
+     0.10756048560142517,
+     0.4942794442176819
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 979154,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_spinal_mass_driver_base_cartel",
+   "match": {
+    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_cartel_*",
+      "cartel_*",
+      "cartel-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.10827334970235825,
+     -0.10756048560142517,
+     -0.4937235116958618
+    ],
+    [
+     0.10827334970235825,
+     0.10756048560142517,
+     0.4942794442176819
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.86,
+     0.9
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 979154,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_spinal_mass_driver_base_helion",
+   "match": {
+    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_helion_*",
+      "helion_*",
+      "helion-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.10827334970235825,
+     -0.10756048560142517,
+     -0.4937235116958618
+    ],
+    [
+     0.10827334970235825,
+     0.10756048560142517,
+     0.4942794442176819
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.88,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 979154,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_spinal_mass_driver_base_ueg",
+   "match": {
+    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_ueg_*",
+      "ueg_*",
+      "ueg-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.10827334970235825,
+     -0.10756048560142517,
+     -0.4937235116958618
+    ],
+    [
+     0.10827334970235825,
+     0.10756048560142517,
+     0.4942794442176819
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.9,
+     0.72
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 979154,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_spinal_mass_driver_base_corsair",
+   "match": {
+    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_corsair_*",
+      "corsair_*",
+      "corsair-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.10827334970235825,
+     -0.10756048560142517,
+     -0.4937235116958618
+    ],
+    [
+     0.10827334970235825,
+     0.10756048560142517,
+     0.4942794442176819
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.6,
+     0.63,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 979154,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_spinal_mass_driver_base_veil",
+   "match": {
+    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_veil_*",
+      "veil_*",
+      "veil-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.10827334970235825,
+     -0.10756048560142517,
+     -0.4937235116958618
+    ],
+    [
+     0.10827334970235825,
+     0.10756048560142517,
+     0.4942794442176819
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.8,
+     0.72,
+     1
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 979154,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_spinal_mass_driver_base_guardian",
+   "match": {
+    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_guardian_*",
+      "guardian_*",
+      "guardian-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.10827334970235825,
+     -0.10756048560142517,
+     -0.4937235116958618
+    ],
+    [
+     0.10827334970235825,
+     0.10756048560142517,
+     0.4942794442176819
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.75,
+     0.78,
+     0.82
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "triangles": 979154,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_spinal_mass_driver_base",
+   "match": {
+    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
+    "mesh": "geometry_0"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.10827334970235825,
+     -0.10756048560142517,
+     -0.4937235116958618
+    ],
+    [
+     0.10827334970235825,
+     0.10756048560142517,
+     0.4942794442176819
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "imported": "H:/builds/JsgbFidelity/guns/spinal-mass-driver/base.glb",
+   "keys": [
+    "/models/guns/pixal/spinal-mass-driver.glb"
+   ],
+   "triangles": 979154,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_triple_heavy_turret_yaw_tdf",
+   "match": {
+    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_tdf_*",
+      "tdf_*",
+      "tdf-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5050812363624573,
+     0,
+     -0.46802300214767456
+    ],
+    [
+     0.15297120809555054,
+     0.4828605055809021,
+     0.574070394039154
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.97,
+     0.92
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-triple-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 961497,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_triple_heavy_turret_yaw_mrn",
+   "match": {
+    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_mrn_*",
+      "mrn_*",
+      "mrn-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5050812363624573,
+     0,
+     -0.46802300214767456
+    ],
+    [
+     0.15297120809555054,
+     0.4828605055809021,
+     0.574070394039154
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-triple-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 961497,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_triple_heavy_turret_yaw_enemy",
+   "match": {
+    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_enemy_*",
+      "enemy_*",
+      "enemy-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5050812363624573,
+     0,
+     -0.46802300214767456
+    ],
+    [
+     0.15297120809555054,
+     0.4828605055809021,
+     0.574070394039154
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-triple-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 961497,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_triple_heavy_turret_yaw_cartel",
+   "match": {
+    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_cartel_*",
+      "cartel_*",
+      "cartel-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5050812363624573,
+     0,
+     -0.46802300214767456
+    ],
+    [
+     0.15297120809555054,
+     0.4828605055809021,
+     0.574070394039154
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.86,
+     0.9
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-triple-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 961497,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_triple_heavy_turret_yaw_helion",
+   "match": {
+    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_helion_*",
+      "helion_*",
+      "helion-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5050812363624573,
+     0,
+     -0.46802300214767456
+    ],
+    [
+     0.15297120809555054,
+     0.4828605055809021,
+     0.574070394039154
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.88,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-triple-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 961497,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_triple_heavy_turret_yaw_ueg",
+   "match": {
+    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_ueg_*",
+      "ueg_*",
+      "ueg-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5050812363624573,
+     0,
+     -0.46802300214767456
+    ],
+    [
+     0.15297120809555054,
+     0.4828605055809021,
+     0.574070394039154
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.9,
+     0.72
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-triple-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 961497,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_triple_heavy_turret_yaw_corsair",
+   "match": {
+    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_corsair_*",
+      "corsair_*",
+      "corsair-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5050812363624573,
+     0,
+     -0.46802300214767456
+    ],
+    [
+     0.15297120809555054,
+     0.4828605055809021,
+     0.574070394039154
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.6,
+     0.63,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-triple-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 961497,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_triple_heavy_turret_yaw_veil",
+   "match": {
+    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_veil_*",
+      "veil_*",
+      "veil-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5050812363624573,
+     0,
+     -0.46802300214767456
+    ],
+    [
+     0.15297120809555054,
+     0.4828605055809021,
+     0.574070394039154
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.8,
+     0.72,
+     1
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-triple-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 961497,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_triple_heavy_turret_yaw_guardian",
+   "match": {
+    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_guardian_*",
+      "guardian_*",
+      "guardian-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5050812363624573,
+     0,
+     -0.46802300214767456
+    ],
+    [
+     0.15297120809555054,
+     0.4828605055809021,
+     0.574070394039154
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.75,
+     0.78,
+     0.82
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-triple-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 961497,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_triple_heavy_turret_yaw",
+   "match": {
+    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
+    "mesh": "geometry_0"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.5050812363624573,
+     0,
+     -0.46802300214767456
+    ],
+    [
+     0.15297120809555054,
+     0.4828605055809021,
+     0.574070394039154
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-triple-heavy-turret/originals/pixal3d_textured.glb",
+   "imported": "H:/builds/JsgbFidelity/guns/triple-heavy-turret/yaw.glb",
+   "keys": [
+    "/models/guns/pixal/triple-heavy-turret.glb"
+   ],
+   "triangles": 961497,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_twin_heavy_turret_yaw_tdf",
+   "match": {
+    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_tdf_*",
+      "tdf_*",
+      "tdf-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4047132432460785,
+     -0.00014162063598632812,
+     -0.42216888070106506
+    ],
+    [
+     0.1778830885887146,
+     0.5061140060424805,
+     0.6452533602714539
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.97,
+     0.92
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-twin-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 974240,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_twin_heavy_turret_yaw_mrn",
+   "match": {
+    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_mrn_*",
+      "mrn_*",
+      "mrn-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4047132432460785,
+     -0.00014162063598632812,
+     -0.42216888070106506
+    ],
+    [
+     0.1778830885887146,
+     0.5061140060424805,
+     0.6452533602714539
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-twin-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 974240,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_twin_heavy_turret_yaw_enemy",
+   "match": {
+    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_enemy_*",
+      "enemy_*",
+      "enemy-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4047132432460785,
+     -0.00014162063598632812,
+     -0.42216888070106506
+    ],
+    [
+     0.1778830885887146,
+     0.5061140060424805,
+     0.6452533602714539
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.72,
+     0.62
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-twin-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 974240,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_twin_heavy_turret_yaw_cartel",
+   "match": {
+    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_cartel_*",
+      "cartel_*",
+      "cartel-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4047132432460785,
+     -0.00014162063598632812,
+     -0.42216888070106506
+    ],
+    [
+     0.1778830885887146,
+     0.5061140060424805,
+     0.6452533602714539
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.86,
+     0.9
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-twin-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 974240,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_twin_heavy_turret_yaw_helion",
+   "match": {
+    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_helion_*",
+      "helion_*",
+      "helion-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4047132432460785,
+     -0.00014162063598632812,
+     -0.42216888070106506
+    ],
+    [
+     0.1778830885887146,
+     0.5061140060424805,
+     0.6452533602714539
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     1,
+     0.88,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-twin-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 974240,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_twin_heavy_turret_yaw_ueg",
+   "match": {
+    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_ueg_*",
+      "ueg_*",
+      "ueg-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4047132432460785,
+     -0.00014162063598632812,
+     -0.42216888070106506
+    ],
+    [
+     0.1778830885887146,
+     0.5061140060424805,
+     0.6452533602714539
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.84,
+     0.9,
+     0.72
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-twin-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 974240,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_twin_heavy_turret_yaw_corsair",
+   "match": {
+    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_corsair_*",
+      "corsair_*",
+      "corsair-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4047132432460785,
+     -0.00014162063598632812,
+     -0.42216888070106506
+    ],
+    [
+     0.1778830885887146,
+     0.5061140060424805,
+     0.6452533602714539
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.6,
+     0.63,
+     0.66
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-twin-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 974240,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_twin_heavy_turret_yaw_veil",
+   "match": {
+    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_veil_*",
+      "veil_*",
+      "veil-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4047132432460785,
+     -0.00014162063598632812,
+     -0.42216888070106506
+    ],
+    [
+     0.1778830885887146,
+     0.5061140060424805,
+     0.6452533602714539
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.8,
+     0.72,
+     1
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-twin-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 974240,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_twin_heavy_turret_yaw_guardian",
+   "match": {
+    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
+    "mesh": "geometry_0",
+    "userData": {
+     "glbKey": [
+      "concept_guardian_*",
+      "guardian_*",
+      "guardian-*"
+     ]
+    }
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4047132432460785,
+     -0.00014162063598632812,
+     -0.42216888070106506
+    ],
+    [
+     0.1778830885887146,
+     0.5061140060424805,
+     0.6452533602714539
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3,
+    "Tint": [
+     0.75,
+     0.78,
+     0.82
+    ]
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-twin-heavy-turret/originals/pixal3d_textured.glb",
+   "triangles": 974240,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "gun_twin_heavy_turret_yaw",
+   "match": {
+    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
+    "mesh": "geometry_0"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4047132432460785,
+     -0.00014162063598632812,
+     -0.42216888070106506
+    ],
+    [
+     0.1778830885887146,
+     0.5061140060424805,
+     0.6452533602714539
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "source": "F:/AssetVault/hard-burn/assets/gun-twin-heavy-turret/originals/pixal3d_textured.glb",
+   "imported": "H:/builds/JsgbFidelity/guns/twin-heavy-turret/yaw.glb",
+   "keys": [
+    "/models/guns/pixal/twin-heavy-turret.glb"
+   ],
+   "triangles": 974240,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
   }
  ]
 }
