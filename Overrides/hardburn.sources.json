@@ -3017,7 +3017,7 @@
     "part": "yaw"
    },
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/flak-battery"
     }
@@ -3045,7 +3045,7 @@
     "part": "base"
    },
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/heavy-spinal-mass-driver"
     }
@@ -3073,7 +3073,7 @@
     "part": "yaw"
    },
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/pdc-heavy"
     }
@@ -3101,7 +3101,7 @@
     "part": "yaw"
    },
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/pdc-medium"
     }
@@ -3129,7 +3129,7 @@
     "part": "yaw"
    },
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/pdc-small"
     }
@@ -3157,7 +3157,7 @@
     "part": "yaw"
    },
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/railgun-heavy"
     }
@@ -3185,7 +3185,7 @@
     "part": "base"
    },
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/spinal-mass-driver"
     }
@@ -3213,7 +3213,7 @@
     "part": "yaw"
    },
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/triple-heavy-turret"
     }
@@ -3241,7 +3241,7 @@
     "part": "yaw"
    },
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/twin-heavy-turret"
     }

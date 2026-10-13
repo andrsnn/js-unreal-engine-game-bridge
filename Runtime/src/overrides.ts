@@ -163,7 +163,8 @@ export function overrideFor(o: THREE.Object3D, list: Compiled[]): OverrideHit | 
   for (const r of list) {
     if (!r.tests.every(t => t(o, src))) continue;
     if (r.hide) { hit = {key: r.key, hide: true, fit: null}; break; }
-    if (src && !src.primary) { if (r.others !== 'keep') hit = {key: r.key, hide: true, fit: null}; break; }
+    // A rule that names its mesh draws for that mesh whichever it is; otherwise only the model's largest mesh is replaced.
+    if (src && !src.primary && !r.match.mesh) { if (r.others !== 'keep') hit = {key: r.key, hide: true, fit: null}; break; }
     hit = {key: r.key, hide: false, fit: fitFor(r, g)};
     if (!loggedRules.has(r.key)) { loggedRules.add(r.key); log(`overrides: ${r.name} draws ${r.mesh} for ${(o as THREE.InstancedMesh).isInstancedMesh ? 'instanced ' : ''}"${o.name}" from ${src?.url ?? 'its name'}`); }
     break;

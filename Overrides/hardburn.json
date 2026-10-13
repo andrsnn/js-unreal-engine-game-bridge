@@ -5891,7 +5891,7 @@
   {
    "name": "gun_flak_battery_yaw_tdf",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
@@ -5937,7 +5937,7 @@
   {
    "name": "gun_flak_battery_yaw_mrn",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
@@ -5983,7 +5983,7 @@
   {
    "name": "gun_flak_battery_yaw_enemy",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
@@ -6029,7 +6029,7 @@
   {
    "name": "gun_flak_battery_yaw_cartel",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
@@ -6075,7 +6075,7 @@
   {
    "name": "gun_flak_battery_yaw_helion",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_helion_*",
@@ -6121,7 +6121,7 @@
   {
    "name": "gun_flak_battery_yaw_ueg",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
@@ -6167,7 +6167,7 @@
   {
    "name": "gun_flak_battery_yaw_corsair",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
@@ -6213,7 +6213,7 @@
   {
    "name": "gun_flak_battery_yaw_veil",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_veil_*",
@@ -6259,7 +6259,7 @@
   {
    "name": "gun_flak_battery_yaw_guardian",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
@@ -6305,7 +6305,7 @@
   {
    "name": "gun_flak_battery_yaw",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/flak-battery"
     }
@@ -6345,7 +6345,7 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_tdf",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
@@ -6391,7 +6391,7 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_mrn",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
@@ -6437,7 +6437,7 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_enemy",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
@@ -6483,7 +6483,7 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_cartel",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
@@ -6529,7 +6529,7 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_helion",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_helion_*",
@@ -6575,7 +6575,7 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_ueg",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
@@ -6621,7 +6621,7 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_corsair",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
@@ -6667,7 +6667,7 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_veil",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_veil_*",
@@ -6713,7 +6713,7 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_guardian",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
@@ -6759,7 +6759,7 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/heavy-spinal-mass-driver"
     }
@@ -6799,7 +6799,7 @@
   {
    "name": "gun_pdc_heavy_yaw_tdf",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
@@ -6845,7 +6845,7 @@
   {
    "name": "gun_pdc_heavy_yaw_mrn",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
@@ -6891,7 +6891,7 @@
   {
    "name": "gun_pdc_heavy_yaw_enemy",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
@@ -6937,7 +6937,7 @@
   {
    "name": "gun_pdc_heavy_yaw_cartel",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
@@ -6983,7 +6983,7 @@
   {
    "name": "gun_pdc_heavy_yaw_helion",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_helion_*",
@@ -7029,7 +7029,7 @@
   {
    "name": "gun_pdc_heavy_yaw_ueg",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
@@ -7075,7 +7075,7 @@
   {
    "name": "gun_pdc_heavy_yaw_corsair",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
@@ -7121,7 +7121,7 @@
   {
    "name": "gun_pdc_heavy_yaw_veil",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_veil_*",
@@ -7167,7 +7167,7 @@
   {
    "name": "gun_pdc_heavy_yaw_guardian",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
@@ -7213,7 +7213,7 @@
   {
    "name": "gun_pdc_heavy_yaw",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/pdc-heavy"
     }
@@ -7253,7 +7253,7 @@
   {
    "name": "gun_pdc_medium_yaw_tdf",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
@@ -7299,7 +7299,7 @@
   {
    "name": "gun_pdc_medium_yaw_mrn",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
@@ -7345,7 +7345,7 @@
   {
    "name": "gun_pdc_medium_yaw_enemy",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
@@ -7391,7 +7391,7 @@
   {
    "name": "gun_pdc_medium_yaw_cartel",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
@@ -7437,7 +7437,7 @@
   {
    "name": "gun_pdc_medium_yaw_helion",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_helion_*",
@@ -7483,7 +7483,7 @@
   {
    "name": "gun_pdc_medium_yaw_ueg",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
@@ -7529,7 +7529,7 @@
   {
    "name": "gun_pdc_medium_yaw_corsair",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
@@ -7575,7 +7575,7 @@
   {
    "name": "gun_pdc_medium_yaw_veil",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_veil_*",
@@ -7621,7 +7621,7 @@
   {
    "name": "gun_pdc_medium_yaw_guardian",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
@@ -7667,7 +7667,7 @@
   {
    "name": "gun_pdc_medium_yaw",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/pdc-medium"
     }
@@ -7707,7 +7707,7 @@
   {
    "name": "gun_pdc_small_yaw_tdf",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
@@ -7753,7 +7753,7 @@
   {
    "name": "gun_pdc_small_yaw_mrn",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
@@ -7799,7 +7799,7 @@
   {
    "name": "gun_pdc_small_yaw_enemy",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
@@ -7845,7 +7845,7 @@
   {
    "name": "gun_pdc_small_yaw_cartel",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
@@ -7891,7 +7891,7 @@
   {
    "name": "gun_pdc_small_yaw_helion",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_helion_*",
@@ -7937,7 +7937,7 @@
   {
    "name": "gun_pdc_small_yaw_ueg",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
@@ -7983,7 +7983,7 @@
   {
    "name": "gun_pdc_small_yaw_corsair",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
@@ -8029,7 +8029,7 @@
   {
    "name": "gun_pdc_small_yaw_veil",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_veil_*",
@@ -8075,7 +8075,7 @@
   {
    "name": "gun_pdc_small_yaw_guardian",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
@@ -8121,7 +8121,7 @@
   {
    "name": "gun_pdc_small_yaw",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/pdc-small"
     }
@@ -8161,7 +8161,7 @@
   {
    "name": "gun_railgun_heavy_yaw_tdf",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
@@ -8207,7 +8207,7 @@
   {
    "name": "gun_railgun_heavy_yaw_mrn",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
@@ -8253,7 +8253,7 @@
   {
    "name": "gun_railgun_heavy_yaw_enemy",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
@@ -8299,7 +8299,7 @@
   {
    "name": "gun_railgun_heavy_yaw_cartel",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
@@ -8345,7 +8345,7 @@
   {
    "name": "gun_railgun_heavy_yaw_helion",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_helion_*",
@@ -8391,7 +8391,7 @@
   {
    "name": "gun_railgun_heavy_yaw_ueg",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
@@ -8437,7 +8437,7 @@
   {
    "name": "gun_railgun_heavy_yaw_corsair",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
@@ -8483,7 +8483,7 @@
   {
    "name": "gun_railgun_heavy_yaw_veil",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_veil_*",
@@ -8529,7 +8529,7 @@
   {
    "name": "gun_railgun_heavy_yaw_guardian",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
@@ -8575,7 +8575,7 @@
   {
    "name": "gun_railgun_heavy_yaw",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/railgun-heavy"
     }
@@ -8615,7 +8615,7 @@
   {
    "name": "gun_spinal_mass_driver_base_tdf",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
@@ -8661,7 +8661,7 @@
   {
    "name": "gun_spinal_mass_driver_base_mrn",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
@@ -8707,7 +8707,7 @@
   {
    "name": "gun_spinal_mass_driver_base_enemy",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
@@ -8753,7 +8753,7 @@
   {
    "name": "gun_spinal_mass_driver_base_cartel",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
@@ -8799,7 +8799,7 @@
   {
    "name": "gun_spinal_mass_driver_base_helion",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_helion_*",
@@ -8845,7 +8845,7 @@
   {
    "name": "gun_spinal_mass_driver_base_ueg",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
@@ -8891,7 +8891,7 @@
   {
    "name": "gun_spinal_mass_driver_base_corsair",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
@@ -8937,7 +8937,7 @@
   {
    "name": "gun_spinal_mass_driver_base_veil",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_veil_*",
@@ -8983,7 +8983,7 @@
   {
    "name": "gun_spinal_mass_driver_base_guardian",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
@@ -9029,7 +9029,7 @@
   {
    "name": "gun_spinal_mass_driver_base",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/spinal-mass-driver"
     }
@@ -9069,7 +9069,7 @@
   {
    "name": "gun_triple_heavy_turret_yaw_tdf",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
@@ -9115,7 +9115,7 @@
   {
    "name": "gun_triple_heavy_turret_yaw_mrn",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
@@ -9161,7 +9161,7 @@
   {
    "name": "gun_triple_heavy_turret_yaw_enemy",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
@@ -9207,7 +9207,7 @@
   {
    "name": "gun_triple_heavy_turret_yaw_cartel",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
@@ -9253,7 +9253,7 @@
   {
    "name": "gun_triple_heavy_turret_yaw_helion",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_helion_*",
@@ -9299,7 +9299,7 @@
   {
    "name": "gun_triple_heavy_turret_yaw_ueg",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
@@ -9345,7 +9345,7 @@
   {
    "name": "gun_triple_heavy_turret_yaw_corsair",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
@@ -9391,7 +9391,7 @@
   {
    "name": "gun_triple_heavy_turret_yaw_veil",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_veil_*",
@@ -9437,7 +9437,7 @@
   {
    "name": "gun_triple_heavy_turret_yaw_guardian",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
@@ -9483,7 +9483,7 @@
   {
    "name": "gun_triple_heavy_turret_yaw",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/triple-heavy-turret"
     }
@@ -9523,7 +9523,7 @@
   {
    "name": "gun_twin_heavy_turret_yaw_tdf",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
@@ -9569,7 +9569,7 @@
   {
    "name": "gun_twin_heavy_turret_yaw_mrn",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
@@ -9615,7 +9615,7 @@
   {
    "name": "gun_twin_heavy_turret_yaw_enemy",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
@@ -9661,7 +9661,7 @@
   {
    "name": "gun_twin_heavy_turret_yaw_cartel",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
@@ -9707,7 +9707,7 @@
   {
    "name": "gun_twin_heavy_turret_yaw_helion",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_helion_*",
@@ -9753,7 +9753,7 @@
   {
    "name": "gun_twin_heavy_turret_yaw_ueg",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
@@ -9799,7 +9799,7 @@
   {
    "name": "gun_twin_heavy_turret_yaw_corsair",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
@@ -9845,7 +9845,7 @@
   {
    "name": "gun_twin_heavy_turret_yaw_veil",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_veil_*",
@@ -9891,7 +9891,7 @@
   {
    "name": "gun_twin_heavy_turret_yaw_guardian",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
@@ -9937,7 +9937,7 @@
   {
    "name": "gun_twin_heavy_turret_yaw",
    "match": {
-    "mesh": "geometry_0",
+    "mesh": "geometry_0*",
     "userData": {
      "gunModel": "pixal/twin-heavy-turret"
     }
