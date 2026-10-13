@@ -1,0 +1,9 @@
+0 gone #startup
+5 eval (() => { window.jsgb.graphics.set({lumen: true}); return 'lumen on'; })()
+60 eval 'alive ' + window.__FF.scene.children.filter(o => o.userData.ship && !o.userData.ship.dead).length
+120 eval 'alive ' + window.__FF.scene.children.filter(o => o.userData.ship && !o.userData.ship.dead).length
+180 eval 'alive ' + window.__FF.scene.children.filter(o => o.userData.ship && !o.userData.ship.dead).length
+240 eval 'alive ' + window.__FF.scene.children.filter(o => o.userData.ship && !o.userData.ship.dead).length
+300 eval 'alive ' + window.__FF.scene.children.filter(o => o.userData.ship && !o.userData.ship.dead).length
+305 shot end
+310 quit

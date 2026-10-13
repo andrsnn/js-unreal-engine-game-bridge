@@ -6,7 +6,7 @@
 // the hull under it (scene/gun-models.js), falling back to its faction's tint (HULL_TINT); the "gunTint" variants give
 // each faction's hulls (userData.glbKey on the hull) that tint, and the gun's own rule draws it untinted elsewhere.
 // Gun sources already in the file are replaced; everything else stays.
-//   node Overrides/make-hardburn-guns.mjs [<the game's gun export, GUNS-FOR-UNREAL.txt>]
+//   node Overrides/make-hardburn-guns.mjs [<the game's gun export, GUNS-FOR-UNREAL.txt> [<its mounts.json>]]
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -45,13 +45,16 @@ function parts(glb) {
 const exportFile = process.argv[2] ?? 'G:/JsGameBridge-fidelity-order/GUNS-FOR-UNREAL.txt', exported = new Map();
 if (fs.existsSync(exportFile)) for (const m of fs.readFileSync(exportFile, 'utf8').matchAll(/guns\/pixal\/([a-z0-9-]+)\.glb\s+\(\w+\)\s+original:\s*(\S.*?\.glb)/g)) exported.set(m[1], m[2].replaceAll('\\', '/'));
 
+// The game's mount export (mounts.json "models") lists the gun files its ships carry; with it, only those guns.
+const mountsFile = process.argv[3] ?? 'G:/JsGameBridge-fidelity-order/mounts.json';
+const fitted = fs.existsSync(mountsFile) ? new Set((JSON.parse(fs.readFileSync(mountsFile, 'utf8')).models ?? []).map(m => path.basename(m, '.glb'))) : new Set();
+
 const sources = [];
 for (const report of fs.readdirSync(guns).filter(f => f.endsWith('.json') && f !== 'manifest.json').sort()) {
   const id = report.replace(/\.json$/, ''), copy = `${guns}/${id}.glb`;
+  if (fitted.size && !fitted.has(id)) continue;
   // The original: the one the game's gun export names for this copy, or else the asset vault's file for the gun.
   const vault = `F:/AssetVault/hard-burn/assets/gun-${id}/originals/pixal3d_textured.glb`;
-  // With an export, only the guns it lists: those are the ones the game fits to ships.
-  if (exported.size && !exported.has(id)) continue;
   const original = exported.get(id) ?? (fs.existsSync(vault) ? vault : null);
   if (!original || !fs.existsSync(original) || !fs.existsSync(copy)) { console.log(`no original for ${id}`); continue; }
   for (const [part, {mesh}] of parts(copy)) {

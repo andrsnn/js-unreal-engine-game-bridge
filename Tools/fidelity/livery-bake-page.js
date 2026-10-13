@@ -222,6 +222,15 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
   const gameNode = new THREE.Matrix4().copy(sceneRoot.matrixWorld).invert().multiply(game.matrixWorld);
   const geometry = source.geometry.clone().applyMatrix4(new THREE.Matrix4().copy(gameNode).invert().multiply(source.matrixWorld));
   if (!geometry.attributes.normal) geometry.computeVertexNormals();
+  // A gun part is drawn fitted to the bounds of the game's mesh (its rule's "fit": "bounds"), whatever frame its file is
+  // in, so the lookups below use the same fit: the source's bounds laid on the game mesh's.
+  if (key.endsWith('.glb')) {
+    geometry.computeBoundingBox(); game.geometry.computeBoundingBox();
+    const from = geometry.boundingBox, to = game.geometry.boundingBox, scale = to.getSize(new THREE.Vector3()).divide(from.getSize(new THREE.Vector3()));
+    geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(to.getCenter(new THREE.Vector3()))
+      .multiply(new THREE.Matrix4().makeScale(scale.x, scale.y, scale.z)).multiply(new THREE.Matrix4().makeTranslation(from.getCenter(new THREE.Vector3()).negate())));
+    geometry.computeVertexNormals();
+  }
   // How well the source lines up with the game's model: per axis, the source's size over the game's and the centres'
   // distance over the game's size. Near 1 and 0 when they match; anything else means the lookups below land wrong.
   geometry.computeBoundingBox(); game.geometry.computeBoundingBox();

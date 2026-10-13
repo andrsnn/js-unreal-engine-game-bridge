@@ -5,20 +5,23 @@
 import json, sys
 ship, hull, faction = sys.argv[1], sys.argv[2], sys.argv[3]
 D = 'H:/captures/jsgb-fidelity/toggle/'
-mounts = json.load(open('C:/UnlitWorldsCaptures/judge/hardburn-ship-judge/mounts.json', encoding='utf-8'))
+mounts = json.load(open('G:/JsGameBridge-fidelity-order/mounts.json', encoding='utf-8'))
+roster = json.load(open('H:/captures/jsgb-goal/roster.json', encoding='utf-8'))
 views = json.load(open('C:/Users/Aidan Anderson/falling-frontier-clone/tools/ship-judge-views.json', encoding='utf-8'))['ship']['views']
-entry = next(s for s in mounts['ships'] if s['ship'] == ship)
+entry = next(s for s in mounts['list'] if s['ship'] == ship)
+row = next(r for r in roster if r['key'] == ship)
 guns = [{k: g.get(k) for k in ('slot', 'model', 'seat', 'up', 'forward', 'right', 'hullNormal', 'ringRadius', 'ring')} for g in entry['guns']]
 hide = open(D + 'factions.txt').read().split('\n')[1]
 # The judge's fit: the parts mounts.json lists for this ship (weapon slots), as the ship builder's default design has them.
-parts = [g['part'] for g in entry['guns'] if g['slot'] <= 8]
-kits = [parts + ['reactor'], parts]
+# The fit: the roster's default slots for this hull, fitted the way the game's review app does (it wrote mounts.json).
+kits = [row['slots']]
+faction = {'tdf': 'player', 'mrn': 'enemy'}.get(faction, faction)
 J = lambda v: json.dumps(v, separators=(',', ':'))
 
 setup = ("2 eval (() => { const F = window.__FF, T = F.THREE; F.world.speed = 0; F.rts.minR = 0.5; F.rts.limit = null; F.deselect?.(); "
          "const proto = F.scene.children.find(o => o.userData.ship)?.userData.ship; if (!proto) return 'no ship to copy'; const Ship = proto.constructor; "
          "const s = new Ship('%s', {faction: '%s', pos: [-21000, 2500, -16000], yaw: 0, name: 'JUDGE'}); "
-         "let fit = 'default'; for (const slots of %s) { try { s.fitDesign({type: '%s', slots, name: 'JUDGE FIT'}); fit = slots.join('+'); break; } catch (e) { fit = 'NOFIT ' + String(e.message).slice(0, 80); } } "
+         "let fit = 'default'; for (const slots of %s) { try { s.fitDesign({type: '%s', slots, name: 'JUDGE FIT'}, {transport: true}); fit = slots.join('+'); break; } catch (e) { fit = 'NOFIT ' + String(e.message).slice(0, 80); } } "
          "s.grp.scale.setScalar(28); s.autoAggro = false; s.hideShield = true; F.scene.add(s.grp); window.__j = s; "
          "clearInterval(window.__hold); window.__hold = setInterval(() => { F.world.speed = 0; }, 200); "
          # The camera: looks at a world point from a direction given in ship space, at a distance that keeps the game's
@@ -39,7 +42,7 @@ report = ("96 eval (() => { const F = window.__FF, T = F.THREE, s = window.__j, 
           "m.position.copy(A).add(B).multiplyScalar(0.5); m.quaternion.setFromUnitVectors(Y, B.clone().sub(A).normalize()); m.scale.set(th, len, th); m.userData.effect = true; axes.add(m); }; "
           "for (const g of G) { if (!g.seat) continue; const R = g.ringRadius || 1, L = R * 2.4, th = R * 0.07, p = g.seat, end = (v, k = 1) => [p[0] + v[0] * L * k, p[1] + v[1] * L * k, p[2] + v[2] * L * k]; "
           "if (g.right) seg(p, end(g.right), 0xff2020, th); if (g.up) seg(p, end(g.up), 0x20ff20, th); if (g.forward) seg(p, end(g.forward), 0x3080ff, th); if (g.hullNormal) seg(p, end(g.hullNormal, 1.5), 0xffe020, th * 0.6); "
-          "const r = g.ring || []; for (let i = 0; i < r.length; i++) seg(r[i].slice(0, 3), r[(i + 1) %% r.length].slice(0, 3), 0xff30ff, th * 0.6); } model.add(axes); "
+          "const r = g.ring || []; for (let i = 0; i < r.length; i++) seg(r[i].slice(0, 3), r[(i + 1) %% r.length].slice(0, 3), 0xff30ff, th * 0.6); } window.__axes = axes; "
           "const inv = new T.Matrix4().copy(model.matrixWorld).invert(), recs = globalThis.__jsgbMountRecords || [], out = [], r4 = v => v.toArray().map(x => +x.toFixed(4)); "
           "const lods = []; model.traverse(m => { if (m.isMesh && /^hull_concept_/.test(m.material?.name ?? '')) { let shown = true; for (let p = m; p && p !== model; p = p.parent) if (!p.visible) shown = false; if (shown) lods.push(m.name + ':' + m.geometry.attributes.position.count); } }); "
           "model.traverse(grp => { if (!/^fitted-/.test(grp.name)) return; const gm = new T.Matrix4().multiplyMatrices(inv, grp.matrixWorld), col = (m, i) => r4(new T.Vector3().setFromMatrixColumn(m, i).normalize()); "
@@ -50,7 +53,7 @@ report = ("96 eval (() => { const F = window.__FF, T = F.THREE, s = window.__j, 
           "window.__jd = JSON.stringify({ship: '%s', length: model.userData.length, hull: lods, records: recs.length, guns: out}); return 'JUDGELEN ' + window.__jd.length; })()") % (J(guns), ship)
 
 # Fit again once every hull detail level has loaded: the game measures the deck under each gun when it fits it.
-refit = "80 eval (() => { const s = window.__j; try { s.fitDesign({type: '%s', slots: %s, name: 'JUDGE FIT'}); return 'refit'; } catch (e) { return 'refit failed ' + e.message; } })()" % (hull, J(kits[0]))
+refit = "80 eval (() => { const s = window.__j; try { s.fitDesign({type: '%s', slots: %s, name: 'JUDGE FIT'}, {transport: true}); return 'refit'; } catch (e) { return 'refit failed ' + e.message; } })()" % (hull, J(kits[0]))
 lines = ['0 gone #startup', hide, setup, refit, first, report]
 t = 97
 for v in views:
@@ -61,19 +64,25 @@ for v in views:
                  "return '%s ' + window.__look(c, from, need * 1.12, b.getSize(new T.Vector3()).length() * 1.6); })()" % (t, J(v['from']), v['name']))
     lines.append('%d shot %s' % (t + 3, v['name']))
     t += 4
-for g in guns:
-    if not g.get('seat'):
-        continue
-    # A close-up of the mount from above its bow quarter, in the gun's own axes.
+# Each gun's close-up from above its bow quarter, in the gun's own axes: first without the judge's axes, then with them.
+def closeup(g, name, t):
     right, up, forward = g.get('right') or [1, 0, 0], g.get('up') or [0, 1, 0], g.get('forward') or [0, 0, 1]
     frm = [0.55 * right[i] + 0.6 * up[i] + 0.58 * forward[i] for i in range(3)]
     lines.append("%d eval (() => { const T = window.__FF.THREE, s = window.__j; s.grp.updateMatrixWorld(true); const p = new T.Vector3(%s).applyMatrix4(s.model.matrixWorld), k = new T.Vector3().setFromMatrixColumn(s.model.matrixWorld, 0).length(); "
-                 "return 'mount-%d ' + window.__look(p, %s, %s * k * 4.2, %s * k * 30); })()" % (t, ','.join(str(x) for x in g['seat']), g['slot'], J(frm), g['ringRadius'] or 1, g['ringRadius'] or 1))
-    lines.append('%d shot mount-%d' % (t + 3, g['slot']))
-    t += 4
-for i in range(24):
+                 "return '%s ' + window.__look(p, %s, %s * k * 4.2, %s * k * 30); })()" % (t, ','.join(str(x) for x in g['seat']), name, J(frm), g['ringRadius'] or 1, g['ringRadius'] or 1))
+    lines.append('%d shot %s' % (t + 3, name))
+for g in guns:
+    if g.get('seat'):
+        closeup(g, 'gun-%d' % g['slot'], t); t += 4
+lines.append("%d eval (() => { window.__j.model.add(window.__axes); return 'axes on'; })()" % t)
+t += 1
+# With the axes: four guns, spread over the list (a ship can carry twenty).
+seated = [g for g in guns if g.get('seat')]
+for g in seated[::max(1, len(seated) // 4)][:4]:
+    closeup(g, 'mount-%d' % g['slot'], t); t += 4
+for i in range(90):
     lines.append("%s eval 'JUDGEPART' + String(%d).padStart(2, '0') + ' ' + (window.__jd ?? '').slice(%d, %d)" % (round(t + 0.1 * i, 1), i, i * 400, (i + 1) * 400))
-t += 3
+t += 10
 lines.append('%d quit' % t)
 open(D + 'judge-%s.txt' % ship, 'w', newline='\n').write('\n'.join(lines))
 print('wrote judge-%s.txt' % ship, len(guns), 'guns', len(views), 'views, ends at', t, 's')
