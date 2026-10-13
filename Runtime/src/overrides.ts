@@ -168,16 +168,6 @@ export function overrideFor(o: THREE.Object3D, list: Compiled[]): OverrideHit | 
     if (!loggedRules.has(r.key)) { loggedRules.add(r.key); log(`overrides: ${r.name} draws ${r.mesh} for ${(o as THREE.InstancedMesh).isInstancedMesh ? 'instanced ' : ''}"${o.name}" from ${src?.url ?? 'its name'}`); }
     break;
   }
-  // TEMP gun diagnostics: what the bridge sees for each gun model, once per file. Remove once the gun rules match.
-  let gunModel = ''; for (let p: THREE.Object3D | null = o; p && !gunModel; p = p.parent) if (typeof p.userData?.gunModel === 'string') gunModel = p.userData.gunModel;
-  if (gunModel && !loggedRules.has('diag:' + gunModel + o.name)) {
-    loggedRules.add('diag:' + gunModel + o.name);
-    const chain: string[] = [];
-    for (let p: THREE.Object3D | null = o; p; p = p.parent) chain.push((p.name || p.type) + (p.userData?.glbKey !== undefined ? `[glbKey=${p.userData.glbKey}]` : ''));
-    let best = '', most = -1;
-    for (const r of list) { if (!r.name.startsWith('gun_')) continue; const passes = r.tests.map(t => +t(o, src)); const n = passes.reduce((a, b) => a + b, 0); if (n > most) { most = n; best = `${r.name} tests ${passes.join('')} match ${JSON.stringify(r.match)}`; } }
-    log(`GUNDIAG ${gunModel} mesh "${o.name}" src=${src ? src.url + ' primary=' + src.primary : 'none'} hit=${hit ? hit.key + (hit.hide ? ' (hidden)' : '') : 'none'} visible=${o.visible} rules=${list.length} best: ${best} chain: ${chain.join(' < ')}`);
-  }
   // A miss is checked again now and then while texture rules exist: a texture's image (and its URL) can arrive later.
   cache.set(o, {geometry: g, hit, until: hit || !list.some(r => r.match.texture) ? Infinity : calls + 20000});
   return hit;

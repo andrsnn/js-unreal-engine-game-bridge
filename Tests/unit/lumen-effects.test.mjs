@@ -39,7 +39,7 @@ test('a drive plume lights one nozzle width behind itself, scaled by throttle an
   near(light.intensity, 12 * 0.5 * 2 * 2);
   near(light.distance, 20);
   near(light.radius, 1);
-  assert.equal(light.color.getHex(), 0x00ff00);
+  near(light.color.r, 0.6); near(light.color.g, 1); near(light.color.b, 0.6);
   assert.equal(frame({}, [plume]).lights.length, 0);
   // A plume with its throttle almost closed gives no light.
   assert.equal(frame({engineLight: true}, [effect({vfxKey: 'plume.main', throttle: 0.01})]).lights.length, 0);
