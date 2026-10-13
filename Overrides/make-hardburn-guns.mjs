@@ -45,14 +45,15 @@ function parts(glb) {
 const exportFile = process.argv[2] ?? 'G:/JsGameBridge-fidelity-order/GUNS-FOR-UNREAL.txt', exported = new Map();
 if (fs.existsSync(exportFile)) for (const m of fs.readFileSync(exportFile, 'utf8').matchAll(/guns\/pixal\/([a-z0-9-]+)\.glb\s+\(\w+\)\s+original:\s*(\S.*?\.glb)/g)) exported.set(m[1], m[2].replaceAll('\\', '/'));
 
-// The game's mount export (mounts.json "models") lists the gun files its ships carry; with it, only those guns.
+// The game's mount export (mounts.json "models") lists the gun files its ships carry. With either export, only the guns
+// one of them names.
 const mountsFile = process.argv[3] ?? 'G:/JsGameBridge-fidelity-order/mounts.json';
 const fitted = fs.existsSync(mountsFile) ? new Set((JSON.parse(fs.readFileSync(mountsFile, 'utf8')).models ?? []).map(m => path.basename(m, '.glb'))) : new Set();
 
 const sources = [];
 for (const report of fs.readdirSync(guns).filter(f => f.endsWith('.json') && f !== 'manifest.json').sort()) {
   const id = report.replace(/\.json$/, ''), copy = `${guns}/${id}.glb`;
-  if (fitted.size && !fitted.has(id)) continue;
+  if ((fitted.size || exported.size) && !fitted.has(id) && !exported.has(id)) continue;
   // The original: the one the game's gun export names for this copy, or else the asset vault's file for the gun.
   const vault = `F:/AssetVault/hard-burn/assets/gun-${id}/originals/pixal3d_textured.glb`;
   const original = exported.get(id) ?? (fs.existsSync(vault) ? vault : null);

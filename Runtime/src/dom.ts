@@ -88,7 +88,7 @@ const search = host.search ?? '';
 g.location = {
   href: 'http://localhost/' + search, origin: 'http://localhost', protocol: 'http:', host: 'localhost', hostname: 'localhost', port: '',
   pathname: '/', search, hash: '',
-  assign: () => host.reload(), replace: () => host.reload(), reload: () => host.reload(), toString() { return this.href; },
+  assign: () => reloadNow(), replace: () => reloadNow(), reload: () => reloadNow(), toString() { return this.href; },
 };
 g.history = {length: 1, state: null, pushState() {}, replaceState() {}, back() {}, forward() {}, go() {}, scrollRestoration: 'auto'};
 try { Object.defineProperty(doc, 'baseURI', {get: () => 'http://localhost/', configurable: true}); } catch { /* linkedom getter */ }
@@ -165,12 +165,17 @@ g.IntersectionObserver ??= class { constructor(private cb: (e: unknown[]) => voi
 g.CSS ??= {supports: () => true, escape: (s: string) => s.replace(/[^\w-]/g, c => '\\' + c)};
 
 // Storage. Saves persist through the host when it offers a store; otherwise they live for the session.
+// Storage is written to the host a moment after a change. A reload must not lose what the page wrote just before it (a
+// game that leaves itself a note in sessionStorage and reloads), so the stores are written out first.
+const storageFlushes: (() => void)[] = [];
+function reloadNow() { for (const flush of storageFlushes) flush(); host.reload(); }
 function makeStorage(kind: string) {
   const store = (g.__jsgbHost as {storage?: {load(k: string): string | null; save(k: string, data: string): void}}).storage;
   const m = new Map<string, string>(Object.entries(JSON.parse(store?.load(kind) ?? '{}') as Record<string, string>));
   let pending = false;
   const flush = () => { pending = false; store?.save(kind, JSON.stringify(Object.fromEntries(m))); };
-  const touch = () => { if (store && !pending) { pending = true; setTimeout(flush, 250); } };
+  const touch = () => { if (store && !pending) { pending = true; setTimeout(() => { if (pending) flush(); }, 250); } };
+  storageFlushes.push(() => { if (pending) flush(); });
   return {
     get length() { return m.size; },
     key: (i: number) => [...m.keys()][i] ?? null,

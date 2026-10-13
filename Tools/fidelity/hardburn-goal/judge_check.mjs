@@ -12,8 +12,8 @@ const id = m => String(m ?? '').replace(/^.*\/(pixal\/[^/]+?)(\.glb)?$/, '$1');
 let failed = 0, total = 0;
 ships.forEach((ship, index) => {
   const parts = [];
-  for (const m of log.matchAll(new RegExp(`-> JP${index}_(\d\d) (.*)`, 'g'))) parts[+m[1]] = m[2].replace(/\r/g, '');
-  let data; try { data = JSON.parse(parts.join('')); } catch { console.log(`${ship}: NO DATA in the log`); failed++; return; }
+  for (const m of log.matchAll(new RegExp('-> JP' + index + '_([0-9][0-9]) (.*)', 'g'))) parts[+m[1]] = m[2].replace(/\r/g, '');
+  let data; try { data = JSON.parse(parts.join("")); } catch (e) { console.log(`${ship}: NO DATA in the log (${parts.length} slices, ${e.message})`); failed++; return; }
   const entry = mounts.list.find(s => s.ship === ship), left = entry.guns.slice();
   // The hull's length in metres over its length in model units turns model units into centimetres.
   const cm = 100 * (entry.hull?.lengthMetres ?? entry.hull?.metres ?? 0) / (entry.hull?.length || 1) || 100;
@@ -25,7 +25,11 @@ ships.forEach((ship, index) => {
     if (!want) { failed++; console.log(`  FAIL ${g.name}: no gun left in the export to pair with`); continue; }
     left.splice(left.indexOf(want), 1);
     const seat = best * cm, up = ang(g.up, want.up), fwd = ang(g.fwd, want.forward);
-    const sent = g.ue ? Math.max(ang(g.ue.up, g.up), ang(g.ue.fwd, g.fwd)) : null, rightModel = id(g.gunModel) === id(want.model);
+    // The high-detail model takes the place of the turret's own mesh, which stands turned by the gun's rest yaw inside
+    // its mount (a turret that faces aft or outward): its forward is the mount's, turned about the mount's up.
+    const turned = yaw => { const c = Math.cos(yaw), s = Math.sin(yaw), u = g.up, f = g.fwd, x = [u[1] * f[2] - u[2] * f[1], u[2] * f[0] - u[0] * f[2], u[0] * f[1] - u[1] * f[0]]; return f.map((v, i) => v * c + x[i] * s); };
+    const rest = want.restYaw ?? 0;
+    const sent = g.ue ? Math.max(ang(g.ue.up, g.up), Math.min(ang(g.ue.fwd, turned(rest)), ang(g.ue.fwd, turned(-rest)))) : null, rightModel = id(g.gunModel) === id(want.model);
     const bad = seat > 1 || up > 0.5 || fwd > 0.5 || sent === null || sent > 0.5 || !rightModel;
     if (bad) failed++;
     console.log(`  ${bad ? 'FAIL' : 'ok  '} ${(want.list + ':' + want.slot).padEnd(11)} ${id(want.model).padEnd(36)}${want.underside ? ' underside' : '          '} seat ${seat.toFixed(2)} cm, up ${up.toFixed(3)}, forward ${fwd.toFixed(3)} deg; ` +
