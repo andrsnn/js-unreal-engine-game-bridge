@@ -25,6 +25,16 @@
     },
     {
       "script": "Tests/scripts/hardburn-keys.txt"
+    },
+    {
+      "script": "Tests/scripts/hardburn-battle.txt",
+      "search": "?view=black",
+      "timeout": 480
+    },
+    {
+      "script": "Tests/scripts/hardburn-system.txt",
+      "search": "?view=campaign&seed=43117&systems=5",
+      "timeout": 420
     }
   ],
   "overrides": "Overrides/hardburn.json",

@@ -1,0 +1,14 @@
+0 gone #startup
+3 eval (() => { const s = document.createElement('style'); s.textContent = '#ui,#worldlabels,.audio-toggle,.audio-mixer,.selbox,.local-clock-preview,body>svg,#startup{display:none!important}'; document.head.append(s); return 'hidden'; })()
+6 eval (() => { const F = window.__FF; if (!F?.world?.campaign) return 'no campaign'; F.rts.limit = null; F.rts.minR = 3; F.world.worldCards?.hide(); F.rts.keepContentVisible = () => {}; document.querySelector('[data-speed="0"]')?.click(); let mine = null, yard = null; F.scene.traverse(x => { if (x.name === 'mine-s0p0') mine = x; if (x.name === 'shipyard-s0p0') yard = x; }); window.__mine = mine; window.__yard = yard; const p = new F.THREE.Vector3(); clearInterval(window.__follow); window.__follow = setInterval(() => { mine.getWorldPosition(p); F.rts.setPose({r: 48, theta: 0.6, phi: 1.22, x: p.x, y: p.y, z: p.z}); }, 0); return 'mine ' + !!mine + ' yard ' + !!yard; })()
+40 shot mine40
+95 shot mine95
+100 shot mine100
+101 eval (() => { const F = window.__FF, y = window.__yard; if (!y) return 'no yard'; const r = Math.max(60, new F.THREE.Box3().setFromObject(y).getSize(new F.THREE.Vector3()).length() * 0.9), p = new F.THREE.Vector3(); clearInterval(window.__follow); window.__follow = setInterval(() => { y.getWorldPosition(p); F.rts.setPose({r, theta: 2.2, phi: 1.18, x: p.x, y: p.y, z: p.z}); }, 0); return 'yard r=' + r.toFixed(0); })()
+106 shot yard106
+110 shot yard110
+
+111 eval (() => { const F = window.__FF, c = F.world.campaign, g = c.systems.find(s => s.id === c.activeSystem).planets.find(p => p.name.includes('GIANT')); if (!g) return 'no giant'; let o = null; F.scene.traverse(x => { if (!o && x.isMesh && x.name && x.name.toUpperCase().includes('GIANT')) o = x; }); const R = (g.radius ?? g.r ?? 40); clearInterval(window.__follow); F.rts.setPose({r: R * 9, theta: 0.9, phi: 1.2, x: g.x, y: 0, z: g.z}); return 'giant R=' + R + ' mesh ' + (o && o.name); })()
+118 shot giant118
+122 shot giant122
+123 quit
