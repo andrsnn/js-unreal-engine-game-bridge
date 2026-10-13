@@ -5902,7 +5902,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.36099278926849365,
@@ -5948,7 +5948,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.36099278926849365,
@@ -5994,7 +5994,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.36099278926849365,
@@ -6040,7 +6040,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.36099278926849365,
@@ -6086,7 +6086,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.36099278926849365,
@@ -6132,7 +6132,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.36099278926849365,
@@ -6178,7 +6178,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.36099278926849365,
@@ -6224,7 +6224,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.36099278926849365,
@@ -6270,7 +6270,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.36099278926849365,
@@ -6311,7 +6311,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.36099278926849365,
@@ -6356,7 +6356,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.2535681128501892,
@@ -6402,7 +6402,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.2535681128501892,
@@ -6448,7 +6448,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.2535681128501892,
@@ -6494,7 +6494,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.2535681128501892,
@@ -6540,7 +6540,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.2535681128501892,
@@ -6586,7 +6586,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.2535681128501892,
@@ -6632,7 +6632,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.2535681128501892,
@@ -6678,7 +6678,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.2535681128501892,
@@ -6724,7 +6724,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.2535681128501892,
@@ -6765,7 +6765,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.2535681128501892,
@@ -6810,7 +6810,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5060185194015503,
@@ -6856,7 +6856,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5060185194015503,
@@ -6902,7 +6902,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5060185194015503,
@@ -6948,7 +6948,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5060185194015503,
@@ -6994,7 +6994,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5060185194015503,
@@ -7040,7 +7040,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5060185194015503,
@@ -7086,7 +7086,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5060185194015503,
@@ -7132,7 +7132,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5060185194015503,
@@ -7178,7 +7178,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5060185194015503,
@@ -7219,7 +7219,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5060185194015503,
@@ -7264,7 +7264,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.47851628065109253,
@@ -7310,7 +7310,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.47851628065109253,
@@ -7356,7 +7356,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.47851628065109253,
@@ -7402,7 +7402,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.47851628065109253,
@@ -7448,7 +7448,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.47851628065109253,
@@ -7494,7 +7494,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.47851628065109253,
@@ -7540,7 +7540,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.47851628065109253,
@@ -7586,7 +7586,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.47851628065109253,
@@ -7632,7 +7632,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.47851628065109253,
@@ -7673,7 +7673,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.47851628065109253,
@@ -7718,7 +7718,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5151388049125671,
@@ -7764,7 +7764,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5151388049125671,
@@ -7810,7 +7810,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5151388049125671,
@@ -7856,7 +7856,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5151388049125671,
@@ -7902,7 +7902,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5151388049125671,
@@ -7948,7 +7948,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5151388049125671,
@@ -7994,7 +7994,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5151388049125671,
@@ -8040,7 +8040,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5151388049125671,
@@ -8086,7 +8086,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5151388049125671,
@@ -8127,7 +8127,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5151388049125671,
@@ -8172,7 +8172,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5074656009674072,
@@ -8218,7 +8218,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5074656009674072,
@@ -8264,7 +8264,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5074656009674072,
@@ -8310,7 +8310,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5074656009674072,
@@ -8356,7 +8356,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5074656009674072,
@@ -8402,7 +8402,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5074656009674072,
@@ -8448,7 +8448,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5074656009674072,
@@ -8494,7 +8494,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5074656009674072,
@@ -8540,7 +8540,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5074656009674072,
@@ -8581,7 +8581,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5074656009674072,
@@ -8626,7 +8626,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.10827334970235825,
@@ -8672,7 +8672,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.10827334970235825,
@@ -8718,7 +8718,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.10827334970235825,
@@ -8764,7 +8764,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.10827334970235825,
@@ -8810,7 +8810,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.10827334970235825,
@@ -8856,7 +8856,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.10827334970235825,
@@ -8902,7 +8902,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.10827334970235825,
@@ -8948,7 +8948,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.10827334970235825,
@@ -8994,7 +8994,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.10827334970235825,
@@ -9035,7 +9035,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.10827334970235825,
@@ -9080,7 +9080,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5050812363624573,
@@ -9126,7 +9126,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5050812363624573,
@@ -9172,7 +9172,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5050812363624573,
@@ -9218,7 +9218,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5050812363624573,
@@ -9264,7 +9264,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5050812363624573,
@@ -9310,7 +9310,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5050812363624573,
@@ -9356,7 +9356,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5050812363624573,
@@ -9402,7 +9402,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5050812363624573,
@@ -9448,7 +9448,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5050812363624573,
@@ -9489,7 +9489,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.5050812363624573,
@@ -9534,7 +9534,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.4047132432460785,
@@ -9580,7 +9580,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.4047132432460785,
@@ -9626,7 +9626,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.4047132432460785,
@@ -9672,7 +9672,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.4047132432460785,
@@ -9718,7 +9718,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.4047132432460785,
@@ -9764,7 +9764,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.4047132432460785,
@@ -9810,7 +9810,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.4047132432460785,
@@ -9856,7 +9856,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.4047132432460785,
@@ -9902,7 +9902,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.4047132432460785,
@@ -9943,7 +9943,7 @@
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
-   "fit": "none",
+   "fit": "bounds",
    "bounds": [
     [
      -0.4047132432460785,

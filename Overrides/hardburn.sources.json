@@ -3022,7 +3022,7 @@
      "gunModel": "pixal/flak-battery"
     }
    },
-   "fit": "none",
+   "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/flak-battery.glb",
    "keys": [
     "/models/guns/pixal/flak-battery.glb"
@@ -3050,7 +3050,7 @@
      "gunModel": "pixal/heavy-spinal-mass-driver"
     }
    },
-   "fit": "none",
+   "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/heavy-spinal-mass-driver.glb",
    "keys": [
     "/models/guns/pixal/heavy-spinal-mass-driver.glb"
@@ -3078,7 +3078,7 @@
      "gunModel": "pixal/pdc-heavy"
     }
    },
-   "fit": "none",
+   "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/pdc-heavy.glb",
    "keys": [
     "/models/guns/pixal/pdc-heavy.glb"
@@ -3106,7 +3106,7 @@
      "gunModel": "pixal/pdc-medium"
     }
    },
-   "fit": "none",
+   "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/pdc-medium.glb",
    "keys": [
     "/models/guns/pixal/pdc-medium.glb"
@@ -3134,7 +3134,7 @@
      "gunModel": "pixal/pdc-small"
     }
    },
-   "fit": "none",
+   "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/pdc-small.glb",
    "keys": [
     "/models/guns/pixal/pdc-small.glb"
@@ -3162,7 +3162,7 @@
      "gunModel": "pixal/railgun-heavy"
     }
    },
-   "fit": "none",
+   "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/railgun-heavy.glb",
    "keys": [
     "/models/guns/pixal/railgun-heavy.glb"
@@ -3190,7 +3190,7 @@
      "gunModel": "pixal/spinal-mass-driver"
     }
    },
-   "fit": "none",
+   "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/spinal-mass-driver.glb",
    "keys": [
     "/models/guns/pixal/spinal-mass-driver.glb"
@@ -3218,7 +3218,7 @@
      "gunModel": "pixal/triple-heavy-turret"
     }
    },
-   "fit": "none",
+   "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/triple-heavy-turret.glb",
    "keys": [
     "/models/guns/pixal/triple-heavy-turret.glb"
@@ -3246,7 +3246,7 @@
      "gunModel": "pixal/twin-heavy-turret"
     }
    },
-   "fit": "none",
+   "fit": "bounds",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/twin-heavy-turret.glb",
    "keys": [
     "/models/guns/pixal/twin-heavy-turret.glb"
