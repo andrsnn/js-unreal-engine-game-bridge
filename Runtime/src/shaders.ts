@@ -14,7 +14,9 @@ export type ShaderInput = {name: string; source: 'localPosition' | 'instanceColo
   param?: string; index?: number};
 /** emissiveOutput: the fragment body also writes the shader's emitted light to a second Custom-node output, JsgbEmissive
  *  (built-in materials patched in onBeforeCompile that add to totalEmissiveRadiance). */
-export type TranslatedShader = {key: string; hlsl: string; inputs: ShaderInput[]; vertexHlsl: string; vertexInputs: ShaderInput[]; lit?: boolean; encoded?: boolean; emissiveOutput?: boolean};
+export type TranslatedShader = {key: string; hlsl: string; inputs: ShaderInput[]; vertexHlsl: string; vertexInputs: ShaderInput[]; lit?: boolean; encoded?: boolean; emissiveOutput?: boolean;
+  /** Drawn on an InstancedMesh: Unreal takes the instance's model matrix for the fragment stage in the vertex shader. */
+  instanced?: boolean};
 
 type Decl = {qualifier: string; type: string; name: string; array: string};
 const BUILTIN_UNIFORMS: Record<string, string> = {modelMatrix: 'mat4', viewMatrix: 'mat4', projectionMatrix: 'mat4', cameraPosition: 'vec3', isOrthographic: 'bool'};
@@ -286,7 +288,11 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial, instance
   const vertex = material.vertexShader ?? '';
   const instancing = {matrix: !!instanced && instanced.matrix !== false && /\binstanceMatrix\b/.test(vertex), color: !!instanced?.color && /\binstanceColor\b/.test(vertex)};
   const extras = (instanced?.extras ?? []).filter(e => new RegExp(`\\b${e.name}\\b`).test(vertex));
-  const key = sourceKey(material) + (instancing.matrix ? '_i' : '') + (instancing.color ? '_c' : '') + (extras.length ? '_x' + String(textHash(extras.map(e => `${e.name}${e.size}@${e.offset}`).join(','))).slice(0, 6) : '');
+  // Debugging switch: with jsgbdiag=solid in the run's search (--search '?view=black&jsgbdiag=solid'), shaders with
+  // per-instance attributes draw magenta at full alpha, their fragment stage and its discards skipped. Magenta where
+  // the effect belongs means its geometry is right and its colour or alpha is not.
+  const diagSolid = /[?&]jsgbdiag=solid\b/.test(host.search ?? '');
+  const key = sourceKey(material) + (instancing.matrix ? '_i' : '') + (instancing.color ? '_c' : '') + (extras.length ? '_x' + String(textHash(extras.map(e => `${e.name}${e.size}@${e.offset}`).join(','))).slice(0, 6) : '') + (diagSolid && extras.length ? '_diag' : '');
   if (cache.has(key)) return cache.get(key);
   let vs: ReturnType<typeof prepare>, fs: ReturnType<typeof prepare>;
   try { vs = prepare(material, 'vertex', instancing); fs = prepare(material, 'fragment'); } catch (error) {
@@ -392,6 +398,7 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial, instance
     if (has(F, 'gl_FrontFacing')) glue.push('fs.gl_FrontFacing = Parameters.TwoSidedSign > 0;');
     const emissiveOutput = has(F, 'jsgb_Emissive');
     glue.push(`fs.${F.entry}();`, ...(emissiveOutput ? ['JsgbEmissive = fs.jsgb_Emissive;'] : []), 'return fs.jsgb_FragColor;');
+    if (diagSolid && extras.length) glue = glue.filter(l => !/^fs\.\w+_main\(\);$|^JsgbEmissive = /.test(l)).map(l => l === 'return fs.jsgb_FragColor;' ? (emissiveOutput ? 'JsgbEmissive = float3(1, 0, 1); ' : '') + 'return float4(1, 0, 1, 1);' : l);
     const hlsl = [V.types + F.types, V.struct, F.struct, ...vsGlue, ...glue].filter(Boolean).join('\n');
     // Vertex stage: the shader's own gl_Position, taken back to a world position, becomes Unreal's
     // world position offset (billboards, view-space quads). The view-space point is solved from the
@@ -407,7 +414,7 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial, instance
       'float3 jsgbT = (jsgbV.x * JsgbW0 + jsgbV.y * JsgbW1 + jsgbV.z * JsgbW2 + JsgbW3).xyz;',
       'float3 jsgbOffset = float3(jsgbT.x, jsgbT.z, jsgbT.y) * 100.0 - JsgbWorld;',
       'return any(isnan(jsgbOffset)) || dot(jsgbOffset, jsgbOffset) < 1e-4 ? float3(0, 0, 0) : jsgbOffset;'].filter(Boolean).join('\n');
-    result = {key, hlsl, inputs, vertexHlsl, vertexInputs, ...(emissiveOutput ? {emissiveOutput} : {})};
+    result = {key, hlsl, inputs, vertexHlsl, vertexInputs, ...(emissiveOutput ? {emissiveOutput} : {}), ...(instanced ? {instanced: true} : {})};
   } catch (error) {
     host.log('warn', `custom shader ${material.name || key} stays generic: ${error instanceof Error ? error.message : error}`);
   }

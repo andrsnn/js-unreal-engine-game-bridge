@@ -58,6 +58,8 @@ test('a patched material on an InstancedMesh reads its per-instance attribute fr
   assert.ok(t, logs.join('\n'));
   assert.equal(t.lit, true);
   assert.equal(t.emissiveOutput, true);
+  // Its fragment stage takes the instance's model matrix from the vertex shader (Unreal's pixel shaders only have the component's).
+  assert.equal(t.instanced, true);
   // Instance colour takes custom data 0-2, so the attribute's two floats are 3 and 4, not a UV channel.
   assert.deepEqual(t.inputs.filter(i => i.name.startsWith('JsgbI_')).map(i => [i.name, i.source, i.index]), [['JsgbI_debrisState0', 'instanceData', 3], ['JsgbI_debrisState1', 'instanceData', 4]]);
   assert.ok(!t.inputs.some(i => i.source === 'uv' && i.index > 0));
@@ -72,6 +74,7 @@ test('a patched material that leaves emitted light alone has no emissive output'
   const t = await translate(m, hooked(m));
   assert.ok(t, logs.join('\n'));
   assert.equal(t.emissiveOutput, undefined);
+  assert.equal(t.instanced, undefined);
   assert.doesNotMatch(t.hlsl, /JsgbEmissive/);
 });
 

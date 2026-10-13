@@ -65,6 +65,7 @@
 #include "Materials/MaterialExpressionAppendVector.h"
 #include "Materials/MaterialExpressionPower.h"
 #include "Materials/MaterialExpressionPerInstanceCustomData.h"
+#include "Materials/MaterialExpressionVertexInterpolator.h"
 #include "Materials/MaterialExpressionAdd.h"
 #include "Materials/MaterialExpressionLinearInterpolate.h"
 #include "Materials/MaterialExpressionConstant.h"
@@ -2054,6 +2055,7 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 		Mat->bUsedWithInstancedStaticMeshes = true;
 		Mat->bUsedWithNiagaraSprites = false;
 		auto Add = [Mat](UMaterialExpression* E) { Mat->GetExpressionCollection().AddExpression(E); return E; };
+		const bool bInstancedShader = Flag(S, TEXT("instanced"));
 		// One Custom node per stage; its inputs are the node graph the translated HLSL reads.
 		auto MakeCustom = [&](const FString& Code, const TCHAR* InputsField, ECustomMaterialOutputType Output) -> UMaterialExpressionCustom*
 		{
@@ -2139,6 +2141,16 @@ UMaterialInterface* UJsgbSceneMirror::GeneratedParent(const FString& Key, int32 
 				E = P;
 			}
 			if (!E) { continue; }
+			// In a pixel shader Unreal's local-to-world is the component's, not the instance's (MaterialTemplate.ush
+			// GetLocalToWorld3x3 reads the primitive data), so on an InstancedMesh the fragment stage would rebuild
+			// three's modelMatrix from the component: a sprite's size and depth came out wrong and its fade discarded it.
+			// The instance's axes and origin are taken in the vertex shader and interpolated instead.
+			if (bInstancedShader && FCString::Strcmp(InputsField, TEXT("inputs")) == 0 && (Source == TEXT("localAxis") || Source == TEXT("localOrigin")))
+			{
+				UMaterialExpressionVertexInterpolator* Vi = NewObject<UMaterialExpressionVertexInterpolator>(Mat);
+				Vi->Input.Connect(0, Add(E));
+				E = Vi;
+			}
 			Add(E);
 			// Vector parameters put RGBA on output 5; vertex colour has no RGBA output, so append A to RGB.
 			int32 Output = Cast<UMaterialExpressionVectorParameter>(E) ? 5 : 0;
