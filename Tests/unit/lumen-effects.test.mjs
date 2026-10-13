@@ -36,7 +36,7 @@ test('a drive plume lights one nozzle width behind itself, scaled by throttle an
   const plume = effect({vfxKey: 'plume.main', throttle: 0.5, nozzleWidth: 2, driveColour: 0x00ff00}, [0, 0, 10]);
   const [light] = frame({engineLight: true}, [plume]).lights;
   nearVector(light.at, 0, 0, 8);
-  near(light.intensity, 30 * 0.5 * 2 * 2);
+  near(light.intensity, 12 * 0.5 * 2 * 2);
   near(light.distance, 20);
   near(light.radius, 1);
   assert.equal(light.color.getHex(), 0x00ff00);

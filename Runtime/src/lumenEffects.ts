@@ -28,8 +28,8 @@ import {host} from './host';
 export type EffectLight = {id: object; color: THREE.Color; intensity: number; at: THREE.Vector3; dir: THREE.Vector3; distance: number; length: number; radius: number};
 
 const MAX = {engine: 32, flash: 24, round: 16, motor: 16, fireball: 12, shard: 8};
-// An engine light at full throttle, per square nozzle width; 100 washed a capital's own red hull in its purple drive light.
-const ENGINE_CANDELA = 30;
+// An engine light at full throttle, per square nozzle width; 100, then 30, washed a capital's own red hull in its purple drive light.
+const ENGINE_CANDELA = 12;
 const MOTOR_CANDELA = 400;
 const ROUND_CANDELA = 60;
 // A fireball at the peak of its glow, per square world unit of the sprite: a size 1 missile blast's fireball (about 1.2

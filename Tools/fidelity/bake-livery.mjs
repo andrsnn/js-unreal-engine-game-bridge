@@ -6,7 +6,8 @@
 // paints that hull with. Writes <out>/<name>.png and <out>/bake.json; Tools/fidelity/import-livery.mjs brings them into
 // the host project.
 //   node Tools/fidelity/bake-livery.mjs <overrides.json> --game hardburn --out <dir> [--only a,b] [--again] [--limit n] [--port 5396] [--profile <dir>] [--preview]
-// Hulls already painted in <dir> are skipped unless --again. --preview also writes <name>.preview.png: the game's model
+// A rule's "bake": {"darkFloor": 0.09, "wear": 1.8} keeps texture darker than darkFloor unpainted (dark machinery on a
+// dark hull) and scales the wear. Hulls already painted in <dir> are skipped unless --again. --preview also writes <name>.preview.png: the game's model
 // with the game's texture beside the source model with the bake, unlit, from the same view. bake.json's fit says how
 // well the source lines up with the game's model.
 import fs from 'node:fs';
@@ -71,7 +72,7 @@ for (const r of rules) {
   const started = Date.now();
   try {
     const result = await page.evaluate(async ([name, key, url, style, options]) => (await import('/__jsgb_bake/page.js')).bake(name, key, url, style, options),
-      [r.name, r.keys[0], `/__jsgb_bake/source/${r.name}.glb`, style, {preview: rest.includes('--preview'), previewDistance: +flag('--preview-distance', 2.6), fill: !rest.includes('--no-fill')}]);
+      [r.name, r.keys[0], `/__jsgb_bake/source/${r.name}.glb`, style, {preview: rest.includes('--preview'), previewDistance: +flag('--preview-distance', 2.6), fill: !rest.includes('--no-fill'), ...r.bake}]);
     fs.writeFileSync(path.join(out, r.name + '.png'), Buffer.from(result.png, 'base64'));
     if (result.preview) fs.writeFileSync(path.join(out, r.name + '.preview.png'), Buffer.from(result.preview, 'base64'));
     report[r.name] = {key: r.keys[0], width: result.width, height: result.height, coverage: +result.coverage.toFixed(3), plates: +result.mask.toFixed(3), material: result.material, fit: result.fit, seconds: Math.round((Date.now() - started) / 1000)};

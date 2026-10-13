@@ -133,7 +133,7 @@ for (const p of prepared) {
   const {name, match, fit = 'bounds', params, others, receipt, keys} = p.rule;
   // A split gun part's mesh comes from the cut file, whose uvs and frame the livery bake follows ("imported").
   const rule = {name, match, mesh: meshPath, ...(p.kind === 'planet' ? {material: res.material} : {}), fit, bounds: meshSource.bounds, ...(params ? {params} : {}), ...(others ? {others} : {}),
-    source: (p.rule.source ?? p.source).replaceAll('\\', '/'), ...(p.rule.split ? {imported: p.input.replaceAll('\\', '/')} : {}), ...(receipt ? {symmetryRepair: receipt} : {}), ...(keys ? {keys} : {}),  ...(p.triangles ? {triangles: Math.round(p.triangles)} : {}), textures: Object.fromEntries(Object.entries(p.textures).map(([k, t]) => [k, `${t.width}x${t.height}`]))};
+    source: (p.rule.source ?? p.source).replaceAll('\\', '/'), ...(p.rule.split ? {imported: p.input.replaceAll('\\', '/')} : {}), ...(receipt ? {symmetryRepair: receipt} : {}), ...(keys ? {keys} : {}), ...(p.rule.bake ? {bake: p.rule.bake} : {}),  ...(p.triangles ? {triangles: Math.round(p.triangles)} : {}), textures: Object.fromEntries(Object.entries(p.textures).map(([k, t]) => [k, `${t.width}x${t.height}`]))};
   // Variants come first, so a game object that matches one of them takes it, and the source's own rule catches the rest.
   const variants = (list.variants?.[p.rule.variants] ?? []).map(v => ({...rule, name: `${name}_${v.name}`, match: {...match, ...v.match, userData: {...match.userData, ...v.match?.userData}},
     params: {...params, ...v.params}, keys: undefined, imported: undefined}));

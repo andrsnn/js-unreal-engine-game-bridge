@@ -156,7 +156,7 @@ const CLEAN_PAINT = `{
   float seamWidth = max(S * .004, px * .7);
   float seam = 1. - smoothstep(seamWidth, seamWidth + px, edge);
   float grain = jsgbNoise(q / S * 40.) * .6 + jsgbNoise(q / S * 9.) * .4;
-  vec3 c = diffuseColor.rgb * (1. + (jsgbHash(lo) - .5) * .05);
+  vec3 c = diffuseColor.rgb * (1. + (jsgbHash(lo) - .5) * .05 * jsgbWear);
   c *= 1. - .14 * (1. - smoothstep(seamWidth, seamWidth + S * .06, edge)) * (.5 + .5 * grain);
   c *= 1. - .5 * seam;
   float kind = jsgbHash(lo + 17.3), small = min(size.x, size.y);
@@ -173,8 +173,8 @@ const CLEAN_PAINT = `{
     if (max(d.x, d.y) < 0.) { float slats = smoothstep(.35, .5, abs(fract((q.y - centre.y) / (ext.y * .4)) - .5)); c *= .55 + .3 * slats; }
   }
   float chip = smoothstep(.35, .95, vJsgbCurvature) * smoothstep(.45, .75, grain);
-  c = mix(c, vec3(.36, .37, .39) * (.85 + .3 * grain), chip * .65);
-  c *= 1. - .35 * smoothstep(.15, .8, -vJsgbCurvature) * (.6 + .4 * grain);
+  c = mix(c, vec3(.36, .37, .39) * (.85 + .3 * grain), min(1., chip * .65 * jsgbWear));
+  c *= 1. - min(.7, .35 * jsgbWear) * smoothstep(.15, .8, -vJsgbCurvature) * (.6 + .4 * grain);
   float o = dot(texture2D(jsgbOriginal, vJsgbUv).rgb, vec3(.2126, .7152, .0722));
   float oa = dot(textureLod(jsgbOriginal, vJsgbUv, 4.).rgb, vec3(.2126, .7152, .0722));
   c *= mix(1., clamp((o + .02) / (oa + .02), .7, 1.2), .08);
@@ -278,7 +278,7 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
     // comes from its low-detail model and leaves most of the detailed one unpainted. Dark machinery keeps its colour,
     // judged against the hull's own median brightness: a dark texture (the TDF capital's brown camo) still gets painted.
     const light = brightnessAt(blurred, gameUv, 256);
-    const median = Float32Array.from(light).sort()[Math.floor(n / 2)] || .2, dark = Math.min(.18, median * .45);
+    const median = Float32Array.from(light).sort()[Math.floor(n / 2)] || .2, dark = Math.min(.18, Math.max(options.darkFloor ?? 0, median * .45));
     fit.median = +median.toFixed(3); fit.dark = +dark.toFixed(3);
     for (let v = 0; v < n; v++) {
       const flat = 1 - Math.min(1, Math.max(0, (Math.abs(bend[v]) - .15) / .35));
@@ -312,12 +312,14 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
     shader.uniforms.jsgbOriginal = {value: map};
     shader.uniforms.jsgbFrame = {value: frame};
     shader.uniforms.jsgbShipLength = {value: shipLength};
+    // "bake": {"wear": n} on a rule scales the panel-to-panel variation, chipped edges and crevice grime (1 by default).
+    shader.uniforms.jsgbWear = {value: options.wear ?? 1};
     shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nattribute vec2 jsgbUv; varying vec2 vJsgbUv;' + SEAM_VERTEX_DECLARE +
         (clean ? '\nattribute float jsgbCurvature; varying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal; uniform mat4 jsgbFrame;' : ''))
       .replace('#include <project_vertex>', '#include <project_vertex>\n vJsgbUv = jsgbUv; gl_Position = vec4(jsgbUv * 2. - 1., 0., 1.);' + SEAM_VERTEX +
         (clean ? '\n vJsgbCurvature = jsgbCurvature; vJsgbPos = (jsgbFrame * vec4(position, 1.)).xyz; vJsgbNormal = mat3(jsgbFrame) * normal;' : ''));
     shader.fragmentShader = seamFragment(shader.fragmentShader).replace('#include <common>', '#include <common>\n' + oetf + '\nuniform sampler2D jsgbOriginal; varying vec2 vJsgbUv;' +
-        (clean ? '\nvarying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal; uniform float jsgbShipLength;\n' + CLEAN_FUNCTIONS : ''))
+        (clean ? '\nvarying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal; uniform float jsgbShipLength, jsgbWear;\n' + CLEAN_FUNCTIONS : ''))
       .replace('#include <roughnessmap_fragment>', (clean ? CLEAN_PAINT : `float jsgbLum = dot(texture2D(jsgbOriginal, vJsgbUv).rgb, vec3(.2126, .7152, .0722));
         float jsgbAround = dot(textureLod(jsgbOriginal, vJsgbUv, 4.).rgb, vec3(.2126, .7152, .0722));
         diffuseColor.rgb *= mix(1., clamp((jsgbLum + .02) / (jsgbAround + .02), .55, 1.3), DETAIL);`.replace('DETAIL', String(game.material.userData.gun ? GUN_DETAIL : game.material.userData.hardware ? HARDWARE_DETAIL : DETAIL))) + `

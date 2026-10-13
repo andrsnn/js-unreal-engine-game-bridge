@@ -104,6 +104,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -121,6 +125,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -138,6 +146,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -155,6 +167,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -172,6 +188,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -204,6 +224,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1495,6 +1519,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1512,6 +1540,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1529,6 +1561,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1546,6 +1582,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1562,6 +1602,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1579,6 +1623,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1595,6 +1643,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1611,6 +1663,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1628,6 +1684,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1644,6 +1704,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1661,6 +1725,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1677,6 +1745,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1693,6 +1765,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1710,6 +1786,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1726,6 +1806,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1743,6 +1827,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1759,6 +1847,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1775,6 +1867,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1791,6 +1887,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1808,6 +1908,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1824,6 +1928,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1840,6 +1948,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
@@ -1857,6 +1969,10 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "bake": {
+    "darkFloor": 0.09,
+    "wear": 1.8
    }
   },
   {
