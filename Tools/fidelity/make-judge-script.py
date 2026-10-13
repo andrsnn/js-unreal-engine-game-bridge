@@ -65,7 +65,8 @@ for g in guns:
     if not g.get('seat'):
         continue
     # A close-up of the mount from above its bow quarter, in the gun's own axes.
-    frm = [0.55 * g['right'][i] + 0.6 * g['up'][i] + 0.58 * g['forward'][i] for i in range(3)]
+    right, up, forward = g.get('right') or [1, 0, 0], g.get('up') or [0, 1, 0], g.get('forward') or [0, 0, 1]
+    frm = [0.55 * right[i] + 0.6 * up[i] + 0.58 * forward[i] for i in range(3)]
     lines.append("%d eval (() => { const T = window.__FF.THREE, s = window.__j; s.grp.updateMatrixWorld(true); const p = new T.Vector3(%s).applyMatrix4(s.model.matrixWorld), k = new T.Vector3().setFromMatrixColumn(s.model.matrixWorld, 0).length(); "
                  "return 'mount-%d ' + window.__look(p, %s, %s * k * 4.2, %s * k * 30); })()" % (t, ','.join(str(x) for x in g['seat']), g['slot'], J(frm), g['ringRadius'] or 1, g['ringRadius'] or 1))
     lines.append('%d shot mount-%d' % (t + 3, g['slot']))

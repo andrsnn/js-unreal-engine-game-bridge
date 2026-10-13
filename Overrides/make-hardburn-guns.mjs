@@ -6,7 +6,7 @@
 // the hull under it (scene/gun-models.js), falling back to its faction's tint (HULL_TINT); the "gunTint" variants give
 // each faction's hulls (userData.glbKey on the hull) that tint, and the gun's own rule draws it untinted elsewhere.
 // Gun sources already in the file are replaced; everything else stays.
-//   node Overrides/make-hardburn-guns.mjs
+//   node Overrides/make-hardburn-guns.mjs [<the game's gun export, GUNS-FOR-UNREAL.txt>]
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -19,7 +19,9 @@ const list = JSON.parse(fs.readFileSync(file, 'utf8'));
 // The game's faction tints, read from its own source so they stay the same.
 const tints = Function('return ' + /const HULL_TINT=(\{[^;]*\});/.exec(fs.readFileSync(repo + '/src/scene/gun-models.js', 'utf8'))[1])();
 // gun-models.js hullTint: the faction is the word after "concept_" in the hull's key, or else its first word.
-list.variants = {...list.variants, gunTint: Object.entries(tints).map(([faction, tint]) => ({name: faction,
+// A faction whose tint is already in the file keeps it (those are measured from the baked hull paint).
+const kept = new Map((list.variants?.gunTint ?? []).map(v => [v.name, v]));
+list.variants = {...list.variants, gunTint: Object.entries(tints).map(([faction, tint]) => kept.get(faction) ?? ({name: faction,
   match: {userData: {glbKey: [`concept_${faction}_*`, `${faction}_*`, `${faction}-*`]}}, params: {Tint: tint}}))};
 
 // The parts of a game copy: each mesh node under "pitch", "yaw" or neither (base), as split-gun.mjs reads them, and the
@@ -38,15 +40,25 @@ function parts(glb) {
   return out;
 }
 
+// The game's gun export (tools/guns-for-unreal.mjs) lists each copy with its original:
+//   "<part>  public/models/guns/pixal/<gun>.glb  (turret)  original: <file>"
+const exportFile = process.argv[2] ?? 'G:/JsGameBridge-fidelity-order/GUNS-FOR-UNREAL.txt', exported = new Map();
+if (fs.existsSync(exportFile)) for (const m of fs.readFileSync(exportFile, 'utf8').matchAll(/guns\/pixal\/([a-z0-9-]+)\.glb\s+\(\w+\)\s+original:\s*(\S.*?\.glb)/g)) exported.set(m[1], m[2].replaceAll('\\', '/'));
+
 const sources = [];
 for (const report of fs.readdirSync(guns).filter(f => f.endsWith('.json') && f !== 'manifest.json').sort()) {
   const id = report.replace(/\.json$/, ''), copy = `${guns}/${id}.glb`;
-  const original = JSON.parse(fs.readFileSync(path.join(guns, report), 'utf8')).source?.replaceAll('\\', '/');
+  // The original: the one the game's gun export names for this copy, or else the asset vault's file for the gun.
+  const vault = `F:/AssetVault/hard-burn/assets/gun-${id}/originals/pixal3d_textured.glb`;
+  // With an export, only the guns it lists: those are the ones the game fits to ships.
+  if (exported.size && !exported.has(id)) continue;
+  const original = exported.get(id) ?? (fs.existsSync(vault) ? vault : null);
   if (!original || !fs.existsSync(original) || !fs.existsSync(copy)) { console.log(`no original for ${id}`); continue; }
   for (const [part, {mesh}] of parts(copy)) {
     sources.push({name: `gun_${id.replaceAll('-', '_')}_${part}`, kind: 'gun', source: original, split: {copy, part},
-      match: {mesh, userData: {gunModel: `pixal/${id}`}}, fit: 'bounds', check: copy,
-      keys: [`/models/guns/pixal/${id}.glb`], variants: 'gunTint', params: {EnvIntensity: 0.25, PaintedHull: 1.3}});
+      // "<mesh>*" also takes the far model's mesh (<mesh>-far), which the game swaps in with distance.
+      match: {mesh: mesh.replace(/-far$/, '') + '*', userData: {gunModel: `pixal/${id}`}}, fit: 'bounds', check: copy,
+      keys: [`/models/guns/pixal/${id}.glb`], variants: 'gunTint', params: {EnvIntensity: 0.25, PaintedHull: 1.3}, bake: {flatten: 0.75}});
   }
 }
 list.sources = [...list.sources.filter(s => s.kind !== 'gun'), ...sources];

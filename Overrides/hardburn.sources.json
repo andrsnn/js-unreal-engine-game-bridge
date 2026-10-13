@@ -3009,6 +3009,482 @@
    }
   },
   {
+   "name": "gun_auric_drill_lance_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-auric-drill-lance/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/auric-drill-lance.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/auric-drill-lance"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/auric-drill-lance.glb",
+   "keys": [
+    "/models/guns/pixal/auric-drill-lance.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_auric_rotary_battery_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-auric-rotary-battery/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/auric-rotary-battery.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/auric-rotary-battery"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/auric-rotary-battery.glb",
+   "keys": [
+    "/models/guns/pixal/auric-rotary-battery.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_autocannon_medium_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-autocannon-medium/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/autocannon-medium.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/autocannon-medium"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/autocannon-medium.glb",
+   "keys": [
+    "/models/guns/pixal/autocannon-medium.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_basalt_spinal_coil_base",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-basalt-spinal-coil/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/basalt-spinal-coil.glb",
+    "part": "base"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/basalt-spinal-coil"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/basalt-spinal-coil.glb",
+   "keys": [
+    "/models/guns/pixal/basalt-spinal-coil.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_cartel_missile_launcher_small_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-cartel-missile-launcher-small/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/cartel-missile-launcher-small.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/cartel-missile-launcher-small"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/cartel-missile-launcher-small.glb",
+   "keys": [
+    "/models/guns/pixal/cartel-missile-launcher-small.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_cartel_pdc_small_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-cartel-pdc-small/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/cartel-pdc-small.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/cartel-pdc-small"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/cartel-pdc-small.glb",
+   "keys": [
+    "/models/guns/pixal/cartel-pdc-small.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_cartel_railgun_medium_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-cartel-railgun-medium/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/cartel-railgun-medium.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/cartel-railgun-medium"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/cartel-railgun-medium.glb",
+   "keys": [
+    "/models/guns/pixal/cartel-railgun-medium.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_cdc_60mm_rail_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-cdc-60mm-rail/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/cdc-60mm-rail.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/cdc-60mm-rail"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/cdc-60mm-rail.glb",
+   "keys": [
+    "/models/guns/pixal/cdc-60mm-rail.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_cdc_siege_rail_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-cdc-siege-rail/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/cdc-siege-rail.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/cdc-siege-rail"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/cdc-siege-rail.glb",
+   "keys": [
+    "/models/guns/pixal/cdc-siege-rail.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_coil_director_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-coil-director/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/coil-director.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/coil-director"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/coil-director.glb",
+   "keys": [
+    "/models/guns/pixal/coil-director.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_coilgun_battery_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-coilgun-battery/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/coilgun-battery.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/coilgun-battery"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/coilgun-battery.glb",
+   "keys": [
+    "/models/guns/pixal/coilgun-battery.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_coilgun_turret_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-coilgun-turret/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/coilgun-turret.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/coilgun-turret"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/coilgun-turret.glb",
+   "keys": [
+    "/models/guns/pixal/coilgun-turret.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_corsair_missile_launcher_small_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-corsair-missile-launcher-small/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/corsair-missile-launcher-small.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/corsair-missile-launcher-small"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/corsair-missile-launcher-small.glb",
+   "keys": [
+    "/models/guns/pixal/corsair-missile-launcher-small.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_corsair_pdc_small_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-corsair-pdc-small/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/corsair-pdc-small.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/corsair-pdc-small"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/corsair-pdc-small.glb",
+   "keys": [
+    "/models/guns/pixal/corsair-pdc-small.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_corsair_railgun_medium_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-corsair-railgun-medium/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/corsair-railgun-medium.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/corsair-railgun-medium"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/corsair-railgun-medium.glb",
+   "keys": [
+    "/models/guns/pixal/corsair-railgun-medium.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_corsair_torpedo_launcher_medium_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-corsair-torpedo-launcher-medium/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/corsair-torpedo-launcher-medium.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/corsair-torpedo-launcher-medium"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/corsair-torpedo-launcher-medium.glb",
+   "keys": [
+    "/models/guns/pixal/corsair-torpedo-launcher-medium.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_deadwatch_burst_rail_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-deadwatch-burst-rail/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/deadwatch-burst-rail.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/deadwatch-burst-rail"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/deadwatch-burst-rail.glb",
+   "keys": [
+    "/models/guns/pixal/deadwatch-burst-rail.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
    "name": "gun_flak_battery_yaw",
    "kind": "gun",
    "source": "F:/AssetVault/hard-burn/assets/gun-flak-battery/originals/pixal3d_textured.glb",
@@ -3037,6 +3513,90 @@
    }
   },
   {
+   "name": "gun_gravitic_lance_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-gravitic-lance/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/gravitic-lance.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/gravitic-lance"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/gravitic-lance.glb",
+   "keys": [
+    "/models/guns/pixal/gravitic-lance.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_guardian_pdc_relay_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-guardian-pdc-relay/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/guardian-pdc-relay.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/guardian-pdc-relay"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/guardian-pdc-relay.glb",
+   "keys": [
+    "/models/guns/pixal/guardian-pdc-relay.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_heavy_rail_mount_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-heavy-rail-mount/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/heavy-rail-mount.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/heavy-rail-mount"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/heavy-rail-mount.glb",
+   "keys": [
+    "/models/guns/pixal/heavy-rail-mount.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
    "name": "gun_heavy_spinal_mass_driver_base",
    "kind": "gun",
    "source": "F:/AssetVault/hard-burn/assets/gun-heavy-spinal-mass-driver/originals/pixal3d_textured.glb",
@@ -3054,6 +3614,370 @@
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/heavy-spinal-mass-driver.glb",
    "keys": [
     "/models/guns/pixal/heavy-spinal-mass-driver.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_helion_autocannon_medium_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-helion-autocannon-medium/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/helion-autocannon-medium.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/helion-autocannon-medium"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/helion-autocannon-medium.glb",
+   "keys": [
+    "/models/guns/pixal/helion-autocannon-medium.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_helion_pdc_small_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-helion-pdc-small/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/helion-pdc-small.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/helion-pdc-small"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/helion-pdc-small.glb",
+   "keys": [
+    "/models/guns/pixal/helion-pdc-small.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_helion_railgun_medium_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-helion-railgun-medium/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/helion-railgun-medium.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/helion-railgun-medium"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/helion-railgun-medium.glb",
+   "keys": [
+    "/models/guns/pixal/helion-railgun-medium.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_helion_twin_heavy_turret_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-helion-twin-heavy-turret/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/helion-twin-heavy-turret.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/helion-twin-heavy-turret"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/helion-twin-heavy-turret.glb",
+   "keys": [
+    "/models/guns/pixal/helion-twin-heavy-turret.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_industrial_coil_battery_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-industrial-coil-battery/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/industrial-coil-battery.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/industrial-coil-battery"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/industrial-coil-battery.glb",
+   "keys": [
+    "/models/guns/pixal/industrial-coil-battery.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_interceptor_launcher_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-interceptor-launcher/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/interceptor-launcher.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/interceptor-launcher"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/interceptor-launcher.glb",
+   "keys": [
+    "/models/guns/pixal/interceptor-launcher.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_kinetic_harpoon_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-kinetic-harpoon/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/kinetic-harpoon.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/kinetic-harpoon"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/kinetic-harpoon.glb",
+   "keys": [
+    "/models/guns/pixal/kinetic-harpoon.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_laser_point_defence_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-laser-point-defence/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/laser-point-defence.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/laser-point-defence"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/laser-point-defence.glb",
+   "keys": [
+    "/models/guns/pixal/laser-point-defence.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_light_coilgun_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-light-coilgun/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/light-coilgun.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/light-coilgun"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/light-coilgun.glb",
+   "keys": [
+    "/models/guns/pixal/light-coilgun.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_mrn_missile_launcher_small_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-mrn-missile-launcher-small/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/mrn-missile-launcher-small.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/mrn-missile-launcher-small"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/mrn-missile-launcher-small.glb",
+   "keys": [
+    "/models/guns/pixal/mrn-missile-launcher-small.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_mrn_pdc_small_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-mrn-pdc-small/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/mrn-pdc-small.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/mrn-pdc-small"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/mrn-pdc-small.glb",
+   "keys": [
+    "/models/guns/pixal/mrn-pdc-small.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_mrn_torpedo_launcher_medium_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-mrn-torpedo-launcher-medium/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/mrn-torpedo-launcher-medium.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/mrn-torpedo-launcher-medium"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/mrn-torpedo-launcher-medium.glb",
+   "keys": [
+    "/models/guns/pixal/mrn-torpedo-launcher-medium.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_null_choir_penetrator_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-null-choir-penetrator/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/null-choir-penetrator.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/null-choir-penetrator"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/null-choir-penetrator.glb",
+   "keys": [
+    "/models/guns/pixal/null-choir-penetrator.glb"
    ],
    "variants": "gunTint",
    "params": {
@@ -3149,6 +4073,62 @@
    }
   },
   {
+   "name": "gun_phased_laser_array_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-phased-laser-array/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/phased-laser-array.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/phased-laser-array"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/phased-laser-array.glb",
+   "keys": [
+    "/models/guns/pixal/phased-laser-array.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_railgun_90mm_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-railgun-90mm/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/railgun-90mm.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/railgun-90mm"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/railgun-90mm.glb",
+   "keys": [
+    "/models/guns/pixal/railgun-90mm.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
    "name": "gun_railgun_heavy_yaw",
    "kind": "gun",
    "source": "F:/AssetVault/hard-burn/assets/gun-railgun-heavy/originals/pixal3d_textured.glb",
@@ -3177,6 +4157,90 @@
    }
   },
   {
+   "name": "gun_railgun_medium_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-railgun-medium/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/railgun-medium.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/railgun-medium"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/railgun-medium.glb",
+   "keys": [
+    "/models/guns/pixal/railgun-medium.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_rapid_coilgun_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-rapid-coilgun/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/rapid-coilgun.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/rapid-coilgun"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/rapid-coilgun.glb",
+   "keys": [
+    "/models/guns/pixal/rapid-coilgun.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_scatter_battery_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-scatter-battery/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/scatter-battery.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/scatter-battery"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/scatter-battery.glb",
+   "keys": [
+    "/models/guns/pixal/scatter-battery.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
    "name": "gun_spinal_mass_driver_base",
    "kind": "gun",
    "source": "F:/AssetVault/hard-burn/assets/gun-spinal-mass-driver/originals/pixal3d_textured.glb",
@@ -3194,6 +4258,62 @@
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/spinal-mass-driver.glb",
    "keys": [
     "/models/guns/pixal/spinal-mass-driver.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_torpedo_rack_large_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-torpedo-rack-large/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/torpedo-rack-large.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/torpedo-rack-large"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/torpedo-rack-large.glb",
+   "keys": [
+    "/models/guns/pixal/torpedo-rack-large.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_torpedo_rack_medium_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-torpedo-rack-medium/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/torpedo-rack-medium.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/torpedo-rack-medium"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/torpedo-rack-medium.glb",
+   "keys": [
+    "/models/guns/pixal/torpedo-rack-medium.glb"
    ],
    "variants": "gunTint",
    "params": {
@@ -3250,6 +4370,146 @@
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/twin-heavy-turret.glb",
    "keys": [
     "/models/guns/pixal/twin-heavy-turret.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_ueg_coilgun_turret_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-ueg-coilgun-turret/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/ueg-coilgun-turret.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/ueg-coilgun-turret"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/ueg-coilgun-turret.glb",
+   "keys": [
+    "/models/guns/pixal/ueg-coilgun-turret.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_ueg_flak_battery_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-ueg-flak-battery/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/ueg-flak-battery.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/ueg-flak-battery"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/ueg-flak-battery.glb",
+   "keys": [
+    "/models/guns/pixal/ueg-flak-battery.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_ueg_pdc_small_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-ueg-pdc-small/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/ueg-pdc-small.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/ueg-pdc-small"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/ueg-pdc-small.glb",
+   "keys": [
+    "/models/guns/pixal/ueg-pdc-small.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_ueg_railgun_medium_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-ueg-railgun-medium/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/ueg-railgun-medium.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/ueg-railgun-medium"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/ueg-railgun-medium.glb",
+   "keys": [
+    "/models/guns/pixal/ueg-railgun-medium.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "bake": {
+    "flatten": 0.75
+   }
+  },
+  {
+   "name": "gun_veil_torpedo_launcher_medium_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-veil-torpedo-launcher-medium/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/veil-torpedo-launcher-medium.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "mesh": "geometry_0*",
+    "userData": {
+     "gunModel": "pixal/veil-torpedo-launcher-medium"
+    }
+   },
+   "fit": "bounds",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/veil-torpedo-launcher-medium.glb",
+   "keys": [
+    "/models/guns/pixal/veil-torpedo-launcher-medium.glb"
    ],
    "variants": "gunTint",
    "params": {

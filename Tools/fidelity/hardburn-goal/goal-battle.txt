@@ -1,0 +1,39 @@
+0 gone #startup
+5 eval (() => { window.jsgb.graphics.set({lumen: true}); return 'lumen on'; })()
+14 eval (() => { const s = document.createElement('style'); s.textContent = 'body * { visibility: hidden !important; }'; s.disabled = true; document.head.append(s); const c = [...document.querySelectorAll('canvas')].sort((a, b) => b.width * b.height - a.width * a.height)[0]; c.style.setProperty('visibility', 'visible', 'important'); window.__ui = on => { s.disabled = on; return on ? 'ui on' : 'ui off'; }; return c.width + 'x' + c.height; })()
+14.5 eval (() => { const T = window.__FF.THREE; window.__hullSize = o => { const b = new T.Box3(); o.traverse(m => { if (m.isMesh && /^planar/.test(m.name)) b.expandByObject(m); }); return b.isEmpty() ? 0 : b.getSize(new T.Vector3()).length(); }; return 'ok'; })()
+15 eval (() => { const F = window.__FF; F.rts.minR = 0.5; F.rts.limit = null; window.__pick = (i, k) => { const all = F.scene.children.filter(o => o.userData.ship && !o.userData.ship.dead).sort((a, b) => window.__hullSize(b) - window.__hullSize(a)); if (!all.length) return 'no ships'; const mine = all.filter(o => o.userData.ship.faction === 'player'), foes = all.filter(o => o.userData.ship.faction !== 'player'); const list = i % 2 ? (foes.length ? foes : all) : (mine.length ? mine : all); const s = list[(i >> 1) % list.length]; window.__stage = {s, L: Math.max(2, window.__hullSize(s)), a: 0.9 + i * 0.7, k}; return s.userData.ship.name + ' ' + s.userData.ship.faction + ' ' + s.userData.ship.type + ' L=' + window.__stage.L.toFixed(1) + ' alive ' + mine.length + 'v' + foes.length; }; setInterval(() => { const g = window.__stage; if (!g) return; const p = g.s.position; F.rts.setPose({r: g.L * g.k, theta: g.s.rotation.y + g.a, phi: 1.0, x: p.x, y: p.y, z: p.z}); }, 0); return window.__pick(0, 0.45); })()
+28 eval window.__ui(false)
+30 shot ship-1
+31 eval window.__ui(true)
+32 eval window.__pick(1, 0.45)
+58 eval window.__ui(false)
+60 shot ship-2
+61 eval window.__ui(true)
+62 eval window.__pick(2, 0.45)
+88 eval window.__ui(false)
+90 shot ship-3
+91 eval window.__ui(true)
+92 eval window.__pick(3, 0.45)
+118 eval window.__ui(false)
+120 shot ship-4
+121 eval window.__ui(true)
+122 eval window.__pick(4, 0.45)
+148 eval window.__ui(false)
+150 shot ship-5
+151 eval window.__ui(true)
+152 eval window.__pick(5, 0.45)
+178 eval window.__ui(false)
+180 shot ship-6
+181 eval window.__ui(true)
+182 eval window.__pick(0, 1.6)
+200 shot wide-200
+230 shot wide-230
+240 eval (() => { window.jsgb.graphics.set({lumen: false}); return 'lumen off'; })()
+250 eval JSON.stringify(window.jsgb.graphics.get())
+252 shot lumen-off
+254 eval (() => { window.jsgb.graphics.set({lumen: true}); return 'lumen on'; })()
+275 shot lumen-on
+300 eval (() => { const all = window.__FF.scene.children.filter(o => o.userData.ship && !o.userData.ship.dead); return 'alive ' + all.length; })()
+305 shot end-305
+310 quit
