@@ -314,13 +314,20 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
     shader.uniforms.jsgbShipLength = {value: shipLength};
     // "bake": {"wear": n} on a rule scales the panel-to-panel variation, chipped edges and crevice grime (1 by default).
     shader.uniforms.jsgbWear = {value: options.wear ?? 1};
+    // "bake": {"flatten": n} evens out a part's own texture toward its average colour (a gun's blotchy texture next to
+    // a cleanly painted hull).
+    shader.uniforms.jsgbFlatten = {value: options.flatten ?? 0};
     shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nattribute vec2 jsgbUv; varying vec2 vJsgbUv;' + SEAM_VERTEX_DECLARE +
         (clean ? '\nattribute float jsgbCurvature; varying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal; uniform mat4 jsgbFrame;' : ''))
       .replace('#include <project_vertex>', '#include <project_vertex>\n vJsgbUv = jsgbUv; gl_Position = vec4(jsgbUv * 2. - 1., 0., 1.);' + SEAM_VERTEX +
         (clean ? '\n vJsgbCurvature = jsgbCurvature; vJsgbPos = (jsgbFrame * vec4(position, 1.)).xyz; vJsgbNormal = mat3(jsgbFrame) * normal;' : ''));
-    shader.fragmentShader = seamFragment(shader.fragmentShader).replace('#include <common>', '#include <common>\n' + oetf + '\nuniform sampler2D jsgbOriginal; varying vec2 vJsgbUv;' +
+    shader.fragmentShader = seamFragment(shader.fragmentShader).replace('#include <common>', '#include <common>\n' + oetf + '\nuniform sampler2D jsgbOriginal; uniform float jsgbFlatten; varying vec2 vJsgbUv;' +
         (clean ? '\nvarying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal; uniform float jsgbShipLength, jsgbWear;\n' + CLEAN_FUNCTIONS : ''))
-      .replace('#include <roughnessmap_fragment>', (clean ? CLEAN_PAINT : `float jsgbLum = dot(texture2D(jsgbOriginal, vJsgbUv).rgb, vec3(.2126, .7152, .0722));
+      .replace('#include <roughnessmap_fragment>', (clean ? CLEAN_PAINT : `
+        #ifdef USE_MAP
+        diffuseColor.rgb = mix(diffuseColor.rgb, diffuse * textureLod(map, jsgbMapUv, 8.).rgb, jsgbFlatten);
+        #endif
+        float jsgbLum = dot(texture2D(jsgbOriginal, vJsgbUv).rgb, vec3(.2126, .7152, .0722));
         float jsgbAround = dot(textureLod(jsgbOriginal, vJsgbUv, 4.).rgb, vec3(.2126, .7152, .0722));
         diffuseColor.rgb *= mix(1., clamp((jsgbLum + .02) / (jsgbAround + .02), .55, 1.3), DETAIL);`.replace('DETAIL', String(game.material.userData.gun ? GUN_DETAIL : game.material.userData.hardware ? HARDWARE_DETAIL : DETAIL))) + `
         gl_FragColor = vec4(jsgbOetf(diffuseColor.rgb), 1.); return;
