@@ -28,7 +28,10 @@ const {MeshBVH} = require('three-mesh-bvh');
 
 const report = JSON.parse(fs.readFileSync(copy.replace(/\.glb$/, '.json'), 'utf8'));
 const kind = report.kind;
-const io = new NodeIO().registerExtensions(ALL_EXTENSIONS);
+// The game's copies are meshopt-compressed.
+const {MeshoptDecoder} = require('meshoptimizer');
+await MeshoptDecoder.ready;
+const io = new NodeIO().registerExtensions(ALL_EXTENSIONS).registerDependencies({'meshopt.decoder': MeshoptDecoder});
 const [source, game] = [await io.read(original), await io.read(copy)];
 const meshNodes = doc => doc.getRoot().listNodes().filter(n => n.getMesh());
 const box = () => new THREE.Box3();
@@ -63,7 +66,20 @@ for (const part of parts.values()) {
 // The original in the game's frame. Blender reads glTF (x, y, z) as (x, -z, y), so its forward (fx, fy, fz) is glTF
 // (fx, fz, -fy); the copy turns it onto +Z by the shortest arc.
 const [fx, fy, fz] = report.measuredForwardSourceAxes;
-const turn = new THREE.Matrix4().makeRotationFromQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(fx, fz, -fy).normalize(), new THREE.Vector3(0, 0, 1)));
+let turn = new THREE.Matrix4().makeRotationFromQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(fx, fz, -fy).normalize(), new THREE.Vector3(0, 0, 1)));
+// The game also levels the barrels: the copy is pitched about x. The pitch is the one whose bounds have the game copy's
+// proportions.
+const gameSize = (() => { const b = box(); for (const part of parts.values()) b.union(part.bounds); return b.getSize(new THREE.Vector3()); })();
+if (report.levelledByDegrees) {
+  const shapeOff = pitch => { const m = new THREE.Matrix4().makeRotationX(pitch).multiply(turn), b = box(), v = new THREE.Vector3();
+    for (const node of meshNodes(source)) { const w = new THREE.Matrix4().multiplyMatrices(m, new THREE.Matrix4().fromArray(node.getWorldMatrix())); for (const prim of node.getMesh().listPrimitives()) { const a = prim.getAttribute('POSITION').getArray(); for (let i = 0; i < a.length; i += 3 * 11) b.expandByPoint(v.fromArray(a, i).applyMatrix4(w)); } }
+    const s = b.getSize(new THREE.Vector3()), k = Math.max(s.x, s.y, s.z), g = Math.max(gameSize.x, gameSize.y, gameSize.z); return Math.max(Math.abs(s.x / k - gameSize.x / g), Math.abs(s.y / k - gameSize.y / g), Math.abs(s.z / k - gameSize.z / g)); };
+  // The copy's own pitch is searched for (within 35 degrees, to a quarter of a degree): the reported angle is measured in the source's frame.
+  let pitch = 0, best = Infinity;
+  for (let d = -35; d <= 35; d += 0.25) { const off = shapeOff(d * Math.PI / 180); if (off < best) { best = off; pitch = d * Math.PI / 180; } }
+  console.error(`levelled: pitched ${(pitch * 180 / Math.PI).toFixed(2)} degrees (reported ${report.levelledByDegrees}), proportions off by ${(best * 100).toFixed(2)}%`);
+  turn = new THREE.Matrix4().makeRotationX(pitch).multiply(turn);
+}
 const prims = [];
 for (const node of meshNodes(source)) {
   const m = new THREE.Matrix4().multiplyMatrices(turn, new THREE.Matrix4().fromArray(node.getWorldMatrix()));
@@ -94,6 +110,9 @@ else {
   const low = sample.filter(p => p[1] < mn[1] + (mx[1] - mn[1]) * .1);
   origin = [low.reduce((s, p) => s + p[0], 0) / low.length, mn[1], low.reduce((s, p) => s + p[2], 0) / low.length];
 }
+{ const g = box(); for (const part of parts.values()) g.union(part.bounds); const gc = g.getCenter(new THREE.Vector3());
+  // The game centres its copies on their bounds: the original's bounds land on the copy's (centre to centre, bottom to bottom for turrets).
+  origin = [(mn[0] + mx[0]) / 2 - gc.x, kind === 'spinal' ? (mn[1] + mx[1]) / 2 - gc.y : mn[1] - g.min.y, (mn[2] + mx[2]) / 2 - gc.z]; }
 for (const a of all) for (let i = 0; i < a.length; i += 3) { a[i] -= origin[0]; a[i + 1] -= origin[1]; a[i + 2] -= origin[2]; }
 
 // Triangles of the original, as corner indices per primitive, and the whole original as one BVH for the fit check.

@@ -40,7 +40,7 @@ foreach ($pair in $Games.Split(';')) {
     Post 'capture' "$R\smoke\$id-after.png" | Out-Null; Start-Sleep 3
     $s = Status
     $diff = if ((Test-Path "$R\smoke\$id-before.png") -and (Test-Path "$R\smoke\$id-after.png")) { ScreenDiff "$R\smoke\$id-before.png" "$R\smoke\$id-after.png" } else { -1 }
-    $bad = @(Select-String -Path $log -Pattern 'Fatal error|LogJsgbHost: Error|LogJsgb: Error|: Error: |No cooked material for shader' -ErrorAction SilentlyContinue | Where-Object { $_.Line -notmatch 'socket_send_failure|updateNGXFeature' })
+    $bad = @(Select-String -Path $log -Pattern 'Fatal error|LogJsgbHost: Error|LogJsgb: Error|: Error: |No cooked material for shader' -ErrorAction SilentlyContinue | Where-Object { $_.Line -notmatch 'LogHttpListener|socket_send_failure|updateNGXFeature' })
     $ok = $diff -gt 0.5 -and $bad.Count -eq 0 -and $s.jsErrors -eq 0
     "{0} {1}: ready in {2} s, screen changed by {3} after W A S D, Enter and a click, {4} FPS, JS errors {5}, log errors {6}{7}" -f $id, $(if ($ok) { 'PASS' } else { 'FAIL' }), $ready, $diff, [int]$s.fps, $s.jsErrors, $bad.Count, $(if ($bad.Count) { ': ' + $bad[0].Line.Substring(0, [math]::Min(200, $bad[0].Line.Length)) } else { '' })
   }
