@@ -1,0 +1,7 @@
+0 gone #startup
+1 eval (() => { window.jsgb.graphics.set({lumen: true}); return 'lumen on'; })()
+1.5 eval (() => { const T = window.__FF.THREE; window.__hullSize = o => { const b = new T.Box3(); o.traverse(m => { if (m.isMesh && /^planar/.test(m.name)) b.expandByObject(m); }); return b.isEmpty() ? 0 : b.getSize(new T.Vector3()).length(); }; return 'ok'; })()
+2 eval (() => { const F = window.__FF; F.rts.minR = 0.5; F.rts.limit = null; window.__pick = (i, k) => { const all = F.scene.children.filter(o => o.userData.ship && !o.userData.ship.dead).sort((a, b) => window.__hullSize(b) - window.__hullSize(a)); if (!all.length) return 'no ships'; const mine = all.filter(o => o.userData.ship.faction === 'player'), foes = all.filter(o => o.userData.ship.faction !== 'player'); const list = i % 2 ? (foes.length ? foes : all) : (mine.length ? mine : all); const s = list[(i >> 1) % list.length]; window.__stage = {s, L: Math.max(2, window.__hullSize(s)), a: 0.9 + i * 0.7, k}; return s.userData.ship.name + ' ' + s.userData.ship.faction + ' ' + s.userData.ship.type + ' L=' + window.__stage.L.toFixed(1) + ' alive ' + mine.length + 'v' + foes.length; }; setInterval(() => { const g = window.__stage; if (!g) return; const p = g.s.position; F.rts.setPose({r: g.L * g.k, theta: g.s.rotation.y + g.a, phi: 1.0, x: p.x, y: p.y, z: p.z}); }, 0); return window.__pick(0, 1.1); })()
+20 eval window.__pick(1, 0.9)
+40 eval window.__pick(2, 0.7)
+62 quit

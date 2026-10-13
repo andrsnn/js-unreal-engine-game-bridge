@@ -49,14 +49,34 @@ function gameFor(id) {
   if (!commit) throw Error(`${id}: no commit ${pins[id]} in ${game.repo}`);
   const dir = path.join(path.dirname(out), 'sources', `${id}-${commit}`);
   if (!fs.existsSync(path.join(dir, '.jsgb-exported'))) {
-    log(`${id}: exporting ${commit} to ${dir}`);
-    fs.rmSync(dir, {recursive: true, force: true});
-    fs.mkdirSync(dir, {recursive: true});
-    const tar = path.join(dir, '..', `${id}-${commit}.tar`);
-    const r = spawnSync('git', ['-C', game.repo, 'archive', '--format=tar', '-o', tar, commit], {stdio: 'inherit'});
-    if (r.status !== 0 || spawnSync(winTar, ['-xf', tar, '-C', dir], {stdio: 'inherit'}).status !== 0) throw Error(`${id}: exporting ${commit} failed`);
-    fs.rmSync(tar);
-    if (fs.existsSync(path.join(game.repo, 'node_modules'))) fs.symlinkSync(path.join(game.repo, 'node_modules'), path.join(dir, 'node_modules'), 'junction');
+    const tar = path.join(dir, '..', `${id}-${commit}.tar`), sources = path.dirname(dir);
+    const extract = paths => {
+      const r = spawnSync('git', ['-C', game.repo, 'archive', '--format=tar', '-o', tar, commit, ...paths], {stdio: 'inherit'});
+      if (r.status !== 0 || spawnSync(winTar, ['-xf', tar, '-C', dir], {stdio: 'inherit'}).status !== 0) throw Error(`${id}: exporting ${commit} failed`);
+      fs.rmSync(tar);
+    };
+    // The newest earlier export of this game is moved here and brought to this commit: only the files that differ are
+    // written (a game with 20 GB of models takes 20 minutes to export whole).
+    const earlier = !fs.existsSync(sources) ? null : fs.readdirSync(sources).filter(n => n.startsWith(id + '-') && fs.existsSync(path.join(sources, n, '.jsgb-exported')))
+      .sort((a, b) => fs.statSync(path.join(sources, b, '.jsgb-exported')).mtimeMs - fs.statSync(path.join(sources, a, '.jsgb-exported')).mtimeMs)[0];
+    const from = earlier ? fs.readFileSync(path.join(sources, earlier, '.jsgb-exported'), 'utf8').trim() : null;
+    const diff = from ? spawnSync('git', ['-C', game.repo, 'diff', '--name-status', '--no-renames', '-z', from, commit], {encoding: 'utf8', maxBuffer: 1 << 28}) : null;
+    if (diff?.status === 0) {
+      const fields = diff.stdout.split('\0').filter(Boolean), changed = [], gone = [];
+      for (let i = 0; i + 1 < fields.length; i += 2) (fields[i] === 'D' ? gone : changed).push(fields[i + 1]);
+      log(`${id}: bringing the export of ${from} to ${commit}: ${changed.length} files written, ${gone.length} removed`);
+      fs.rmSync(dir, {recursive: true, force: true});
+      fs.renameSync(path.join(sources, earlier), dir);
+      fs.rmSync(path.join(dir, '.jsgb-exported'));
+      for (const f of gone) fs.rmSync(path.join(dir, f), {force: true});
+      for (let i = 0; i < changed.length; i += 100) extract(changed.slice(i, i + 100));
+    } else {
+      log(`${id}: exporting ${commit} to ${dir}`);
+      fs.rmSync(dir, {recursive: true, force: true});
+      fs.mkdirSync(dir, {recursive: true});
+      extract([]);
+    }
+    if (fs.existsSync(path.join(game.repo, 'node_modules')) && !fs.existsSync(path.join(dir, 'node_modules'))) fs.symlinkSync(path.join(game.repo, 'node_modules'), path.join(dir, 'node_modules'), 'junction');
     fs.writeFileSync(path.join(dir, '.jsgb-exported'), commit);
   }
   const pinned = spawnSync('git', ['-C', game.repo, 'rev-parse', commit], {encoding: 'utf8'}).stdout.trim();
