@@ -6,7 +6,8 @@
   "trails": true,
   "smoke": true,
   "explosions": true,
-  "debris": true
+  "debris": true,
+  "bigMuzzle": true
  },
  "overrides": [
   {

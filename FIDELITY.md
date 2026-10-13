@@ -73,10 +73,11 @@ case-insensitive, and a field can hold one pattern or a list.
 
 The host adds the scene's ambient light to override materials that have an `Ambient` parameter, as three.js does.
 
-`"effects"` switches each Unreal effect on (`true`) or off. An effect left out is off.
+`"effects"` switches each Unreal effect on (`true`) or off. An effect left out is off, except `bigMuzzle`, which is on
+unless the file says `false`.
 
 ```json
-"effects": {"engineLight": true, "gunfire": true, "trails": true, "smoke": true, "explosions": true, "debris": true}
+"effects": {"engineLight": true, "gunfire": true, "trails": true, "smoke": true, "explosions": true, "debris": true, "bigMuzzle": true}
 ```
 
 | Effect | What Unreal adds in Lumen mode |
@@ -86,6 +87,7 @@ The host adds the scene's ambient light to override materials that have an `Ambi
 | `trails` | Missiles and torpedoes under power (userData.plumeKey and motorActive) carry a warm point light at the motor. |
 | `smoke` | Each of the game's vents (userData.vfxKey `venting.*`) plays NS_LumenVapour, a lit vapour jet pointed along the vent, sized to it, for as long as the vent lasts. The game's unlit vapour (hull-vapor-pool, sprite-vfx-gas) is hidden while it plays. Authored by `Tools/fidelity/author-lumen-vfx.mjs`. |
 | `explosions` | Hits and blasts light the hulls around them with the game's own flash intensity, reach, colour and timing (userData.flashLight on anything that is not a muzzle flash). Each fireball sprite also gives an orange light while it glows. The light follows the fireball's flipbook: it is brightest about a quarter of the way through and goes out when the sprite turns to smoke. So a torpedo's second fireball and each of a dying ship's chained blasts light up at their own time. Blasts share the 24 flash lights with gunfire, and up to 12 fireballs get a light. The game already lights its three brightest flashes and its first nuclear detonation, so Unreal skips those. |
+| `bigMuzzle` | The muzzle flashes of large and huge guns, which the game draws 1.6 and 2.4 times bigger, get their Unreal lights from this switch instead of `gunfire`. Hard Burn fires a smoky muzzle blast (a `flak` blast with no flash) at the muzzle with each shot of those guns and no others, so a weapon flash inside such a blast is a big gun's. |
 | `debris` | The hottest blast fragments (instances of `ballistic-blast-metal`) each get a small point light in their glow colour. The light moves with its fragment, gets redder and dimmer as the fragment cools, and goes out when the fragment is cold or fades away. The 8 brightest fragments get a light. |
 
 A rule can belong to one effect (`"effect": "smoke"`) and applies only while that effect is on, and a rule with
@@ -138,6 +140,19 @@ Planets use `Tools/fidelity/make-sphere.mjs` (a dense sphere with three.js Spher
 - Planets without the game's own look (battle backdrops) use the game's planet maps on a 260,000-triangle sphere, with
   normal maps for the Moon and Mars. Campaign planets keep the game's planet shader (bands, storms, ice, lava).
   Higher-resolution planet maps are requested from gen in `F:/AssetVault/hard-burn/unreal-fidelity/REQUESTS-gen.md`.
+- Guns: `Overrides/make-hardburn-guns.mjs` adds a source for each part of every Pixal3D gun the game has a copy of
+  (`public/models/guns/pixal/<gun>.glb`) whose original is on disk. The game's copies are one mesh in the `yaw` part
+  (spinal guns: `base`), so a turret turns as a whole and the game neither elevates nor recoils it.
+  `Tools/fidelity/split-gun.mjs` puts the original in the copy's frame (the turn in the copy's report and the origin
+  measured as `tools/blender/gun-runtime.py` does), gives each triangle to the nearest game part, and writes one glb per
+  part in that part's mesh frame, so the rule uses `fit: none` and the game's mount, turret and barrels place it.
+  Across the 9 guns the copy's surface lies 0.05 to 0.08% of the gun's size from the original's on average.
+  The game draws a gun in its own texture, tinted to the hull's colour under the mount, or to the faction's tint
+  (`HULL_TINT` in `scene/gun-models.js`) when it can't read that. Unreal gets the faction tint: each gun part has one rule
+  per faction (`<name>_<faction>`, matching the hull's `userData.glbKey`, with `Tint`), and its own rule, untinted, for
+  everything else. The livery bake takes the gun's game copy as the game model and its hardware path (the game's texture
+  with a trace of the original's relief), once per gun. Matching each mount's own colour needs a host change: send the
+  game material's colour with an override's asset record and set it as `Tint` on that component's own material.
 - The host project, its cache and build output live on `H:/builds/JsgbFidelity` (`jsgb.local.json`), about 13 GB.
   Rebuild the rules with `node Tools/fidelity/build-overrides.mjs Overrides/hardburn.sources.json Overrides/hardburn.json
   --work <dir> --only <names> --clean`.

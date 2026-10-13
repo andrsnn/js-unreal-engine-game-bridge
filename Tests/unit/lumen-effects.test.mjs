@@ -8,7 +8,7 @@ const registry = JSON.stringify({effects: {smoke: true}, overrides: [
   {name: 'dust', match: {userData: {vfxKey: 'dust.*'}}, niagara: '/Game/FX/Dust', effect: 'debris'},
 ]});
 const fx = await loadRuntime('lumenEffects.ts', {log() {}, registry});
-const ALL_OFF = {engineLight: false, gunfire: false, trails: false, smoke: false, explosions: false, debris: false};
+const ALL_OFF = {engineLight: false, gunfire: false, trails: false, smoke: false, explosions: false, debris: false, bigMuzzle: false};
 const camera = new THREE.PerspectiveCamera();
 const near = (a, b) => assert.ok(Math.abs(a - b) < 1e-6, `${a} is not ${b}`);
 const nearVector = (v, x, y, z) => { near(v.x, x); near(v.y, y); near(v.z, z); };
@@ -54,6 +54,26 @@ test('a muzzle flash needs gunfire and any other flash needs explosions, at a qu
   assert.equal(gunfire[0].distance, 240, 'the reach is capped at 240');
   assert.equal(gunfire[0].color.getHex(), 0xff0000);
   assert.deepEqual(frame({explosions: true}, [muzzle, blast]).lights.map(l => l.id), [blast]);
+});
+
+test("a large or huge gun's muzzle flash needs bigMuzzle, and every other muzzle flash needs gunfire", () => {
+  // A big gun's shot: the flash, the game's extra mac flash and the smoky muzzle blast, all at the muzzle (entities.js fireWeapon).
+  const big = effect({vfxKey: 'weapon.mac', flashLight: {intensity: 900, distance: 80}}, [10, 0, 0]);
+  const extra = effect({vfxKey: 'weapon.mac', flashLight: {intensity: 600, distance: 60}}, [10.4, 0, 0]);
+  const smoke = effect({vfxKey: 'explosion.flak', blastKind: 'flak', effectScale: {blastRadius: 2}, flashLight: {intensity: 0}}, [10.2, 0, 0]);
+  // A small gun 30 units away: no muzzle blast near it.
+  const small = effect({vfxKey: 'weapon.pdc', flashLight: {intensity: 20, distance: 10}}, [40, 0, 0]);
+  const ids = on => frame(on, [big, extra, smoke, small]).lights.map(l => l.id);
+  assert.deepEqual(ids({bigMuzzle: true}), [big, extra]);
+  assert.deepEqual(ids({gunfire: true}), [small]);
+  assert.deepEqual(ids({gunfire: true, bigMuzzle: true}), [big, extra, small]);
+  // The muzzle blast itself gives no light, and a blast that is over no longer marks the flashes near it.
+  assert.deepEqual(ids({}), []);
+  smoke.userData.done = true;
+  assert.deepEqual(ids({gunfire: true}), [big, extra, small]);
+  // A big gun's flash is lit at a quarter of the game's intensity, as other flashes are.
+  smoke.userData.done = false;
+  near(frame({bigMuzzle: true}, [big, smoke]).lights[0].intensity, 225);
 });
 
 test('objects marked done give no light', () => {

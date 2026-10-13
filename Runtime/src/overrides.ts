@@ -84,15 +84,16 @@ function textureUrls(o: THREE.Object3D): string[] {
 }
 
 /** The Unreal effects Lumen mode adds, each switched on or off in overrides.json ("effects"). The game fires the
- *  same events for its own sprite effects: each effect object carries userData.vfxKey. Off unless the file says on. */
-export type EffectFlags = {engineLight: boolean; gunfire: boolean; trails: boolean; smoke: boolean; explosions: boolean; debris: boolean};
+ *  same events for its own sprite effects: each effect object carries userData.vfxKey. Off unless the file says on,
+ *  except bigMuzzle (the muzzle flashes of large and huge guns), which is on unless the file says false. */
+export type EffectFlags = {engineLight: boolean; gunfire: boolean; trails: boolean; smoke: boolean; explosions: boolean; debris: boolean; bigMuzzle: boolean};
 let effects: EffectFlags | null = null;
 export function effectFlags(registryJson: string | undefined): EffectFlags {
   if (effects) return effects;
   let j: Partial<Record<keyof EffectFlags, unknown>> = {};
   try { j = JSON.parse(registryJson || '{}').effects ?? {}; } catch { /* no effects */ }
   return effects = {engineLight: j.engineLight === true, gunfire: j.gunfire === true, trails: j.trails === true, smoke: j.smoke === true,
-    explosions: j.explosions === true, debris: j.debris === true};
+    explosions: j.explosions === true, debris: j.debris === true, bigMuzzle: j.bigMuzzle !== false};
 }
 
 /** The rules from the registry the host loaded ("overrides" array); empty without an overrides file. */

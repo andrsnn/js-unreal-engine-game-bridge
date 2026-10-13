@@ -10,6 +10,9 @@ import {host} from './host';
  *  - engineLight: drive plumes, userData.vfxKey "plume.*", with throttle, nozzleWidth and driveColour.
  *  - gunfire: muzzle flashes (userData.flashLight on an object whose vfxKey is "weapon.*", or weaponMuzzle), and kinetic
  *    rounds in flight (userData.roundDraw: head b, tail a, colour, cores while flying).
+ *  - bigMuzzle: the muzzle flashes of large and huge guns, which the game draws 1.6 and 2.4 times bigger. Hard Burn fires
+ *    a smoky muzzle blast (blastKind "flak", userData.effectScale.blastRadius) at the muzzle with each of their shots and
+ *    with no other gun's, so a weapon flash within that blast's radius belongs to a big gun. Other flashes stay gunfire's.
  *  - trails: missiles and torpedoes under power (userData.plumeKey and motorActive).
  *  - explosions: every other userData.flashLight (hits, blasts), and the glow of each detonation fireball sprite
  *    (the InstancedMesh "sprite-vfx-fireball", whose 'sprite' attribute holds each fireball's flipbook frame and fade).
@@ -44,7 +47,8 @@ const luminance = (r: number, g: number, b: number) => .2126 * r + .7152 * g + .
 const HOT_LUMINANCE = luminance(HOT[0], HOT[1], HOT[2]);
 
 type Noted = {o: THREE.Object3D; d: number};
-const plumes: Noted[] = [], flashes: Noted[] = [], rounds: Noted[] = [], motors: Noted[] = [], topFlashes: Noted[] = [];
+const plumes: Noted[] = [], flashes: Noted[] = [], rounds: Noted[] = [], motors: Noted[] = [], topFlashes: Noted[] = [], muzzles: Noted[] = [];
+const muzzleBlasts: THREE.Object3D[] = [];
 const fireballMeshes: THREE.InstancedMesh[] = [], shardMeshes: THREE.InstancedMesh[] = [];
 const playing: {o: THREE.Object3D; key: string}[] = [];
 const at = new THREE.Vector3(), scale = new THREE.Vector3(), back = new THREE.Vector3();
@@ -53,7 +57,7 @@ let flags: EffectFlags | null = null, eye = new THREE.Vector3(), topScene: THREE
 /** Starts a frame: which effects are on, and where the camera is. */
 export function beginEffects(f: EffectFlags | null, cam: THREE.Camera, scene: THREE.Object3D) {
   flags = f; eye = cam.position; topScene = scene;
-  plumes.length = flashes.length = rounds.length = motors.length = playing.length = topFlashes.length = 0;
+  plumes.length = flashes.length = rounds.length = motors.length = playing.length = topFlashes.length = muzzles.length = muzzleBlasts.length = 0;
   fireballMeshes.length = shardMeshes.length = 0;
 }
 
@@ -71,16 +75,26 @@ export function noteEffect(o: THREE.Object3D) {
   const d = () => o.getWorldPosition(at).distanceToSquared(eye);
   if (f.engineLight && key.startsWith('plume.')) { plumes.push({o, d: d()}); return; }
   if (u.done) return;
+  // A big gun's muzzle blast: smoke with no flash of its own (blast-pool.js burst with smoke).
+  if (u.blastKind === 'flak' && u.effectScale?.blastRadius > 0) muzzleBlasts.push(o);
   const flash = u.flashLight as {intensity?: number} | undefined;
   const weapon = key.startsWith('weapon.') || !!u.weaponMuzzle;
   if (flash && (flash.intensity ?? 0) > 0) {
     // Every flash the game itself could light, whichever effects are on (main.js lights the top-level ones).
     if (o.parent === topScene) topFlashes.push({o, d: flashImportance(o)});
-    if (weapon ? f.gunfire : f.explosions) flashes.push({o, d: flashImportance(o)});
+    // A muzzle flash waits until every blast of the frame is noted: whether it is a big gun's decides its switch.
+    if (weapon ? f.gunfire || f.bigMuzzle : f.explosions) (weapon ? muzzles : flashes).push({o, d: flashImportance(o)});
     return;
   }
   if (f.trails && u.plumeKey && u.motorActive) { motors.push({o, d: d()}); return; }
   if (f.gunfire && u.roundDraw?.cores) rounds.push({o, d: (u.roundDraw.b as THREE.Vector3).distanceToSquared(eye)});
+}
+
+// A large or huge gun's flash: the game fired a muzzle blast at the same point (entities.js fireWeapon).
+const blastAt = new THREE.Vector3();
+function bigGunFlash(o: THREE.Object3D) {
+  const p = (o.userData.flashLight.position as THREE.Vector3 | undefined) ?? o.getWorldPosition(at);
+  return muzzleBlasts.some(b => b.getWorldPosition(blastAt).distanceTo(p) <= b.userData.effectScale.blastRadius);
 }
 
 // The game's own order for its flash lights (main.js flashImportance).
@@ -110,6 +124,7 @@ export function effectLights(out: (l: EffectLight) => void) {
   for (const {o} of topFlashes.sort((a, b) => a.d - b.d)) {
     if (o.userData.nuclearDetonation) { if (!nuke) { nuke = true; own.add(o); } } else if (ordinary < 3) { ordinary++; own.add(o); }
   }
+  for (const m of muzzles) if (bigGunFlash(m.o) ? flags?.bigMuzzle : flags?.gunfire) flashes.push(m);
   for (const {o} of nearest(flashes, MAX.flash + own.size)) {
     if (own.has(o)) continue;
     const f = o.userData.flashLight;

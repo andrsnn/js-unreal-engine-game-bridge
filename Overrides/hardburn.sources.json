@@ -2819,7 +2819,389 @@
    "params": {
     "NightFill": 0.06
    }
+  },
+  {
+   "name": "gun_flak_battery_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-flak-battery/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/flak-battery.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "url": "*/models/guns/pixal/flak-battery.glb",
+    "mesh": "geometry_0"
+   },
+   "fit": "none",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/flak-battery.glb",
+   "keys": [
+    "/models/guns/pixal/flak-battery.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   }
+  },
+  {
+   "name": "gun_heavy_spinal_mass_driver_base",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-heavy-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/heavy-spinal-mass-driver.glb",
+    "part": "base"
+   },
+   "match": {
+    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
+    "mesh": "geometry_0"
+   },
+   "fit": "none",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/heavy-spinal-mass-driver.glb",
+   "keys": [
+    "/models/guns/pixal/heavy-spinal-mass-driver.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   }
+  },
+  {
+   "name": "gun_pdc_heavy_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-heavy/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/pdc-heavy.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "url": "*/models/guns/pixal/pdc-heavy.glb",
+    "mesh": "geometry_0"
+   },
+   "fit": "none",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/pdc-heavy.glb",
+   "keys": [
+    "/models/guns/pixal/pdc-heavy.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   }
+  },
+  {
+   "name": "gun_pdc_medium_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-medium/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/pdc-medium.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "url": "*/models/guns/pixal/pdc-medium.glb",
+    "mesh": "geometry_0"
+   },
+   "fit": "none",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/pdc-medium.glb",
+   "keys": [
+    "/models/guns/pixal/pdc-medium.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   }
+  },
+  {
+   "name": "gun_pdc_small_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-pdc-small/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/pdc-small.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "url": "*/models/guns/pixal/pdc-small.glb",
+    "mesh": "geometry_0"
+   },
+   "fit": "none",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/pdc-small.glb",
+   "keys": [
+    "/models/guns/pixal/pdc-small.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   }
+  },
+  {
+   "name": "gun_railgun_heavy_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-railgun-heavy/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/railgun-heavy.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "url": "*/models/guns/pixal/railgun-heavy.glb",
+    "mesh": "geometry_0"
+   },
+   "fit": "none",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/railgun-heavy.glb",
+   "keys": [
+    "/models/guns/pixal/railgun-heavy.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   }
+  },
+  {
+   "name": "gun_spinal_mass_driver_base",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-spinal-mass-driver/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/spinal-mass-driver.glb",
+    "part": "base"
+   },
+   "match": {
+    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
+    "mesh": "geometry_0"
+   },
+   "fit": "none",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/spinal-mass-driver.glb",
+   "keys": [
+    "/models/guns/pixal/spinal-mass-driver.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   }
+  },
+  {
+   "name": "gun_triple_heavy_turret_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-triple-heavy-turret/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/triple-heavy-turret.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
+    "mesh": "geometry_0"
+   },
+   "fit": "none",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/triple-heavy-turret.glb",
+   "keys": [
+    "/models/guns/pixal/triple-heavy-turret.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   }
+  },
+  {
+   "name": "gun_twin_heavy_turret_yaw",
+   "kind": "gun",
+   "source": "F:/AssetVault/hard-burn/assets/gun-twin-heavy-turret/originals/pixal3d_textured.glb",
+   "split": {
+    "copy": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/twin-heavy-turret.glb",
+    "part": "yaw"
+   },
+   "match": {
+    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
+    "mesh": "geometry_0"
+   },
+   "fit": "none",
+   "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/twin-heavy-turret.glb",
+   "keys": [
+    "/models/guns/pixal/twin-heavy-turret.glb"
+   ],
+   "variants": "gunTint",
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   }
   }
  ],
- "extraRules": []
+ "extraRules": [],
+ "variants": {
+  "gunTint": [
+   {
+    "name": "tdf",
+    "match": {
+     "userData": {
+      "glbKey": [
+       "concept_tdf_*",
+       "tdf_*",
+       "tdf-*"
+      ]
+     }
+    },
+    "params": {
+     "Tint": [
+      1,
+      0.97,
+      0.92
+     ]
+    }
+   },
+   {
+    "name": "mrn",
+    "match": {
+     "userData": {
+      "glbKey": [
+       "concept_mrn_*",
+       "mrn_*",
+       "mrn-*"
+      ]
+     }
+    },
+    "params": {
+     "Tint": [
+      1,
+      0.72,
+      0.62
+     ]
+    }
+   },
+   {
+    "name": "enemy",
+    "match": {
+     "userData": {
+      "glbKey": [
+       "concept_enemy_*",
+       "enemy_*",
+       "enemy-*"
+      ]
+     }
+    },
+    "params": {
+     "Tint": [
+      1,
+      0.72,
+      0.62
+     ]
+    }
+   },
+   {
+    "name": "cartel",
+    "match": {
+     "userData": {
+      "glbKey": [
+       "concept_cartel_*",
+       "cartel_*",
+       "cartel-*"
+      ]
+     }
+    },
+    "params": {
+     "Tint": [
+      0.84,
+      0.86,
+      0.9
+     ]
+    }
+   },
+   {
+    "name": "helion",
+    "match": {
+     "userData": {
+      "glbKey": [
+       "concept_helion_*",
+       "helion_*",
+       "helion-*"
+      ]
+     }
+    },
+    "params": {
+     "Tint": [
+      1,
+      0.88,
+      0.66
+     ]
+    }
+   },
+   {
+    "name": "ueg",
+    "match": {
+     "userData": {
+      "glbKey": [
+       "concept_ueg_*",
+       "ueg_*",
+       "ueg-*"
+      ]
+     }
+    },
+    "params": {
+     "Tint": [
+      0.84,
+      0.9,
+      0.72
+     ]
+    }
+   },
+   {
+    "name": "corsair",
+    "match": {
+     "userData": {
+      "glbKey": [
+       "concept_corsair_*",
+       "corsair_*",
+       "corsair-*"
+      ]
+     }
+    },
+    "params": {
+     "Tint": [
+      0.6,
+      0.63,
+      0.66
+     ]
+    }
+   },
+   {
+    "name": "veil",
+    "match": {
+     "userData": {
+      "glbKey": [
+       "concept_veil_*",
+       "veil_*",
+       "veil-*"
+      ]
+     }
+    },
+    "params": {
+     "Tint": [
+      0.8,
+      0.72,
+      1
+     ]
+    }
+   },
+   {
+    "name": "guardian",
+    "match": {
+     "userData": {
+      "glbKey": [
+       "concept_guardian_*",
+       "guardian_*",
+       "guardian-*"
+      ]
+     }
+    },
+    "params": {
+     "Tint": [
+      0.75,
+      0.78,
+      0.82
+     ]
+    }
+   }
+  ]
+ }
 }

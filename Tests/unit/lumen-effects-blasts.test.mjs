@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import {THREE, loadRuntime} from './load-runtime.mjs';
 
 const fx = await loadRuntime('lumenEffects.ts', {log() {}, registry: ''});
-const ALL_OFF = {engineLight: false, gunfire: false, trails: false, smoke: false, explosions: false, debris: false};
+const ALL_OFF = {engineLight: false, gunfire: false, trails: false, smoke: false, explosions: false, debris: false, bigMuzzle: false};
 const camera = new THREE.PerspectiveCamera();
 const near = (a, b, e = 1e-6) => assert.ok(Math.abs(a - b) < e, `${a} is not ${b}`);
 const nearVector = (v, x, y, z) => { near(v.x, x); near(v.y, y); near(v.z, z); };

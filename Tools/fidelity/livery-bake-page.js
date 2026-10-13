@@ -15,18 +15,30 @@ const DETAIL = .8;
 // Unpainted station machinery keeps the game's own texture, which has none of the original's dark cracks: only a trace of
 // the original's relief goes on top (at .8 the cracks drew as black veins on the mine's white tanks).
 const HARDWARE_DETAIL = .15;
+// A gun's game texture is its original's texture, smaller and softened (Hard Burn tools/blender/gun-runtime.py), so the
+// original's relief belongs on it in full: at .15 the bake lost the copy's dark panel lines and read pale.
+const GUN_DETAIL = DETAIL;
 const F = window.__FF, THREE = F.THREE;
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const largestMesh = root => { let best = null, most = -1; root.updateMatrixWorld(true); root.traverse(o => { const n = o.isMesh ? o.geometry.attributes.position.count : -1; if (n > most) { most = n; best = o; } }); return best; };
 
-// The game's own model and paint for a concept, once its closest level has loaded.
+// The game's own model and paint for a concept, once its closest level has loaded. root: the frame the override's
+// source shares with the game's model.
+// A gun's key is its game copy (/models/guns/...glb). The game draws a gun in its own texture, tinted by the hull under it
+// (scene/gun-models.js), not in the hull's livery, so it takes the hardware path: the game's texture with a trace of the
+// original's relief. The tint is the override's Tint.
 async function gameHull(key) {
+  if (key.endsWith('.glb')) {
+    const level = (await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(key)).scene, mesh = largestMesh(level);
+    mesh.material.userData.hardware = mesh.material.userData.gun = true;
+    return {level, mesh, root: level};
+  }
   pixal.requestConcept(key).catch(() => {});
   for (let t = 0; t < 600; t++) {
     const ship = pixal.pixalShip(key), level = ship?.children[0]?.levels?.[0]?.object;
     const mesh = level && largestMesh(level);
-    if (ship?.userData.hullLoaded && mesh?.material?.onBeforeCompile && mesh.material.map) return {level, mesh};
+    if (ship?.userData.hullLoaded && mesh?.material?.onBeforeCompile && mesh.material.map) return {level, mesh, root: level.children[0].children[0]};
     await sleep(100);
   }
   throw Error(`${key}: the game didn't load its model`);
@@ -201,13 +213,12 @@ function seamFragment(fragment) {
 }
 
 export async function bake(name, key, sourceUrl, style = 'clean', options = {}) {
-  const {level, mesh: game} = await gameHull(key);
+  const {level, mesh: game, root: sceneRoot} = await gameHull(key);
   const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(sourceUrl);
   const source = largestMesh(gltf.scene);
   const map = source.material.map;
   if (!map) throw Error(`${name}: the source has no colour texture`);
   // Source vertices into the game mesh's own (local) coordinates: both glTF scenes share one frame.
-  const sceneRoot = level.children[0].children[0];
   const gameNode = new THREE.Matrix4().copy(sceneRoot.matrixWorld).invert().multiply(game.matrixWorld);
   const geometry = source.geometry.clone().applyMatrix4(new THREE.Matrix4().copy(gameNode).invert().multiply(source.matrixWorld));
   if (!geometry.attributes.normal) geometry.computeVertexNormals();
@@ -309,7 +320,7 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
         (clean ? '\nvarying float vJsgbCurvature; varying vec3 vJsgbPos, vJsgbNormal; uniform float jsgbShipLength;\n' + CLEAN_FUNCTIONS : ''))
       .replace('#include <roughnessmap_fragment>', (clean ? CLEAN_PAINT : `float jsgbLum = dot(texture2D(jsgbOriginal, vJsgbUv).rgb, vec3(.2126, .7152, .0722));
         float jsgbAround = dot(textureLod(jsgbOriginal, vJsgbUv, 4.).rgb, vec3(.2126, .7152, .0722));
-        diffuseColor.rgb *= mix(1., clamp((jsgbLum + .02) / (jsgbAround + .02), .55, 1.3), DETAIL);`.replace('DETAIL', String(game.material.userData.hardware ? HARDWARE_DETAIL : DETAIL))) + `
+        diffuseColor.rgb *= mix(1., clamp((jsgbLum + .02) / (jsgbAround + .02), .55, 1.3), DETAIL);`.replace('DETAIL', String(game.material.userData.gun ? GUN_DETAIL : game.material.userData.hardware ? HARDWARE_DETAIL : DETAIL))) + `
         gl_FragColor = vec4(jsgbOetf(diffuseColor.rgb), 1.); return;
 #include <roughnessmap_fragment>`);
   };

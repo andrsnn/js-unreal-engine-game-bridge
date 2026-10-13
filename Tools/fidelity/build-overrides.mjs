@@ -8,6 +8,10 @@
 //   "sources": [{"name", "source": "<file.glb>", "match": {...}, "fit": "bounds", "params": {...}, "check": "<game's own glb>"}]}
 // "check" names the model the game draws; its bounds are compared with the source's, and a mismatch
 // (another shape or orientation) is reported.
+// "split": {"copy": "<game's gun glb>", "part": "yaw"}: one part of a gun, cut from the original in the game copy's frame
+// (Tools/fidelity/split-gun.mjs). "variants": the name of a list in sources.json "variants"; each entry adds a rule
+// "<name>_<entry name>" before the source's own, with the entry's match and params added to the source's (a gun's tint
+// on each faction's hulls).
 import fs from 'node:fs';
 import path from 'node:path';
 import {execFileSync, spawnSync} from 'node:child_process';
@@ -56,8 +60,17 @@ for (const s of sources) {
   }
   // "receipt": the symmetry repair the game adopted for its own copy, applied to the full original first.
   let input = s.source;
+  // "split": a gun's part, cut from the original in the game copy's frame; every part of a gun is written at once.
+  if (s.split) {
+    const dir = path.join(path.dirname(work), 'guns', path.basename(s.split.copy, '.glb'));
+    input = path.join(dir, s.split.part + '.glb');
+    if (!fs.existsSync(input)) {
+      execFileSync(process.execPath, [path.join(bridge, 'Tools/fidelity/split-gun.mjs'), s.source, s.split.copy, dir, '--modules', list.modules], {stdio: 'ignore'});
+      const r = JSON.parse(fs.readFileSync(path.join(dir, 'split.json'), 'utf8'));
+      console.log(`${s.name}: split into ${Object.keys(r.parts).join(', ')}, mean gap to the game's copy ${(r.gap.mean * 100).toFixed(2)}% of its size`);
+    }
   // "geometryFrom": the game's own repaired model, with the original's textures (Tools/fidelity/retexture.mjs).
-  if (s.geometryFrom) {
+  } else if (s.geometryFrom) {
     input = path.join(path.dirname(work), 'hulls', s.name + '.glb');
     // Written under a temporary name and renamed when complete, so an interrupted run leaves no half-written file.
     if (!fs.existsSync(input)) { console.log(`${s.name}: game geometry ${execFileSync(process.execPath, [path.join(bridge, 'Tools/fidelity/retexture.mjs'), s.geometryFrom, s.source, input.replace(/\.glb$/, '.part.glb'), '--modules', list.modules], {encoding: 'utf8'}).trim()}`); fs.renameSync(input.replace(/\.glb$/, '.part.glb'), input); }
@@ -78,7 +91,7 @@ for (const s of sources) {
     const off = Math.max(...ra.map((x, i) => Math.abs(x - rb[i])));
     console.log(`${s.name}: source ${a.map(x => x.toFixed(3)).join(' x ')}, game model ${b.map(x => x.toFixed(3)).join(' x ')}${off > 0.08 ? '  << proportions differ by ' + (off * 100).toFixed(0) + '%' : ''}`);
   }
-  prepared.push({...p, rule: s});
+  prepared.push({...p, rule: s, input});
 }
 
 const resultFile = path.join(work, 'import-jobs.json.result.json');
@@ -118,8 +131,13 @@ for (const p of prepared) {
   const meshPath = p.kind === 'planet' ? results.find(x => x.name === p.rule.mesh)?.mesh : res?.mesh;
   if (!meshPath || !res) { console.log(`${p.name}: not imported (${res?.error ?? 'no result'})`); continue; }
   const {name, match, fit = 'bounds', params, others, receipt, keys} = p.rule;
-  rules.set(name, {name, match, mesh: meshPath, ...(p.kind === 'planet' ? {material: res.material} : {}), fit, bounds: meshSource.bounds, ...(params ? {params} : {}), ...(others ? {others} : {}),
-    source: (p.rule.source ?? p.source).replaceAll('\\', '/'), ...(receipt ? {symmetryRepair: receipt} : {}), ...(keys ? {keys} : {}),  ...(p.triangles ? {triangles: Math.round(p.triangles)} : {}), textures: Object.fromEntries(Object.entries(p.textures).map(([k, t]) => [k, `${t.width}x${t.height}`]))});
+  // A split gun part's mesh comes from the cut file, whose uvs and frame the livery bake follows ("imported").
+  const rule = {name, match, mesh: meshPath, ...(p.kind === 'planet' ? {material: res.material} : {}), fit, bounds: meshSource.bounds, ...(params ? {params} : {}), ...(others ? {others} : {}),
+    source: (p.rule.source ?? p.source).replaceAll('\\', '/'), ...(p.rule.split ? {imported: p.input.replaceAll('\\', '/')} : {}), ...(receipt ? {symmetryRepair: receipt} : {}), ...(keys ? {keys} : {}),  ...(p.triangles ? {triangles: Math.round(p.triangles)} : {}), textures: Object.fromEntries(Object.entries(p.textures).map(([k, t]) => [k, `${t.width}x${t.height}`]))};
+  // Variants come first, so a game object that matches one of them takes it, and the source's own rule catches the rest.
+  const variants = (list.variants?.[p.rule.variants] ?? []).map(v => ({...rule, name: `${name}_${v.name}`, match: {...match, ...v.match, userData: {...match.userData, ...v.match?.userData}},
+    params: {...params, ...v.params}, keys: undefined, imported: undefined}));
+  for (const r of [...variants, rule]) { rules.delete(r.name); rules.set(r.name, r); }
 }
 // The effect switches ("effects") stay as they were.
 fs.writeFileSync(outFile, JSON.stringify({version: 1, ...(before.effects ? {effects: before.effects} : {}), overrides: [...rules.values()]}, null, 1) + '\n');
