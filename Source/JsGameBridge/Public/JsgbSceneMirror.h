@@ -96,6 +96,8 @@ struct FJsgbMaterial
 	bool bFatWorld = false;
 	/** three.js draws it opaque without writing depth (a sky dome drawn first): Unreal draws it translucent, first. */
 	bool bDrawFirst = false;
+	/** Its generated material moves vertices in the vertex shader (world position offset: camera-facing sprites). */
+	bool bMovesVertices = false;
 	/** Textures bound through uniforms (shader materials and hooks): parameter name and texture id. */
 	TArray<TPair<FName, int32>> UniformTextures;
 };

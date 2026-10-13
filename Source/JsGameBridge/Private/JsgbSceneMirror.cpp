@@ -988,6 +988,8 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 	// Only DoubleSide draws both faces; BackSide draws back faces through reversed culling (see Show).
 	if (!Parent && !CustomKey.IsEmpty()) { Parent = GeneratedParent(CustomKey, BlendMode, Side == 2); }
 	M.bCustom = Parent && !CustomKey.IsEmpty();
+	M.bMovesVertices = false;
+	if (M.bCustom) { const TSharedPtr<FJsonObject> Sh = Shaders.FindRef(CustomKey); M.bMovesVertices = Sh.IsValid() && !Str(Sh, TEXT("vertexHlsl")).IsEmpty(); }
 	// The authored transparent, masked and unlit parents draw both faces; three draws only the front (or, with
 	// reversed culling, the back) unless the material is DoubleSide.
 	const bool bOneSided = Side != 2 && !bBillboard && (Variant == VMasked || Variant == VTrans || Variant == VUnlit || Variant == VUnlitTrans || Variant == VAdditive || Variant == VUnlitMasked);
@@ -1568,6 +1570,19 @@ void UJsgbSceneMirror::ApplyFrame(const float* D, int32 Count, const float* Inst
 			{
 				Ent.Materials.SetNum(1); Ent.Materials[0] = Mat;
 				if (UMaterialInstanceDynamic* Mid = MaterialFor(Mat)) { for (int32 S = 0; S < Slots; ++S) { C->SetMaterial(S, Mid); } }
+			}
+			// Unreal culls each instance by its mesh's bounds, frustum and occlusion alike, before the vertex shader runs. A
+			// generated material that moves the vertices (camera-facing sprites, pulled toward the camera) draws them away
+			// from those bounds: a fireball over a hull had its bounds inside the hull and was occlusion culled. Such a mesh
+			// gets bounds that never cull (10 km each way in mesh units; the quad's thin axis is not scaled with the sprite).
+			if (Geo >= 0)
+			{
+				const FJsgbMaterial* Jm = Materials.Find(Mat);
+				if (Jm && Jm->bMovesVertices && Mesh->GetPositiveBoundsExtension().IsNearlyZero())
+				{
+					Mesh->SetPositiveBoundsExtension(FVector(1.0e6)); Mesh->SetNegativeBoundsExtension(FVector(1.0e6)); Mesh->CalculateExtendedBounds();
+					C->UpdateBounds(); C->MarkRenderStateDirty();
+				}
 			}
 			Place(Ent, C, ToTransform(M), Flags);
 			const int32 RawFloats = N * ((bColors ? 19 : 16) + Extra);
