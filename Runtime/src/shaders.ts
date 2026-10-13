@@ -16,7 +16,9 @@ export type ShaderInput = {name: string; source: 'localPosition' | 'instanceColo
  *  (built-in materials patched in onBeforeCompile that add to totalEmissiveRadiance). */
 export type TranslatedShader = {key: string; hlsl: string; inputs: ShaderInput[]; vertexHlsl: string; vertexInputs: ShaderInput[]; lit?: boolean; encoded?: boolean; emissiveOutput?: boolean;
   /** Drawn on an InstancedMesh: Unreal takes the instance's model matrix for the fragment stage in the vertex shader. */
-  instanced?: boolean};
+  instanced?: boolean;
+  /** A camera-facing instanced quad whose world position offset takes the JsgbDepthPull scalar (see the vertex stage). */
+  depthPull?: boolean};
 
 type Decl = {qualifier: string; type: string; name: string; array: string};
 const BUILTIN_UNIFORMS: Record<string, string> = {modelMatrix: 'mat4', viewMatrix: 'mat4', projectionMatrix: 'mat4', cameraPosition: 'vec3', isOrthographic: 'bool'};
@@ -407,14 +409,24 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial, instance
     // away), which pushed surfaces tens of units back, so lines behind them showed through.
     const vertexInputs: ShaderInput[] = [...vsInputs.filter(i => !i.name.startsWith('T_')),
       ...[0, 1, 2, 3].map(i => ({name: `JsgbW${i}`, source: 'collection' as const, param: `CamCol${i}`})), {name: 'JsgbWorld', source: 'worldPosition'}];
-    const vertexHlsl = vsInputs.some(i => i.name.startsWith('T_')) || standardVertexTransform(material.vertexShader) ? '' : [V.types, V.struct, ...vsGlue,
+    // A camera-facing quad on an InstancedMesh (its vertex shader places it from instanceMatrix: sprites, streaks,
+    // drive cores) is pulled toward the camera along each vertex's own view ray by JsgbDepthPull (a material scalar,
+    // 0.5 by default, sceneExport.ts) times the instance's radius, half its X scale. Its pixels stay where they were
+    // on screen; only their depth moves, so an effect the game puts on a hull draws over that surface. Unreal draws
+    // hulls without the game's damage holes, which hid the flames sitting in them. Geometry that is truly in front
+    // still hides it. Free sprites get the same small pull: the shader can't tell the two apart.
+    const placed = !(vsInputs.some(i => i.name.startsWith('T_')) || standardVertexTransform(material.vertexShader));
+    const depthPull = placed && instancing.matrix;
+    if (depthPull) vertexInputs.push({name: 'U_JsgbDepthPull', source: 'scalar', param: 'JsgbDepthPull'});
+    const vertexHlsl = !placed ? '' : [V.types, V.struct, ...vsGlue,
       'float4 jsgbC = vs.gl_Position; float3 jsgbV;',
       'if (abs(JsgbPr2.w) > 0.5) { jsgbV.z = jsgbC.w / JsgbPr2.w; jsgbV.x = (jsgbC.x - JsgbPr2.x * jsgbV.z) / JsgbPr0.x; jsgbV.y = (jsgbC.y - JsgbPr2.y * jsgbV.z) / JsgbPr1.y; }',
       'else { float jsgbInvW = 1.0 / (abs(jsgbC.w) > 1e-8 ? jsgbC.w : 1e-8); jsgbV.z = (jsgbC.z * jsgbInvW - JsgbPr3.z) / JsgbPr2.z; jsgbV.x = (jsgbC.x * jsgbInvW - JsgbPr3.x) / JsgbPr0.x; jsgbV.y = (jsgbC.y * jsgbInvW - JsgbPr3.y) / JsgbPr1.y; }',
+      depthPull ? 'float jsgbPull = U_JsgbDepthPull * 0.5 * length(JsgbMX); if (abs(JsgbPr2.w) > 0.5) { jsgbV *= max(1.0 - jsgbPull / max(length(jsgbV), 1e-6), 0.05); } else { jsgbV.z += jsgbPull; }' : '',
       'float3 jsgbT = (jsgbV.x * JsgbW0 + jsgbV.y * JsgbW1 + jsgbV.z * JsgbW2 + JsgbW3).xyz;',
       'float3 jsgbOffset = float3(jsgbT.x, jsgbT.z, jsgbT.y) * 100.0 - JsgbWorld;',
       'return any(isnan(jsgbOffset)) || dot(jsgbOffset, jsgbOffset) < 1e-4 ? float3(0, 0, 0) : jsgbOffset;'].filter(Boolean).join('\n');
-    result = {key, hlsl, inputs, vertexHlsl, vertexInputs, ...(emissiveOutput ? {emissiveOutput} : {}), ...(instanced ? {instanced: true} : {})};
+    result = {key, hlsl, inputs, vertexHlsl, vertexInputs, ...(emissiveOutput ? {emissiveOutput} : {}), ...(instanced ? {instanced: true} : {}), ...(depthPull ? {depthPull: true} : {})};
   } catch (error) {
     host.log('warn', `custom shader ${material.name || key} stays generic: ${error instanceof Error ? error.message : error}`);
   }
@@ -469,6 +481,8 @@ export function translateHookedMaterial(material: THREE.Material, hooked: Hooked
   for (const [k, d] of MAPS) if (m[k]) { defines[`USE_${d}`] = ''; defines[`${d}_UV`] = 'uv'; defines.USE_UV = ''; }
   if (m.vertexColors) defines.USE_COLOR = '';
   if (m.alphaTest > 0) defines.USE_ALPHATEST = '';
+  // alphaHash declares vPosition and getAlphaHashThreshold, which hooks use for their own dithered discards.
+  if (m.alphaHash) defines.USE_ALPHAHASH = '';
   if (m.flatShading) defines.FLAT_SHADED = '';
   if (m.side === THREE.DoubleSide) defines.DOUBLE_SIDED = '';
   // On an InstancedMesh: Unreal's model matrix already holds each instance's transform, so instanceMatrix is

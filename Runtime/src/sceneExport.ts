@@ -390,6 +390,9 @@ function linearShader(t: TranslatedShader): TranslatedShader {
   return l;
 }
 
+// How far a camera-facing instanced quad is pulled toward the camera in Unreal, in radii of the quad (shaders.ts,
+// depthPull). A material's userData.jsgbDepthPull sets its own.
+export const DEPTH_PULL = 0.5;
 const drawFirst = (mat: THREE.Material) => !mat.transparent && mat.depthWrite === false && mat.blending === THREE.NormalBlending;
 function syncMaterial(mat: THREE.Material): number {
   const id = idOf(mat);
@@ -413,6 +416,7 @@ function syncMaterial(mat: THREE.Material): number {
   const registryMaterial = registryKey ? assetRegistry()[registryKey]?.material : undefined;
   // Custom shaders without a registry material become generated Unreal materials.
   let custom: string | undefined;
+  let depthPull: number | undefined;
   const hooked = shader ? undefined : hookShader(mat);
   if ((shader || hooked) && !registryMaterial) {
     let t = shader ? translateShaderMaterial(m, instancedUse.get(mat)) : translateHookedMaterial(mat, hooked!.shader, hooked!.key, instancedUse.get(mat));
@@ -426,7 +430,7 @@ function syncMaterial(mat: THREE.Material): number {
     // Still compiling (the shader compiler loads in the background): send it again next frame, even
     // though its values haven't changed, so the generated material replaces the generic one.
     if (t === undefined) quick.delete(mat);
-    if (t) { if (!sentShaders.has(t.key)) { sentShaders.add(t.key); sink()?.shader?.(t.key, JSON.stringify(t)); } custom = t.key; }
+    if (t) { if (!sentShaders.has(t.key)) { sentShaders.add(t.key); sink()?.shader?.(t.key, JSON.stringify(t)); } custom = t.key; if (t.depthPull) depthPull = typeof mat.userData?.jsgbDepthPull === 'number' ? mat.userData.jsgbDepthPull : DEPTH_PULL; }
   }
   const desc = {
     type: mat.type, name: mat.name,
@@ -442,7 +446,7 @@ function syncMaterial(mat: THREE.Material): number {
     metalnessMap: textureId(m.metalnessMap), aoMap: textureId(m.aoMap), alphaMap: textureId(m.alphaMap),
     flat: !!m.flatShading, toneMapped: mat.toneMapped, fog: m.fog !== false,
     shader, shaderKey: shader ? registryKey : undefined, registryMaterial, custom,
-    uniforms: shader ? uniformValues(m.uniforms as Record<string, {value: unknown}>) : (hookUniforms(mat) ? uniformValues(hookUniforms(mat)) : undefined),
+    uniforms: shader ? uniformValues(m.uniforms as Record<string, {value: unknown}>, depthPull === undefined ? {} : {JsgbDepthPull: depthPull}) : (hookUniforms(mat) ? uniformValues(hookUniforms(mat)) : undefined),
     specular: mat.type === 'MeshLambertMaterial' || mat.type === 'MeshToonMaterial' ? 0 : mat.type === 'MeshPhongMaterial' ? 0.3 : 0.5,
     envIntensity: m.envMapIntensity ?? 1, alphaHash: !!m.alphaHash,
     // Lit by an environment map: its own, or the scene's (the mirror turns it into one colour of reflected light).
