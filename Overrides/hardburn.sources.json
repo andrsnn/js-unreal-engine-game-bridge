@@ -2829,8 +2829,10 @@
     "part": "yaw"
    },
    "match": {
-    "url": "*/models/guns/pixal/flak-battery.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/flak-battery"
+    }
    },
    "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/flak-battery.glb",
@@ -2852,8 +2854,10 @@
     "part": "base"
    },
    "match": {
-    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/heavy-spinal-mass-driver"
+    }
    },
    "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/heavy-spinal-mass-driver.glb",
@@ -2875,8 +2879,10 @@
     "part": "yaw"
    },
    "match": {
-    "url": "*/models/guns/pixal/pdc-heavy.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/pdc-heavy"
+    }
    },
    "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/pdc-heavy.glb",
@@ -2898,8 +2904,10 @@
     "part": "yaw"
    },
    "match": {
-    "url": "*/models/guns/pixal/pdc-medium.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/pdc-medium"
+    }
    },
    "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/pdc-medium.glb",
@@ -2921,8 +2929,10 @@
     "part": "yaw"
    },
    "match": {
-    "url": "*/models/guns/pixal/pdc-small.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/pdc-small"
+    }
    },
    "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/pdc-small.glb",
@@ -2944,8 +2954,10 @@
     "part": "yaw"
    },
    "match": {
-    "url": "*/models/guns/pixal/railgun-heavy.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/railgun-heavy"
+    }
    },
    "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/railgun-heavy.glb",
@@ -2967,8 +2979,10 @@
     "part": "base"
    },
    "match": {
-    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/spinal-mass-driver"
+    }
    },
    "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/spinal-mass-driver.glb",
@@ -2990,8 +3004,10 @@
     "part": "yaw"
    },
    "match": {
-    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/triple-heavy-turret"
+    }
    },
    "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/triple-heavy-turret.glb",
@@ -3013,8 +3029,10 @@
     "part": "yaw"
    },
    "match": {
-    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/twin-heavy-turret"
+    }
    },
    "fit": "none",
    "check": "C:/Users/Aidan Anderson/falling-frontier-clone/public/models/guns/pixal/twin-heavy-turret.glb",

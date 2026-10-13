@@ -5703,14 +5703,14 @@
   {
    "name": "gun_flak_battery_yaw_tdf",
    "match": {
-    "url": "*/models/guns/pixal/flak-battery.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
       "tdf_*",
       "tdf-*"
-     ]
+     ],
+     "gunModel": "pixal/flak-battery"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
@@ -5746,14 +5746,14 @@
   {
    "name": "gun_flak_battery_yaw_mrn",
    "match": {
-    "url": "*/models/guns/pixal/flak-battery.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
       "mrn_*",
       "mrn-*"
-     ]
+     ],
+     "gunModel": "pixal/flak-battery"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
@@ -5789,14 +5789,14 @@
   {
    "name": "gun_flak_battery_yaw_enemy",
    "match": {
-    "url": "*/models/guns/pixal/flak-battery.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
       "enemy_*",
       "enemy-*"
-     ]
+     ],
+     "gunModel": "pixal/flak-battery"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
@@ -5832,14 +5832,14 @@
   {
    "name": "gun_flak_battery_yaw_cartel",
    "match": {
-    "url": "*/models/guns/pixal/flak-battery.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
       "cartel_*",
       "cartel-*"
-     ]
+     ],
+     "gunModel": "pixal/flak-battery"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
@@ -5875,14 +5875,14 @@
   {
    "name": "gun_flak_battery_yaw_helion",
    "match": {
-    "url": "*/models/guns/pixal/flak-battery.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_helion_*",
       "helion_*",
       "helion-*"
-     ]
+     ],
+     "gunModel": "pixal/flak-battery"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
@@ -5918,14 +5918,14 @@
   {
    "name": "gun_flak_battery_yaw_ueg",
    "match": {
-    "url": "*/models/guns/pixal/flak-battery.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
       "ueg_*",
       "ueg-*"
-     ]
+     ],
+     "gunModel": "pixal/flak-battery"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
@@ -5961,14 +5961,14 @@
   {
    "name": "gun_flak_battery_yaw_corsair",
    "match": {
-    "url": "*/models/guns/pixal/flak-battery.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
       "corsair_*",
       "corsair-*"
-     ]
+     ],
+     "gunModel": "pixal/flak-battery"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
@@ -6004,14 +6004,14 @@
   {
    "name": "gun_flak_battery_yaw_veil",
    "match": {
-    "url": "*/models/guns/pixal/flak-battery.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_veil_*",
       "veil_*",
       "veil-*"
-     ]
+     ],
+     "gunModel": "pixal/flak-battery"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
@@ -6047,14 +6047,14 @@
   {
    "name": "gun_flak_battery_yaw_guardian",
    "match": {
-    "url": "*/models/guns/pixal/flak-battery.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
       "guardian_*",
       "guardian-*"
-     ]
+     ],
+     "gunModel": "pixal/flak-battery"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
@@ -6090,8 +6090,10 @@
   {
    "name": "gun_flak_battery_yaw",
    "match": {
-    "url": "*/models/guns/pixal/flak-battery.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/flak-battery"
+    }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_flak_battery_yaw/gun_flak_battery_yaw/StaticMeshes/SM_gun_flak_battery_yaw.SM_gun_flak_battery_yaw",
    "fit": "none",
@@ -6125,14 +6127,14 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_tdf",
    "match": {
-    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
       "tdf_*",
       "tdf-*"
-     ]
+     ],
+     "gunModel": "pixal/heavy-spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
@@ -6168,14 +6170,14 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_mrn",
    "match": {
-    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
       "mrn_*",
       "mrn-*"
-     ]
+     ],
+     "gunModel": "pixal/heavy-spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
@@ -6211,14 +6213,14 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_enemy",
    "match": {
-    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
       "enemy_*",
       "enemy-*"
-     ]
+     ],
+     "gunModel": "pixal/heavy-spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
@@ -6254,14 +6256,14 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_cartel",
    "match": {
-    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
       "cartel_*",
       "cartel-*"
-     ]
+     ],
+     "gunModel": "pixal/heavy-spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
@@ -6297,14 +6299,14 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_helion",
    "match": {
-    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_helion_*",
       "helion_*",
       "helion-*"
-     ]
+     ],
+     "gunModel": "pixal/heavy-spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
@@ -6340,14 +6342,14 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_ueg",
    "match": {
-    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
       "ueg_*",
       "ueg-*"
-     ]
+     ],
+     "gunModel": "pixal/heavy-spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
@@ -6383,14 +6385,14 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_corsair",
    "match": {
-    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
       "corsair_*",
       "corsair-*"
-     ]
+     ],
+     "gunModel": "pixal/heavy-spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
@@ -6426,14 +6428,14 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_veil",
    "match": {
-    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_veil_*",
       "veil_*",
       "veil-*"
-     ]
+     ],
+     "gunModel": "pixal/heavy-spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
@@ -6469,14 +6471,14 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base_guardian",
    "match": {
-    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
       "guardian_*",
       "guardian-*"
-     ]
+     ],
+     "gunModel": "pixal/heavy-spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
@@ -6512,8 +6514,10 @@
   {
    "name": "gun_heavy_spinal_mass_driver_base",
    "match": {
-    "url": "*/models/guns/pixal/heavy-spinal-mass-driver.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/heavy-spinal-mass-driver"
+    }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_heavy_spinal_mass_driver_base/gun_heavy_spinal_mass_driver_base/StaticMeshes/SM_gun_heavy_spinal_mass_driver_base.SM_gun_heavy_spinal_mass_driver_base",
    "fit": "none",
@@ -6547,14 +6551,14 @@
   {
    "name": "gun_pdc_heavy_yaw_tdf",
    "match": {
-    "url": "*/models/guns/pixal/pdc-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
       "tdf_*",
       "tdf-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
@@ -6590,14 +6594,14 @@
   {
    "name": "gun_pdc_heavy_yaw_mrn",
    "match": {
-    "url": "*/models/guns/pixal/pdc-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
       "mrn_*",
       "mrn-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
@@ -6633,14 +6637,14 @@
   {
    "name": "gun_pdc_heavy_yaw_enemy",
    "match": {
-    "url": "*/models/guns/pixal/pdc-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
       "enemy_*",
       "enemy-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
@@ -6676,14 +6680,14 @@
   {
    "name": "gun_pdc_heavy_yaw_cartel",
    "match": {
-    "url": "*/models/guns/pixal/pdc-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
       "cartel_*",
       "cartel-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
@@ -6719,14 +6723,14 @@
   {
    "name": "gun_pdc_heavy_yaw_helion",
    "match": {
-    "url": "*/models/guns/pixal/pdc-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_helion_*",
       "helion_*",
       "helion-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
@@ -6762,14 +6766,14 @@
   {
    "name": "gun_pdc_heavy_yaw_ueg",
    "match": {
-    "url": "*/models/guns/pixal/pdc-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
       "ueg_*",
       "ueg-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
@@ -6805,14 +6809,14 @@
   {
    "name": "gun_pdc_heavy_yaw_corsair",
    "match": {
-    "url": "*/models/guns/pixal/pdc-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
       "corsair_*",
       "corsair-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
@@ -6848,14 +6852,14 @@
   {
    "name": "gun_pdc_heavy_yaw_veil",
    "match": {
-    "url": "*/models/guns/pixal/pdc-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_veil_*",
       "veil_*",
       "veil-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
@@ -6891,14 +6895,14 @@
   {
    "name": "gun_pdc_heavy_yaw_guardian",
    "match": {
-    "url": "*/models/guns/pixal/pdc-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
       "guardian_*",
       "guardian-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
@@ -6934,8 +6938,10 @@
   {
    "name": "gun_pdc_heavy_yaw",
    "match": {
-    "url": "*/models/guns/pixal/pdc-heavy.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/pdc-heavy"
+    }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_heavy_yaw/gun_pdc_heavy_yaw/StaticMeshes/SM_gun_pdc_heavy_yaw.SM_gun_pdc_heavy_yaw",
    "fit": "none",
@@ -6969,14 +6975,14 @@
   {
    "name": "gun_pdc_medium_yaw_tdf",
    "match": {
-    "url": "*/models/guns/pixal/pdc-medium.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
       "tdf_*",
       "tdf-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-medium"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
@@ -7012,14 +7018,14 @@
   {
    "name": "gun_pdc_medium_yaw_mrn",
    "match": {
-    "url": "*/models/guns/pixal/pdc-medium.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
       "mrn_*",
       "mrn-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-medium"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
@@ -7055,14 +7061,14 @@
   {
    "name": "gun_pdc_medium_yaw_enemy",
    "match": {
-    "url": "*/models/guns/pixal/pdc-medium.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
       "enemy_*",
       "enemy-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-medium"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
@@ -7098,14 +7104,14 @@
   {
    "name": "gun_pdc_medium_yaw_cartel",
    "match": {
-    "url": "*/models/guns/pixal/pdc-medium.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
       "cartel_*",
       "cartel-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-medium"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
@@ -7141,14 +7147,14 @@
   {
    "name": "gun_pdc_medium_yaw_helion",
    "match": {
-    "url": "*/models/guns/pixal/pdc-medium.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_helion_*",
       "helion_*",
       "helion-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-medium"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
@@ -7184,14 +7190,14 @@
   {
    "name": "gun_pdc_medium_yaw_ueg",
    "match": {
-    "url": "*/models/guns/pixal/pdc-medium.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
       "ueg_*",
       "ueg-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-medium"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
@@ -7227,14 +7233,14 @@
   {
    "name": "gun_pdc_medium_yaw_corsair",
    "match": {
-    "url": "*/models/guns/pixal/pdc-medium.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
       "corsair_*",
       "corsair-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-medium"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
@@ -7270,14 +7276,14 @@
   {
    "name": "gun_pdc_medium_yaw_veil",
    "match": {
-    "url": "*/models/guns/pixal/pdc-medium.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_veil_*",
       "veil_*",
       "veil-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-medium"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
@@ -7313,14 +7319,14 @@
   {
    "name": "gun_pdc_medium_yaw_guardian",
    "match": {
-    "url": "*/models/guns/pixal/pdc-medium.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
       "guardian_*",
       "guardian-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-medium"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
@@ -7356,8 +7362,10 @@
   {
    "name": "gun_pdc_medium_yaw",
    "match": {
-    "url": "*/models/guns/pixal/pdc-medium.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/pdc-medium"
+    }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_medium_yaw/gun_pdc_medium_yaw/StaticMeshes/SM_gun_pdc_medium_yaw.SM_gun_pdc_medium_yaw",
    "fit": "none",
@@ -7391,14 +7399,14 @@
   {
    "name": "gun_pdc_small_yaw_tdf",
    "match": {
-    "url": "*/models/guns/pixal/pdc-small.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
       "tdf_*",
       "tdf-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-small"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
@@ -7434,14 +7442,14 @@
   {
    "name": "gun_pdc_small_yaw_mrn",
    "match": {
-    "url": "*/models/guns/pixal/pdc-small.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
       "mrn_*",
       "mrn-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-small"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
@@ -7477,14 +7485,14 @@
   {
    "name": "gun_pdc_small_yaw_enemy",
    "match": {
-    "url": "*/models/guns/pixal/pdc-small.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
       "enemy_*",
       "enemy-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-small"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
@@ -7520,14 +7528,14 @@
   {
    "name": "gun_pdc_small_yaw_cartel",
    "match": {
-    "url": "*/models/guns/pixal/pdc-small.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
       "cartel_*",
       "cartel-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-small"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
@@ -7563,14 +7571,14 @@
   {
    "name": "gun_pdc_small_yaw_helion",
    "match": {
-    "url": "*/models/guns/pixal/pdc-small.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_helion_*",
       "helion_*",
       "helion-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-small"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
@@ -7606,14 +7614,14 @@
   {
    "name": "gun_pdc_small_yaw_ueg",
    "match": {
-    "url": "*/models/guns/pixal/pdc-small.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
       "ueg_*",
       "ueg-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-small"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
@@ -7649,14 +7657,14 @@
   {
    "name": "gun_pdc_small_yaw_corsair",
    "match": {
-    "url": "*/models/guns/pixal/pdc-small.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
       "corsair_*",
       "corsair-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-small"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
@@ -7692,14 +7700,14 @@
   {
    "name": "gun_pdc_small_yaw_veil",
    "match": {
-    "url": "*/models/guns/pixal/pdc-small.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_veil_*",
       "veil_*",
       "veil-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-small"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
@@ -7735,14 +7743,14 @@
   {
    "name": "gun_pdc_small_yaw_guardian",
    "match": {
-    "url": "*/models/guns/pixal/pdc-small.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
       "guardian_*",
       "guardian-*"
-     ]
+     ],
+     "gunModel": "pixal/pdc-small"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
@@ -7778,8 +7786,10 @@
   {
    "name": "gun_pdc_small_yaw",
    "match": {
-    "url": "*/models/guns/pixal/pdc-small.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/pdc-small"
+    }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_pdc_small_yaw/gun_pdc_small_yaw/StaticMeshes/SM_gun_pdc_small_yaw.SM_gun_pdc_small_yaw",
    "fit": "none",
@@ -7813,14 +7823,14 @@
   {
    "name": "gun_railgun_heavy_yaw_tdf",
    "match": {
-    "url": "*/models/guns/pixal/railgun-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
       "tdf_*",
       "tdf-*"
-     ]
+     ],
+     "gunModel": "pixal/railgun-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
@@ -7856,14 +7866,14 @@
   {
    "name": "gun_railgun_heavy_yaw_mrn",
    "match": {
-    "url": "*/models/guns/pixal/railgun-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
       "mrn_*",
       "mrn-*"
-     ]
+     ],
+     "gunModel": "pixal/railgun-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
@@ -7899,14 +7909,14 @@
   {
    "name": "gun_railgun_heavy_yaw_enemy",
    "match": {
-    "url": "*/models/guns/pixal/railgun-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
       "enemy_*",
       "enemy-*"
-     ]
+     ],
+     "gunModel": "pixal/railgun-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
@@ -7942,14 +7952,14 @@
   {
    "name": "gun_railgun_heavy_yaw_cartel",
    "match": {
-    "url": "*/models/guns/pixal/railgun-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
       "cartel_*",
       "cartel-*"
-     ]
+     ],
+     "gunModel": "pixal/railgun-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
@@ -7985,14 +7995,14 @@
   {
    "name": "gun_railgun_heavy_yaw_helion",
    "match": {
-    "url": "*/models/guns/pixal/railgun-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_helion_*",
       "helion_*",
       "helion-*"
-     ]
+     ],
+     "gunModel": "pixal/railgun-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
@@ -8028,14 +8038,14 @@
   {
    "name": "gun_railgun_heavy_yaw_ueg",
    "match": {
-    "url": "*/models/guns/pixal/railgun-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
       "ueg_*",
       "ueg-*"
-     ]
+     ],
+     "gunModel": "pixal/railgun-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
@@ -8071,14 +8081,14 @@
   {
    "name": "gun_railgun_heavy_yaw_corsair",
    "match": {
-    "url": "*/models/guns/pixal/railgun-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
       "corsair_*",
       "corsair-*"
-     ]
+     ],
+     "gunModel": "pixal/railgun-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
@@ -8114,14 +8124,14 @@
   {
    "name": "gun_railgun_heavy_yaw_veil",
    "match": {
-    "url": "*/models/guns/pixal/railgun-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_veil_*",
       "veil_*",
       "veil-*"
-     ]
+     ],
+     "gunModel": "pixal/railgun-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
@@ -8157,14 +8167,14 @@
   {
    "name": "gun_railgun_heavy_yaw_guardian",
    "match": {
-    "url": "*/models/guns/pixal/railgun-heavy.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
       "guardian_*",
       "guardian-*"
-     ]
+     ],
+     "gunModel": "pixal/railgun-heavy"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
@@ -8200,8 +8210,10 @@
   {
    "name": "gun_railgun_heavy_yaw",
    "match": {
-    "url": "*/models/guns/pixal/railgun-heavy.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/railgun-heavy"
+    }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_railgun_heavy_yaw/gun_railgun_heavy_yaw/StaticMeshes/SM_gun_railgun_heavy_yaw.SM_gun_railgun_heavy_yaw",
    "fit": "none",
@@ -8235,14 +8247,14 @@
   {
    "name": "gun_spinal_mass_driver_base_tdf",
    "match": {
-    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
       "tdf_*",
       "tdf-*"
-     ]
+     ],
+     "gunModel": "pixal/spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
@@ -8278,14 +8290,14 @@
   {
    "name": "gun_spinal_mass_driver_base_mrn",
    "match": {
-    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
       "mrn_*",
       "mrn-*"
-     ]
+     ],
+     "gunModel": "pixal/spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
@@ -8321,14 +8333,14 @@
   {
    "name": "gun_spinal_mass_driver_base_enemy",
    "match": {
-    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
       "enemy_*",
       "enemy-*"
-     ]
+     ],
+     "gunModel": "pixal/spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
@@ -8364,14 +8376,14 @@
   {
    "name": "gun_spinal_mass_driver_base_cartel",
    "match": {
-    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
       "cartel_*",
       "cartel-*"
-     ]
+     ],
+     "gunModel": "pixal/spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
@@ -8407,14 +8419,14 @@
   {
    "name": "gun_spinal_mass_driver_base_helion",
    "match": {
-    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_helion_*",
       "helion_*",
       "helion-*"
-     ]
+     ],
+     "gunModel": "pixal/spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
@@ -8450,14 +8462,14 @@
   {
    "name": "gun_spinal_mass_driver_base_ueg",
    "match": {
-    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
       "ueg_*",
       "ueg-*"
-     ]
+     ],
+     "gunModel": "pixal/spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
@@ -8493,14 +8505,14 @@
   {
    "name": "gun_spinal_mass_driver_base_corsair",
    "match": {
-    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
       "corsair_*",
       "corsair-*"
-     ]
+     ],
+     "gunModel": "pixal/spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
@@ -8536,14 +8548,14 @@
   {
    "name": "gun_spinal_mass_driver_base_veil",
    "match": {
-    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_veil_*",
       "veil_*",
       "veil-*"
-     ]
+     ],
+     "gunModel": "pixal/spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
@@ -8579,14 +8591,14 @@
   {
    "name": "gun_spinal_mass_driver_base_guardian",
    "match": {
-    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
       "guardian_*",
       "guardian-*"
-     ]
+     ],
+     "gunModel": "pixal/spinal-mass-driver"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
@@ -8622,8 +8634,10 @@
   {
    "name": "gun_spinal_mass_driver_base",
    "match": {
-    "url": "*/models/guns/pixal/spinal-mass-driver.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/spinal-mass-driver"
+    }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_spinal_mass_driver_base/gun_spinal_mass_driver_base/StaticMeshes/SM_gun_spinal_mass_driver_base.SM_gun_spinal_mass_driver_base",
    "fit": "none",
@@ -8657,14 +8671,14 @@
   {
    "name": "gun_triple_heavy_turret_yaw_tdf",
    "match": {
-    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
       "tdf_*",
       "tdf-*"
-     ]
+     ],
+     "gunModel": "pixal/triple-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
@@ -8700,14 +8714,14 @@
   {
    "name": "gun_triple_heavy_turret_yaw_mrn",
    "match": {
-    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
       "mrn_*",
       "mrn-*"
-     ]
+     ],
+     "gunModel": "pixal/triple-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
@@ -8743,14 +8757,14 @@
   {
    "name": "gun_triple_heavy_turret_yaw_enemy",
    "match": {
-    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
       "enemy_*",
       "enemy-*"
-     ]
+     ],
+     "gunModel": "pixal/triple-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
@@ -8786,14 +8800,14 @@
   {
    "name": "gun_triple_heavy_turret_yaw_cartel",
    "match": {
-    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
       "cartel_*",
       "cartel-*"
-     ]
+     ],
+     "gunModel": "pixal/triple-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
@@ -8829,14 +8843,14 @@
   {
    "name": "gun_triple_heavy_turret_yaw_helion",
    "match": {
-    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_helion_*",
       "helion_*",
       "helion-*"
-     ]
+     ],
+     "gunModel": "pixal/triple-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
@@ -8872,14 +8886,14 @@
   {
    "name": "gun_triple_heavy_turret_yaw_ueg",
    "match": {
-    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
       "ueg_*",
       "ueg-*"
-     ]
+     ],
+     "gunModel": "pixal/triple-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
@@ -8915,14 +8929,14 @@
   {
    "name": "gun_triple_heavy_turret_yaw_corsair",
    "match": {
-    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
       "corsair_*",
       "corsair-*"
-     ]
+     ],
+     "gunModel": "pixal/triple-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
@@ -8958,14 +8972,14 @@
   {
    "name": "gun_triple_heavy_turret_yaw_veil",
    "match": {
-    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_veil_*",
       "veil_*",
       "veil-*"
-     ]
+     ],
+     "gunModel": "pixal/triple-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
@@ -9001,14 +9015,14 @@
   {
    "name": "gun_triple_heavy_turret_yaw_guardian",
    "match": {
-    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
       "guardian_*",
       "guardian-*"
-     ]
+     ],
+     "gunModel": "pixal/triple-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
@@ -9044,8 +9058,10 @@
   {
    "name": "gun_triple_heavy_turret_yaw",
    "match": {
-    "url": "*/models/guns/pixal/triple-heavy-turret.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/triple-heavy-turret"
+    }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_triple_heavy_turret_yaw/gun_triple_heavy_turret_yaw/StaticMeshes/SM_gun_triple_heavy_turret_yaw.SM_gun_triple_heavy_turret_yaw",
    "fit": "none",
@@ -9079,14 +9095,14 @@
   {
    "name": "gun_twin_heavy_turret_yaw_tdf",
    "match": {
-    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_tdf_*",
       "tdf_*",
       "tdf-*"
-     ]
+     ],
+     "gunModel": "pixal/twin-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
@@ -9122,14 +9138,14 @@
   {
    "name": "gun_twin_heavy_turret_yaw_mrn",
    "match": {
-    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_mrn_*",
       "mrn_*",
       "mrn-*"
-     ]
+     ],
+     "gunModel": "pixal/twin-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
@@ -9165,14 +9181,14 @@
   {
    "name": "gun_twin_heavy_turret_yaw_enemy",
    "match": {
-    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_enemy_*",
       "enemy_*",
       "enemy-*"
-     ]
+     ],
+     "gunModel": "pixal/twin-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
@@ -9208,14 +9224,14 @@
   {
    "name": "gun_twin_heavy_turret_yaw_cartel",
    "match": {
-    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_cartel_*",
       "cartel_*",
       "cartel-*"
-     ]
+     ],
+     "gunModel": "pixal/twin-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
@@ -9251,14 +9267,14 @@
   {
    "name": "gun_twin_heavy_turret_yaw_helion",
    "match": {
-    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_helion_*",
       "helion_*",
       "helion-*"
-     ]
+     ],
+     "gunModel": "pixal/twin-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
@@ -9294,14 +9310,14 @@
   {
    "name": "gun_twin_heavy_turret_yaw_ueg",
    "match": {
-    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_ueg_*",
       "ueg_*",
       "ueg-*"
-     ]
+     ],
+     "gunModel": "pixal/twin-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
@@ -9337,14 +9353,14 @@
   {
    "name": "gun_twin_heavy_turret_yaw_corsair",
    "match": {
-    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_corsair_*",
       "corsair_*",
       "corsair-*"
-     ]
+     ],
+     "gunModel": "pixal/twin-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
@@ -9380,14 +9396,14 @@
   {
    "name": "gun_twin_heavy_turret_yaw_veil",
    "match": {
-    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_veil_*",
       "veil_*",
       "veil-*"
-     ]
+     ],
+     "gunModel": "pixal/twin-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
@@ -9423,14 +9439,14 @@
   {
    "name": "gun_twin_heavy_turret_yaw_guardian",
    "match": {
-    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
     "mesh": "geometry_0",
     "userData": {
      "glbKey": [
       "concept_guardian_*",
       "guardian_*",
       "guardian-*"
-     ]
+     ],
+     "gunModel": "pixal/twin-heavy-turret"
     }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
@@ -9466,8 +9482,10 @@
   {
    "name": "gun_twin_heavy_turret_yaw",
    "match": {
-    "url": "*/models/guns/pixal/twin-heavy-turret.glb",
-    "mesh": "geometry_0"
+    "mesh": "geometry_0",
+    "userData": {
+     "gunModel": "pixal/twin-heavy-turret"
+    }
    },
    "mesh": "/Game/Fidelity/HardBurn/gun_twin_heavy_turret_yaw/gun_twin_heavy_turret_yaw/StaticMeshes/SM_gun_twin_heavy_turret_yaw.SM_gun_twin_heavy_turret_yaw",
    "fit": "none",

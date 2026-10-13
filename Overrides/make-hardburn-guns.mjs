@@ -45,7 +45,7 @@ for (const report of fs.readdirSync(guns).filter(f => f.endsWith('.json') && f !
   if (!original || !fs.existsSync(original) || !fs.existsSync(copy)) { console.log(`no original for ${id}`); continue; }
   for (const [part, {mesh}] of parts(copy)) {
     sources.push({name: `gun_${id.replaceAll('-', '_')}_${part}`, kind: 'gun', source: original, split: {copy, part},
-      match: {url: `*/models/guns/pixal/${id}.glb`, mesh}, fit: 'none', check: copy,
+      match: {mesh, userData: {gunModel: `pixal/${id}`}}, fit: 'none', check: copy,
       keys: [`/models/guns/pixal/${id}.glb`], variants: 'gunTint', params: {EnvIntensity: 0.25, PaintedHull: 1.3}});
   }
 }

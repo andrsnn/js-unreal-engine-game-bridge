@@ -504,7 +504,18 @@ function emitInstances(im: THREE.InstancedMesh, gid: number, mat: number, fit: T
  *  through a stand-in InstancedMesh kept per batch and geometry. */
 type BatchProxy = {mesh: THREE.InstancedMesh; key: string};
 const batchProxies = new WeakMap<object, Map<number, BatchProxy>>();
-const batchMatrix = new THREE.Matrix4(), batchColor = new THREE.Color();
+const batchMatrix = new THREE.Matrix4(), batchWorld = new THREE.Matrix4(), batchColor = new THREE.Color();
+// A game can draw many small parts through one BatchedMesh and keep each part's own mesh in the scene, off the
+// camera's layers, as the instance's source (Hard Burn's gun mounts: userData.batchedMountSource, the instance placed
+// at the source's world matrix). An override rule matches the source; its batch instance is then left out. Batches are
+// emitted after the walk, when every source has been seen.
+const mountDrawn = new Set<string>();
+const laterBatches: THREE.BatchedMesh[] = [];
+const mountKey = (m: THREE.Matrix4) => { const e = m.elements; return `${Math.round(e[12] * 100)}|${Math.round(e[13] * 100)}|${Math.round(e[14] * 100)}|${Math.round(e[0] * 1000)}|${Math.round(e[5] * 1000)}`; };
+function flushBatches() {
+  for (const b of laterBatches) emitBatched(b);
+  laterBatches.length = 0; mountDrawn.clear();
+}
 function emitBatched(b: THREE.BatchedMesh) {
   const anyB = b as unknown as {_instanceInfo?: {geometryIndex: number; visible: boolean; active: boolean}[]; _colorsTexture?: unknown};
   const infos = anyB._instanceInfo;
@@ -533,11 +544,16 @@ function emitBatched(b: THREE.BatchedMesh) {
       proxies.set(geometryId, p);
     }
     const im = p.mesh;
-    im.count = ids.length;
-    ids.forEach((id, i) => {
-      b.getMatrixAt(id, batchMatrix); im.setMatrixAt(i, batchMatrix);
-      if (anyB._colorsTexture) { b.getColorAt(id, batchColor); im.setColorAt(i, batchColor); }
-    });
+    let shown = 0;
+    for (const id of ids) {
+      b.getMatrixAt(id, batchMatrix);
+      if (mountDrawn.size && mountDrawn.has(mountKey(batchWorld.multiplyMatrices(b.matrixWorld, batchMatrix)))) continue;
+      im.setMatrixAt(shown, batchMatrix);
+      if (anyB._colorsTexture) { b.getColorAt(id, batchColor); im.setColorAt(shown, batchColor); }
+      shown++;
+    }
+    im.count = shown;
+    if (!shown) continue;
     im.instanceMatrix.needsUpdate = true;
     if (im.instanceColor) im.instanceColor.needsUpdate = true;
     im.matrixWorld.copy(b.matrixWorld);
@@ -614,7 +630,7 @@ function deformedGeometry(o: THREE.Mesh): THREE.BufferGeometry {
 }
 
 function emitMesh(o: THREE.Mesh) {
-  if ((o as unknown as THREE.BatchedMesh).isBatchedMesh) { emitBatched(o as unknown as THREE.BatchedMesh); return; }
+  if ((o as unknown as THREE.BatchedMesh).isBatchedMesh) { laterBatches.push(o as unknown as THREE.BatchedMesh); return; }
   const geo = deformedGeometry(o); if (!geo?.attributes?.position) return;
   const mats = materialsOf(o);
   if (!mats.length || mats.every(m => !m || !m.visible || m.colorWrite === false)) return;
@@ -782,6 +798,13 @@ function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
   // attachments under the same root (mounts, plumes) stay ordinary objects.
   const replaced = skipKey !== null && o.userData?.assetContent === skipKey;
   let childSkip = skipKey;
+  if (lumenModels && o.userData?.batchedMountSource && (o as THREE.Mesh).isMesh && !visibleTo(o, cam)) {
+    const rules = overrideRules(host.registry), ov = rules.length ? overrideFor(o, rules) : null;
+    if (ov && !ov.hide) {
+      push(ASSET); push(idOf(o)); push(keyId(ov.key)); push(0); pushMatrix(ov.fit ? overrideWorld.multiplyMatrices(o.matrixWorld, ov.fit) : o.matrixWorld);
+      mountDrawn.add(mountKey(o.matrixWorld));
+    }
+  }
   if (!replaced && visibleTo(o, cam)) {
     if (host.trace && !traced.has(o) && ((o as THREE.Mesh).isMesh || (o as THREE.Points).isPoints || (o as THREE.Sprite).isSprite || (o as THREE.Line).isLine)) {
       traced.add(o);
@@ -862,8 +885,9 @@ export function exportFrame(): number {
   unrealEffects = g.lumen && Object.values(flags).some(Boolean);
   if (unrealEffects) beginEffects(flags, cam, top);
   walk(top, cam, null);
+  flushBatches();
   if (unrealEffects) emitEffectLights();
-  if (cam.parent === null && cam !== top) walk(cam, cam, null);
+  if (cam.parent === null && cam !== top) { walk(cam, cam, null); flushBatches(); }
   // Scenes drawn into render targets that a material shows, each between a capture record and its end.
   for (const [target, c] of captures) {
     const tex = target.texture as THREE.Texture & {__jsgbMapped?: boolean};
@@ -875,6 +899,7 @@ export function exportFrame(): number {
     const cbg = scene.background as THREE.Color | null;
     push(cbg?.isColor ? 1 : 0); push(cbg?.isColor ? cbg.r : 0); push(cbg?.isColor ? cbg.g : 0); push(cbg?.isColor ? cbg.b : 0);
     walk(scene, ccam, null);
+    flushBatches();
     push(10);
   }
   if (pendingEvents.length && out.events) { const events = pendingEvents; pendingEvents = []; out.events(JSON.stringify(events)); }
