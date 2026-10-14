@@ -894,6 +894,18 @@ TSharedPtr<FJsgbPreparedTexture> UJsgbSceneMirror::PrepareTexture(const FString&
 	return P;
 }
 
+// The texture already made for this id when the new pixels fit it: one mip of RGBA8 at the same size, with the same
+// colour space, filter and wrapping, so only the pixels change.
+UTexture2D* UJsgbSceneMirror::SameShapeTexture(UTexture* Old, const FTexturePlatformData& New, bool bSRGB, TextureFilter Filter, TextureAddress X, TextureAddress Y)
+{
+	UTexture2D* Tex = Cast<UTexture2D>(Old);
+	if (!Tex || !Tex->HasAnyFlags(RF_Transient) || !Tex->GetResource() || New.Mips.Num() != 1 || New.PixelFormat != PF_R8G8B8A8) { return nullptr; }
+	const FTexturePlatformData* Had = Tex->GetPlatformData();
+	if (!Had || Had->Mips.Num() != 1 || Had->PixelFormat != PF_R8G8B8A8 || Had->SizeX != New.SizeX || Had->SizeY != New.SizeY || Had->GetNumSlices() != 1) { return nullptr; }
+	if (Tex->SRGB != bSRGB || Tex->Filter != Filter || Tex->AddressX != X || Tex->AddressY != Y) { return nullptr; }
+	return Tex;
+}
+
 void UJsgbSceneMirror::AcceptTexture(int32 Id, TSharedPtr<FJsgbPreparedTexture> P)
 {
 	if (!P.IsValid() || !P->Json) { return; }
@@ -915,6 +927,20 @@ void UJsgbSceneMirror::AcceptTexture(int32 Id, TSharedPtr<FJsgbPreparedTexture> 
 			V->AddressMode = WrapS == 1001 ? TA_Clamp : TA_Wrap;
 			V->UpdateResource();
 			Result = V;
+		}
+		else if (UTexture2D* Same = SameShapeTexture(T.Texture, *P->PlatformData, bSRGB, Filter, Address(WrapS), Address(WrapT)))
+		{
+			// A data texture the game rewrites (often every frame in a fight) gets its new pixels in the Unreal texture it
+			// already has. A new texture for each one left the old ones for the garbage collector, hundreds a minute.
+			const int32 W = P->PlatformData->SizeX, H = P->PlatformData->SizeY;
+			const int64 Size = static_cast<int64>(W) * H * 4;
+			uint8* Pixels = static_cast<uint8*>(FMemory::Malloc(Size));
+			FByteBulkData& Bulk = P->PlatformData->Mips[0].BulkData;
+			FMemory::Memcpy(Pixels, Bulk.LockReadOnly(), Size);
+			Bulk.Unlock();
+			Same->UpdateTextureRegions(0, 1, new FUpdateTextureRegion2D(0, 0, 0, 0, W, H), W * 4, 4, Pixels,
+				[](uint8* Data, const FUpdateTextureRegion2D* Region) { FMemory::Free(Data); delete Region; });
+			Result = Same;
 		}
 		else
 		{

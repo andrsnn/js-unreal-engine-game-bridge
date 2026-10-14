@@ -4,6 +4,7 @@
 #include "Engine/StreamableManager.h"
 #include "Components/ActorComponent.h"
 #include "Components/LineBatchComponent.h"
+#include "Engine/TextureDefines.h"
 #include "ArrayBuffer.h"
 #include "JsgbSceneMirror.generated.h"
 
@@ -311,6 +312,7 @@ private:
 	}
 	UMaterialInstanceDynamic* MaterialFor(int32 Id);
 	void ApplyTextureParams(UMaterialInstanceDynamic* Mid, int32 TextureId);
+	class UTexture2D* SameShapeTexture(UTexture* Old, const struct FTexturePlatformData& New, bool bSRGB, TextureFilter Filter, TextureAddress X, TextureAddress Y);
 	UStaticMeshComponent* NewComponent(bool bInstanced);
 	FJsgbEntity& EntityOf(int32 Id, int32 Kind);
 	void ApplyLight(const float* S, uint32 Stamp, FLinearColor& Ambient, FLinearColor& HemiSky, FLinearColor& HemiGround, int32 Capture = 0);
