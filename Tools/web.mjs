@@ -2,7 +2,7 @@
 // The browser side of a conformance check, from the same source commit as the Unreal bundle.
 //   node Tools/web.mjs build   <game>                  the game's own Vite build into <out>/web
 //   node Tools/web.mjs dev     <game>                  the game's Vite dev server, opened in the browser
-//   node Tools/web.mjs capture <game> --script s.txt [--frames dir --fps 10] [--res 1280x720] [--live dir]
+//   node Tools/web.mjs capture <game> --script s.txt [--frames dir --fps 10] [--res 1280x720] [--live dir] [--wait 120]
 // --live films the page in real time (Chrome's screencast) and records when every animation frame ran.
 // capture serves <out>/web plus the public folders, opens it in headless Chrome, and runs the same
 // script format as the Unreal host (seconds after load: wait/gone/click/key/eval/seed/shot/quit).
@@ -69,8 +69,13 @@ async function capture() {
   const port = +flag('--port', 5391);
   const server = await serve(port);
   const [w, h] = flag('--res', '1280x720').split('x').map(Number);
-  const browser = await chromium.launch({headless: true, args: [...(process.platform === 'win32' ? ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist'] : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader']), '--autoplay-policy=no-user-gesture-required']});
-  const page = await browser.newPage({viewport: {width: w, height: h}});
+  const args = [...(process.platform === 'win32' ? ['--use-angle=d3d11', '--enable-gpu', '--ignore-gpu-blocklist'] : ['--use-angle=swiftshader', '--enable-unsafe-swiftshader']), '--autoplay-policy=no-user-gesture-required'];
+  // --profile dir: a profile on disk. An incognito context keeps blobs in memory only, and a game that unpacks many
+  // large models into blob URLs (Hard Burn's fleet view) runs out of blob memory (ERR_BLOB_OUT_OF_MEMORY).
+  const profile = flag('--profile');
+  if (profile) fs.rmSync(profile, {recursive: true, force: true});
+  const browser = profile ? await chromium.launchPersistentContext(profile, {headless: true, args, viewport: {width: w, height: h}}) : await chromium.launch({headless: true, args});
+  const page = profile ? browser.pages()[0] ?? await browser.newPage() : await browser.newPage({viewport: {width: w, height: h}});
   const errors = [];
   // The same seeded Math.random as the runtime (entry.ts), so both runs build the same world.
   const seed = +flag('--seed', 0);
@@ -166,7 +171,7 @@ async function capture() {
         || [...document.querySelectorAll('button,a')].some(el => el.textContent.trim().toUpperCase().includes(w.toUpperCase()) && el.getClientRects().length > 0);
     })();
     return has === want ? {t: window.__jsgbVirtualMs ? window.__jsgbVirtualMs() : null} : false;
-  }, [what, present], {polling: 'raf', timeout: 120000}).then(h => h.jsonValue()).catch(() => null);
+  }, [what, present], {polling: 'raf', timeout: +flag('--wait', 120) * 1000}).then(h => h.jsonValue()).catch(() => null);
 
   const steps = fs.readFileSync(flag('--script'), 'utf8').split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith('#'))
     .map(l => { const [when, verb, ...args] = l.split(' '); return {time: +when, verb, args: args.join(' ')}; }).sort((a, b) => a.time - b.time);

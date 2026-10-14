@@ -9,6 +9,7 @@ import './fetch';
 import {flushAudio, audioTime} from './audio';
 import './worker';
 import './display';
+import {refreshGraphics} from './graphics';
 import './text';
 import {input} from './input';
 import {publishUI, uiInput, clickElement, findElement} from './ui';
@@ -32,6 +33,7 @@ g.__jsgb = {
     const t0 = wallNow();
     await pumpFrame(budgetMs); frames++;
     const t1 = wallNow();
+    refreshGraphics();
     try { exportFrame(); } catch (e) { host.log('error', 'scene export: ' + (e instanceof Error ? e.stack : e)); }
     const t2 = wallNow();
     try { publishUI(); } catch (e) { host.log('error', 'ui publish: ' + (e instanceof Error ? e.stack : e)); }
@@ -66,5 +68,6 @@ for (const code of typeof __JSGB_INLINE__ === 'object' ? __JSGB_INLINE__ : []) {
 
 import('jsgb:game')
   .then(() => { booted = true; host.log('log', 'game entry evaluated'); host.ready?.('game entry evaluated'); })
+  .then(() => import('jsgb:adapters')).catch(error => { if (booted) host.log('error', 'adapter failed: ' + (error instanceof Error ? error.stack : error)); else throw error; })
   .catch(error => { bootError = error instanceof Error ? error.stack ?? error.message : String(error); host.log('error', 'game entry failed: ' + bootError);
     g.dispatchEvent?.(Object.assign(new g.Event('error'), {error, message: String(error)})); });

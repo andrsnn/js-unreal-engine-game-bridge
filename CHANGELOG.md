@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.5.1
+
+- Asset overrides: rules in the file a game names with `"overrides"` in `Games/<game>.json` replace its models with
+  Unreal assets, matched by mesh name, model file or texture URL. Parts drawn through a `BatchedMesh` can be
+  replaced too. The game's code doesn't change.
+- Lumen mode: F9 or `window.jsgb.graphics.set({lumen: true})` turns Unreal's Lumen lighting on and off while a game
+  runs. It's off by default. It loads the override models when it turns on and releases them when it turns off.
+- Materials with an environment map (`envMap` or `scene.environment`) get the light they reflect from it, so lit
+  surfaces are no longer close to black.
+- Sprite sheets in WebP draw: the build writes PNG copies, since Unreal can't decode WebP. Camera-facing sprites on
+  instanced meshes draw over the surface they sit on, and Unreal no longer culls them by their flat quad's bounds.
+- Memory: materials and textures a game disposes of are freed in Unreal. A texture sent again at the same size gets
+  its new pixels in the Unreal texture it already has, so Unreal no longer makes a new texture each time. The runtime
+  no longer keeps a copy of compressed textures' pixels.
+- Storage is written out before a reload, so a game that saves to `sessionStorage` and reloads at once keeps what it
+  saved.
+- Scripted runs ignore the desktop mouse.
+- `Tools/play-live.mjs` and `Tools/play-splash.ps1` play a game full screen behind a launch window with a progress
+  bar.
+
 ## 0.5.0
 
 - `<select>` and `<option>` work as in a browser: `add`, `remove(index)`, `options`, `length`, `selectedIndex`,

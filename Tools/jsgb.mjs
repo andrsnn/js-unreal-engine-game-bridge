@@ -32,7 +32,7 @@ export function settings() {
   return {engine: process.env.JSGB_ENGINE ?? local.engine, project: process.env.JSGB_PROJECT ?? local.project,
     builds: path.resolve(bridge, process.env.JSGB_BUILDS ?? local.builds ?? 'Builds'),
     captures: local.captures ? path.resolve(bridge, local.captures) : undefined,
-    package: local.package, packageProject: local.packageProject, ddc: local.ddc};
+    package: local.package, packageProject: local.packageProject, ddc: local.ddc, fidelityContent: local.fidelityContent};
 }
 // Unreal reads its local derived data cache folder from this variable; the editors and cooks these tools start inherit it.
 if (settings().ddc) process.env['UE-LocalDataCachePath'] ??= settings().ddc;
@@ -127,6 +127,11 @@ function bridgePlugin(game, page) {
     setup(b) {
       b.onResolve({filter: /^jsgb:game$/}, () => page.inlineModule === null ? {path: page.entry} : {path: page.entry, namespace: 'jsgb-page-module'});
       b.onLoad({filter: /.*/, namespace: 'jsgb-page-module'}, () => ({contents: page.inlineModule, resolveDir: game.repo, loader: 'js'}));
+      // Adapters (Games/<game>.json "adapters"): the bridge's own modules for one game, run once the game's entry has
+      // evaluated, such as a row in the game's options menu for a host feature. The game's files stay as they are.
+      b.onResolve({filter: /^jsgb:adapters$/}, () => ({path: 'adapters', namespace: 'jsgb-adapters'}));
+      b.onLoad({filter: /.*/, namespace: 'jsgb-adapters'}, () => ({resolveDir: bridge, loader: 'js',
+        contents: (game.adapters ?? []).map(f => `import ${JSON.stringify(path.resolve(bridge, f))};`).join('\n') || 'export {};'}));
       // 'three' is the real library with WebGLRenderer replaced; the runtime reaches the real one as 'three-real'.
       b.onResolve({filter: /^three$/}, a => a.importer === path.join(src, 'three.ts') ? {path: three.core} : {path: path.join(src, 'three.ts')});
       b.onResolve({filter: /^three-real$/}, () => ({path: three.core}));
@@ -155,6 +160,20 @@ function bridgePlugin(game, page) {
       b.onLoad({filter: /.*/, namespace: 'jsgb-url'}, a => ({contents: fs.readFileSync(a.path), loader: 'file'}));
       b.onLoad({filter: /.*/, namespace: 'jsgb-worker'}, a => ({resolveDir: path.dirname(a.path), loader: 'js',
         contents: `import main from ${JSON.stringify('jsgb-worker-main:' + a.path)};\nexport default class extends Worker { constructor(options) { super(main, options); } };\n`}));
+      // three's GLTFLoader tells the overrides which file each model came from (Runtime/src/overrides.ts).
+      b.onLoad({filter: /[\\/]GLTFLoader\.js$/}, async a => ({resolveDir: path.dirname(a.path), loader: 'js', contents: (await fs.promises.readFile(a.path, 'utf8')) + `
+import {gltfLoaded as __jsgbGltfLoaded} from ${JSON.stringify(path.join(src, 'overrides.ts'))};
+{
+  const parse = GLTFLoader.prototype.parse;
+  GLTFLoader.prototype.parse = function (data, path, onLoad, onError) {
+    return parse.call(this, data, path, gltf => { try { __jsgbGltfLoaded(gltf, path); } catch {} onLoad(gltf); }, onError);
+  };
+  const load = GLTFLoader.prototype.load;
+  GLTFLoader.prototype.load = function (url, onLoad, onProgress, onError) {
+    return load.call(this, url, gltf => { try { __jsgbGltfLoaded(gltf, url); } catch {} onLoad(gltf); }, onProgress, onError);
+  };
+}
+`}));
       // Workers: each worker module becomes a function of its own `self`, sharing the main bundle's modules.
       b.onLoad({filter: /\.(m?[jt]sx?)$/}, async a => {
         if (a.path.includes('node_modules') || a.namespace !== 'file') return undefined;
@@ -254,6 +273,36 @@ async function webglModuleDraws(esbuild, threeModule) {
   return draws;
 }
 
+// Unreal's image decoders read no WebP. Each WebP image in the game's public folders, and each one the bundle copied
+// to <out>/assets, gets a PNG copy at <out>/jsgb/webp/<path>.png, which textures load instead (sceneExport.ts
+// unrealImagePath). Python with Pillow writes them; copies newer than their image are kept.
+export function webpCopies(game) {
+  const roots = [...game.publicRoots.filter(r => r !== game.repo && r !== game.out).map(r => [r, r]), [game.out, path.join(game.out, 'assets')]];
+  const jobs = [], seen = new Set();
+  const walk = (root, dir) => {
+    if (!fs.existsSync(dir)) return;
+    for (const e of fs.readdirSync(dir, {withFileTypes: true})) {
+      const file = path.join(dir, e.name);
+      if (e.isDirectory()) { if (e.name !== 'node_modules') walk(root, file); continue; }
+      if (!/\.webp$/i.test(e.name)) continue;
+      const rel = path.relative(root, file).replace(/\.webp$/i, '.png'), dest = path.join(game.out, 'jsgb/webp', rel);
+      if (seen.has(rel)) continue;
+      seen.add(rel);
+      if (!fs.existsSync(dest) || fs.statSync(dest).mtimeMs < fs.statSync(file).mtimeMs) jobs.push([file, dest]);
+    }
+  };
+  for (const [root, dir] of roots) walk(root, dir);
+  if (!jobs.length) return 0;
+  const list = path.join(game.out, 'jsgb/webp-jobs.json');
+  fs.writeFileSync(list, JSON.stringify(jobs));
+  const script = 'import json, os, sys\nfrom PIL import Image\nfor src, dest in json.load(open(sys.argv[1])):\n    os.makedirs(os.path.dirname(dest), exist_ok=True)\n    Image.open(src).save(dest)\n';
+  const r = spawnSync(process.env.PYTHON ?? 'python', ['-c', script, list], {encoding: 'utf8'});
+  fs.rmSync(list, {force: true});
+  if (r.status !== 0) { console.warn(`WebP images stay blank in Unreal: no PNG copies (Python with Pillow is needed): ${String(r.stderr || r.error?.message || '').trim().split('\n').pop()}`); return 0; }
+  console.log(`wrote PNG copies of ${jobs.length} WebP images for Unreal`);
+  return jobs.length;
+}
+
 export async function build(game) {
   if (game.page) return buildPage(game);
   const esbuild = await import(pathToFileURL(path.join(runtime, 'node_modules/esbuild/lib/main.js')).href);
@@ -290,6 +339,7 @@ export async function build(game) {
     mainFields: ['browser', 'module', 'main'], nodePaths: [path.join(runtime, 'node_modules')], outfile: path.join(game.out, 'jsgb/worker-runtime.js'), logLevel: 'warning'});
   const wasm = path.join(runtime, 'vendor/cross-shader/CrossShader.wasm'), wasmOut = path.join(game.out, 'jsgb/CrossShader.wasm');
   if (!fs.existsSync(wasmOut) || fs.statSync(wasmOut).size !== fs.statSync(wasm).size) fs.copyFileSync(wasm, wasmOut);
+  webpCopies(game);
   // index.html stylesheets come after the CSS the modules import, as in the page.
   const cssFile = path.join(game.out, game.id + '.css');
   const moduleCss = fs.existsSync(cssFile) ? fs.readFileSync(cssFile, 'utf8') : '';
@@ -318,6 +368,10 @@ export async function build(game) {
     const cues = JSON.parse(fs.readFileSync(path.resolve(bridge, game.audioCues.file), 'utf8')).games?.[game.audioCues.game]?.cues ?? {};
     for (const cue of Object.values(cues)) for (const v of cue.variants ?? []) if (v.source && v.wave) files[v.source.replaceAll('\\', '/').replace(/^.*?\/public(?=\/)/, '')] = v.wave;
   }
+  // Asset overrides (Games/<game>.json "overrides"): the host reads overrides.json from beside publication.json.
+  const overridesOut = path.join(game.out, 'overrides.json');
+  if (game.overrides) fs.copyFileSync(path.resolve(bridge, game.overrides), overridesOut);
+  else if (fs.existsSync(overridesOut)) fs.rmSync(overridesOut);
   fs.writeFileSync(path.join(game.out, 'registry.json'), JSON.stringify({version: 1, assets, files, swaps: {assets: !!game.swaps?.assets, effects: !!game.swaps?.effects}}));
   const publication = {version: 1, game: game.id, sourceCommit: commit || '0'.repeat(40), sourceDirty: !!git(game.repo, 'status', '--porcelain', '--untracked-files=no'),
     bridgeCommit: git(bridge, 'rev-parse', 'HEAD'), bundle: bundlePath, bundleSHA256: sha256(bundle), modules: Object.keys(result.metafile.inputs).length,

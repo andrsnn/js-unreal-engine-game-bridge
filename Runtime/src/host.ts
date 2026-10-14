@@ -3,6 +3,9 @@
 export interface SceneSink {
   geometry(id: number, positions: ArrayBuffer, normals: ArrayBuffer | null, uvs: ArrayBuffer | null, colors: ArrayBuffer | null, colorSize: number, indices: ArrayBuffer | null, groups: string): void;
   releaseGeometry(id: number): void;
+  /** A material or texture the game disposed of, or no longer holds: the host frees its Unreal copy. */
+  releaseMaterial?(id: number): void;
+  releaseTexture?(id: number): void;
   material(id: number, json: string): void;
   texture(id: number, json: string, bytes: ArrayBuffer | null): void;
   frame(floats: ArrayBuffer, count: number, instanceData: ArrayBuffer, instanceFloats: number): void;
@@ -34,6 +37,8 @@ export interface JsgbHost {
   ready?(info: string): void;
   /** The display: modes and current settings as JSON, and a change as JSON (see display.ts). */
   display?: {modes(): string; get(): string; set(json: string): void};
+  /** Unreal graphics: the current state as JSON {lumen, available}, and a change as JSON (see graphics.ts). */
+  graphics?: {get(): string; set(json: string): void};
   /** Persistent key/value store for localStorage and sessionStorage. */
   storage?: {load(key: string): string | null; save(key: string, data: string): void};
   /** Bytes that outlive a hot reload (the JS environment restarts, the host keeps them). */

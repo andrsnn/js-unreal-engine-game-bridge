@@ -176,7 +176,9 @@ public:
 	virtual bool HandleMouseMoveEvent(FSlateApplication& SlateApp, const FPointerEvent& E) override
 	{
 		AJsgbHost* H = Host.Get();
-		if (H && !H->HasOverlay()) { const FVector2D P = Local(E); H->SendMouse(TEXT("mousemove"), P.X, P.Y, 0, MouseButtons, E.GetCursorDelta().X, E.GetCursorDelta().Y); }
+		// A scripted capture ignores the desktop mouse: a cursor resting at the window's edge scrolled the game's
+		// camera away from the pose the script set (the gas giant shot of mine.txt showed empty space).
+		if (H && !H->HasOverlay() && !H->IsScripted()) { const FVector2D P = Local(E); H->SendMouse(TEXT("mousemove"), P.X, P.Y, 0, MouseButtons, E.GetCursorDelta().X, E.GetCursorDelta().Y); }
 		return false;
 	}
 	virtual bool HandleMouseButtonDownEvent(FSlateApplication& SlateApp, const FPointerEvent& E) override { return Button(E, true); }
@@ -185,7 +187,7 @@ public:
 	virtual bool HandleMouseWheelOrGestureEvent(FSlateApplication& SlateApp, const FPointerEvent& E, const FPointerEvent* Gesture) override
 	{
 		AJsgbHost* H = Host.Get();
-		if (H && !H->HasOverlay()) { H->SendWheel(-E.GetWheelDelta() * 100.f); }
+		if (H && !H->HasOverlay() && !H->IsScripted()) { H->SendWheel(-E.GetWheelDelta() * 100.f); }
 		return false;
 	}
 	virtual const TCHAR* GetDebugName() const override { return TEXT("JsGameBridgeInput"); }
@@ -212,7 +214,7 @@ private:
 	bool Button(const FPointerEvent& E, bool bDown)
 	{
 		AJsgbHost* H = Host.Get();
-		if (!H || H->HasOverlay()) { return false; }
+		if (!H || H->HasOverlay() || H->IsScripted()) { return false; }
 		const FKey K = E.GetEffectingButton();
 		const int32 B = K == EKeys::LeftMouseButton ? 0 : K == EKeys::MiddleMouseButton ? 1 : K == EKeys::RightMouseButton ? 2 : 3;
 		const int32 Bit = B == 0 ? 1 : B == 1 ? 4 : B == 2 ? 2 : 8;
@@ -356,6 +358,36 @@ bool AJsgbHost::LoadPublication(const FString& Dir, const FString& OverrideBundl
 	if (const TSharedPtr<FJsonObject> Page = LoadJson(Dir / TEXT("page.json"))) { FFileHelper::LoadFileToString(PageCss, *(Dir / Page->GetStringField(TEXT("css")))); }
 	RegistryJson.Reset();
 	FFileHelper::LoadFileToString(RegistryJson, *(Dir / TEXT("registry.json")));
+	// Asset overrides: overrides.json beside publication.json, or -JsgbOverrides=<file>; -JsgbOverrides=0 turns them
+	// off. Each rule becomes registry asset "override:<name>", and the rules travel to the game's runtime, which
+	// decides what each rule matches.
+	const FString OverridesPath = Arg(TEXT("JsgbOverrides="), Dir / TEXT("overrides.json"));
+	if (OverridesPath != TEXT("0") && FPaths::FileExists(OverridesPath))
+	{
+		TSharedPtr<FJsonObject> Reg;
+		if (RegistryJson.IsEmpty() || !FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(RegistryJson), Reg) || !Reg) { Reg = MakeShared<FJsonObject>(); }
+		const TSharedPtr<FJsonObject> Overrides = LoadJson(OverridesPath);
+		const TArray<TSharedPtr<FJsonValue>>* Rules = nullptr;
+		if (Overrides && Overrides->TryGetArrayField(TEXT("overrides"), Rules))
+		{
+			const TSharedPtr<FJsonObject>* Existing = nullptr;
+			TSharedPtr<FJsonObject> Assets = Reg->TryGetObjectField(TEXT("assets"), Existing) ? *Existing : MakeShared<FJsonObject>();
+			int32 Added = 0;
+			for (const TSharedPtr<FJsonValue>& R : *Rules)
+			{
+				const TSharedPtr<FJsonObject> Rule = R.IsValid() ? R->AsObject() : nullptr;
+				FString Name;
+				if (Rule && Rule->TryGetStringField(TEXT("name"), Name)) { Assets->SetObjectField(TEXT("override:") + Name, Rule); ++Added; }
+			}
+			Reg->SetObjectField(TEXT("assets"), Assets);
+			Reg->SetArrayField(TEXT("overrides"), *Rules);
+			// Which Unreal effects Lumen mode adds (Runtime/src/overrides.ts effectFlags).
+			const TSharedPtr<FJsonObject>* Effects = nullptr;
+			if (Overrides->TryGetObjectField(TEXT("effects"), Effects)) { Reg->SetObjectField(TEXT("effects"), *Effects); }
+			RegistryJson = JsonString(Reg.ToSharedRef());
+			UE_LOG(LogJsgbHost, Display, TEXT("Asset overrides: %d rules from %s"), Added, *OverridesPath);
+		}
+	}
 	Mirror->SetAssetRegistry(RegistryJson.IsEmpty() ? TEXT("{\"assets\":{}}") : RegistryJson);
 	TMap<FString, FString> Files;
 	if (const TSharedPtr<FJsonObject> Reg = LoadJson(Dir / TEXT("registry.json")))
@@ -408,6 +440,7 @@ void AJsgbHost::BeginPlay()
 	}
 	ConfigurePost(Camera->PostProcessSettings);
 	Camera->PostProcessBlendWeight = 1.f;
+	SetupLumen();
 	// Engine warnings printed over the game view are not part of the game.
 	if (GEngine && !FParse::Param(FCommandLine::Get(), TEXT("JsgbScreenMessages"))) { GEngine->bEnableOnScreenDebugMessages = false; GEngine->Exec(World, TEXT("DisableAllScreenMessages")); }
 	Mirror->Camera = Camera;
@@ -432,6 +465,7 @@ void AJsgbHost::BeginPlay()
 	const FString ScriptPath = Arg(TEXT("JsgbScript="));
 	if (!ScriptPath.IsEmpty()) { LoadScript(ScriptPath); }
 	if (!LoadPublication(Arg(TEXT("JsgbGame=")), FString())) { return; }
+	if (bLumenAtStart) { SetLumen(true); }
 	ShowLoading();
 	StartServer();
 	if (!PageIndex.IsEmpty()) { CreatePageView(); return; }
@@ -554,6 +588,7 @@ void AJsgbHost::StartJs()
 	Bridge = NewObject<UJsgbBridge>(this);
 	Bridge->Mirror = Mirror;
 	Bridge->Audio = Audio;
+	PublishGraphics();
 	Mirror->Bridge = Bridge;
 	Audio->Bridge = Bridge;
 	if (UIPort) { UIPort->Bridge = Bridge; UIPort->AppliedUIVersion = -1; }
@@ -566,6 +601,7 @@ void AJsgbHost::StartJs()
 	Bridge->Search = Search;
 	Bridge->Trace = FParse::Param(FCommandLine::Get(), TEXT("JsgbTraceMirror"));
 	Mirror->bTrace = Bridge->Trace;
+	FParse::Value(FCommandLine::Get(), TEXT("JsgbEnvRadiance="), Mirror->EnvRadiance);
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbSeed="), Bridge->Seed);
 	// Web Workers run on their own threads unless -JsgbGameThreadWorkers asks for the old single-thread mode.
 	if (!FParse::Param(FCommandLine::Get(), TEXT("JsgbGameThreadWorkers"))) { FFileHelper::LoadFileToString(Bridge->WorkerRuntime, *(GameDir / TEXT("jsgb/worker-runtime.js"))); }
@@ -1079,6 +1115,8 @@ void AJsgbHost::SetupUpscaler()
 
 bool AJsgbHost::HandleDlssKey(const FKey& Key)
 {
+	// F9: Lumen mode on or off, in every game this host can light with Lumen.
+	if (Key == EKeys::F9 && bLumenAvailable) { SetLumen(!bLumenOn); return true; }
 	if (bShowKeys && Key == EKeys::F8) { bShowJitter = !bShowJitter; return true; }
 	if (!bShowKeys || (Key != EKeys::F6 && Key != EKeys::F7)) { return false; }
 	if (Key == EKeys::F6) { CycleUpscaler(); } else { ToggleFrameGen(); }
@@ -1280,9 +1318,9 @@ void AJsgbHost::UpdateHud(float DeltaSeconds)
 	// While a capture runs, each frame waits for its screenshot, so the frame rate means nothing: show the mode only.
 	if (!CaptureDir.IsEmpty()) { HudText->SetText(FText::FromString(Upscaler)); return; }
 	const FString Rate = HudPresentedFps > 0 ? FString::Printf(TEXT("%.0f FPS on screen, %.0f rendered"), HudPresentedFps, HudFps) : FString::Printf(TEXT("%.0f FPS"), HudFps);
-	HudText->SetText(FText::FromString(FString::Printf(TEXT("%s\n%s  (GPU %.1f ms)%s%s%s"), *Upscaler, *Rate, FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles()),
+	HudText->SetText(FText::FromString(FString::Printf(TEXT("%s%s\n%s  (GPU %.1f ms)%s%s%s"), *Upscaler, bLumenOn ? TEXT(", Lumen") : TEXT(""), *Rate, FPlatformTime::ToMilliseconds(RHIGetGPUFrameCycles()),
 		bShowJitter ? *(TEXT("\n") + JitterLine) : TEXT(""),
-		NeuralNote.IsEmpty() ? TEXT("") : *(TEXT("\n") + NeuralNote), bShowKeys ? TEXT("\nF6: DLSS mode   F7: Frame Generation   F8: jitter") : TEXT(""))));
+		NeuralNote.IsEmpty() ? TEXT("") : *(TEXT("\n") + NeuralNote), bShowKeys ? TEXT("\nF6: DLSS mode   F7: Frame Generation   F8: jitter   F9: Lumen") : TEXT(""))));
 }
 
 void AJsgbHost::SwapCss(double BuildMs)
@@ -1538,7 +1576,15 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		bRestart = false;
 		if (ReloadStart < 0) { ReloadStart = FPlatformTime::Seconds(); ReloadBuildMs = -1; }
 		StopJs();
-		if (!PendingBundle.IsEmpty()) { LoadPublication(GameDir, PendingBundle); PendingBundle.Reset(); }
+		if (!PendingBundle.IsEmpty())
+		{
+			// The old registry's override models are released before the new build's registry replaces it, and the new
+			// build's are loaded after.
+			const bool bWasLumen = bLumenOn;
+			if (bWasLumen) { SetLumen(false); }
+			LoadPublication(GameDir, PendingBundle); PendingBundle.Reset();
+			if (bWasLumen) { SetLumen(true); }
+		}
 		StartJs();
 	}
 	UpdateLoading();

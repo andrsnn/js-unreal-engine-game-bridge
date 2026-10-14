@@ -273,6 +273,8 @@ void UJsgbBridge::Geometry(int32 Id, FArrayBuffer Positions, FArrayBuffer Normal
 }
 
 void UJsgbBridge::ReleaseGeometry(int32 Id) { RunOnGame([this, Id] { if (Mirror) { Mirror->ReleaseGeometry(Id); } }); }
+void UJsgbBridge::ReleaseMaterial(int32 Id) { RunOnGame([this, Id] { if (Mirror) { Mirror->ReleaseMaterial(Id); } }); }
+void UJsgbBridge::ReleaseTexture(int32 Id) { RunOnGame([this, Id] { if (Mirror) { Mirror->ReleaseTexture(Id); } }); }
 void UJsgbBridge::Material(int32 Id, const FString& Json)
 {
 	RunOnGame([this, Id, Json] { const double T0 = FPlatformTime::Seconds(); if (Mirror) { Mirror->SetMaterial(Id, Json); } const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0; MirrorMs += Ms; MaterialMs += Ms; ++MaterialCalls; });
@@ -494,6 +496,19 @@ void UJsgbBridge::ApplyDisplay(const TSharedPtr<FJsonObject>& In)
 		S->ApplyResolutionSettings(false);
 		S->ApplyNonResolutionSettings();
 	}
+}
+
+FString UJsgbBridge::GraphicsGet() { FScopeLock Lock(&DisplayLock); return GraphicsJson; }
+void UJsgbBridge::SetGraphicsInfo(const FString& Json) { FScopeLock Lock(&DisplayLock); GraphicsJson = Json; }
+
+void UJsgbBridge::GraphicsSet(const FString& Json)
+{
+	RunOnGame([this, Json]
+	{
+		TSharedPtr<FJsonObject> In;
+		FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), In);
+		if (In && OnGraphicsSet) { OnGraphicsSet(In); }
+	});
 }
 
 void UJsgbBridge::RestoreDisplay()

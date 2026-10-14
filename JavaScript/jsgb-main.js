@@ -30,9 +30,12 @@ globalThis.__jsgbHost = {
   text: (font, size, run) => { const b = bridge.Text(font, size, run); return b && b.byteLength > 0 ? b : null; },
   storage: {load: key => bridge.LoadStore(key) || null, save: (key, data) => bridge.SaveStore(key, data)},
   display: {modes: () => bridge.DisplayModes(), get: () => bridge.DisplayGet(), set: json => bridge.DisplaySet(json)},
+  graphics: {get: () => bridge.GraphicsGet(), set: json => bridge.GraphicsSet(json)},
   sink: {
     geometry: (id, pos, nrm, uv, col, colorSize, idx, groups) => bridge.Geometry(id, buf(pos), buf(nrm), buf(uv), buf(col), colorSize, buf(idx), groups),
     releaseGeometry: id => bridge.ReleaseGeometry(id),
+    releaseMaterial: id => bridge.ReleaseMaterial && bridge.ReleaseMaterial(id),
+    releaseTexture: id => bridge.ReleaseTexture && bridge.ReleaseTexture(id),
     material: (id, json) => bridge.Material(id, json),
     texture: (id, json, bytes) => bridge.Texture(id, json, buf(bytes)),
     frame: (floats, count, inst, instCount) => bridge.Frame(floats, count, inst, instCount),

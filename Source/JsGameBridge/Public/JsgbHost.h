@@ -4,6 +4,7 @@
 #include <atomic>
 #include "GameFramework/Actor.h"
 #include "GameFramework/GameModeBase.h"
+#include "Engine/Scene.h"
 #include "PuertsNamespaceDef.h"
 #include "JsgbHost.generated.h"
 
@@ -84,6 +85,8 @@ public:
 	TSharedRef<FAnswer> Ask(const FString& Source);
 	bool HasOverlay() const { return Browser.IsValid(); }
 	bool IsRecording() const { return !RecordDir.IsEmpty(); }
+	/** A host script (-JsgbScript) drives the game: the desktop mouse is not passed on. */
+	bool IsScripted() const { return Script.Num() > 0; }
 
 	UPROPERTY() TObjectPtr<UJsgbBridge> Bridge;
 	UPROPERTY() TObjectPtr<UJsgbSceneMirror> Mirror;
@@ -107,6 +110,23 @@ private:
 	void ShowReloadBanner(const FString& Text);
 	void SwapCss(double BuildMs);
 	void SetupUpscaler();
+	/** Lumen mode: Unreal's own lighting, the override models and Unreal effects, on and off while the game runs
+	 *  (F9, window.jsgb.graphics); -JsgbLumen[=high|light] starts with it on (JsgbFidelity.cpp). */
+	void SetupLumen();
+	void SetLumen(bool bOn);
+	/** Tells the game's JavaScript whether Lumen mode is on, and takes its changes. */
+	void PublishGraphics();
+	UPROPERTY() TObjectPtr<class USkyLightComponent> LumenSky;
+	UPROPERTY() TObjectPtr<class UExponentialHeightFogComponent> LumenFog;
+	FString LumenPreset;
+	bool bLumenOn = false, bLumenAvailable = false;
+	/** The override models are in memory (they load each time Lumen mode turns on). */
+	bool bModelsReady = false, bLumenAtStart = false;
+	int32 LumenGeneration = 0;
+	TMap<FString, FString> LumenSaved;
+	bool SavedGiOverride = false, SavedReflectionOverride = false;
+	EDynamicGlobalIlluminationMethod::Type SavedGi = EDynamicGlobalIlluminationMethod::None;
+	EReflectionMethod::Type SavedReflection = EReflectionMethod::None;
 	void ApplyUpscaler(const FString& Mode, const FString& TsrPercent);
 	/** F6: the next DLSS mode (off, DLAA, Quality, Balanced, Performance, DLSS 5). F7: Frame Generation off, 2x, and on RTX 50
 	 *  GPUs 3x and 4x (Multi Frame Generation). */

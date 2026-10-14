@@ -4,6 +4,9 @@ import {lastFrame, post, captures} from './renderer';
 import {frameCount} from './frameCount';
 import {translateShaderMaterial, translateHookedMaterial, fillBuiltinUniforms, type HookedShader, type TranslatedShader} from './shaders';
 import {channelFor, isExtraAttribute} from './attributes';
+import {overrideRules, overrideFor, effectFlags} from './overrides';
+import {graphicsState} from './graphics';
+import {beginEffects, noteEffect, effectLights, effectSystems} from './lumenEffects';
 
 /** Mirrors the game's Three.js scene into Unreal each frame. Geometry, materials and textures are
  *  sent once and again only when their version changes; transforms, instances, lights and the
@@ -39,6 +42,24 @@ export function emitEvent(kind: string, key: string, parameters: Record<string, 
 
 const geometrySig = new Map<number, string>();
 const geometryRefs = new Map<number, WeakRef<THREE.BufferGeometry>>();
+// Materials and textures sent to the host, so their Unreal copies are freed when the game disposes of them or drops them
+// (a fight makes new ones for every explosion, wreck and piece of debris; kept, they added about 2 GB a minute).
+const materialRefs = new Map<number, WeakRef<object>>(), textureRefs = new Map<number, WeakRef<object>>();
+function track(refs: Map<number, WeakRef<object>>, thing: THREE.EventDispatcher<{dispose: object}> & object, id: number, kind: 'material' | 'texture') {
+  if (refs.has(id)) return;
+  refs.set(id, new WeakRef(thing));
+  // three.js lets a disposed material or texture be used again (it uploads it afresh), so everything that says
+  // "already sent" is forgotten with it and a later use sends it again.
+  thing.addEventListener('dispose', () => { if (!refs.delete(id)) return; forget(kind, id, thing); release(kind, id); });
+}
+function forget(kind: 'material' | 'texture', id: number, thing: object) {
+  if (kind === 'texture') { textureSig.delete(id); textureOk.delete(id); pixelState.delete(thing as THREE.Texture); }
+  else { quick.delete(thing as THREE.Material); materialFrame.delete(thing as THREE.Material); }
+}
+function release(kind: 'material' | 'texture', id: number) {
+  const out = sink();
+  if (kind === 'material') out?.releaseMaterial?.(id); else out?.releaseTexture?.(id);
+}
 const materialSig = new Map<number, string>();
 const textureSig = new Map<number, number>();
 const sentShaders = new Set<string>();
@@ -101,7 +122,8 @@ const resends = new Map<number, number>();
 function syncGeometryNow(geo: THREE.BufferGeometry, primitive: number): number {
   const id = idOf(geo);
   const a = geo.attributes, idx = geo.index;
-  const extras = Object.entries(a).filter(([name, attr]) => isExtraAttribute(name) && attr.itemSize <= 4);
+  // Per-instance attributes (InstancedBufferAttribute) travel with the instances instead (instanceExtras).
+  const extras = Object.entries(a).filter(([name, attr]) => isExtraAttribute(name) && attr.itemSize <= 4 && !(attr as THREE.InstancedBufferAttribute).isInstancedBufferAttribute);
   const sig = `${primitive}|${contentVersion(a.position)}|${a.position?.count}|${contentVersion(a.normal)}|${contentVersion(a.uv)}|${contentVersion(a.color)}|${contentVersion(idx)}|${idx?.count}|${geo.drawRange.start},${geo.drawRange.count}|${geo.groups.length}|${extras.map(([n, x]) => n + contentVersion(x)).join(',')}`;
   const previous = geometrySig.get(id);
   if (previous === sig) return id;
@@ -162,6 +184,21 @@ function rgba8(w: number, h: number, data: ArrayLike<number>, channels: number, 
   return out;
 }
 
+/** Unreal's image decoders read PNG, JPEG and the like, not WebP. The build writes a PNG copy of every WebP image the
+ *  game ships (jsgb/webp/<path>.png, Tools/jsgb.mjs), and a texture loads that copy instead. */
+const webpCopies = new Map<string, string>();
+export function unrealImagePath(p: string): string {
+  if (!/\.webp$/i.test(p)) return p;
+  let out = webpCopies.get(p);
+  if (out === undefined) {
+    const png = '/jsgb/webp' + p.replace(/\.webp$/i, '.png');
+    out = host.readFile(png) ? png : p;
+    if (out === p) host.log('warn', `texture ${p}: Unreal cannot decode WebP and the build wrote no PNG copy (${png}), so it stays blank`);
+    webpCopies.set(p, out);
+  }
+  return out;
+}
+
 function textureSource(tex: THREE.Texture): {json: Record<string, unknown>; bytes: ArrayBuffer | null} | null {
   const img = tex.image as Record<string, any> | undefined;
   const base = {wrapS: tex.wrapS, wrapT: tex.wrapT, repeat: [tex.repeat.x, tex.repeat.y], offset: [tex.offset.x, tex.offset.y], rotation: tex.rotation, flipY: tex.flipY,
@@ -190,7 +227,7 @@ function textureSource(tex: THREE.Texture): {json: Record<string, unknown>; byte
   if (!img) return null;
   const pixels = img.__ctx?.bitmap?.() ?? img.__pixels;
   if (pixels && pixels.width && pixels.height) return {json: {...base, kind: 'rgba8', width: pixels.width, height: pixels.height}, bytes: (pixels.data as Uint8ClampedArray).slice().buffer};
-  if (img.__jsgbAsset) return {json: {...base, kind: 'file', path: img.__jsgbAsset}, bytes: null};
+  if (img.__jsgbAsset) return {json: {...base, kind: 'file', path: unrealImagePath(img.__jsgbAsset)}, bytes: null};
   if (img.__bytes) return {json: {...base, kind: 'encoded'}, bytes: (img.__bytes as Uint8Array).slice().buffer};
   if ((tex as THREE.Data3DTexture).isData3DTexture && img.data && img.width && img.height && img.depth) {
     return {json: {...base, kind: 'rgba8_3d', width: img.width, height: img.height, depth: img.depth},
@@ -210,6 +247,9 @@ function pixelsUnchanged(tex: THREE.Texture): boolean {
   const mip = (tex as THREE.CompressedTexture).mipmaps?.[0] as Record<string, any> | undefined;
   const raw = img?.__ctx?.bitmap?.()?.data ?? img?.__pixels?.data ?? img?.data ?? mip?.data;
   if (!raw || !ArrayBuffer.isView(raw)) return false;
+  // A compressed texture (a model's colour or roughness map, up to 22 MB) is loaded once and not rewritten, so keeping
+  // a copy of its pixels to compare doubled the game's texture memory for nothing: a new version is simply sent.
+  if ((tex as THREE.CompressedTexture).isCompressedTexture) return false;
   const arr = raw as Uint8Array;
   const view = arr.byteLength % 4 === 0 && arr.byteOffset % 4 === 0 ? new Uint32Array(arr.buffer, arr.byteOffset, arr.byteLength / 4) : new Uint8Array(arr.buffer, arr.byteOffset, arr.byteLength);
   // The texture's settings count too: they travel with the pixels.
@@ -223,6 +263,7 @@ function pixelsUnchanged(tex: THREE.Texture): boolean {
 function textureId(tex: THREE.Texture | null | undefined): number {
   if (!tex) return 0;
   const id = idOf(tex);
+  track(textureRefs, tex, id, 'texture');
   if (textureSig.get(id) !== tex.version) {
     const first = !textureSig.has(id);
     textureSig.set(id, tex.version);
@@ -301,8 +342,22 @@ function shaderKey(m: THREE.ShaderMaterial): string {
 // A material shared by many meshes is described once per frame.
 const materialFrame = new WeakMap<THREE.Material, number>();
 // Materials drawn on an InstancedMesh, and whether its instances have colours (for patched built-in shaders).
-const instancedUse = new WeakMap<THREE.Material, {color: boolean}>();
-const noteInstanced = (mat: THREE.Material | undefined, im: THREE.InstancedMesh) => { if (mat) instancedUse.set(mat, {color: !!im.instanceColor}); return mat; };
+const instancedUse = new WeakMap<THREE.Material, {color: boolean; extras: InstanceExtra[]}>();
+const noteInstanced = (mat: THREE.Material | undefined, im: THREE.InstancedMesh) => { if (mat) instancedUse.set(mat, {color: !!im.instanceColor, extras: instanceExtras(im.geometry)}); return mat; };
+/** A geometry's per-instance attributes (InstancedBufferAttribute), in name order, with where each starts among an
+ *  instance's extra floats. Unreal gets them as per-instance custom data after the instance colour. */
+export type InstanceExtra = {name: string; size: number; offset: number; attr: THREE.InstancedBufferAttribute};
+function instanceExtras(geo: THREE.BufferGeometry): InstanceExtra[] {
+  const list: InstanceExtra[] = [];
+  let offset = 0;
+  for (const name of Object.keys(geo.attributes).sort()) {
+    const attr = geo.attributes[name] as THREE.InstancedBufferAttribute;
+    if (!attr.isInstancedBufferAttribute || attr.itemSize > 4 || !isExtraAttribute(name)) continue;
+    list.push({name, size: attr.itemSize, offset, attr});
+    offset += attr.itemSize;
+  }
+  return list;
+}
 
 // Every value a material sends, as numbers (with its uniforms for shader materials): when they all match the last frame's,
 // the material is unchanged and its description is not built again.
@@ -357,8 +412,15 @@ function linearShader(t: TranslatedShader): TranslatedShader {
   return l;
 }
 
+// How far a camera-facing instanced quad is pulled toward the camera in Unreal, in radii of the quad (shaders.ts,
+// depthPull). jsgbdepthpull=<number> in the run's search replaces it for every material, for tuning without a
+// rebuild; otherwise a material's userData.jsgbDepthPull sets its own.
+export const DEPTH_PULL = 0.5;
+const searchPull = () => { const v = /[?&]jsgbdepthpull=([-+0-9.eE]+)/.exec(host.search ?? '')?.[1]; return v !== undefined && Number.isFinite(+v) ? +v : undefined; };
+const drawFirst = (mat: THREE.Material) => !mat.transparent && mat.depthWrite === false && mat.blending === THREE.NormalBlending;
 function syncMaterial(mat: THREE.Material): number {
   const id = idOf(mat);
+  track(materialRefs, mat, id, 'material');
   if (materialFrame.get(mat) === exportCount) return id;
   materialFrame.set(mat, exportCount);
   const m = mat as THREE.MeshStandardMaterial & THREE.MeshPhysicalMaterial & THREE.ShaderMaterial & THREE.MeshBasicMaterial & THREE.PointsMaterial;
@@ -379,9 +441,10 @@ function syncMaterial(mat: THREE.Material): number {
   const registryMaterial = registryKey ? assetRegistry()[registryKey]?.material : undefined;
   // Custom shaders without a registry material become generated Unreal materials.
   let custom: string | undefined;
+  let depthPull: number | undefined;
   const hooked = shader ? undefined : hookShader(mat);
   if ((shader || hooked) && !registryMaterial) {
-    let t = shader ? translateShaderMaterial(m) : translateHookedMaterial(mat, hooked!.shader, hooked!.key, instancedUse.get(mat));
+    let t = shader ? translateShaderMaterial(m, instancedUse.get(mat)) : translateHookedMaterial(mat, hooked!.shader, hooked!.key, instancedUse.get(mat));
     // A ShaderMaterial's gl_FragColor drawn to the screen is already in display (sRGB) values, and Unreal decodes it
     // to linear light so its own output encoding gives the same pixel. Drawn into a post-processing render target
     // (EffectComposer), it's linear light, and the final pass encodes it with the rest of the scene.
@@ -392,23 +455,27 @@ function syncMaterial(mat: THREE.Material): number {
     // Still compiling (the shader compiler loads in the background): send it again next frame, even
     // though its values haven't changed, so the generated material replaces the generic one.
     if (t === undefined) quick.delete(mat);
-    if (t) { if (!sentShaders.has(t.key)) { sentShaders.add(t.key); sink()?.shader?.(t.key, JSON.stringify(t)); } custom = t.key; }
+    if (t) { if (!sentShaders.has(t.key)) { sentShaders.add(t.key); sink()?.shader?.(t.key, JSON.stringify(t)); } custom = t.key; if (t.depthPull) depthPull = searchPull() ?? (typeof mat.userData?.jsgbDepthPull === 'number' ? mat.userData.jsgbDepthPull : DEPTH_PULL); }
   }
   const desc = {
     type: mat.type, name: mat.name,
     color: shader ? uniformColor(m) ?? [0.7, 0.7, 0.7] : colorOf(m.color),
     emissive: m.emissive ? colorOf(m.emissive) : [0, 0, 0], emissiveIntensity: m.emissiveIntensity ?? 1,
     roughness: m.roughness ?? (mat.type === 'MeshBasicMaterial' ? 1 : 0.8), metalness: m.metalness ?? 0,
-    opacity: mat.opacity, transparent: mat.transparent, alphaTest: mat.alphaTest, side: mat.side,
+    // An opaque surface that writes no depth (a sky dome drawn first) never hides what three.js draws after it.
+    // Unreal's opaque surfaces always write depth, so it goes there as a translucent surface drawn first.
+    opacity: mat.opacity, transparent: mat.transparent || drawFirst(mat), drawFirst: drawFirst(mat) || undefined, alphaTest: mat.alphaTest, side: mat.side,
     vertexColors: !!mat.vertexColors, unlit: shader || ['MeshBasicMaterial', 'SpriteMaterial', 'PointsMaterial', 'LineBasicMaterial', 'LineDashedMaterial'].includes(mat.type),
     blending: mat.blending, depthWrite: mat.depthWrite, depthTest: mat.depthTest, colorWrite: mat.colorWrite, wireframe: !!m.wireframe,
     map: shader ? uniformTexture(m) : textureId(m.map), emissiveMap: textureId(m.emissiveMap), normalMap: textureId(m.normalMap), roughnessMap: textureId(m.roughnessMap),
     metalnessMap: textureId(m.metalnessMap), aoMap: textureId(m.aoMap), alphaMap: textureId(m.alphaMap),
     flat: !!m.flatShading, toneMapped: mat.toneMapped, fog: m.fog !== false,
     shader, shaderKey: shader ? registryKey : undefined, registryMaterial, custom,
-    uniforms: shader ? uniformValues(m.uniforms as Record<string, {value: unknown}>) : (hookUniforms(mat) ? uniformValues(hookUniforms(mat)) : undefined),
+    uniforms: shader ? uniformValues(m.uniforms as Record<string, {value: unknown}>, depthPull === undefined ? {} : {JsgbDepthPull: depthPull}) : (hookUniforms(mat) ? uniformValues(hookUniforms(mat)) : undefined),
     specular: mat.type === 'MeshLambertMaterial' || mat.type === 'MeshToonMaterial' ? 0 : mat.type === 'MeshPhongMaterial' ? 0.3 : 0.5,
     envIntensity: m.envMapIntensity ?? 1, alphaHash: !!m.alphaHash,
+    // Lit by an environment map: its own, or the scene's (the mirror turns it into one colour of reflected light).
+    env: +!!(m.envMap || (lastFrame.scene as THREE.Scene | null)?.environment),
     size: m.size, sizeAttenuation: m.sizeAttenuation, linewidth: (m as unknown as THREE.LineBasicMaterial).linewidth,
     // A Line2's width (WebGL draws every other line one pixel wide): in pixels, or in world units.
     fatWidth: mat.userData?.jsgbFatWidth, fatWorld: mat.userData?.jsgbFatWorld,
@@ -426,18 +493,33 @@ const visibleTo = (o: THREE.Object3D, cam: THREE.Camera) => o.layers.test(cam.la
 const flagsOf = (o: THREE.Object3D) => (o.castShadow ? 1 : 0) | (o.receiveShadow ? 2 : 0) | (o.frustumCulled ? 0 : 4) | ((o as THREE.SkinnedMesh).isSkinnedMesh ? 8 : 0) | (o.userData?.jsgbNoInterpolate ? 16 : 0);
 const materialsOf = (o: THREE.Mesh) => (Array.isArray(o.material) ? o.material : [o.material]) as THREE.Material[];
 
-function emitInstances(im: THREE.InstancedMesh, gid: number, mat: number) {
+const fitScratch = new THREE.Matrix4(), fitOut = new THREE.Matrix4();
+/** fit: an override's source-to-geometry matrix, applied inside each instance's own transform. */
+function emitInstances(im: THREE.InstancedMesh, gid: number, mat: number, fit: THREE.Matrix4 | null = null) {
   const count = im.count; if (count <= 0) return;
-  const version = `${im.instanceMatrix.version}|${count}|${im.instanceColor?.version ?? -1}|${gid}`;
+  const extras = gid >= 0 ? instanceExtras(im.geometry) : [];
+  const extraFloats = extras.reduce((n, e) => n + e.size, 0);
+  const version = `${im.instanceMatrix.version}|${count}|${im.instanceColor?.version ?? -1}|${gid}|${extras.map(e => e.attr.version).join(',')}`;
   const changed = instanceVersion.get(im) !== version;
   push(INSTANCED); push(idOf(im)); push(gid); push(mat); push(flagsOf(im)); push(count); pushMatrix(im.matrixWorld);
-  push(changed ? 1 : 0); push(changed && im.instanceColor ? 1 : 0);
+  // Bit 0: instance colours follow the matrices; the rest: the number of per-instance extra floats after them.
+  push(changed ? 1 : 0); push(changed ? (im.instanceColor ? 1 : 0) + extraFloats * 2 : 0);
   if (changed) {
     instanceVersion.set(im, version);
-    const k = count * 16 + (im.instanceColor ? count * 3 : 0); reserveInst(k);
+    const k = count * 16 + (im.instanceColor ? count * 3 : 0) + count * extraFloats; reserveInst(k);
     push(ni);
-    inst.set(im.instanceMatrix.array.subarray(0, count * 16) as Float32Array, ni); ni += count * 16;
+    if (fit) {
+      for (let i = 0; i < count; i++) { fitScratch.fromArray(im.instanceMatrix.array, i * 16); fitOut.multiplyMatrices(fitScratch, fit); inst.set(fitOut.elements, ni + i * 16); }
+    } else inst.set(im.instanceMatrix.array.subarray(0, count * 16) as Float32Array, ni);
+    ni += count * 16;
     if (im.instanceColor) { inst.set((im.instanceColor.array as Float32Array).subarray(0, count * 3), ni); ni += count * 3; }
+    if (extraFloats) {
+      for (let i = 0; i < count; i++) for (const e of extras) {
+        const base = ni + i * extraFloats + e.offset;
+        inst[base] = e.attr.getX(i); if (e.size > 1) inst[base + 1] = e.attr.getY(i); if (e.size > 2) inst[base + 2] = e.attr.getZ(i); if (e.size > 3) inst[base + 3] = e.attr.getW(i);
+      }
+      ni += count * extraFloats;
+    }
   } else push(-1);
 }
 
@@ -445,7 +527,20 @@ function emitInstances(im: THREE.InstancedMesh, gid: number, mat: number) {
  *  through a stand-in InstancedMesh kept per batch and geometry. */
 type BatchProxy = {mesh: THREE.InstancedMesh; key: string};
 const batchProxies = new WeakMap<object, Map<number, BatchProxy>>();
-const batchMatrix = new THREE.Matrix4(), batchColor = new THREE.Color();
+const batchMatrix = new THREE.Matrix4(), batchWorld = new THREE.Matrix4(), batchColor = new THREE.Color();
+// A game can draw many small parts through one BatchedMesh and keep each part's own mesh in the scene, off the
+// camera's layers, as the instance's source (Hard Burn's gun mounts: userData.batchedMountSource, the instance placed
+// at the source's world matrix). An override rule matches the source; its batch instance is then left out. Batches are
+// emitted after the walk, when every source has been seen.
+const mountDrawn = new Set<string>();
+const mountRecords: {object: THREE.Object3D; key: string; matrix: number[]}[] = [];
+(globalThis as unknown as {__jsgbMountRecords?: unknown}).__jsgbMountRecords = mountRecords;
+const laterBatches: THREE.BatchedMesh[] = [];
+const mountKey = (m: THREE.Matrix4) => { const e = m.elements; return `${Math.round(e[12] * 100)}|${Math.round(e[13] * 100)}|${Math.round(e[14] * 100)}|${Math.round(e[0] * 1000)}|${Math.round(e[5] * 1000)}`; };
+function flushBatches() {
+  for (const b of laterBatches) emitBatched(b);
+  laterBatches.length = 0; mountDrawn.clear();
+}
 function emitBatched(b: THREE.BatchedMesh) {
   const anyB = b as unknown as {_instanceInfo?: {geometryIndex: number; visible: boolean; active: boolean}[]; _colorsTexture?: unknown};
   const infos = anyB._instanceInfo;
@@ -474,11 +569,16 @@ function emitBatched(b: THREE.BatchedMesh) {
       proxies.set(geometryId, p);
     }
     const im = p.mesh;
-    im.count = ids.length;
-    ids.forEach((id, i) => {
-      b.getMatrixAt(id, batchMatrix); im.setMatrixAt(i, batchMatrix);
-      if (anyB._colorsTexture) { b.getColorAt(id, batchColor); im.setColorAt(i, batchColor); }
-    });
+    let shown = 0;
+    for (const id of ids) {
+      b.getMatrixAt(id, batchMatrix);
+      if (mountDrawn.size && mountDrawn.has(mountKey(batchWorld.multiplyMatrices(b.matrixWorld, batchMatrix)))) continue;
+      im.setMatrixAt(shown, batchMatrix);
+      if (anyB._colorsTexture) { b.getColorAt(id, batchColor); im.setColorAt(shown, batchColor); }
+      shown++;
+    }
+    im.count = shown;
+    if (!shown) continue;
     im.instanceMatrix.needsUpdate = true;
     if (im.instanceColor) im.instanceColor.needsUpdate = true;
     im.matrixWorld.copy(b.matrixWorld);
@@ -555,7 +655,7 @@ function deformedGeometry(o: THREE.Mesh): THREE.BufferGeometry {
 }
 
 function emitMesh(o: THREE.Mesh) {
-  if ((o as unknown as THREE.BatchedMesh).isBatchedMesh) { emitBatched(o as unknown as THREE.BatchedMesh); return; }
+  if ((o as unknown as THREE.BatchedMesh).isBatchedMesh) { laterBatches.push(o as unknown as THREE.BatchedMesh); return; }
   const geo = deformedGeometry(o); if (!geo?.attributes?.position) return;
   const mats = materialsOf(o);
   if (!mats.length || mats.every(m => !m || !m.visible || m.colorWrite === false)) return;
@@ -700,6 +800,22 @@ function hasContentTag(o: THREE.Object3D, key: string): boolean {
   return false;
 }
 
+const overrideWorld = new THREE.Matrix4();
+const noRules: ReturnType<typeof overrideRules> = [];
+// Lumen mode (jsgb.graphics, F9): the override models and the Unreal effects overrides.json turns on (lumenEffects.ts).
+let lumenModels = false, unrealEffects = false;
+function emitEffectLights() {
+  effectLights(l => {
+    push(LIGHT); push(idOf(l.id)); push(2); push(l.color.r); push(l.color.g); push(l.color.b); push(l.intensity);
+    push(l.at.x); push(l.at.y); push(l.at.z); push(l.dir.x); push(l.dir.y); push(l.dir.z);
+    // A point light's angle and penumbra fields carry its source length and radius (three.js point lights send 0).
+    push(l.distance); push(2); push(l.length); push(l.radius); push(0); push(0); push(0); push(0);
+  });
+  // An effect gets an id of its own: the object it plays at may also be drawn (a sprite).
+  // Niagara rules are override assets, which are in memory only once the models have loaded.
+  if (lumenModels) effectSystems((o, key, m) => { let fx = effectIds.get(o); if (!fx) effectIds.set(o, fx = {}); push(EFFECT); push(idOf(fx)); push(keyId(key)); pushMatrix(m); });
+}
+const effectIds = new WeakMap<object, object>();
 function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
   if (!o.visible) return;
   if ((o as THREE.LOD).isLOD && (o as THREE.LOD).autoUpdate) (o as THREE.LOD).update(cam);
@@ -707,12 +823,37 @@ function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
   // attachments under the same root (mounts, plumes) stay ordinary objects.
   const replaced = skipKey !== null && o.userData?.assetContent === skipKey;
   let childSkip = skipKey;
+  if (lumenModels && o.userData?.batchedMountSource && (o as THREE.Mesh).isMesh && !visibleTo(o, cam)) {
+    const rules = overrideRules(host.registry), ov = rules.length ? overrideFor(o, rules) : null;
+    if (ov && !ov.hide) {
+      const world = ov.fit ? overrideWorld.multiplyMatrices(o.matrixWorld, ov.fit) : o.matrixWorld;
+      push(ASSET); push(idOf(o)); push(keyId(ov.key)); push(0); pushMatrix(world);
+      mountDrawn.add(mountKey(o.matrixWorld));
+      // For checks from a capture script: the world matrix each gun override was sent with, this frame.
+      mountRecords.push({object: o, key: ov.key, matrix: world.toArray()});
+    }
+  }
   if (!replaced && visibleTo(o, cam)) {
     if (host.trace && !traced.has(o) && ((o as THREE.Mesh).isMesh || (o as THREE.Points).isPoints || (o as THREE.Sprite).isSprite || (o as THREE.Line).isLine)) {
       traced.add(o);
       const g = (o as THREE.Mesh).geometry, m = materialsOf(o as THREE.Mesh)[0];
       host.log('log', `TRACE id ${idOf(o)} ${o.type} "${o.name}" uuid ${o.uuid} parent "${o.parent?.name ?? ''}" geometry ${g ? idOf(g) : 0} ${g?.type ?? ''} material ${m ? idOf(m) : 0} ${m?.type ?? ''}`);
     }
+    const rules = lumenModels ? overrideRules(host.registry) : noRules;
+    const ov = rules.length && (o as THREE.Mesh).isMesh && !(o as unknown as THREE.BatchedMesh).isBatchedMesh && !(o as unknown as {isLineSegments2?: boolean}).isLineSegments2 ? overrideFor(o, rules) : null;
+    if (ov) {
+      if (!ov.hide) {
+        if ((o as THREE.InstancedMesh).isInstancedMesh) emitInstances(o as THREE.InstancedMesh, -keyId(ov.key), 0, ov.fit);
+        else {
+          const world = ov.fit ? overrideWorld.multiplyMatrices(o.matrixWorld, ov.fit) : o.matrixWorld;
+          push(ASSET); push(idOf(o)); push(keyId(ov.key)); push(0); pushMatrix(world);
+          if (o.userData?.batchedMountSource || ov.key.startsWith('override:gun_')) mountRecords.push({object: o, key: ov.key, matrix: world.toArray()});
+        }
+      }
+      const ch = o.children; for (let i = 0; i < ch.length; i++) walk(ch[i], cam, skipKey);
+      return;
+    }
+    if (unrealEffects && cam === lastFrame.camera) noteEffect(o);
     const swap = registrySwap(o);
     if (swap?.kind === EFFECT) { push(EFFECT); push(idOf(o)); push(keyId(swap.key)); pushMatrix(o.matrixWorld); return; }
     if (swap?.kind === ASSET) {
@@ -770,8 +911,16 @@ export function exportFrame(): number {
     for (const i of [0, 4, 8, 1, 5, 9, 2, 6, 10]) push(m[i]);
     push(tex.flipY ? 1 : 0);
   }
+  const g = graphicsState();
+  lumenModels = g.lumen && g.models;
+  const flags = effectFlags(host.registry);
+  unrealEffects = g.lumen && Object.values(flags).some(Boolean);
+  if (unrealEffects) beginEffects(flags, cam, top);
+  mountRecords.length = 0;
   walk(top, cam, null);
-  if (cam.parent === null && cam !== top) walk(cam, cam, null);
+  flushBatches();
+  if (unrealEffects) emitEffectLights();
+  if (cam.parent === null && cam !== top) { walk(cam, cam, null); flushBatches(); }
   // Scenes drawn into render targets that a material shows, each between a capture record and its end.
   for (const [target, c] of captures) {
     const tex = target.texture as THREE.Texture & {__jsgbMapped?: boolean};
@@ -783,12 +932,17 @@ export function exportFrame(): number {
     const cbg = scene.background as THREE.Color | null;
     push(cbg?.isColor ? 1 : 0); push(cbg?.isColor ? cbg.r : 0); push(cbg?.isColor ? cbg.g : 0); push(cbg?.isColor ? cbg.b : 0);
     walk(scene, ccam, null);
+    flushBatches();
     push(10);
   }
   if (pendingEvents.length && out.events) { const events = pendingEvents; pendingEvents = []; out.events(JSON.stringify(events)); }
   out.frame(floats.buffer, n, inst.buffer, ni);
   // Release geometry the game has dropped (checked every few seconds).
-  if (++sweep % 300 === 0) for (const [id, ref] of geometryRefs) if (!ref.deref()) { geometryRefs.delete(id); geometrySig.delete(id); out.releaseGeometry(id); }
+  if (++sweep % 300 === 0) {
+    for (const [id, ref] of geometryRefs) if (!ref.deref()) { geometryRefs.delete(id); geometrySig.delete(id); out.releaseGeometry(id); }
+    for (const [id, ref] of materialRefs) if (!ref.deref()) { materialRefs.delete(id); release('material', id); }
+    for (const [id, ref] of textureRefs) if (!ref.deref()) { textureRefs.delete(id); release('texture', id); }
+  }
   return n;
 }
 
