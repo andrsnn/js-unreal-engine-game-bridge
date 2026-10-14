@@ -14,7 +14,10 @@ COUNT=$(echo $NAMES | tr ',' '\n' | grep -c .)
 step "batch $N: $COUNT hulls into $B"
 bash $O/ramcheck.sh 40 | tee -a $LOG
 node Tools/fidelity/build-overrides.mjs Overrides/hardburn.sources.json Overrides/hardburn.json --work H:/builds/JsgbFidelity/FidelityWork --only "$NAMES" --clean > $D/batch-$N-models.out 2>&1
-step "cleaned and imported: exit $?, $(grep -ac ': cleaned' $D/batch-$N-models.out) cleaned, $(grep -ac 'not imported' $D/batch-$N-models.out) not imported"
+E=$?
+step "cleaned and imported: exit $E, $(grep -ac ': cleaned' $D/batch-$N-models.out) cleaned, $(grep -ac 'not imported' $D/batch-$N-models.out) not imported"
+# A failed import leaves some hulls new and some old: nothing from this batch is built or published.
+[ $E -ne 0 ] && { step "NOT PUBLISHED: the import stopped ($(grep -a 'import failed\|import stopped' $D/batch-$N-models.out | head -n 1 | cut -c1-120))"; exit 1; }
 rm -rf $O/livery-projected-$N $O/livery-recoloured-$N; mkdir -p $O/livery-recoloured-$N
 timeout 7200 node Tools/fidelity/bake-livery.mjs Overrides/hardburn.json --game hardburn --out $O/livery-projected-$N --port 5398 --style game --only "$NAMES" > $O/batch-$N-bake.txt 2>&1
 step "game paint projected: $(grep -ac 'texels painted' $O/batch-$N-bake.txt) of $COUNT"

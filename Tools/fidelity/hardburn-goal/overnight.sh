@@ -11,7 +11,8 @@ fs.writeFileSync('run-helion-ueg.txt', [...r('helion'), ...r('ueg')].join(','));
 fs.writeFileSync('run-rest.txt', ['veil','module','asteroid','derelict','hero','pirate'].flatMap(r).join(','));"
 # Oldest first: B, C, D. D is live.
 [ -f folders.txt ] || printf '%s\n' H:/builds/HardBurnUnreal-fallback H:/builds/HardBurnUnreal-play H:/builds/HardBurnUnreal-third > folders.txt
-for batch in tdf mrn cartel-corsair helion-ueg rest; do
+# overnight.sh [batch ...]: all five when none are named.
+for batch in ${@:-tdf mrn cartel-corsair helion-ueg rest}; do
   target=$(head -n 1 folders.txt)
   bash $O/batch2.sh $batch $O/run-$batch.txt $target > $O/batch-$batch.out 2>&1
   L=$O/batch-$batch.log

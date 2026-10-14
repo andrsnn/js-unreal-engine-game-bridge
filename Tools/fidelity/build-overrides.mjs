@@ -129,10 +129,13 @@ if (!rest.includes('--skip-import')) {
   }
   const cmd = path.join(path.dirname(settings().engine), 'UnrealEditor-Cmd.exe');
   console.log(`importing ${prepared.length} models into ${list.root}`);
+  // A full-detail hull takes Unreal up to about 3 minutes to build, so the time limit grows with the batch: 5 minutes a
+  // model, an hour at least.
+  const limit = Math.max(3600e3, prepared.length * 300e3);
   const r = spawnSync(cmd, [settings().project, '-run=pythonscript', `-script=${path.join(bridge, 'Tools/fidelity/import_assets.py')}`, '-unattended', '-nosplash', '-nopause', '-stdout'],
-    {env: {...process.env, JSGB_FIDELITY_JOBS: jobs}, encoding: 'utf8', maxBuffer: 1 << 28, timeout: 3600e3});
+    {env: {...process.env, JSGB_FIDELITY_JOBS: jobs}, encoding: 'utf8', maxBuffer: 1 << 28, timeout: limit});
   fs.writeFileSync(path.join(work, 'import.log'), (r.stdout ?? '') + (r.stderr ?? ''));
-  if (r.status !== 0) throw Error(`import failed (exit ${r.status}); see ${path.join(work, 'import.log')}`);
+  if (r.status !== 0) throw Error(r.status === null ? `import stopped at its ${Math.round(limit / 60e3)} minute limit; see ${path.join(work, 'import.log')}` : `import failed (exit ${r.status}); see ${path.join(work, 'import.log')}`);
 }
 const results = JSON.parse(fs.readFileSync(resultFile, 'utf8'));
 const before = fs.existsSync(outFile) ? JSON.parse(fs.readFileSync(outFile, 'utf8')) : {};
