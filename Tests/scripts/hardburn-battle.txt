@@ -1,8 +1,8 @@
 0 gone #startup
+5 eval (() => { window.jsgb.graphics.set({lumen: true}); return "lumen on"; })()
 14 eval (() => { const s = document.createElement('style'); s.textContent = 'body * { visibility: hidden !important; }'; document.head.append(s); const c = [...document.querySelectorAll('canvas')].sort((a, b) => b.width * b.height - a.width * a.height)[0]; c.style.setProperty('visibility', 'visible', 'important'); return c.width + 'x' + c.height; })()
 14.5 eval (() => { const T = window.__FF.THREE; window.__hullSize = o => { const b = new T.Box3(); o.traverse(m => { if (m.isMesh && /^planar/.test(m.name)) b.expandByObject(m); }); return b.isEmpty() ? 0 : b.getSize(new T.Vector3()).length(); }; return 'ok'; })() 
 15 eval (() => { const F = window.__FF, T = F.THREE; const hullSize = window.__hullSize;  const all = F.scene.children.filter(o => o.userData.ship && !o.userData.ship.dead);  const mine = all.filter(o => o.userData.ship.faction === 'player'), foes = all.filter(o => o.userData.ship.faction !== 'player');  if (!mine.length || !foes.length) return 'no battle';  const c = mine.reduce((a, o) => a.add(o.position), new T.Vector3()).divideScalar(mine.length);  foes.sort((a, b) => a.position.distanceTo(c) - b.position.distanceTo(c));  const s = foes[0], L = Math.max(2, hullSize(s));  window.__stage = {s, L};  setInterval(() => { const p = s.position; F.rts.setPose({r: L * 0.75, theta: s.rotation.y + 2.0, phi: 1.05, x: p.x, y: p.y, z: p.z}); }, 0);  return s.userData.ship.name + ' L=' + L.toFixed(1); })() 
-5 eval (() => { window.jsgb.graphics.set({lumen: true}); return "lumen on"; })()
 20 shot on20
 40 eval JSON.stringify(window.jsgb.graphics.get())
 60 shot on60
