@@ -252,9 +252,30 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
   const at = new THREE.Vector3(), hit = {point: new THREE.Vector3(), faceIndex: 0, distance: 0}, tri = new THREE.Triangle(), bary = new THREE.Vector3();
   const index = lookup.index, sn = geometry.attributes.normal, faceNormal = new THREE.Vector3(), vertexNormal = new THREE.Vector3();
   let facing = 0, gap = 0;
+  // Where on the game's model a source vertex takes its paint from: the point its own normal passes through, when that
+  // is close by and faces the same way, so a flat plate takes its paint as one straight projection. The nearest point,
+  // which this used on its own before, jumps about wherever the two shapes differ and smears the paint into swirls; it
+  // is the fallback now (a vertex with nothing along its normal within reach).
+  const ray = new THREE.Ray(), reach = gs.length() * (options.reach ?? .012), fn = new THREE.Vector3();
+  let projected = 0;
   for (let v = 0; v < n; v++) {
     at.fromBufferAttribute(sp, v);
-    if (!bvh.closestPointToPoint(at, hit)) continue;
+    let found = false;
+    if (options.project !== 'nearest' && sn) {
+      vertexNormal.fromBufferAttribute(sn, v);
+      ray.origin.copy(at).addScaledVector(vertexNormal, -reach); ray.direction.copy(vertexNormal);
+      let best = Infinity;
+      for (const h of bvh.raycast(ray, THREE.DoubleSide, 0, reach * 2)) {
+        const d = Math.abs(h.distance - reach);
+        if (d >= best) continue;
+        const f = h.faceIndex * 3, a = index ? index.getX(f) : f, b = index ? index.getX(f + 1) : f + 1, c = index ? index.getX(f + 2) : f + 2;
+        tri.a.fromArray(gamePositions, a * 3); tri.b.fromArray(gamePositions, b * 3); tri.c.fromArray(gamePositions, c * 3);
+        if (tri.getNormal(fn).dot(vertexNormal) < .5) continue;
+        best = d; hit.point.copy(h.point); hit.faceIndex = h.faceIndex; hit.distance = d; found = true;
+      }
+      if (found) projected++;
+    }
+    if (!found && !bvh.closestPointToPoint(at, hit)) continue;
     const f = hit.faceIndex * 3, a = index ? index.getX(f) : f, b = index ? index.getX(f + 1) : f + 1, c = index ? index.getX(f + 2) : f + 2;
     tri.a.fromArray(gamePositions, a * 3); tri.b.fromArray(gamePositions, b * 3); tri.c.fromArray(gamePositions, c * 3);
     tri.getBarycoord(hit.point, bary);
@@ -263,7 +284,7 @@ export async function bake(name, key, sourceUrl, style = 'clean', options = {}) 
     weight[v] = mask[a] * bary.x + mask[b] * bary.y + mask[c] * bary.z;
   }
   // Share of source vertices whose nearest game face points the same way, and the mean gap over the game's size.
-  fit.facing = +(facing / n).toFixed(2); fit.gap = +(gap / n / gs.length()).toFixed(4);
+  fit.facing = +(facing / n).toFixed(2); fit.gap = +(gap / n / gs.length()).toFixed(4); fit.alongNormal = +(projected / n).toFixed(2);
   // uv: where the game's texture is sampled (the game's own uv at the nearest point); jsgbUv: the source's own uv,
   // where the result is written, and where its fine light and dark detail comes from.
   geometry.setAttribute('jsgbUv', geometry.attributes.uv.clone());

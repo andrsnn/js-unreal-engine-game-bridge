@@ -82,6 +82,23 @@ for (const s of sources) {
       console.log(`${s.name}: symmetry repair ${r.trim()}`);
     }
   }
+  // "cleanup": {"strength": 0.5, "organic": "auto"}: the model's lumps and ripples taken out and its flat areas made flat
+  // before the import (Tools/fidelity/pixal-cleanup/cleanup.py, run in Blender; jsgb.local.json "blender" names the
+  // program). The cleaned file stays in hulls-clean/: it is the mesh Unreal draws, so the paint bake reads it too.
+  if (s.cleanup) {
+    const cleaned = path.join(path.dirname(work), 'hulls-clean', s.name + '.glb'), part = cleaned.replace(/\.glb$/, '.part.glb');
+    if (!fs.existsSync(cleaned) || fs.statSync(cleaned).mtimeMs < fs.statSync(input).mtimeMs) {
+      fs.mkdirSync(path.dirname(cleaned), {recursive: true});
+      const blender = settings().blender ?? 'C:/Program Files/Blender Foundation/Blender 5.2/blender.exe';
+      const out = execFileSync(blender, ['--background', '--python', path.join(bridge, 'Tools/fidelity/pixal-cleanup/cleanup.py'), '--', input, part,
+        '--strength', String(s.cleanup.strength ?? 0.5), '--organic', s.cleanup.organic ?? 'auto'], {encoding: 'utf8', maxBuffer: 1 << 26});
+      if (!fs.existsSync(part)) throw Error(`${s.name}: the clean-up wrote nothing: ${out.slice(-400)}`);
+      fs.renameSync(part, cleaned);
+      const r = JSON.parse(/CLEANUP (\{.*\})/.exec(out)?.[1] ?? '{}');
+      console.log(`${s.name}: cleaned, flat areas lean ${r.roughness_before_degrees} -> ${r.roughness_final_degrees} degrees, moved ${r.moved_mean_percent}% of its size on average, ${r.moved_max_percent}% at most${r.organic ? ' (organic: mostly left alone)' : ''}`);
+    }
+    input = cleaned;
+  }
   if (!fs.existsSync(info) || fs.statSync(info).mtimeMs < fs.statSync(input).mtimeMs) {
     execFileSync(process.execPath, [path.join(bridge, 'Tools/fidelity/prepare-glb.mjs'), input, dir, s.name, '--modules', list.modules], {stdio: ['ignore', 'ignore', 'inherit']});
   }
@@ -133,7 +150,7 @@ for (const p of prepared) {
   const {name, match, fit = 'bounds', params, others, receipt, keys} = p.rule;
   // A split gun part's mesh comes from the cut file, whose uvs and frame the livery bake follows ("imported").
   const rule = {name, match, mesh: meshPath, ...(p.kind === 'planet' ? {material: res.material} : {}), fit, bounds: meshSource.bounds, ...(params ? {params} : {}), ...(others ? {others} : {}),
-    source: (p.rule.source ?? p.source).replaceAll('\\', '/'), ...(p.rule.split ? {imported: p.input.replaceAll('\\', '/')} : {}), ...(receipt ? {symmetryRepair: receipt} : {}), ...(keys ? {keys} : {}), ...(p.rule.bake ? {bake: p.rule.bake} : {}),  ...(p.triangles ? {triangles: Math.round(p.triangles)} : {}), textures: Object.fromEntries(Object.entries(p.textures).map(([k, t]) => [k, `${t.width}x${t.height}`]))};
+    source: (p.rule.source ?? p.source).replaceAll('\\', '/'), ...(p.rule.split || p.rule.cleanup ? {imported: p.input.replaceAll('\\', '/')} : {}), ...(receipt ? {symmetryRepair: receipt} : {}), ...(keys ? {keys} : {}), ...(p.rule.bake ? {bake: p.rule.bake} : {}),  ...(p.triangles ? {triangles: Math.round(p.triangles)} : {}), textures: Object.fromEntries(Object.entries(p.textures).map(([k, t]) => [k, `${t.width}x${t.height}`]))};
   // Variants come first, so a game object that matches one of them takes it, and the source's own rule catches the rest.
   const variants = (list.variants?.[p.rule.variants] ?? []).map(v => ({...rule, name: `${name}_${v.name}`, match: {...match, ...v.match, userData: {...match.userData, ...v.match?.userData}},
     params: {...params, ...v.params}, keys: undefined, imported: undefined}));

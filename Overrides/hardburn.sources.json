@@ -2129,6 +2129,9 @@
    "params": {
     "EnvIntensity": 0.25,
     "PaintedHull": 1.3
+   },
+   "cleanup": {
+    "strength": 0.5
    }
   },
   {

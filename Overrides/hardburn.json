@@ -35365,40 +35365,6 @@
    }
   },
   {
-   "name": "concept_tdf_capital_titan",
-   "match": {
-    "url": "*/concept-tdf-capital-titan/1759afaa5e56/*"
-   },
-   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_capital_titan/concept_tdf_capital_titan/StaticMeshes/SM_concept_tdf_capital_titan.SM_concept_tdf_capital_titan",
-   "fit": "none",
-   "bounds": [
-    [
-     -0.47796007990837097,
-     -0.21901823580265045,
-     -0.33643198013305664
-    ],
-    [
-     0.40237024426460266,
-     0.287097692489624,
-     0.3698325753211975
-    ]
-   ],
-   "params": {
-    "EnvIntensity": 0.25,
-    "PaintedHull": 1.3
-   },
-   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-capital-titan/originals/1759afaa5e563bd70ea3f0f4732c70a593b502a4cf52818e5d86273e6ba525bb/pixal3d_textured.glb",
-   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-capital-titan/1759afaa5e56/symfix-sol-xhigh.json",
-   "keys": [
-    "concept_tdf_capital_titan"
-   ],
-   "triangles": 973484,
-   "textures": {
-    "baseColor": "4096x4096",
-    "metallicRoughness": "4096x4096"
-   }
-  },
-  {
    "name": "gun_cartel_flak_battery_yaw_tdf",
    "match": {
     "mesh": "geometry_0*",
@@ -49467,6 +49433,41 @@
     "flatten": 0.75
    },
    "triangles": 970852,
+   "textures": {
+    "baseColor": "4096x4096",
+    "metallicRoughness": "4096x4096"
+   }
+  },
+  {
+   "name": "concept_tdf_capital_titan",
+   "match": {
+    "url": "*/concept-tdf-capital-titan/1759afaa5e56/*"
+   },
+   "mesh": "/Game/Fidelity/HardBurn/concept_tdf_capital_titan/concept_tdf_capital_titan/StaticMeshes/SM_concept_tdf_capital_titan.SM_concept_tdf_capital_titan",
+   "fit": "none",
+   "bounds": [
+    [
+     -0.4781310558319092,
+     -0.21900060772895813,
+     -0.33623138070106506
+    ],
+    [
+     0.40254122018814087,
+     0.2870800793170929,
+     0.36963197588920593
+    ]
+   ],
+   "params": {
+    "EnvIntensity": 0.25,
+    "PaintedHull": 1.3
+   },
+   "source": "F:/AssetVault/hard-burn/assets/concept-tdf-capital-titan/originals/1759afaa5e563bd70ea3f0f4732c70a593b502a4cf52818e5d86273e6ba525bb/pixal3d_textured.glb",
+   "imported": "H:/builds/JsgbFidelity/hulls-clean/concept_tdf_capital_titan.glb",
+   "symmetryRepair": "G:/hb-sol3d/symfix/concept-tdf-capital-titan/1759afaa5e56/symfix-sol-xhigh.json",
+   "keys": [
+    "concept_tdf_capital_titan"
+   ],
+   "triangles": 973480,
    "textures": {
     "baseColor": "4096x4096",
     "metallicRoughness": "4096x4096"
