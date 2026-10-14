@@ -81,7 +81,7 @@ def components(count, ea, eb):
             parent = grand
 
 
-def clean(co, tris, strength, method, treat_organic, passes=None):
+def clean(co, tris, strength, method, treat_organic, passes=None, snap=(2.0, 5.0)):
     """New positions for co (n x 3) under triangles tris (m x 3 vertex indices), and the measurements."""
     started = time.time()
     lo, hi = co.min(0), co.max(0)
@@ -194,8 +194,10 @@ def clean(co, tris, strength, method, treat_organic, passes=None):
             c = (new[tri[:, 0]] + new[tri[:, 1]] + new[tri[:, 2]]) / 3
             pull = final_n[corner_f] * ((c[corner_f] - new[corner_v]) * final_n[corner_f]).sum(1)[:, None]
             new += scatter(corner_v, pull, count) / degree[:, None]
-    label, flat, plane_n, region_area = regions(final_n)
-    report['flat_areas'] = int(flat.sum())
+    # snap = (how many degrees apart two neighbouring faces may point and still join one flat area, how far an area's
+    # faces may lean from its plane on average): raising them makes larger areas count as flat.
+    label, flat, plane_n, region_area = regions(final_n, snap[0], snap[1])
+    report['flat_areas'] = int(flat.sum()); report['flat_area_share_snapped'] = round(float(region_area[flat].sum() / area.sum()), 4)
     report['roughness_before_degrees'] = round(roughness(points, label, flat, plane_n), 3)
     report['roughness_after_filter_degrees'] = round(roughness(new, label, flat, plane_n), 3)
     in_flat = flat[label]

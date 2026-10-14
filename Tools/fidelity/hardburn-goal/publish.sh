@@ -15,4 +15,7 @@ cat $O/smoke-$N.txt | tee -a $LOG
 if [ $S -eq 0 ]; then
   powershell -NoProfile -Command "\$s=(New-Object -ComObject WScript.Shell).CreateShortcut('C:\Users\Aidan Anderson\Desktop\Hard Burn (Unreal).lnk'); \$s.Arguments='-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File \"F:\JsgbFidelity\Tools\play-package.ps1\" -Package \"$(cygpath -w $B)\" -Game hardburn -Title \"Hard Burn\"'; \$s.Save()"
   step "PUBLISHED: the shortcut now plays $B"
+  # Warm the new build: the first launch after a build reads it all from the drive; after this one, the player gets
+  # the cached launch.
+  step "warm-up launches: $(bash $O/relaunch.sh $B) s, then $(bash $O/relaunch.sh $B) s to the menu"
 else step "NOT PUBLISHED: the smoke check failed, the shortcut still plays the last good build"; fi
