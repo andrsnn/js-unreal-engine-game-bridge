@@ -62,11 +62,17 @@ def main():
     report['flatten'] = {k: clean.get(k) for k in ('flat_area_share', 'organic', 'flat_areas', 'roughness_before_degrees', 'roughness_final_degrees', 'moved_mean_percent', 'moved_max_percent')}
     timed('flatten', t)
 
-    # 3. A new texture layout: whole plates in one piece each.
+    # 3. The web model's top level, and a new texture layout on it: whole plates in one piece each. (Unwrapping the
+    # full skin instead gave islands so small they covered 0.4% of the texture.)
     t = time.time()
-    S.activate(skin)
+    canvas = S.to_web(skin, WEB, 'lod0')[0] if WEB else skin
+    S.activate(canvas)
     bpy.ops.object.mode_set(mode='EDIT'); bpy.ops.mesh.select_all(action='SELECT')
-    bpy.ops.uv.smart_project(angle_limit=math.radians(50), island_margin=0.0015, area_weight=0.0)
+    # Each group of faces that points roughly one way is laid out flat as seen from that side (no stretching), then
+    # the pieces are packed. Unwrapping whole smooth patches instead packed a little tighter (23% of the texture
+    # against 18% on the TDF capital) but stretched the paint into streaks.
+    bpy.ops.uv.smart_project(angle_limit=math.radians(66), island_margin=0.0, area_weight=0.0)
+    bpy.ops.uv.select_all(action='SELECT'); bpy.ops.uv.pack_islands(margin=0.0008, rotate=True)
     bpy.ops.object.mode_set(mode='OBJECT')
     timed('texture layout', t)
 
@@ -85,23 +91,29 @@ def main():
     squeeze = nodes.new('ShaderNodeVectorMath'); squeeze.operation = 'SCALE'; squeeze.inputs['Scale'].default_value = 1.0 / (1.5 * diagonal)
     links.new(geometry.outputs['Position'], shift.inputs[0]); links.new(shift.outputs['Vector'], squeeze.inputs[0])
     links.new(squeeze.outputs['Vector'], emit.inputs['Color']); links.new(emit.outputs['Emission'], output.inputs['Surface'])
-    skin.data.materials.clear(); skin.data.materials.append(material)
+    canvas.data.materials.clear(); canvas.data.materials.append(material)
     nodes.active = target
     scene = bpy.context.scene
     scene.render.engine = 'CYCLES'; scene.cycles.device = 'CPU'; scene.cycles.samples = 1
     scene.view_settings.view_transform = 'Standard'
-    # The picture starts at -1 everywhere, so the texels the bake did not touch can be told apart afterwards.
-    where.pixels.foreach_set(np.full(TEXTURE * TEXTURE * 4, -1.0, np.float32)); where.update()
-    scene.render.bake.use_selected_to_active = False; scene.render.bake.margin = 0; scene.render.bake.use_clear = False
-    S.activate(skin); skin.hide_render = False
+    scene.render.bake.use_selected_to_active = False; scene.render.bake.margin = 0; scene.render.bake.use_clear = True
+    S.activate(canvas); canvas.hide_render = False
     bpy.ops.object.bake(type='EMIT')
     px = np.empty(TEXTURE * TEXTURE * 4, np.float32); where.pixels.foreach_get(px); px = px.reshape(TEXTURE, TEXTURE, 4)
-    covered = px[:, :, 0] >= 0
+    # Which texels the layout covers: a second bake of plain white onto a black picture.
+    mask = bpy.data.images.new(NAME + '_mask', TEXTURE, TEXTURE, alpha=False)
+    for link in list(emit.inputs['Color'].links): links.remove(link)
+    emit.inputs['Color'].default_value = (1, 1, 1, 1)
+    target.image = mask
+    bpy.ops.object.bake(type='EMIT')
+    mk = np.empty(TEXTURE * TEXTURE * 4, np.float32); mask.pixels.foreach_get(mk)
+    covered = mk.reshape(TEXTURE, TEXTURE, 4)[:, :, 0] > 0.5
+    bpy.data.images.remove(mask)
     ys, xs = np.nonzero(covered)
     points = px[ys, xs, :3].astype(np.float64) * (1.5 * diagonal) + (lo - 0.01 * diagonal)
     hits = [tree.find_nearest(Vector(q)) for q in points.tolist()]
     face = np.array([h[2] for h in hits]); spot = np.array([list(h[0]) for h in hits])
-    report['paint_texels'] = int(len(face)); report['paint_reach_percent'] = round(100 * float(np.mean([h[3] for h in hits])) / diagonal, 4)
+    report['paint_texels'] = int(len(face)); report['texture_cover_percent'] = round(100 * float(covered.mean()), 1); report['paint_reach_percent'] = round(100 * float(np.mean([h[3] for h in hits])) / diagonal, 4)
     a3, b3, c3 = co0[tris0[face, 0]], co0[tris0[face, 1]], co0[tris0[face, 2]]
     v0, v1, v2 = b3 - a3, c3 - a3, spot - a3
     d00, d01, d11, d20, d21 = (v0 * v0).sum(1), (v0 * v1).sum(1), (v1 * v1).sum(1), (v2 * v0).sum(1), (v2 * v1).sum(1)
@@ -156,7 +168,7 @@ def main():
     links.new(bsdf.outputs['BSDF'], output.inputs['Surface'])
     nodes.active = tex
     timed('paint', t)
-    S.rebuild_normals(skin)
+    S.rebuild_normals(skin); S.rebuild_normals(canvas)
     full_far = S.surface_distance(skin, tree, diagonal)
     report['full'] = {'triangles': len(skin.data.polygons), 'moved_mean_percent': full_far[0], 'moved_max_percent': full_far[1], **S.checks(skin)}
 
@@ -164,9 +176,9 @@ def main():
     web, lods = None, []
     if WEB:
         t = time.time()
-        source = skin
+        source = canvas
         for level, budget in enumerate((WEB, int(WEB * 0.37), int(WEB * 0.10))):
-            lod, dropped = S.to_web(source, budget, f'lod{level}')
+            lod = canvas if level == 0 else S.to_web(source, budget, f'lod{level}')[0]
             far = S.surface_distance(lod, tree, diagonal)
             entry = {'level': level, 'triangles': len(lod.data.polygons), 'moved_mean_percent': far[0], 'moved_max_percent': far[1], **S.checks(lod)}
             lods.append((lod, entry)); source = lod
@@ -184,13 +196,15 @@ def main():
         inset = S.camera(hit, S.CAMERA['location'], S.CAMERA['up'], math.degrees(2 * math.atan(radius * 0.9 / distance)))
         for obj, key in ((skin, 'rebuilt'), (web, 'rebuilt-web')):
             if obj is None: continue
-            S.render(f'{OUT}/{NAME}-{key}.png', cam, {obj}, 'TEXTURE', S.W, S.H)
+            painted = 'TEXTURE'
+            if obj is skin and obj is not canvas: painted = 'VERTEX' if S.carry_colour(skin, original, tree) else 'SINGLE'
+            S.render(f'{OUT}/{NAME}-{key}.png', cam, {obj}, painted, S.W, S.H)
             S.render(f'{OUT}/{NAME}-{key}-shape.png', cam, {obj}, 'SINGLE', S.W, S.H)
             patch, _ = S.crop(obj, list(hit), radius)
             S.render(f'{OUT}/{NAME}-{key}-wire.png', inset, set(patch), 'OBJECT', S.INSET, S.INSET, cavity=False)
             for o in patch: bpy.data.objects.remove(o)
 
-    web_out = option('--web-out')
+    web_out = os.path.abspath(option('--web-out')).replace(os.sep, '/') if option('--web-out') else None
     if web_out and lods:
         os.makedirs(web_out, exist_ok=True)
         for image, name in ((colour_image, 'colour'), (rough_image, 'metal-rough')):

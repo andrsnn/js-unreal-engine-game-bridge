@@ -200,9 +200,9 @@ def to_web(obj, triangles, name):
     """The web-size model of a cleaned model: flat faces merged first, then reduced to the budget, slivers dropped."""
     web = copy(obj, name)
     if len(web.data.polygons) > triangles:
-        if web.data.uv_layers:
-            apply(web, 'DECIMATE', decimate_type='DISSOLVE', angle_limit=math.radians(2.0), delimit={'UV'})
-            apply(web, 'TRIANGULATE')
+        if web.data.uv_layers: apply(web, 'DECIMATE', decimate_type='DISSOLVE', angle_limit=math.radians(2.0), delimit={'UV'})
+        else: apply(web, 'DECIMATE', decimate_type='DISSOLVE', angle_limit=math.radians(2.0))
+        apply(web, 'TRIANGULATE')
         if len(web.data.polygons) > triangles:
             apply(web, 'DECIMATE', decimate_type='COLLAPSE', ratio=triangles / len(web.data.polygons))
             apply(web, 'TRIANGULATE')
