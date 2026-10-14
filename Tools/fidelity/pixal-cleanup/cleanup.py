@@ -4,7 +4,7 @@
 # its size, origin and scale.
 #
 #   blender --background --python cleanup.py -- <in.glb> <out.glb> [--strength 0.5] [--organic auto|on|off]
-#           [--method full|bilateral|taubin] [--crease 35] [--report <file.json>]
+#           [--method full|bilateral|taubin] [--crease 35] [--report <file.json>] [--straighten]
 #           [--web-out <folder> [--web-triangles 115000] [--web-texture 2048]]
 #
 # --strength 0..1 (0.5 is the safe default): how hard it flattens. It sets how far a vertex may move (1.2% of the model's
@@ -13,6 +13,8 @@
 # --organic auto (default): a model with few large flat areas (a statue, a creature) is left mostly alone: it gets a fifth
 #   of the strength. "on" treats every model that way, "off" never does. Inside a hard-surface model, the parts that are
 #   not flat (a figurehead, a dome) also get only a fifth of the movement.
+# --straighten: also pulls crease lines that run in little steps straight (within the plate's own plane) and closes up
+#   torn slivers (needle-thin triangles have their shortest side collapsed).
 # --method full (default) = feature-preserving normal filtering, then vertices moved to fit the filtered normals, then
 #   large flat regions snapped onto their planes. "bilateral" leaves the snapping out. "taubin" is plain Taubin smoothing
 #   that stops at creases, kept for comparison (it shrinks lumps less and rounds edges more; see the report's numbers).
@@ -41,7 +43,8 @@ argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 def option(name, default):
     return argv[argv.index(name) + 1] if name in argv else default
 SOURCE = OUT = REPORT = None
-STRENGTH, ORGANIC, METHOD, CREASE = 0.5, 'auto', 'full', 35.0
+STRENGTH, ORGANIC, METHOD, CREASE, STRAIGHTEN = 0.5, 'auto', 'full', 35.0, False
+DEBUG = {}                   # filled by clean() for the debug pictures
 ORGANIC_SHARE = 0.2          # the share of the strength an organic model, or a non-flat part, gets
 PLANAR_LIMIT = 0.25          # a model with less of its area in flat regions than this is organic
 
@@ -81,9 +84,10 @@ def components(count, ea, eb):
             parent = grand
 
 
-def clean(co, tris, strength, method, treat_organic, passes=None, snap=(2.0, 5.0)):
+def clean(co, tris, strength, method, treat_organic, passes=None, snap=(2.0, 5.0), straighten=False, absorb=None):
     """New positions for co (n x 3) under triangles tris (m x 3 vertex indices), and the measurements."""
     started = time.time()
+    absorb = straighten if absorb is None else absorb
     lo, hi = co.min(0), co.max(0)
     diagonal = float(np.linalg.norm(hi - lo))
     # 1. One vertex per position.
@@ -206,6 +210,42 @@ def clean(co, tris, strength, method, treat_organic, passes=None, snap=(2.0, 5.0
         # nothing drifts; a vertex on two or three areas is projected onto each in turn and settles on their meeting line.
         _, _, c0 = face_frames(points, tri)
         plane_c = scatter(label, c0 * area[:, None], len(flat)) / np.maximum(region_area, 1e-30)[:, None]
+        if absorb:
+            # A flat area takes in the faces beside it that lie almost in its plane and close to it (within 12 degrees and
+            # 0.4% of the model's size), ring by ring. Pixal3D plates often carry a strip of rough faces on them that
+            # never joins the plate; left out, the strip stays lumpy next to the snapped plate and reads as a jagged crack.
+            n_now, _, c_now = face_frames(new, tri)
+            member = np.where(in_flat, label, -1)
+            near = math.cos(math.radians(12)); reach = 0.004 * diagonal
+            grown = 0
+            for _ in range(40):
+                for x, y in ((pa, pb), (pb, pa)):
+                    take = (member[x] >= 0) & (member[y] < 0)
+                    if not take.any(): continue
+                    r, f = member[x][take], y[take]
+                    ok = ((n_now[f] * plane_n[r]).sum(1) > near) & (np.abs(((c_now[f] - plane_c[r]) * plane_n[r]).sum(1)) < reach)
+                    member[f[ok]] = r[ok]; grown += int(ok.sum())
+            # Pieces that are not joined to the plate at all (a loose strip of surface lying on it, or just under it) are
+            # found by distance: each face still outside takes the plate of the nearest flat face within 0.5% of the
+            # model's size, when it lies in that plate's plane as above.
+            try:
+                from mathutils.kdtree import KDTree
+                inside = np.nonzero(member >= 0)[0]; outside = np.nonzero(member < 0)[0]
+                if len(inside) and len(outside):
+                    tree = KDTree(len(inside))
+                    for i, f in enumerate(inside): tree.insert(c_now[f], i)
+                    tree.balance()
+                    near_r = 0.005 * diagonal
+                    for f in outside:
+                        for _, i, _ in tree.find_n(c_now[f], 6):
+                            r = member[inside[i]]
+                            if np.linalg.norm(c_now[inside[i]] - c_now[f]) > near_r: break
+                            if (n_now[f] * plane_n[r]).sum() > near and abs(((c_now[f] - plane_c[r]) * plane_n[r]).sum()) < reach:
+                                member[f] = r; grown += 1; break
+            except ImportError:
+                pass
+            report['faces_absorbed_into_flat_areas'] = grown
+            label = np.where(member >= 0, member, label); in_flat = member >= 0
         pair = np.unique(np.stack([corner_v[in_flat[corner_f]], label[corner_f][in_flat[corner_f]]], axis=1), axis=0)
         pv, pr = pair[:, 0], pair[:, 1]
         share = np.maximum(np.bincount(pv, minlength=count), 1)[:, None]
@@ -228,6 +268,50 @@ def clean(co, tris, strength, method, treat_organic, passes=None, snap=(2.0, 5.0
     report['shrink_percent'] = round(100 * (1 - 1 / scale), 4)
     if method not in ('laplacian', 'taubin'):
         result = (result - (lo2 + hi2) / 2) * scale + (lo + hi) / 2
+    if straighten and method == 'full':
+        # 7. Crease lines: a plate's edge that runs in little steps (a zigzag where a straight edge should be) is pulled
+        # straight. A vertex on a plate's outline with exactly two outline neighbours moves toward their middle, but only within the plane of the flat area it belongs to, and never further than
+        # 1% of the model's size (about a metre on a 100 m hull).
+        n_r, _, _ = face_frames(result, tri)
+        ev = edge_v[order[:-1]][same]
+        # The lines to straighten are the outlines of the flat areas: an edge with a flat area on one side and something
+        # else (another area, a wall, a crack) on the other. Following the outline, not every sharp edge, a corner where a
+        # crack wall comes up still counts as a point on the line.
+        sharp = (n_r[pa] * n_r[pb]).sum(1) < math.cos(math.radians(20))
+        crease = sharp & (in_flat[pa] != in_flat[pb]) | (in_flat[pa] & in_flat[pb] & (label[pa] != label[pb]))
+        ca, cb = ev[crease, 0], ev[crease, 1]
+        cdeg = np.bincount(ca, minlength=count) + np.bincount(cb, minlength=count)
+        # Only the zigzag moves: a point on the outline is a tooth when it bends the opposite way to both its neighbours
+        # (each one's offset from the middle of its own neighbours points against the others). A real corner bends one
+        # way only, and its neighbours lie straight, so it stays where it is.
+        mean0 = (scatter(ca, result[cb], count) + scatter(cb, result[ca], count)) / np.maximum(cdeg, 1)[:, None]
+        dev = np.where((cdeg == 2)[:, None], mean0 - result, 0.0)
+        size = np.linalg.norm(dev, axis=1)
+        against = ((dev[ca] * dev[cb]).sum(1) < -0.3 * size[ca] * size[cb]) & (size[ca] > 1e-4 * diagonal) & (size[cb] > 1e-4 * diagonal)
+        teeth = (np.bincount(ca[against], minlength=count) + np.bincount(cb[against], minlength=count)) >= 1
+        movable = (teeth & (cdeg == 2))[:, None]
+        report['zigzag_vertices'] = int(movable.sum())
+        s12 = (n_r[pa] * n_r[pb]).sum(1) < math.cos(math.radians(12)); DEBUG['sharp'] = (ev[s12, 0], ev[s12, 1])
+        DEBUG['outline'] = (ca, cb); DEBUG['teeth'] = np.nonzero(movable[:, 0])[0]; DEBUG['points'] = result.copy(); DEBUG['flat_faces'] = np.nonzero(in_flat)[0]; DEBUG['tri'] = tri
+        # The flat area each vertex belongs to: the one with the most area round it.
+        cf = corner_f[in_flat[corner_f]]; cv = corner_v[in_flat[corner_f]]
+        order2 = np.lexsort((area[cf], cv))
+        plate = np.full(count, -1); plate[cv[order2]] = label[cf[order2]]
+        pn = np.where((plate >= 0)[:, None], plane_n[np.maximum(plate, 0)], 0.0)
+        step = float(np.median(np.linalg.norm(result[ca] - result[cb], axis=1))) if len(ca) else 0.0
+        new = result.copy()
+        for _ in range(120):
+            mean = (scatter(ca, new[cb], count) + scatter(cb, new[ca], count)) / np.maximum(cdeg, 1)[:, None]
+            d = (mean - new) * 0.5 * movable
+            d -= pn * (d * pn).sum(1, keepdims=True)
+            new += d
+        shift = new - result
+        far = np.linalg.norm(shift, axis=1)
+        cap = max(3 * step, 0.01 * diagonal)
+        shift *= np.minimum(1.0, cap / np.maximum(far, 1e-30))[:, None]
+        result = result + shift
+        report['crease_vertices_straightened'] = int((np.linalg.norm(shift, axis=1) > step * 0.05).sum())
+        report['crease_edges'] = int(crease.sum())
     moved = np.linalg.norm(result - points, axis=1)
     report.update({'moved_mean_percent': round(100 * float(moved.mean()) / diagonal, 4), 'moved_p95_percent': round(100 * float(np.percentile(moved, 95)) / diagonal, 4),
                    'moved_max_percent': round(100 * float(moved.max()) / diagonal, 4), 'limit_percent': round(100 * limit / diagonal, 4),
@@ -267,6 +351,29 @@ def corner_normals(points, tri, crease_degrees, chunk=150000):
     return out
 
 
+def collapse_needles(mesh, aspect=30.0, rounds=2):
+    """Torn slivers: a triangle far longer than it is wide (its longest side squared over twice its area above aspect) has
+    its shortest side collapsed, so the sliver closes up. Returns how many were collapsed."""
+    import bmesh
+    total = 0
+    for _ in range(rounds):
+        bm = bmesh.new(); bm.from_mesh(mesh)
+        doomed = set()
+        for f in bm.faces:
+            a = f.calc_area()
+            sides = sorted(f.edges, key=lambda e: e.calc_length())
+            if a <= 0 or sides[-1].calc_length() ** 2 / (2 * a) > aspect:
+                doomed.add(sides[0])
+        if doomed:
+            bmesh.ops.collapse(bm, edges=list(doomed), uvs=True)
+            bmesh.ops.dissolve_degenerate(bm, dist=0.0, edges=bm.edges[:])
+            bmesh.ops.triangulate(bm, faces=[f for f in bm.faces if len(f.verts) > 3])
+        bm.to_mesh(mesh); bm.free(); mesh.update()
+        total += len(doomed)
+        if not doomed: break
+    return total
+
+
 def process(obj, summary):
     mesh = obj.data
     if any(len(p.vertices) != 3 for p in mesh.polygons):
@@ -277,9 +384,17 @@ def process(obj, summary):
         return
     co = np.empty(count * 3, np.float32); mesh.vertices.foreach_get('co', co); co = co.reshape(-1, 3)
     tris = np.empty(faces * 3, np.int32); mesh.polygons.foreach_get('vertices', tris); tris = tris.reshape(-1, 3)
-    new, report, joined, tri, good = clean(co.astype(np.float64), tris, STRENGTH, METHOD, ORGANIC)
+    new, report, joined, tri, good = clean(co.astype(np.float64), tris, STRENGTH, METHOD, ORGANIC, straighten=STRAIGHTEN)
     report['object'] = obj.name
     mesh.vertices.foreach_set('co', new.reshape(-1)); mesh.update()
+    if STRAIGHTEN:
+        report['needles_collapsed'] = collapse_needles(mesh)
+        faces = len(mesh.polygons)
+        tris = np.empty(faces * 3, np.int32); mesh.polygons.foreach_get('vertices', tris); tris = tris.reshape(-1, 3)
+        co2 = np.empty(len(mesh.vertices) * 3, np.float32); mesh.vertices.foreach_get('co', co2); new = co2.reshape(-1, 3)
+        _, first2, joined = np.unique(np.round(new.astype(np.float64) / (report['diagonal'] * 1e-6)).astype(np.int64), axis=0, return_index=True, return_inverse=True)
+        joined = joined.reshape(-1); tri = joined[tris]
+        good = (tri[:, 0] != tri[:, 1]) & (tri[:, 1] != tri[:, 2]) & (tri[:, 0] != tri[:, 2]); tri = tri[good]
     # 6. Normals: on the joined surface, so a UV seam doesn't shade as an edge.
     quantum = report['diagonal'] * 1e-6
     points = np.zeros((int(joined.max()) + 1, 3)); points[joined] = new
@@ -299,13 +414,14 @@ def process(obj, summary):
 
 
 def main():
-    global SOURCE, OUT, REPORT, STRENGTH, ORGANIC, METHOD, CREASE
+    global SOURCE, OUT, REPORT, STRENGTH, ORGANIC, METHOD, CREASE, STRAIGHTEN
     if len(argv) < 2:
         print('usage: blender --background --python cleanup.py -- <in.glb> <out.glb> [--strength 0.5] [--organic auto|on|off] [--method full|bilateral|taubin] [--crease 35] [--report file.json]')
         sys.exit(2)
     SOURCE, OUT = argv[0], argv[1]
     STRENGTH = max(0.0, min(1.0, float(option('--strength', 0.5))))
     ORGANIC, METHOD, CREASE, REPORT = option('--organic', 'auto'), option('--method', 'full'), float(option('--crease', 35)), option('--report', None)
+    STRAIGHTEN = '--straighten' in argv
     bpy.ops.wm.read_factory_settings(use_empty=True)
     bpy.ops.import_scene.gltf(filepath=SOURCE)
     summary = []

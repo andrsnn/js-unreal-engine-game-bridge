@@ -16,6 +16,7 @@ timeout 520 bash -c "sleep 15; until ! tasklist | grep -qi 'JsgbHost.exe'; do sl
 rm -rf "$S"; [ -d "$S.player" ] && mv "$S.player" "$S"
 cp "$L" $O/$N.log 2>/dev/null
 { echo "T0 $T0"; echo "R $R"; } > $O/$N.times; cp "$M" $O/$N.marks 2>/dev/null
+M=$O/$N.marks   # the stage times of this run (a second launch below writes its own)
 else T0=$(grep "^T0 " $O/$N.times | cut -d" " -f2); R=$(grep "^R " $O/$N.times | cut -d" " -f2); M=$O/$N.marks; fi
 s() { [ -n "$1" ] && awk "BEGIN { printf \"%.1f\", ($1 - $T0) / 1000 }" || printf never; }
 m() { grep "^$1 " "$M" 2>/dev/null | head -n 1 | cut -d' ' -f2; }
