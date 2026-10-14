@@ -456,6 +456,18 @@ void UJsgbSceneMirror::ReleaseGeometry(int32 Id)
 	BuildQueue.Remove(Id);
 }
 
+// A material or texture the game no longer has. The Unreal copy goes; a component still drawing with it keeps its own
+// reference until the component goes, and Unreal frees it after that.
+void UJsgbSceneMirror::ReleaseMaterial(int32 Id)
+{
+	Materials.Remove(Id);
+}
+
+void UJsgbSceneMirror::ReleaseTexture(int32 Id)
+{
+	Textures.Remove(Id);
+}
+
 // The earlier path through Unreal's mesh description, kept for comparison (-JsgbMeshDescriptionBuild).
 UStaticMesh* UJsgbSceneMirror::BuildMeshFromDescription(const FJsgbPendingGeometry& G, int32& OutSlots)
 {

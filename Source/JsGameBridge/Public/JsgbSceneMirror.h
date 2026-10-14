@@ -197,6 +197,8 @@ public:
 
 	void SetGeometry(int32 Id, const FArrayBuffer& Positions, const FArrayBuffer& Normals, const FArrayBuffer& UVs, const FArrayBuffer& Colors, int32 ColorSize, const FArrayBuffer& Indices, const FString& Groups);
 	void ReleaseGeometry(int32 Id);
+	void ReleaseMaterial(int32 Id);
+	void ReleaseTexture(int32 Id);
 	void SetMaterial(int32 Id, const FString& Json);
 	void SetTexture(int32 Id, const FString& Json, const FArrayBuffer& Bytes);
 	/** Decodes and lays out a texture's pixels; safe on any thread. FileData holds the bytes of a "file" texture. */

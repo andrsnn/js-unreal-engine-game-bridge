@@ -114,6 +114,9 @@ public:
 	// Scene sink (Runtime/src/sceneExport.ts describes the layout).
 	UFUNCTION() void Geometry(int32 Id, FArrayBuffer Positions, FArrayBuffer Normals, FArrayBuffer UVs, FArrayBuffer Colors, int32 ColorSize, FArrayBuffer Indices, const FString& Groups);
 	UFUNCTION() void ReleaseGeometry(int32 Id);
+	/** A material or texture the game disposed of or dropped: its Unreal copy is freed. */
+	UFUNCTION() void ReleaseMaterial(int32 Id);
+	UFUNCTION() void ReleaseTexture(int32 Id);
 	UFUNCTION() void Material(int32 Id, const FString& Json);
 	UFUNCTION() void Texture(int32 Id, const FString& Json, FArrayBuffer Bytes);
 	UFUNCTION() void Frame(FArrayBuffer Floats, int32 Count, FArrayBuffer Instances, int32 InstanceFloats);

@@ -42,6 +42,24 @@ export function emitEvent(kind: string, key: string, parameters: Record<string, 
 
 const geometrySig = new Map<number, string>();
 const geometryRefs = new Map<number, WeakRef<THREE.BufferGeometry>>();
+// Materials and textures sent to the host, so their Unreal copies are freed when the game disposes of them or drops them
+// (a fight makes new ones for every explosion, wreck and piece of debris; kept, they added about 2 GB a minute).
+const materialRefs = new Map<number, WeakRef<object>>(), textureRefs = new Map<number, WeakRef<object>>();
+function track(refs: Map<number, WeakRef<object>>, thing: THREE.EventDispatcher<{dispose: object}> & object, id: number, kind: 'material' | 'texture') {
+  if (refs.has(id)) return;
+  refs.set(id, new WeakRef(thing));
+  // three.js lets a disposed material or texture be used again (it uploads it afresh), so everything that says
+  // "already sent" is forgotten with it and a later use sends it again.
+  thing.addEventListener('dispose', () => { if (!refs.delete(id)) return; forget(kind, id, thing); release(kind, id); });
+}
+function forget(kind: 'material' | 'texture', id: number, thing: object) {
+  if (kind === 'texture') { textureSig.delete(id); textureOk.delete(id); pixelState.delete(thing as THREE.Texture); }
+  else { quick.delete(thing as THREE.Material); materialFrame.delete(thing as THREE.Material); }
+}
+function release(kind: 'material' | 'texture', id: number) {
+  const out = sink();
+  if (kind === 'material') out?.releaseMaterial?.(id); else out?.releaseTexture?.(id);
+}
 const materialSig = new Map<number, string>();
 const textureSig = new Map<number, number>();
 const sentShaders = new Set<string>();
@@ -242,6 +260,7 @@ function pixelsUnchanged(tex: THREE.Texture): boolean {
 function textureId(tex: THREE.Texture | null | undefined): number {
   if (!tex) return 0;
   const id = idOf(tex);
+  track(textureRefs, tex, id, 'texture');
   if (textureSig.get(id) !== tex.version) {
     const first = !textureSig.has(id);
     textureSig.set(id, tex.version);
@@ -398,6 +417,7 @@ const searchPull = () => { const v = /[?&]jsgbdepthpull=([-+0-9.eE]+)/.exec(host
 const drawFirst = (mat: THREE.Material) => !mat.transparent && mat.depthWrite === false && mat.blending === THREE.NormalBlending;
 function syncMaterial(mat: THREE.Material): number {
   const id = idOf(mat);
+  track(materialRefs, mat, id, 'material');
   if (materialFrame.get(mat) === exportCount) return id;
   materialFrame.set(mat, exportCount);
   const m = mat as THREE.MeshStandardMaterial & THREE.MeshPhysicalMaterial & THREE.ShaderMaterial & THREE.MeshBasicMaterial & THREE.PointsMaterial;
@@ -915,7 +935,11 @@ export function exportFrame(): number {
   if (pendingEvents.length && out.events) { const events = pendingEvents; pendingEvents = []; out.events(JSON.stringify(events)); }
   out.frame(floats.buffer, n, inst.buffer, ni);
   // Release geometry the game has dropped (checked every few seconds).
-  if (++sweep % 300 === 0) for (const [id, ref] of geometryRefs) if (!ref.deref()) { geometryRefs.delete(id); geometrySig.delete(id); out.releaseGeometry(id); }
+  if (++sweep % 300 === 0) {
+    for (const [id, ref] of geometryRefs) if (!ref.deref()) { geometryRefs.delete(id); geometrySig.delete(id); out.releaseGeometry(id); }
+    for (const [id, ref] of materialRefs) if (!ref.deref()) { materialRefs.delete(id); release('material', id); }
+    for (const [id, ref] of textureRefs) if (!ref.deref()) { textureRefs.delete(id); release('texture', id); }
+  }
   return n;
 }
 
