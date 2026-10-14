@@ -1,7 +1,7 @@
 #!/bin/bash
 # time-launch.sh <name> [seconds]: starts the desktop shortcut, records the screen, and times each stage.
 O=H:/captures/jsgb-goal; N=${1:-launch}; S=${2:-100}
-L=H:/builds/HardBurnUnreal-play/host/Windows/JsgbHost/Saved/Logs/jsgb-hardburn.log; M="$TEMP/jsgb-launch-hardburn.txt"
+L=${PKG:-H:/builds/HardBurnUnreal-play}/host/Windows/JsgbHost/Saved/Logs/jsgb-hardburn.log; M="$TEMP/jsgb-launch-hardburn.txt"
 taskkill //F //IM JsgbHost.exe > /dev/null 2>&1; sleep 2; rm -f "$L" "$M"
 timeout $((S + 30)) ffmpeg -y -loglevel error -f lavfi -i ddagrab=framerate=30 -t $S -c:v h264_nvenc -cq 24 $O/$N.mkv > $O/$N.ffmpeg.txt 2>&1 &
 sleep 3
