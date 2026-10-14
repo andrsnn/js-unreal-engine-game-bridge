@@ -83,6 +83,8 @@ The pieces:
 4. Run `npm install` in the game's own folder. The bridge uses the game's Vite for the browser side,
    and the game's Playwright for the conformance test.
 5. Install FFmpeg if you want side-by-side films from the conformance test.
+6. To run a game's JavaScript on its own thread, add `--js-thread`: `npm run unreal -- my-game --js-thread`.
+   The first run patches Puerts (`Patches/puerts-thread-safe.patch`) and rebuilds the editor by itself.
 
 ## Port a game
 

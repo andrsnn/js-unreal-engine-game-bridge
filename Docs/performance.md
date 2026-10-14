@@ -158,10 +158,12 @@ on V8 9.4, and then deciding between a workaround in the runtime and moving Puer
 
 ## Setup for the JavaScript thread
 
-1. Apply `Patches/puerts-thread-safe.patch` to Puerts. It sets `ThreadSafe = true` in `JsEnv.Build.cs` and
-   contains the two lock fixes in item 8 above. Then rebuild the host.
-2. Start Unreal with `--js-thread` (`-JsgbJsThread`). `--js-hz` caps how often the game updates (60 by default).
-   Without the Puerts patch, the flag logs a warning and JavaScript stays on the game thread.
+1. Pass `--js-thread`: `npm run unreal -- <game> --js-thread` (or `node Tools/run-unreal.mjs <game> --js-thread`).
+   `--js-hz` caps how often the game updates (60 by default).
+2. The first run with the flag applies `Patches/puerts-thread-safe.patch` to the host project's Puerts and builds the
+   editor once. The patch sets `ThreadSafe = true` in `JsEnv.Build.cs` and contains the two lock fixes in item 8
+   above. If the patch doesn't apply (another Puerts version), the run says so and JavaScript stays on the game
+   thread.
 
 Deterministic captures (`--fixed-fps`, used by the conformance films) keep JavaScript on the game thread.
 

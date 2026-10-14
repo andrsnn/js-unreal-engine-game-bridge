@@ -4,6 +4,7 @@
 //   node Tools/jsgb.mjs build  <game>            write <out>/<game>.mjs, .css, page.json, publication.json
 //   node Tools/jsgb.mjs smoke  <game> [--frames 600] [--script steps.txt] [--search ?x] [--no-build]
 //   node Tools/jsgb.mjs unreal <game>            build, start Unreal (or hot-reload it), then reload on every save
+//        [--js-thread]                         the game's JavaScript on its own thread (Tools/run-unreal.mjs sets Puerts up)
 //   node Tools/jsgb.mjs reload <game>            hot-reload the last build
 //   node Tools/jsgb.mjs watch  <game>            build and hot-reload on every save in the game's folder
 // <game> names Games/<game>.json, or is a path to such a file.
@@ -453,7 +454,7 @@ else if (command === 'unreal' || command === 'watch') {
     if (running && path.dirname(path.resolve(running.bundle ?? '')) === game.out) await reload(game);
     else if (running) throw Error(`Unreal is running another game (${running.game}); close it first`);
     else {
-      const started = spawnSync(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), gameArg, '--res', flag('--res', '1600x900'), '--timeout', flag('--timeout', '14400'), '--detach', ...(flag('--search') ? ['--search', flag('--search')] : []), ...['--offscreen', '--mute', '--frame-gen', '--hud'].filter(has), ...['--dlss', '--tsr', '--vibrance'].flatMap(f => flag(f) ? [f, flag(f)] : [])], {stdio: 'inherit'});
+      const started = spawnSync(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), gameArg, '--res', flag('--res', '1600x900'), '--timeout', flag('--timeout', '14400'), '--detach', ...(flag('--search') ? ['--search', flag('--search')] : []), ...['--offscreen', '--mute', '--frame-gen', '--hud', '--js-thread'].filter(has), ...['--dlss', '--tsr', '--vibrance', '--js-hz'].flatMap(f => flag(f) ? [f, flag(f)] : [])], {stdio: 'inherit'});
       if (started.status !== 0) throw Error('Unreal did not start; see the log above');
     }
   }
