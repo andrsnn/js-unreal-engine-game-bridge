@@ -247,6 +247,9 @@ function pixelsUnchanged(tex: THREE.Texture): boolean {
   const mip = (tex as THREE.CompressedTexture).mipmaps?.[0] as Record<string, any> | undefined;
   const raw = img?.__ctx?.bitmap?.()?.data ?? img?.__pixels?.data ?? img?.data ?? mip?.data;
   if (!raw || !ArrayBuffer.isView(raw)) return false;
+  // A compressed texture (a model's colour or roughness map, up to 22 MB) is loaded once and not rewritten, so keeping
+  // a copy of its pixels to compare doubled the game's texture memory for nothing: a new version is simply sent.
+  if ((tex as THREE.CompressedTexture).isCompressedTexture) return false;
   const arr = raw as Uint8Array;
   const view = arr.byteLength % 4 === 0 && arr.byteOffset % 4 === 0 ? new Uint32Array(arr.buffer, arr.byteOffset, arr.byteLength / 4) : new Uint8Array(arr.buffer, arr.byteOffset, arr.byteLength);
   // The texture's settings count too: they travel with the pixels.
