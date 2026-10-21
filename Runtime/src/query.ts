@@ -36,13 +36,14 @@ function parse(selector: string): Part[] | null {
 
 function matches(el: any, parts: Part[]): boolean {
   for (const p of parts) {
-    if (p.tag && el.localName !== p.tag) continue;
+    if (p.tag && el.localName !== p.tag && el.localName.toLowerCase() !== p.tag) continue;
     if (p.id && el.getAttribute('id') !== p.id) continue;
     if (p.classes.length) {
-      const cls = el.getAttribute('class');
-      if (!cls) continue;
-      const list = ' ' + cls.replace(/\s+/g, ' ') + ' ';
-      if (!p.classes.every(c => list.includes(' ' + c + ' '))) continue;
+      // classList is linkedom's Set of the element's classes, kept per element.
+      const list = el.classList;
+      let all = true;
+      for (const c of p.classes) if (!list.has(c)) { all = false; break; }
+      if (!all) continue;
     }
     if (p.attrs.length && !p.attrs.every(a => a.value === null ? el.hasAttribute(a.name) : el.getAttribute(a.name) === a.value)) continue;
     return true;
@@ -50,34 +51,36 @@ function matches(el: any, parts: Part[]): boolean {
   return false;
 }
 
-// Elements under root (not root itself) in document order; stops at the first match when one is enough.
-function walk(root: any, parts: Part[], all: any[] | null): any {
-  for (let el = root.firstElementChild; el; el = el.nextElementSibling) {
-    if (matches(el, parts)) { if (!all) return el; all.push(el); }
-    // A <template>'s children are its content, not part of the document tree.
-    if (el.localName === 'template') continue;
-    const found = walk(el, parts, all);
-    if (found && !all) return found;
-  }
-  return null;
-}
-
-export function installFastQueries() {
+/** querySelector and querySelectorAll for simple selectors: the same walk as linkedom's (every node from the start of
+ *  the element to its end, in linkedom's internal linked list, so the same elements in the same order), with a direct
+ *  test of the tag, id, classes and attributes instead of linkedom's general CSS engine. linkedom compiles the selector
+ *  again on every call and reads each element's classes as a string it rebuilds; Hard Burn queries its HUD every
+ *  frame, and that was a quarter of its JavaScript frame. Other selectors go to linkedom unchanged. */
+export function installFastQueries(doc: any) {
+  const symbols = Object.getOwnPropertySymbols(doc);
+  const NEXT = symbols.find(s => s.description === 'next'), END = symbols.find(s => s.description === 'end');
+  const NodeList = g.NodeList;
+  if (!NEXT || !END || typeof NodeList !== 'function') return;
+  const first = (root: any, parts: Part[]) => {
+    for (let n = root[NEXT], end = root[END]; n && n !== end; n = n[NEXT]) if (n.nodeType === 1 && matches(n, parts)) return n;
+    return null;
+  };
+  const every = (root: any, parts: Part[]) => {
+    const list = new NodeList();
+    for (let n = root[NEXT], end = root[END]; n && n !== end; n = n[NEXT]) if (n.nodeType === 1 && matches(n, parts)) list.push(n);
+    return list;
+  };
   for (const name of ['Element', 'Document', 'DocumentFragment']) {
     const proto = g[name]?.prototype;
     if (!proto?.querySelector) continue;
     const one = proto.querySelector, many = proto.querySelectorAll;
     proto.querySelector = function (this: any, selector: string) {
-      const parts = typeof selector === 'string' ? parse(selector) : null;
-      return parts ? walk(this, parts, null) : one.call(this, selector);
+      const parts = typeof selector === 'string' && this[END] ? parse(selector) : null;
+      return parts ? first(this, parts) : one.call(this, selector);
     };
     proto.querySelectorAll = function (this: any, selector: string) {
-      const parts = typeof selector === 'string' ? parse(selector) : null;
-      if (!parts) return many.call(this, selector);
-      const list = [] as any[] & {item?: (i: number) => any};
-      walk(this, parts, list);
-      list.item = (i: number) => list[i] ?? null;
-      return list;
+      const parts = typeof selector === 'string' && this[END] ? parse(selector) : null;
+      return parts ? every(this, parts) : many.call(this, selector);
     };
   }
 }
@@ -92,6 +95,17 @@ export function installNoOpSkips(doc: any) {
     const add = List.add, remove = List.remove;
     List.add = function (this: Set<string>, ...tokens: string[]) { if (tokens.every(t => this.has(t))) return; return add.apply(this, tokens); };
     List.remove = function (this: Set<string>, ...tokens: string[]) { if (!tokens.some(t => this.has(t))) return; return remove.apply(this, tokens); };
+    // linkedom's classList.value joins the token set into a new string on every read, and its CSS engine reads it
+    // for every element a class selector tests (Hard Burn: 8% of the JavaScript thread). linkedom writes the same text
+    // to the class attribute on every change, so value reads the attribute.
+    const owner = Object.getOwnPropertySymbols(probe.classList).find(s => probe.classList[s] === probe);
+    const join = Object.getOwnPropertyDescriptor(List, 'value')?.get;
+    if (owner && join) {
+      Object.defineProperty(List, 'value', {configurable: true, get(this: any) {
+        const attr = this[owner]?.getAttributeNode('class');
+        return attr ? attr.value : join.call(this);
+      }});
+    }
   }
   const El = g.Element?.prototype;
   if (El?.setAttribute) {

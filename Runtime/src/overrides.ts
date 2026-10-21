@@ -23,11 +23,6 @@ export type OverrideRule = {
   others?: 'hide' | 'keep';
   /** Draw nothing for what the rule matches (the game's object stays in the game). */
   hide?: boolean;
-  /** The rule belongs to one Unreal effect ("effects" in overrides.json) and applies only while that effect is on. */
-  effect?: keyof EffectFlags;
-  /** A Niagara system to play at each of the game's effect objects the rule matches (userData patterns), for as long as
-   *  the object is in the scene (lumenEffects.ts). */
-  niagara?: string;
 };
 
 type SourceInfo = {url: string; primary: boolean};
@@ -84,37 +79,25 @@ function textureUrls(o: THREE.Object3D): string[] {
 }
 
 /** The Unreal effects Lumen mode adds, each switched on or off in overrides.json ("effects"). The game fires the
- *  same events for its own sprite effects: each effect object carries userData.vfxKey. Off unless the file says on,
- *  except bigMuzzle (the muzzle flashes of large and huge guns), which is on unless the file says false. */
-export type EffectFlags = {engineLight: boolean; gunfire: boolean; trails: boolean; smoke: boolean; explosions: boolean; debris: boolean; bigMuzzle: boolean};
+ *  same events for its own sprite effects: each effect object carries userData.vfxKey. Off unless the file says on. */
+export type EffectFlags = {engineLight: boolean; gunfire: boolean; trails: boolean; smoke: boolean; explosions: boolean; debris: boolean};
 let effects: EffectFlags | null = null;
 export function effectFlags(registryJson: string | undefined): EffectFlags {
   if (effects) return effects;
   let j: Partial<Record<keyof EffectFlags, unknown>> = {};
   try { j = JSON.parse(registryJson || '{}').effects ?? {}; } catch { /* no effects */ }
   return effects = {engineLight: j.engineLight === true, gunfire: j.gunfire === true, trails: j.trails === true, smoke: j.smoke === true,
-    explosions: j.explosions === true, debris: j.debris === true, bigMuzzle: j.bigMuzzle !== false};
+    explosions: j.explosions === true, debris: j.debris === true};
 }
 
 /** The rules from the registry the host loaded ("overrides" array); empty without an overrides file. */
 export function overrideRules(registryJson: string | undefined): Compiled[] {
-  if (!rules) [rules, systems] = compile(registryJson);
-  return rules;
-}
-/** The Niagara rules (with "niagara"), whose effect is on. */
-export function systemRules(registryJson: string | undefined): Compiled[] {
-  if (!systems) [rules, systems] = compile(registryJson);
-  return systems;
-}
-let systems: Compiled[] | null = null;
-function compile(registryJson: string | undefined): [Compiled[], Compiled[]] {
-  const rules: Compiled[] = [], systems: Compiled[] = [];
-  const on = effectFlags(registryJson);
+  if (rules) return rules;
+  rules = [];
   try {
     const list = (JSON.parse(registryJson || '{}').overrides ?? []) as OverrideRule[];
     for (const r of list) {
-      if (!r?.name || !r.match || (!r.mesh && !r.hide && !r.niagara)) continue;
-      if (r.effect && !on[r.effect]) continue;
+      if (!r?.name || !r.match || (!r.mesh && !r.hide)) continue;
       const tests: Compiled['tests'] = [];
       const m = r.match;
       if (m.url) { const t = glob(m.url); tests.push((_o, src) => t(src?.url.replaceAll('\\', '/'))); }
@@ -127,10 +110,10 @@ function compile(registryJson: string | undefined): [Compiled[], Compiled[]] {
         const t = glob(v);
         tests.push(o => { for (let p: THREE.Object3D | null = o; p; p = p.parent) { const x = p.userData?.[k]; if (x !== undefined && t(String(x))) return true; } return false; });
       }
-      if (tests.length) (r.niagara ? systems : rules).push({...r, key: 'override:' + r.name, tests});
+      if (tests.length) rules.push({...r, key: 'override:' + r.name, tests});
     }
-  } catch { return [[], []]; }
-  return [rules, systems];
+  } catch { rules = []; }
+  return rules;
 }
 
 function sourceOf(o: THREE.Object3D): SourceInfo | undefined {
@@ -163,8 +146,7 @@ export function overrideFor(o: THREE.Object3D, list: Compiled[]): OverrideHit | 
   for (const r of list) {
     if (!r.tests.every(t => t(o, src))) continue;
     if (r.hide) { hit = {key: r.key, hide: true, fit: null}; break; }
-    // A rule that names its mesh draws for that mesh whichever it is; otherwise only the model's largest mesh is replaced.
-    if (src && !src.primary && !r.match.mesh) { if (r.others !== 'keep') hit = {key: r.key, hide: true, fit: null}; break; }
+    if (src && !src.primary) { if (r.others !== 'keep') hit = {key: r.key, hide: true, fit: null}; break; }
     hit = {key: r.key, hide: false, fit: fitFor(r, g)};
     if (!loggedRules.has(r.key)) { loggedRules.add(r.key); log(`overrides: ${r.name} draws ${r.mesh} for ${(o as THREE.InstancedMesh).isInstancedMesh ? 'instanced ' : ''}"${o.name}" from ${src?.url ?? 'its name'}`); }
     break;

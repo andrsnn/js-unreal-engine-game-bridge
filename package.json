@@ -1,8 +1,8 @@
 {
-  "name": "js-unreal-engine-game-bridge",
+  "name": "jsgamebridge",
   "private": true,
   "type": "module",
-  "description": "Run an unchanged three.js browser game inside Unreal Engine 5, with live reload.",
+  "description": "Run unchanged Three.js browser games inside Unreal Engine through Puerts.",
   "scripts": {
     "lint": "node Tools/lint.mjs",
     "test": "node Tools/unit.mjs",
@@ -16,6 +16,5 @@
     "ci": "node Tools/ci.mjs",
     "demo": "node Tools/demo.mjs"
   },
-  "license": "MIT",
-  "version": "0.5.0"
+  "license": "MIT"
 }

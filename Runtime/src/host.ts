@@ -3,9 +3,6 @@
 export interface SceneSink {
   geometry(id: number, positions: ArrayBuffer, normals: ArrayBuffer | null, uvs: ArrayBuffer | null, colors: ArrayBuffer | null, colorSize: number, indices: ArrayBuffer | null, groups: string): void;
   releaseGeometry(id: number): void;
-  /** A material or texture the game disposed of, or no longer holds: the host frees its Unreal copy. */
-  releaseMaterial?(id: number): void;
-  releaseTexture?(id: number): void;
   material(id: number, json: string): void;
   texture(id: number, json: string, bytes: ArrayBuffer | null): void;
   frame(floats: ArrayBuffer, count: number, instanceData: ArrayBuffer, instanceFloats: number): void;

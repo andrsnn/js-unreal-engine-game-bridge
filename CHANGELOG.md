@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.7.0
+
+- Page games (a publication with `"page"`) and the UI overlay draw with Chromium 152 (CEF 152) instead of the
+  Chromium 128 that ships with Unreal 5.8. Pages ran 15 to 26 percent faster
+  on it in our tests. `Tools/setup-cef152.ps1` sets it up and must run once before the first build. It copies
+  Unreal's `WebBrowser` and `CEF3Utils` modules from your own engine install, makes the bridge's changes to them, and
+  downloads CEF 152 from the official CEF builds. The build stops and names the script until it has run.
+- Saves carry over: the first time the CEF 152 host starts, it copies `localStorage` and IndexedDB from the CEF 128
+  profile.
+- Page games get Unreal's gamepads through `navigator.getGamepads()`, keyboard input, Web Audio, fullscreen
+  (`requestFullscreen` switches the window to borderless), and `window.close()` quits the host.
+- Handheld preset: with no NVIDIA GPU, or with `-JsgbHandheld`, the host turns off Lumen, DLSS and frame generation,
+  uses TSR at 67 percent and caps the game at 60 frames per second.
+- Puerts runs on V8 13.6.233.17 (it was 9.4.146.24). `Patches/install-puerts-v8-13.6.ps1` and
+  `Patches/build-v8-13.6.cmd` build it.
+- Storage is written before any reload or navigation, and setting `location.href`, `search` or `pathname` restarts
+  the game.
+- The test key route knows F1 to F12.
+- Cheaper scene export for games that animate shader uniforms.
+- `host/THIRD-PARTY-NOTICES.txt` lists V8, Puerts, CEF and Chromium.
+- GitHub Actions workflows are gone. Tests run locally (`npm test`, `npm run suite`).
+
 ## 0.5.1
 
 - Asset overrides: rules in the file a game names with `"overrides"` in `Games/<game>.json` replace its models with

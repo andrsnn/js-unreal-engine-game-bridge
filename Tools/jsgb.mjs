@@ -273,36 +273,6 @@ async function webglModuleDraws(esbuild, threeModule) {
   return draws;
 }
 
-// Unreal's image decoders read no WebP. Each WebP image in the game's public folders, and each one the bundle copied
-// to <out>/assets, gets a PNG copy at <out>/jsgb/webp/<path>.png, which textures load instead (sceneExport.ts
-// unrealImagePath). Python with Pillow writes them; copies newer than their image are kept.
-export function webpCopies(game) {
-  const roots = [...game.publicRoots.filter(r => r !== game.repo && r !== game.out).map(r => [r, r]), [game.out, path.join(game.out, 'assets')]];
-  const jobs = [], seen = new Set();
-  const walk = (root, dir) => {
-    if (!fs.existsSync(dir)) return;
-    for (const e of fs.readdirSync(dir, {withFileTypes: true})) {
-      const file = path.join(dir, e.name);
-      if (e.isDirectory()) { if (e.name !== 'node_modules') walk(root, file); continue; }
-      if (!/\.webp$/i.test(e.name)) continue;
-      const rel = path.relative(root, file).replace(/\.webp$/i, '.png'), dest = path.join(game.out, 'jsgb/webp', rel);
-      if (seen.has(rel)) continue;
-      seen.add(rel);
-      if (!fs.existsSync(dest) || fs.statSync(dest).mtimeMs < fs.statSync(file).mtimeMs) jobs.push([file, dest]);
-    }
-  };
-  for (const [root, dir] of roots) walk(root, dir);
-  if (!jobs.length) return 0;
-  const list = path.join(game.out, 'jsgb/webp-jobs.json');
-  fs.writeFileSync(list, JSON.stringify(jobs));
-  const script = 'import json, os, sys\nfrom PIL import Image\nfor src, dest in json.load(open(sys.argv[1])):\n    os.makedirs(os.path.dirname(dest), exist_ok=True)\n    Image.open(src).save(dest)\n';
-  const r = spawnSync(process.env.PYTHON ?? 'python', ['-c', script, list], {encoding: 'utf8'});
-  fs.rmSync(list, {force: true});
-  if (r.status !== 0) { console.warn(`WebP images stay blank in Unreal: no PNG copies (Python with Pillow is needed): ${String(r.stderr || r.error?.message || '').trim().split('\n').pop()}`); return 0; }
-  console.log(`wrote PNG copies of ${jobs.length} WebP images for Unreal`);
-  return jobs.length;
-}
-
 export async function build(game) {
   if (game.page) return buildPage(game);
   const esbuild = await import(pathToFileURL(path.join(runtime, 'node_modules/esbuild/lib/main.js')).href);
@@ -339,7 +309,6 @@ export async function build(game) {
     mainFields: ['browser', 'module', 'main'], nodePaths: [path.join(runtime, 'node_modules')], outfile: path.join(game.out, 'jsgb/worker-runtime.js'), logLevel: 'warning'});
   const wasm = path.join(runtime, 'vendor/cross-shader/CrossShader.wasm'), wasmOut = path.join(game.out, 'jsgb/CrossShader.wasm');
   if (!fs.existsSync(wasmOut) || fs.statSync(wasmOut).size !== fs.statSync(wasm).size) fs.copyFileSync(wasm, wasmOut);
-  webpCopies(game);
   // index.html stylesheets come after the CSS the modules import, as in the page.
   const cssFile = path.join(game.out, game.id + '.css');
   const moduleCss = fs.existsSync(cssFile) ? fs.readFileSync(cssFile, 'utf8') : '';

@@ -4,7 +4,8 @@ rem Saving a file in the game's folder reloads the page. Optional argument: a ga
 setlocal
 cd /d "%~dp0"
 set GAME=%~1
-if "%GAME%"=="" set GAME=orbit-demo
+if "%GAME%"=="" set GAME=hardburn-demo
+if "%GAME%"=="hardburn-demo" node Tools\demo.mjs prepare hardburn || goto :fail
 node Tools\web.mjs dev %GAME% || goto :fail
 goto :eof
 :fail

@@ -34,8 +34,6 @@ globalThis.__jsgbHost = {
   sink: {
     geometry: (id, pos, nrm, uv, col, colorSize, idx, groups) => bridge.Geometry(id, buf(pos), buf(nrm), buf(uv), buf(col), colorSize, buf(idx), groups),
     releaseGeometry: id => bridge.ReleaseGeometry(id),
-    releaseMaterial: id => bridge.ReleaseMaterial && bridge.ReleaseMaterial(id),
-    releaseTexture: id => bridge.ReleaseTexture && bridge.ReleaseTexture(id),
     material: (id, json) => bridge.Material(id, json),
     texture: (id, json, bytes) => bridge.Texture(id, json, buf(bytes)),
     frame: (floats, count, inst, instCount) => bridge.Frame(floats, count, inst, instCount),
@@ -45,6 +43,9 @@ globalThis.__jsgbHost = {
   ui: {publish: html => bridge.PublishUI(html), canvas: (id, w, h, rgba) => bridge.UICanvas(id, w, h, rgba)},
   audio: {voices: json => bridge.AudioVoices(json), pcm: (id, samples, rate) => bridge.AudioPcm(id, samples, rate), preload: path => bridge.AudioPreload(path)},
 };
+
+// V8's sampling profiler for this isolate: __jsgbProfile('start'), then __jsgbProfile('stop C:/path/file.cpuprofile').
+globalThis.__jsgbProfile = command => bridge.ProfileJs(String(command));
 
 const guard = (name, fn) => (...args) => { try { return fn(...args); } catch (e) { bridge.Log('error', `${name}: ${e && e.stack || e}`); } };
 // Bound before the bundle loads, so a bundle that fails still answers eval.

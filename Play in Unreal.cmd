@@ -4,7 +4,8 @@ rem The Unreal window shows how long each reload took. Optional argument: a game
 setlocal
 cd /d "%~dp0"
 set GAME=%~1
-if "%GAME%"=="" set GAME=orbit-demo
+if "%GAME%"=="" set GAME=hardburn-demo
+if "%GAME%"=="hardburn-demo" node Tools\demo.mjs prepare hardburn || goto :fail
 node Tools\jsgb.mjs unreal %GAME% || goto :fail
 goto :eof
 :fail

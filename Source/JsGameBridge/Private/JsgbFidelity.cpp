@@ -8,7 +8,6 @@
 #include "HAL/IConsoleManager.h"
 #include "Misc/CommandLine.h"
 #include "Misc/Parse.h"
-#include "RenderUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogJsgbFidelity, Log, All);
 
@@ -35,12 +34,6 @@ namespace
 		{TEXT("r.VolumetricFog.GridPixelSize"), TEXT("8"), TEXT("16")},
 		{TEXT("r.VolumetricFog.GridSizeZ"), TEXT("128"), TEXT("64")},
 		{TEXT("r.SkyLight.RealTimeReflectionCapture"), TEXT("1"), TEXT("1")},
-		// The override models' 4096 textures, fully loaded for whatever is on screen: streamed by distance, a close-up
-		// of a hull soon after it appears shows low-resolution mips (blurry, beige hulls in stills and films).
-		{TEXT("r.Streaming.FullyLoadUsedTextures"), TEXT("1"), TEXT("1")},
-		{TEXT("r.Streaming.PoolSize"), TEXT("4000"), TEXT("3000")},
-		// Lumen mode's detailed models: the tonemapper's sharpening brings out what Nanite draws at a pixel's size.
-		{TEXT("r.Tonemapper.Sharpen"), TEXT("0.8"), TEXT("0.6")},
 	};
 
 	void Set(const TCHAR* Name, const FString& Value)
@@ -75,9 +68,8 @@ void AJsgbHost::SetupLumen()
 	SavedGiOverride = P.bOverride_DynamicGlobalIlluminationMethod; SavedGi = P.DynamicGlobalIlluminationMethod;
 	SavedReflectionOverride = P.bOverride_ReflectionMethod; SavedReflection = P.ReflectionMethod;
 	bLumenOn = false;
-	// Turned on once the game's registry (and its override models) is known: AJsgbHost::BeginPlay.
-	bLumenAtStart = bStartOn && bLumenAvailable;
-	PublishGraphics();
+	if (bStartOn && bLumenAvailable) { SetLumen(true); }
+	else { PublishGraphics(); }
 }
 
 void AJsgbHost::SetLumen(bool bOn)
@@ -140,25 +132,6 @@ void AJsgbHost::SetLumen(bool bOn)
 	if (LumenSky) { LumenSky->SetVisibility(bOn); }
 	if (LumenFog) { LumenFog->SetVisibility(bOn); }
 
-	// The override models load in the background; the game keeps drawing its own until they are in memory.
-	++LumenGeneration;
-	bModelsReady = false;
-	if (bOn)
-	{
-		// Nanite needs Shader Model 6 (the project's D3D12TargetedShaderFormats). Without it Unreal draws each override
-		// model's fallback mesh, about 2% of its triangles, and the detailed models look low poly.
-		if (!UseNanite(GMaxRHIShaderPlatform)) { UE_LOG(LogJsgbFidelity, Warning, TEXT("Nanite is off on this renderer (Shader Model 6 needed): the override models draw their low-detail fallback meshes")); }
-		TWeakObjectPtr<AJsgbHost> Self(this);
-		const int32 Generation = LumenGeneration;
-		Mirror->LoadOverrides(true, [Self, Generation]
-		{
-			if (!Self.IsValid() || Self->LumenGeneration != Generation || !Self->bLumenOn) { return; }
-			Self->bModelsReady = true;
-			Self->PublishGraphics();
-		});
-	}
-	else { Mirror->LoadOverrides(false); }
-
 	Mirror->bLumen = bOn;
 	Mirror->SunSourceAngle = bLight ? 0.6f : 1.2f;
 	// Lumen's bounce light and the sky light replace most of three.js's flat ambient.
@@ -179,8 +152,7 @@ void AJsgbHost::SetLumen(bool bOn)
 void AJsgbHost::PublishGraphics()
 {
 	if (!Bridge) { return; }
-	Bridge->SetGraphicsInfo(FString::Printf(TEXT("{\"lumen\":%s,\"available\":%s,\"models\":%s}"), bLumenOn ? TEXT("true") : TEXT("false"),
-		bLumenAvailable ? TEXT("true") : TEXT("false"), bModelsReady ? TEXT("true") : TEXT("false")));
+	Bridge->SetGraphicsInfo(FString::Printf(TEXT("{\"lumen\":%s,\"available\":%s}"), bLumenOn ? TEXT("true") : TEXT("false"), bLumenAvailable ? TEXT("true") : TEXT("false")));
 	TWeakObjectPtr<AJsgbHost> Self(this);
 	Bridge->OnGraphicsSet = [Self](const TSharedPtr<FJsonObject>& In)
 	{

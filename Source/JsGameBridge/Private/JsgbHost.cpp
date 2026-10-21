@@ -24,12 +24,15 @@
 #include "Materials/MaterialInterface.h"
 #include "Framework/Application/SlateApplication.h"
 #include "Framework/Application/IInputProcessor.h"
+#include "GenericPlatform/GenericPlatformInputDeviceMapper.h"
 #include "Widgets/SWindow.h"
 #include "SWebBrowser.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SBox.h"
 #include "WebBrowserModule.h"
+#include "IWebBrowserSingleton.h"
+#include "IWebBrowserWindow.h"
 #include "HttpServerModule.h"
 #include "IHttpRouter.h"
 #include "HttpServerResponse.h"
@@ -171,14 +174,13 @@ public:
 		else if (K == EKeys::Gamepad_LeftTriggerAxis) { Buttons[6] = V; } else if (K == EKeys::Gamepad_RightTriggerAxis) { Buttons[7] = V; }
 		else { return false; }
 		bPadSeen = true;
-		return false;
+		const AJsgbHost* H = Host.Get();
+		return H && H->IsPageGame();
 	}
 	virtual bool HandleMouseMoveEvent(FSlateApplication& SlateApp, const FPointerEvent& E) override
 	{
 		AJsgbHost* H = Host.Get();
-		// A scripted capture ignores the desktop mouse: a cursor resting at the window's edge scrolled the game's
-		// camera away from the pose the script set (the gas giant shot of mine.txt showed empty space).
-		if (H && !H->HasOverlay() && !H->IsScripted()) { const FVector2D P = Local(E); H->SendMouse(TEXT("mousemove"), P.X, P.Y, 0, MouseButtons, E.GetCursorDelta().X, E.GetCursorDelta().Y); }
+		if (H && !H->HasOverlay()) { const FVector2D P = Local(E); H->SendMouse(TEXT("mousemove"), P.X, P.Y, 0, MouseButtons, E.GetCursorDelta().X, E.GetCursorDelta().Y); }
 		return false;
 	}
 	virtual bool HandleMouseButtonDownEvent(FSlateApplication& SlateApp, const FPointerEvent& E) override { return Button(E, true); }
@@ -187,7 +189,7 @@ public:
 	virtual bool HandleMouseWheelOrGestureEvent(FSlateApplication& SlateApp, const FPointerEvent& E, const FPointerEvent* Gesture) override
 	{
 		AJsgbHost* H = Host.Get();
-		if (H && !H->HasOverlay() && !H->IsScripted()) { H->SendWheel(-E.GetWheelDelta() * 100.f); }
+		if (H && !H->HasOverlay()) { H->SendWheel(-E.GetWheelDelta() * 100.f); }
 		return false;
 	}
 	virtual const TCHAR* GetDebugName() const override { return TEXT("JsGameBridgeInput"); }
@@ -202,7 +204,10 @@ private:
 	{
 		AJsgbHost* H = Host.Get();
 		if (!H) { return false; }
-		for (int32 I = 0; I < 16; ++I) { if (E.GetKey() == PadButtons[I]) { Buttons[I] = bDown ? 1.f : 0.f; bPadSeen = true; return false; } }
+		for (int32 I = 0; I < 16; ++I) { if (E.GetKey() == PadButtons[I]) { Buttons[I] = bDown ? 1.f : 0.f; bPadSeen = true; if (bDown && !E.IsRepeat()) { H->PagePadGesture(); } return H->IsPageGame(); } }
+		// A page game reads the pad through navigator.getGamepads (SendGamepads). Its stick-as-button and trigger keys would
+		// otherwise reach the built-in browser as key presses with no key code, and Slate would move its focus with them.
+		if (H->IsPageGame() && E.GetKey().IsGamepadKey()) { return true; }
 		// F6 and F7 (with -JsgbDlssKeys) switch DLSS modes and Frame Generation while the game runs.
 		if (bDown && !E.IsRepeat() && H->HandleDlssKey(E.GetKey())) { return true; }
 		if (H->HasOverlay()) { return false; }
@@ -214,7 +219,7 @@ private:
 	bool Button(const FPointerEvent& E, bool bDown)
 	{
 		AJsgbHost* H = Host.Get();
-		if (!H || H->HasOverlay() || H->IsScripted()) { return false; }
+		if (!H || H->HasOverlay()) { return false; }
 		const FKey K = E.GetEffectingButton();
 		const int32 B = K == EKeys::LeftMouseButton ? 0 : K == EKeys::MiddleMouseButton ? 1 : K == EKeys::RightMouseButton ? 2 : 3;
 		const int32 Bit = B == 0 ? 1 : B == 1 ? 4 : B == 2 ? 2 : 8;
@@ -296,10 +301,13 @@ public:
 			if (Bridge->OnFrame.IsBound()) { Bridge->OnFrame.Execute(Bridge->bReady ? 8.f : 40.f); }
 			const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0;
 			{ FScopeLock Lock(&StatsLock); FrameMs += Ms; ++Frames; MaxMs = FMath::Max(MaxMs, Ms); }
-			// One game frame per tick of the configured rate; a slow frame is followed by the next at once.
-			Next = FMath::Max(Next + 1.0 / Hz, FPlatformTime::Seconds() - 0.25 / Hz);
+			// One game frame per tick of the configured rate, and never two frames closer than a tick less 1 ms, as a
+			// display's refresh paces requestAnimationFrame in a browser. Games with a frame cap skip a frame that comes
+			// early (Hard Burn skips one that comes 1.5 ms early), so a frame started early to catch up was thrown away:
+			// Hard Burn's fight produced 51 to 55 frames a second from 6 ms frames. The wait rounds up for the same reason.
+			Next = FMath::Max(Next + 1.0 / Hz, T0 + 1.0 / Hz - 0.001);
 			const double Wait = Next - FPlatformTime::Seconds();
-			if (Wait > 0) { Wake->Wait(FMath::Max(1, static_cast<int32>(Wait * 1000.0))); }
+			if (Wait > 0) { Wake->Wait(FMath::Max(1, static_cast<int32>(FMath::CeilToDouble(Wait * 1000.0)))); }
 		}
 		return 0;
 	}
@@ -441,6 +449,7 @@ void AJsgbHost::BeginPlay()
 	ConfigurePost(Camera->PostProcessSettings);
 	Camera->PostProcessBlendWeight = 1.f;
 	SetupLumen();
+	ApplyHandheld();
 	// Engine warnings printed over the game view are not part of the game.
 	if (GEngine && !FParse::Param(FCommandLine::Get(), TEXT("JsgbScreenMessages"))) { GEngine->bEnableOnScreenDebugMessages = false; GEngine->Exec(World, TEXT("DisableAllScreenMessages")); }
 	Mirror->Camera = Camera;
@@ -465,7 +474,6 @@ void AJsgbHost::BeginPlay()
 	const FString ScriptPath = Arg(TEXT("JsgbScript="));
 	if (!ScriptPath.IsEmpty()) { LoadScript(ScriptPath); }
 	if (!LoadPublication(Arg(TEXT("JsgbGame=")), FString())) { return; }
-	if (bLumenAtStart) { SetLumen(true); }
 	ShowLoading();
 	StartServer();
 	if (!PageIndex.IsEmpty()) { CreatePageView(); return; }
@@ -501,7 +509,37 @@ static const TCHAR* PageDisplayApi = TEXT("(function(){var p=window.ue&&window.u
 	TEXT("Object.defineProperty(document,'fullscreen',{get:function(){return !!fs},configurable:true});")
 	TEXT("function fire(){document.dispatchEvent(new Event('fullscreenchange'))}")
 	TEXT("Element.prototype.requestFullscreen=function(){fs=this;return display.set({mode:'borderless'}).then(fire)};")
-	TEXT("document.exitFullscreen=function(){if(!fs)return Promise.resolve();fs=null;return display.set({mode:'windowed'}).then(fire)};})();");
+	TEXT("document.exitFullscreen=function(){if(!fs)return Promise.resolve();fs=null;return display.set({mode:'windowed'}).then(fire)};")
+	TEXT("window.close=function(){setTimeout(function(){p.quit()},300)};})();");
+
+// navigator.getGamepads inside a page game: the pads Unreal reads (XInput and the rest), in the Gamepad API's standard
+// layout. The host calls window.__jsgbPads with [{id, buttons: [value...], axes: [...]}] whenever a value changes, and a
+// new pad fires gamepadconnected, as in a browser.
+static const TCHAR* PagePadApi = TEXT("(function(){if(window.__jsgbPads)return;var pads=[];")
+	TEXT("function mk(p,i){var now=performance.now();return{id:p.id,index:i,connected:true,mapping:'standard',timestamp:now,axes:p.axes.slice(),")
+	TEXT("buttons:p.buttons.map(function(v){return{pressed:v>0.5,touched:v>0,value:v}}),vibrationActuator:null}}")
+	TEXT("try{Object.defineProperty(navigator,'getGamepads',{configurable:true,value:function(){return pads.slice()}})}catch(e){navigator.getGamepads=function(){return pads.slice()}}")
+	TEXT("window.__jsgbPads=function(list){var before=pads.length;pads=list.map(mk);")
+	TEXT("for(var i=before;i<pads.length;i++){var e=new Event('gamepadconnected');e.gamepad=pads[i];window.dispatchEvent(e)}};})();");
+
+void UJsgbPagePort::Quit()
+{
+	UE_LOG(LogJsgbHost, Display, TEXT("The page closed its window: quitting"));
+	FPlatformMisc::RequestExit(false);
+}
+
+// Reports to the host when a Web Audio context in the page starts running, and keeps the contexts in window.__jsgbAudio.
+static const TCHAR* PageAudioWatch = TEXT("(function(){var p=window.ue&&window.ue.jsgbpage,A=window.AudioContext;if(!A||!p||window.__jsgbAudio)return;window.__jsgbAudio=[];")
+	TEXT("function watch(c){window.__jsgbAudio.push(c);var f=function(){if(c.state==='running')p.audiorunning()};c.addEventListener('statechange',f);f()}")
+	TEXT("var W=function(o){var c=new A(o);watch(c);return c};W.prototype=A.prototype;window.AudioContext=W;if(window.webkitAudioContext)window.webkitAudioContext=W;})();");
+
+void AJsgbHost::PagePadGesture()
+{
+	if (!IsPageGame() || !PageWindow.IsValid() || !PagePort || PagePort->bAudioRunning) { return; }
+	const FKeyEvent Gesture(EKeys::F12, FModifierKeysState(), 0, false, 0, 0x87);
+	PageWindow->OnKeyDown(Gesture);
+	PageWindow->OnKeyUp(Gesture);
+}
 
 FString UJsgbPagePort::DisplayModes() { return Display ? Display->DisplayModes() : FString(TEXT("[]")); }
 FString UJsgbPagePort::DisplayGet() { return Display ? Display->DisplayGet() : FString(TEXT("{}")); }
@@ -514,7 +552,8 @@ void UJsgbPagePort::DisplaySet(const FString& Json)
 	// The cap is a console setting only, so nothing about it is saved.
 	UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr;
 	const float Limit = S ? S->GetFrameRateLimit() : 0.f;
-	if (IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"))) { MaxFps->Set(Limit <= 0 || Limit > PageFps ? static_cast<float>(PageFps) : Limit, ECVF_SetByCode); }
+	Cap = Limit <= 0 || Limit > PageFps ? static_cast<float>(PageFps) : Limit;
+	if (IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"))) { MaxFps->Set(Cap, ECVF_SetByCode); }
 }
 
 // "KeyW", "Digit1", "Space", "ArrowUp" and the like as an Unreal key, its Windows key code and its character, for
@@ -526,10 +565,21 @@ static bool KeyFromCode(const FString& Code, FKey& Key, uint32& KeyCode, uint32&
 	if (Code.Len() == 6 && Code.StartsWith(TEXT("Digit")) && FChar::IsDigit(Code[5])) { Key = FKey(Digits[Code[5] - '0']); KeyCode = Code[5]; Char = Code[5]; return true; }
 	struct FNamed { const TCHAR* Code; FKey Key; uint32 Vk, Char; };
 	static const FNamed Named[] = {{TEXT("Space"), EKeys::SpaceBar, 32, ' '}, {TEXT("Enter"), EKeys::Enter, 13, 13}, {TEXT("Escape"), EKeys::Escape, 27, 0},
+		{TEXT("Minus"), EKeys::Hyphen, 189, '-'}, {TEXT("Equal"), EKeys::Equals, 187, '='},
 		{TEXT("Tab"), EKeys::Tab, 9, 0}, {TEXT("ShiftLeft"), EKeys::LeftShift, 16, 0}, {TEXT("ControlLeft"), EKeys::LeftControl, 17, 0},
 		{TEXT("ArrowUp"), EKeys::Up, 38, 0}, {TEXT("ArrowDown"), EKeys::Down, 40, 0}, {TEXT("ArrowLeft"), EKeys::Left, 37, 0}, {TEXT("ArrowRight"), EKeys::Right, 39, 0}};
 	for (const FNamed& N : Named) { if (Code == N.Code) { Key = N.Key; KeyCode = N.Vk; Char = N.Char; return true; } }
+	// F1 to F12 (Saltblade's hold-F1 controls box). Without these, a test's "down F1" was refused and never reached the page.
+	const int32 F = Code.Len() >= 2 && Code.Len() <= 3 && Code[0] == 'F' ? FCString::Atoi(*Code.Mid(1)) : 0;
+	if (F >= 1 && F <= 12 && Code.Mid(1).IsNumeric()) { Key = FKey(FName(*Code)); KeyCode = 0x6F + F; Char = 0; return true; }
 	return false;
+}
+
+// The game's window. GameViewport->GetWindow() is not set yet while the host's BeginPlay runs.
+static TSharedPtr<SWindow> PageGameWindow()
+{
+	if (const UGameEngine* Engine = Cast<UGameEngine>(GEngine)) { if (TSharedPtr<SWindow> W = Engine->GameViewportWindow.Pin()) { return W; } }
+	return GEngine && GEngine->GameViewport ? GEngine->GameViewport->GetWindow() : nullptr;
 }
 
 void AJsgbHost::CreatePageView()
@@ -539,7 +589,12 @@ void AJsgbHost::CreatePageView()
 	// Frame Generation takes the whole frame, including this page, as the image it interpolates. With the page tagged as
 	// UI, generated frames would repeat it unchanged.
 	if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(TEXT("r.Streamline.TagUIColorAlpha"))) { V->Set(0, ECVF_SetByCode); }
-	int32 PageFps = 60;
+	// The off-screen page starts a frame only when Unreal ticks (CEF begin-frame scheduling). At 60 ticks a second, a
+	// page frame that needs 17 ms waits for the next tick and shows for 33 ms: Unlit Worlds ran 43 fps in space and
+	// planets in Unreal against 59 to 60 in Chrome at the same size and settings (RTX 4090, 2026-10-20). At 120 ticks
+	// it ran 82, 63 and 61 (space, planet, dungeon); at 240 the dungeon fell to 37. Handhelds keep 60, which saves
+	// their CPU and battery. -JsgbPageFps=<n> sets it.
+	int32 PageFps = bHandheld ? 60 : 120;
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbPageFps="), PageFps);
 	// Unreal draws no scene of its own here, so it shows a new page frame each time it presents: capped at the page's
 	// rate, every frame on screen is a new page frame. Uncapped, each page frame stayed up for an uneven number of
@@ -547,12 +602,58 @@ void AJsgbHost::CreatePageView()
 	if (IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"))) { MaxFps->Set(static_cast<float>(PageFps), ECVF_SetByCode); }
 	PagePort = NewObject<UJsgbPagePort>(this);
 	PagePort->PageFps = PageFps;
+	PagePort->Cap = PageFps;
+	FParse::Value(FCommandLine::Get(), TEXT("JsgbPageLoadFps="), PageLoadFps);
 	PagePort->Display = NewObject<UJsgbBridge>(this);
 	PagePort->Display->DisplayFile = FPaths::ProjectSavedDir() / TEXT("JsGameBridge") / FPaths::GetCleanFilename(GameDir) / TEXT("display.json");
 	PagePort->Display->RestoreDisplay();
 	if (IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"))) { MaxFps->Set(static_cast<float>(PageFps), ECVF_SetByCode); }
-	const FString Url = FString::Printf(TEXT("http://127.0.0.1:%d/"), Port) + PageIndex + Search;
-	SAssignNew(Browser, SWebBrowser).InitialURL(Url)
+	FString PageSearch = Search, HandheldSearch;
+	// -JsgbHandheldSearch=<name=value>: added to the page's query string when the handheld preset is on.
+	if (bHandheld && FParse::Value(FCommandLine::Get(), TEXT("JsgbHandheldSearch="), HandheldSearch) && !HandheldSearch.IsEmpty())
+	{
+		PageSearch += (PageSearch.IsEmpty() ? TEXT("?") : TEXT("&")) + HandheldSearch;
+	}
+	// The page covers the whole window and is opaque, so on a handheld Unreal draws no scene under it: on an Intel UHD 770
+	// the empty scene's TSR and post processing took GPU time the page needs. -JsgbWorld keeps it (viewport screenshots
+	// need the scene drawn).
+	if (bHandheld && !FParse::Param(FCommandLine::Get(), TEXT("JsgbWorld"))) { GEngine->GameViewport->bDisableWorldRendering = true; }
+	const FString Url = FString::Printf(TEXT("http://127.0.0.1:%d/"), Port) + PageIndex + PageSearch;
+	// The page draws in its own child window of the game window by default, as Chrome does: Chromium presents its frames
+	// itself. Off-screen rendering (-JsgbPageOsr) copies every frame into an Unreal texture and waits for the GPU on the
+	// game thread for each copy (Unreal's CEF helper, CopySharedTextureSync), which halved the page's frame rate on an
+	// Intel UHD 770.
+	// -JsgbPageNative: the page draws in its own child window of the game window, as Chrome does (Chromium presents its frames
+	// itself). By default it draws off screen into an Unreal texture, where the host sets the page's scale (below).
+	const bool bNativePage = FParse::Param(FCommandLine::Get(), TEXT("JsgbPageNative")) && PageGameWindow().IsValid() && PageGameWindow()->GetNativeWindow().IsValid();
+	// The page's scale (devicePixelRatio). Unreal games ignore the Windows display scale, so on a 7-inch 1080p handheld at
+	// 150% the page was 1920x1080 CSS pixels at scale 1, not 1280x720 at 1.5 as in Edge: menus laid out for that size put
+	// buttons below the screen (the Stone Hammer's Make button) and the game drew 2.25 times the pixels.
+	// -JsgbPageScale=<n> sets it; with the handheld preset it is the window height over 720 (1.5 at 1080p).
+	{
+		float PageScale = 0.f;
+		FParse::Value(FCommandLine::Get(), TEXT("JsgbPageScale="), PageScale);
+		const TSharedPtr<SWindow> GameWindow = PageGameWindow();
+		// -JsgbPageScale=auto: the window height over 720 (1.5 at 1080p). Not on by default until it is checked on a 150% display.
+		if (PageScale <= 0.f && FParse::Param(FCommandLine::Get(), TEXT("JsgbPageScale=auto")) && GameWindow.IsValid()) { PageScale = FMath::Clamp(FMath::RoundToFloat(GameWindow->GetClientSizeInScreen().Y / 720.f * 4.f) / 4.f, 1.f, 3.f); }
+		UE_LOG(LogJsgbHost, Display, TEXT("Page scale asked %.2f (window %s, native %s)"), PageScale, GameWindow.IsValid() ? TEXT("yes") : TEXT("no"), GameWindow.IsValid() && GameWindow->GetNativeWindow().IsValid() ? TEXT("yes") : TEXT("no"));
+		if (PageScale > 0.f && GameWindow.IsValid() && GameWindow->GetNativeWindow().IsValid())
+		{
+			GameWindow->GetNativeWindow()->SetDPIScaleFactor(PageScale);
+			UE_LOG(LogJsgbHost, Display, TEXT("Page scale %.2f (window %.0fx%.0f)"), PageScale, GameWindow->GetClientSizeInScreen().X, GameWindow->GetClientSizeInScreen().Y);
+		}
+	}
+	{
+		FCreateBrowserWindowSettings Settings;
+		Settings.InitialURL = Url;
+		Settings.BrowserFrameRate = PageFps;
+		Settings.bUseTransparency = false;
+		Settings.BackgroundColor = FColor::Black;
+		Settings.bShowErrorMessage = false;
+		if (bNativePage) { Settings.OSWindowHandle = PageGameWindow()->GetNativeWindow()->GetOSWindowHandle(); }
+		PageWindow = IWebBrowserModule::Get().GetSingleton()->CreateBrowserWindow(Settings);
+	}
+	SAssignNew(Browser, SWebBrowser, PageWindow).InitialURL(Url).ParentWindow(PageGameWindow())
 		.ShowControls(false).ShowAddressBar(false).ShowInitialThrobber(false)
 		.SupportsTransparency(false).BackgroundColor(FColor::Black).BrowserFrameRate(PageFps)
 		.PopupMenuMethod(EPopupMethod::UseCurrentWindow)
@@ -561,7 +662,20 @@ void AJsgbHost::CreatePageView()
 			bDocumentReady = true;
 			Browser->ExecuteJavascript(PageKeyCodeFix);
 			Browser->ExecuteJavascript(PageDisplayApi);
+			Browser->ExecuteJavascript(PagePadApi);
+			if (PagePort) { PagePort->bAudioRunning = false; }
+			Browser->ExecuteJavascript(PageAudioWatch);
+			if (!LastPadJson.IsEmpty()) { Browser->ExecuteJavascript(TEXT("window.__jsgbPads(") + LastPadJson + TEXT(")")); }
 			FSlateApplication::Get().SetAllUserFocus(Browser.ToSharedRef(), EFocusCause::SetDirectly);
+			// Chromium starts Web Audio only after a user gesture, and a gamepad is not one. A real key press (F24, which
+			// games don't use) gives the page that gesture, so sound plays on a handheld that only has its controller.
+			if (PageWindow.IsValid())
+			{
+				const FKeyEvent Gesture(EKeys::F12, FModifierKeysState(), 0, false, 0, 0x87);
+				PageWindow->OnKeyDown(Gesture);
+				PageWindow->OnKeyUp(Gesture);
+				PageWindow->OnFocus(true, false);
+			}
 			UE_LOG(LogJsgbHost, Display, TEXT("Page game loaded"));
 		})
 		.OnLoadError_Lambda([Url]() { UE_LOG(LogJsgbHost, Error, TEXT("Page game failed to load from %s"), *Url); })
@@ -601,7 +715,6 @@ void AJsgbHost::StartJs()
 	Bridge->Search = Search;
 	Bridge->Trace = FParse::Param(FCommandLine::Get(), TEXT("JsgbTraceMirror"));
 	Mirror->bTrace = Bridge->Trace;
-	FParse::Value(FCommandLine::Get(), TEXT("JsgbEnvRadiance="), Mirror->EnvRadiance);
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbSeed="), Bridge->Seed);
 	// Web Workers run on their own threads unless -JsgbGameThreadWorkers asks for the old single-thread mode.
 	if (!FParse::Param(FCommandLine::Get(), TEXT("JsgbGameThreadWorkers"))) { FFileHelper::LoadFileToString(Bridge->WorkerRuntime, *(GameDir / TEXT("jsgb/worker-runtime.js"))); }
@@ -942,6 +1055,16 @@ void AJsgbHost::StartServer()
 			{
 				// "down KeyW" or "up KeyW", through Slate like a real key press; "click 0.5 0.5" clicks that point of the window
 				// (fractions of its width and height) with the left mouse button.
+				// Real mouse wheel input for recorded play checks, through the same Slate route as hardware.
+				if (In.StartsWith(TEXT("wheel ")) && GEngine && GEngine->GameViewport && GEngine->GameViewport->GetWindow().IsValid())
+				{
+					TArray<FString> Parts; In.ParseIntoArrayWS(Parts);
+					const TSharedPtr<SWindow> Window = GEngine->GameViewport->GetWindow();
+					const FVector2D At = Window->GetPositionInScreen() + Window->GetClientSizeInScreen() * FVector2D(Parts.Num() > 3 ? FCString::Atod(*Parts[2]) : 0.5, Parts.Num() > 3 ? FCString::Atod(*Parts[3]) : 0.5);
+					FSlateApplication::Get().SetCursorPos(At);
+					FSlateApplication::Get().ProcessMouseWheelOrGestureEvent(FPointerEvent(0, At, At, TSet<FKey>(), EKeys::Invalid, Parts.Num() > 1 ? FCString::Atof(*Parts[1]) : 0.f, FSlateApplication::Get().GetModifierKeys()), nullptr);
+					O->SetBoolField(TEXT("accepted"), true); Json(O); return true;
+				}
 				FString Type, Code;
 				if (In.StartsWith(TEXT("click ")) && GEngine && GEngine->GameViewport && GEngine->GameViewport->GetWindow().IsValid())
 				{
@@ -954,6 +1077,26 @@ void AJsgbHost::StartServer()
 					FSlateApplication::Get().ProcessMouseButtonDownEvent(nullptr, FPointerEvent(0, At, At, Pressed, EKeys::LeftMouseButton, 0, FSlateApplication::Get().GetModifierKeys()));
 					FSlateApplication::Get().ProcessMouseButtonUpEvent(FPointerEvent(0, At, At, TSet<FKey>(), EKeys::LeftMouseButton, 0, FSlateApplication::Get().GetModifierKeys()));
 					O->SetBoolField(TEXT("accepted"), true);
+					Json(O);
+					return true;
+				}
+				// "pad Gamepad_FaceButton_Bottom down" or "... up", "pad Gamepad_LeftX 0.8": a controller through the same Slate entry
+				// points Unreal's XInput reader calls (OnControllerButtonPressed, OnControllerButtonReleased, OnControllerAnalog).
+				if (In.StartsWith(TEXT("pad ")))
+				{
+					TArray<FString> Parts;
+					In.ParseIntoArrayWS(Parts);
+					const bool bOk = Parts.Num() == 3;
+					if (bOk)
+					{
+						const FName Name(*Parts[1]);
+						const FPlatformUserId User = IPlatformInputDeviceMapper::Get().GetPrimaryPlatformUser();
+						const FInputDeviceId Device = IPlatformInputDeviceMapper::Get().GetDefaultInputDevice();
+						if (Parts[2] == TEXT("down")) { FSlateApplication::Get().OnControllerButtonPressed(Name, User, Device, false); }
+						else if (Parts[2] == TEXT("up")) { FSlateApplication::Get().OnControllerButtonReleased(Name, User, Device, false); }
+						else { FSlateApplication::Get().OnControllerAnalog(Name, User, Device, FCString::Atof(*Parts[2])); }
+					}
+					O->SetBoolField(TEXT("accepted"), bOk);
 					Json(O);
 					return true;
 				}
@@ -989,8 +1132,24 @@ void AJsgbHost::StartServer()
 			if (H->Bridge) { File = H->Bridge->ReadFile(Route); }
 			else if (!Route.Contains(TEXT("..")))
 			{
+				H->LastPageFile = FPlatformTime::Seconds();
 				const FString Rel = Route == TEXT("/") ? H->PageIndex : Route.RightChop(1);
 				for (const FString& Root : H->PublicRoots) { if (FFileHelper::LoadFileToArray(File.Data, *(Root / Rel), FILEREAD_Silent)) { break; } }
+				// page-init.js beside publication.json runs in the page before any of the game's own scripts (for example to
+				// give a first launch settings that suit the Unreal window).
+				FString Init;
+				if (Rel == H->PageIndex && File.Data.Num() > 0 && FFileHelper::LoadFileToString(Init, *(H->GameDir / TEXT("page-init.js"))))
+				{
+					FString Html;
+					FFileHelper::BufferToString(Html, File.Data.GetData(), File.Data.Num());
+					const int32 At = Html.Find(TEXT("<head>"));
+					if (At != INDEX_NONE)
+					{
+						Html.InsertAt(At + 6, TEXT("<script>") + Init + TEXT("</script>"));
+						const FTCHARToUTF8 Utf8(*Html);
+						File.Data = TArray<uint8>(reinterpret_cast<const uint8*>(Utf8.Get()), Utf8.Length());
+					}
+				}
 			}
 			if (File.Data.Num() == 0) { Done(FHttpServerResponse::Error(EHttpServerResponseCodes::NotFound)); return true; }
 			const FString Ext = FPaths::GetExtension(Route).ToLower();
@@ -1034,7 +1193,19 @@ void AJsgbHost::EndPlay(const EEndPlayReason::Type Reason)
 void AJsgbHost::SendKey(const FString& Type, const FString& Code, bool bRepeat) { if (UJsgbBridge* B = Bridge) { B->RunOnJs([B, Type, Code, bRepeat] { if (B->OnKey.IsBound()) { B->OnKey.Execute(Type, Code, bRepeat); } }); } }
 void AJsgbHost::SendMouse(const FString& Type, float X, float Y, int32 Button, int32 Buttons, float DX, float DY) { if (UJsgbBridge* B = Bridge) { B->RunOnJs([=] { if (B->OnMouse.IsBound()) { B->OnMouse.Execute(Type, X, Y, Button, Buttons, DX, DY); } }); } }
 void AJsgbHost::SendWheel(float DeltaY) { if (UJsgbBridge* B = Bridge) { B->RunOnJs([B, DeltaY] { if (B->OnWheel.IsBound()) { B->OnWheel.Execute(DeltaY); } }); } }
-void AJsgbHost::SendGamepads(const FString& Json) { if (UJsgbBridge* B = Bridge) { B->RunOnJs([B, Json] { if (B->OnGamepads.IsBound()) { B->OnGamepads.Execute(Json); } }); } }
+void AJsgbHost::SendGamepads(const FString& Json)
+{
+	// A page game: Unreal's pad state goes into the page's navigator.getGamepads (PagePadApi). Unreal's built-in browser
+	// gets no gamepads of its own.
+	if (IsPageGame())
+	{
+		LastPadJson = Json;
+		if (Browser.IsValid() && bDocumentReady) { Browser->ExecuteJavascript(TEXT("window.__jsgbPads&&window.__jsgbPads(") + Json + TEXT(")")); }
+		return;
+	}
+	SendGamepadsToJs(Json);
+}
+void AJsgbHost::SendGamepadsToJs(const FString& Json) { if (UJsgbBridge* B = Bridge) { B->RunOnJs([B, Json] { if (B->OnGamepads.IsBound()) { B->OnGamepads.Execute(Json); } }); } }
 FString AJsgbHost::Eval(const FString& Source)
 {
 	if (!Bridge) { return TEXT("ERR no js"); }
@@ -1108,9 +1279,39 @@ void AJsgbHost::SetupUpscaler()
 	FrameGenFrames = FMath::Clamp(FrameGenFactor - 1, 1, MaxGeneratedFrames());
 	UE_LOG(LogJsgbHost, Display, TEXT("GPU %s, driver %s"), *GRHIAdapterName, *GRHIAdapterUserDriverVersion);
 	ApplyUpscaler(Dlss, Tsr);
-	bShowHud = FParse::Param(FCommandLine::Get(), TEXT("JsgbHud"));
-	bShowKeys = FParse::Param(FCommandLine::Get(), TEXT("JsgbDlssKeys"));
-	bShowJitter = FParse::Param(FCommandLine::Get(), TEXT("JsgbJitter"));
+	const bool bDev = FParse::Param(FCommandLine::Get(), TEXT("JsgbDev"));
+	bShowHud = bDev && FParse::Param(FCommandLine::Get(), TEXT("JsgbHud"));
+	bShowKeys = bDev && FParse::Param(FCommandLine::Get(), TEXT("JsgbDlssKeys"));
+	bShowJitter = bDev && FParse::Param(FCommandLine::Get(), TEXT("JsgbJitter"));
+}
+
+void AJsgbHost::ApplyHandheld()
+{
+	const TCHAR* Cmd = FCommandLine::Get();
+	const bool bNvidia = GRHIVendorId == 0x10DE;
+	bHandheld = FParse::Param(Cmd, TEXT("JsgbHandheld")) || (!bNvidia && !FParse::Param(Cmd, TEXT("JsgbNoHandheld")));
+	if (!bHandheld) { return; }
+	auto Set = [](const TCHAR* Name, const TCHAR* Value) { if (IConsoleVariable* V = IConsoleManager::Get().FindConsoleVariable(Name)) { V->Set(Value, ECVF_SetByCode); } };
+	// No Lumen, DLSS or frame generation.
+	if (bLumenOn) { SetLumen(false); }
+	bLumenAvailable = false;
+	bFrameGen = false;
+	Set(TEXT("r.NGX.DLSS.Enable"), TEXT("0"));
+	Set(TEXT("r.Streamline.DLSSG.Enable"), TEXT("0"));
+	Set(TEXT("r.DynamicGlobalIlluminationMethod"), TEXT("0"));
+	Set(TEXT("r.ReflectionMethod"), TEXT("0"));
+	// Low and medium scalability, TSR at 67% render scale.
+	static const TCHAR* Low[] = {TEXT("sg.ShadowQuality"), TEXT("sg.GlobalIlluminationQuality"), TEXT("sg.ReflectionQuality"), TEXT("sg.EffectsQuality"), TEXT("sg.FoliageQuality")};
+	static const TCHAR* Medium[] = {TEXT("sg.ViewDistanceQuality"), TEXT("sg.AntiAliasingQuality"), TEXT("sg.PostProcessQuality"), TEXT("sg.TextureQuality"), TEXT("sg.ShadingQuality")};
+	for (const TCHAR* G : Low) { Set(G, TEXT("0")); }
+	for (const TCHAR* G : Medium) { Set(G, TEXT("1")); }
+	Set(TEXT("r.AntiAliasingMethod"), TEXT("4"));
+	Set(TEXT("r.ScreenPercentage"), TEXT("67"));
+	// At most 60 frames per second.
+	Set(TEXT("t.MaxFPS"), TEXT("60"));
+	Upscaler = TEXT("Handheld: TSR 67%, no Lumen, 60 FPS cap");
+	UE_LOG(LogJsgbHost, Display, TEXT("Handheld preset on (GPU %s, vendor 0x%04x%s): no Lumen, DLSS or frame generation; TSR at 67%%; low shadows and effects; at most 60 FPS"),
+		*GRHIAdapterName, GRHIVendorId, FParse::Param(Cmd, TEXT("JsgbHandheld")) ? TEXT(", -JsgbHandheld") : TEXT(""));
 }
 
 bool AJsgbHost::HandleDlssKey(const FKey& Key)
@@ -1542,7 +1743,26 @@ void AJsgbHost::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	++Frame;
 	GJsgbWindowFocus.store(FSlateApplication::IsInitialized() && FSlateApplication::Get().IsActive(), std::memory_order_relaxed);
+	// A mirrored scene can present at its simulation cadence, independently of page-game caps.
+	// Apply after the game's display preferences too; otherwise a saved unlimited cap wins at startup.
+	static const float SceneFps = [] { float Fps = 0; FParse::Value(FCommandLine::Get(), TEXT("JsgbSceneFps="), Fps); return FMath::Clamp(Fps, 0.f, 240.f); }();
+	if (SceneFps > 0 && !IsPageGame())
+	{
+		// The external frame-generation pacer claims the cap even with generation off. Use the engine's clock.
+		static IConsoleVariable* Pacer = IConsoleManager::Get().FindConsoleVariable(TEXT("t.Streamline.Reflex.HandleMaxTickRate"));
+		if (Pacer && Pacer->GetInt() != 0) { Pacer->Set(0, ECVF_SetByCode); }
+		static IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"));
+		if (MaxFps && MaxFps->GetFloat() != SceneFps) { MaxFps->Set(SceneFps, ECVF_SetByCode); }
+	}
 	UpdateHud(DeltaSeconds);
+	// A page game loading files: Unreal ticks up to PageLoadFps until a second after the last request, then returns to the
+	// page's cap. Loading a city layer took 30% longer than in Chrome at 60 ticks a second.
+	if (PagePort)
+	{
+		const float Want = FPlatformTime::Seconds() - LastPageFile < 1.0 ? FMath::Max(PageLoadFps, PagePort->Cap) : PagePort->Cap;
+		IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"));
+		if (MaxFps && MaxFps->GetFloat() != Want) { MaxFps->Set(Want, ECVF_SetByCode); }
+	}
 	if (FrameTimesMs.Num() < 1000000) { FrameTimesMs.Add(DeltaSeconds * 1000.f); }
 	if (RecordDir.IsEmpty() && CaptureQueue.Num() && !FScreenshotRequest::IsScreenshotRequested()) { FScreenshotRequest::RequestScreenshot(CaptureQueue[0], true, false); CaptureQueue.RemoveAt(0); }
 	if (Grabber)
@@ -1576,15 +1796,7 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		bRestart = false;
 		if (ReloadStart < 0) { ReloadStart = FPlatformTime::Seconds(); ReloadBuildMs = -1; }
 		StopJs();
-		if (!PendingBundle.IsEmpty())
-		{
-			// The old registry's override models are released before the new build's registry replaces it, and the new
-			// build's are loaded after.
-			const bool bWasLumen = bLumenOn;
-			if (bWasLumen) { SetLumen(false); }
-			LoadPublication(GameDir, PendingBundle); PendingBundle.Reset();
-			if (bWasLumen) { SetLumen(true); }
-		}
+		if (!PendingBundle.IsEmpty()) { LoadPublication(GameDir, PendingBundle); PendingBundle.Reset(); }
 		StartJs();
 	}
 	UpdateLoading();

@@ -273,8 +273,6 @@ void UJsgbBridge::Geometry(int32 Id, FArrayBuffer Positions, FArrayBuffer Normal
 }
 
 void UJsgbBridge::ReleaseGeometry(int32 Id) { RunOnGame([this, Id] { if (Mirror) { Mirror->ReleaseGeometry(Id); } }); }
-void UJsgbBridge::ReleaseMaterial(int32 Id) { RunOnGame([this, Id] { if (Mirror) { Mirror->ReleaseMaterial(Id); } }); }
-void UJsgbBridge::ReleaseTexture(int32 Id) { RunOnGame([this, Id] { if (Mirror) { Mirror->ReleaseTexture(Id); } }); }
 void UJsgbBridge::Material(int32 Id, const FString& Json)
 {
 	RunOnGame([this, Id, Json] { const double T0 = FPlatformTime::Seconds(); if (Mirror) { Mirror->SetMaterial(Id, Json); } const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0; MirrorMs += Ms; MaterialMs += Ms; ++MaterialCalls; });

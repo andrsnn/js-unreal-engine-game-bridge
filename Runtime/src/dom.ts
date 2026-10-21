@@ -1,5 +1,5 @@
 import {parseHTML} from 'linkedom';
-import {installNoOpSkips} from './query';
+import {installFastQueries, installNoOpSkips} from './query';
 import {host} from './host';
 import {blobStore} from './polyfills';
 import {imageSize} from './imageSize';
@@ -27,8 +27,8 @@ const CLASSES = ['Event', 'CustomEvent', 'InputEvent', 'EventTarget', 'Node', 'E
   'NodeFilter', 'Attr', 'CharacterData', 'ShadowRoot', 'HTMLCollection', 'NodeList', 'CSSStyleDeclaration', 'Image'];
 for (const name of CLASSES) if (page[name] && !g[name]) g[name] = page[name];
 g.document = doc;
-// installFastQueries() was slower than linkedom's own engine on a game-sized DOM (its tree walk getters are costly); off.
 installNoOpSkips(doc);
+installFastQueries(doc);
 
 // UI events linkedom does not define. They carry the fields the game reads.
 const BaseEvent = page.Event as {new (type: string, init?: Record<string, unknown>): Record<string, unknown>};
@@ -84,11 +84,23 @@ export function setViewport(w: number, h: number) {
   g.dispatchEvent(new BaseEvent('resize'));
 }
 
+// Storage writes wait 250 ms before they reach the host, and a reload drops pending timers. Every
+// reload or navigation writes them first, so a game that saves and then reloads keeps what it saved.
+const storageFlushes: (() => void)[] = [];
+export function flushStorage() { for (const flush of storageFlushes) flush(); }
+function navigate() { flushStorage(); host.reload(); }
+
 const search = host.search ?? '';
+let hash = '';
+// The host keeps its own search string, so setting href, search or pathname restarts the game at the
+// same address, as close as the host gets to a navigation. Changing only the hash stays on the page.
 g.location = {
-  href: 'http://localhost/' + search, origin: 'http://localhost', protocol: 'http:', host: 'localhost', hostname: 'localhost', port: '',
-  pathname: '/', search, hash: '',
-  assign: () => reloadNow(), replace: () => reloadNow(), reload: () => reloadNow(), toString() { return this.href; },
+  get href() { return 'http://localhost/' + search + hash; }, set href(v: string) { const h = /#.*/.exec(String(v))?.[0] ?? ''; if (h && String(v).startsWith('#')) { hash = h; return; } navigate(); },
+  origin: 'http://localhost', protocol: 'http:', host: 'localhost', hostname: 'localhost', port: '',
+  get pathname() { return '/'; }, set pathname(_v: string) { navigate(); },
+  get search() { return search; }, set search(_v: string) { navigate(); },
+  get hash() { return hash; }, set hash(v: string) { hash = v ? (String(v).startsWith('#') ? String(v) : '#' + v) : ''; },
+  assign: () => navigate(), replace: () => navigate(), reload: () => navigate(), toString() { return this.href; },
 };
 g.history = {length: 1, state: null, pushState() {}, replaceState() {}, back() {}, forward() {}, go() {}, scrollRestoration: 'auto'};
 try { Object.defineProperty(doc, 'baseURI', {get: () => 'http://localhost/', configurable: true}); } catch { /* linkedom getter */ }
@@ -165,17 +177,13 @@ g.IntersectionObserver ??= class { constructor(private cb: (e: unknown[]) => voi
 g.CSS ??= {supports: () => true, escape: (s: string) => s.replace(/[^\w-]/g, c => '\\' + c)};
 
 // Storage. Saves persist through the host when it offers a store; otherwise they live for the session.
-// Storage is written to the host a moment after a change. A reload must not lose what the page wrote just before it (a
-// game that leaves itself a note in sessionStorage and reloads), so the stores are written out first.
-const storageFlushes: (() => void)[] = [];
-function reloadNow() { for (const flush of storageFlushes) flush(); host.reload(); }
 function makeStorage(kind: string) {
   const store = (g.__jsgbHost as {storage?: {load(k: string): string | null; save(k: string, data: string): void}}).storage;
   const m = new Map<string, string>(Object.entries(JSON.parse(store?.load(kind) ?? '{}') as Record<string, string>));
   let pending = false;
-  const flush = () => { pending = false; store?.save(kind, JSON.stringify(Object.fromEntries(m))); };
-  const touch = () => { if (store && !pending) { pending = true; setTimeout(() => { if (pending) flush(); }, 250); } };
-  storageFlushes.push(() => { if (pending) flush(); });
+  const flush = () => { if (!pending) return; pending = false; store?.save(kind, JSON.stringify(Object.fromEntries(m))); };
+  storageFlushes.push(flush);
+  const touch = () => { if (store && !pending) { pending = true; setTimeout(flush, 250); } };
   return {
     get length() { return m.size; },
     key: (i: number) => [...m.keys()][i] ?? null,

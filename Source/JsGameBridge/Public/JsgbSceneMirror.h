@@ -4,7 +4,6 @@
 #include "Engine/StreamableManager.h"
 #include "Components/ActorComponent.h"
 #include "Components/LineBatchComponent.h"
-#include "Engine/TextureDefines.h"
 #include "ArrayBuffer.h"
 #include "JsgbSceneMirror.generated.h"
 
@@ -97,8 +96,6 @@ struct FJsgbMaterial
 	bool bFatWorld = false;
 	/** three.js draws it opaque without writing depth (a sky dome drawn first): Unreal draws it translucent, first. */
 	bool bDrawFirst = false;
-	/** Its generated material moves vertices in the vertex shader (world position offset: camera-facing sprites). */
-	bool bMovesVertices = false;
 	/** Textures bound through uniforms (shader materials and hooks): parameter name and texture id. */
 	TArray<TPair<FName, int32>> UniformTextures;
 };
@@ -198,8 +195,6 @@ public:
 
 	void SetGeometry(int32 Id, const FArrayBuffer& Positions, const FArrayBuffer& Normals, const FArrayBuffer& UVs, const FArrayBuffer& Colors, int32 ColorSize, const FArrayBuffer& Indices, const FString& Groups);
 	void ReleaseGeometry(int32 Id);
-	void ReleaseMaterial(int32 Id);
-	void ReleaseTexture(int32 Id);
 	void SetMaterial(int32 Id, const FString& Json);
 	void SetTexture(int32 Id, const FString& Json, const FArrayBuffer& Bytes);
 	/** Decodes and lays out a texture's pixels; safe on any thread. FileData holds the bytes of a "file" texture. */
@@ -215,10 +210,6 @@ public:
 	bool SetAssetRegistry(const FString& Json);
 	FStreamableManager Streamable;
 	TSharedPtr<struct FStreamableHandle> RegistryLoad;
-	/** Loads the override models in the background (Lumen mode on) and calls Done once they are in memory, or
-	 *  releases them (off). */
-	void LoadOverrides(bool bLoad, TFunction<void()> Done = nullptr);
-	TSharedPtr<struct FStreamableHandle> OverrideLoad;
 	void ResetAll();
 
 	UPROPERTY() TObjectPtr<UCameraComponent> Camera;
@@ -263,9 +254,6 @@ public:
 	/** Lumen mode: extra exposure in stops, bloom and directional light multipliers on top of the game's own. */
 	float ExposureOffset = 0.f, BloomScale = 1.f, SunScale = 1.f;
 	float LumenAmbientScale = 1.f;
-	/** The average light of an environment map (three.js envMap, scene.environment) a material reflects; times the
-	 *  material's envMapIntensity it becomes its EnvLight. -JsgbEnvRadiance= overrides it. */
-	float EnvRadiance = 5.f;
 	int32 FrameCounter = 0;
 
 	FVector CameraLocation = FVector::ZeroVector;
@@ -312,7 +300,6 @@ private:
 	}
 	UMaterialInstanceDynamic* MaterialFor(int32 Id);
 	void ApplyTextureParams(UMaterialInstanceDynamic* Mid, int32 TextureId);
-	class UTexture2D* SameShapeTexture(UTexture* Old, const struct FTexturePlatformData& New, bool bSRGB, TextureFilter Filter, TextureAddress X, TextureAddress Y);
 	UStaticMeshComponent* NewComponent(bool bInstanced);
 	FJsgbEntity& EntityOf(int32 Id, int32 Kind);
 	void ApplyLight(const float* S, uint32 Stamp, FLinearColor& Ambient, FLinearColor& HemiSky, FLinearColor& HemiGround, int32 Capture = 0);

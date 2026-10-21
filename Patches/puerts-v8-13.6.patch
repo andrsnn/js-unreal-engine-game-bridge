@@ -1,0 +1,829 @@
+diff --git a/Source/JsEnv/JsEnv.Build.cs b/Source/JsEnv/JsEnv.Build.cs
+index 2258a26..d4e9395 100644
+--- a/Source/JsEnv/JsEnv.Build.cs
++++ b/Source/JsEnv/JsEnv.Build.cs
+@@ -17,12 +17,13 @@ public class JsEnv : ModuleRules
+         VDeprecated, // for 4.24 or blow only
+         V8_4_371_19,
+         V9_4_146_24,
+-        V11_8_172
++        V11_8_172,
++        V13_6_233_17
+     }
+ 
+     private SupportedV8Versions UseV8Version = 
+ #if UE_4_25_OR_LATER
+-        SupportedV8Versions.V9_4_146_24;
++        SupportedV8Versions.V13_6_233_17;
+ #else
+         SupportedV8Versions.VDeprecated;
+ #endif
+@@ -379,7 +380,7 @@ public class JsEnv : ModuleRules
+             "v8_libplatform.dll",
+             "v8_libbase.dll"
+         };
+-        deps.Add(UseV8Version == SupportedV8Versions.V11_8_172 ? "third_party_zlib.dll" : "zlib.dll");
++        deps.Add(UseV8Version >= SupportedV8Versions.V11_8_172 ? "third_party_zlib.dll" : "zlib.dll");
+ 
+         AddRuntimeDependencies(deps.ToArray(), V8LibraryPath, false);
+     }
+@@ -428,6 +429,13 @@ public class JsEnv : ModuleRules
+ #endif
+             v8LibSuffix = "_11.8.172";
+         }
++        else if (UseV8Version == SupportedV8Versions.V13_6_233_17)
++        {
++            // V8 13.6's headers need C++20, UE 5.8's default. It ships as one static library built from source with
++            // WebAssembly and Maglev on (Puerts' prebuilt has both off), linked into the editor modules too.
++            v8LibSuffix = "_13.6.233.17";
++            ForceStaticLibInEditor = true;
++        }
+         //Add header
+         string HeaderPath = Path.GetFullPath(Path.Combine(ModuleDirectory, "..", "..", "ThirdParty", "Include"));
+         PublicIncludePaths.AddRange(new string[] { Path.Combine(HeaderPath, "websocketpp") });
+diff --git a/Source/JsEnv/Private/ContainerWrapper.cpp b/Source/JsEnv/Private/ContainerWrapper.cpp
+index 262a4d3..01f9e3a 100644
+--- a/Source/JsEnv/Private/ContainerWrapper.cpp
++++ b/Source/JsEnv/Private/ContainerWrapper.cpp
+@@ -40,8 +40,8 @@ void FScriptArrayWrapper::Add(const v8::FunctionCallbackInfo<v8::Value>& Info)
+ 
+     if (Info.Length() > 0)
+     {
+-        auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.Holder(), 0);
+-        auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++        auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.This(), 0);
++        auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+         if (!Inner->IsPropertyValid())
+         {
+             FV8Utils::ThrowException(Isolate, "item info is invalid!");
+@@ -67,8 +67,8 @@ void FScriptArrayWrapper::InternalGet(const v8::FunctionCallbackInfo<v8::Value>&
+ 
+     CHECK_V8_ARGS_LEN(1);
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.Holder(), 0);
+-    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.This(), 0);
++    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     if (!Inner->IsPropertyValid())
+     {
+         FV8Utils::ThrowException(Isolate, "item info is invalid!");
+@@ -85,7 +85,7 @@ void FScriptArrayWrapper::InternalGet(const v8::FunctionCallbackInfo<v8::Value>&
+     auto Ret = Inner->UEToJs(Isolate, Context, DataPtr, PassByPointer);
+     if (Inner->NeedLinkOuter && PassByPointer)
+     {
+-        LinkOuterImpl(Context, Info.Holder(), Ret);
++        LinkOuterImpl(Context, Info.This(), Ret);
+     }
+     Info.GetReturnValue().Set(Ret);
+ }
+@@ -108,8 +108,8 @@ void FScriptArrayWrapper::Set(const v8::FunctionCallbackInfo<v8::Value>& Info)
+ 
+     CHECK_V8_ARGS_LEN(2);
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.Holder(), 0);
+-    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.This(), 0);
++    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     if (!Inner->IsPropertyValid())
+     {
+         FV8Utils::ThrowException(Isolate, "item info is invalid!");
+@@ -149,8 +149,8 @@ void FScriptArrayWrapper::RemoveAt(const v8::FunctionCallbackInfo<v8::Value>& In
+ 
+     CHECK_V8_ARGS_LEN(1);
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.Holder(), 0);
+-    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.This(), 0);
++    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     if (!Inner->IsPropertyValid())
+     {
+         FV8Utils::ThrowException(Isolate, "item info is invalid!");
+@@ -182,7 +182,7 @@ void FScriptArrayWrapper::IsValidIndex(const v8::FunctionCallbackInfo<v8::Value>
+ 
+     CHECK_V8_ARGS_LEN(1);
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.Holder(), 0);
++    auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.This(), 0);
+     int32 Index = Info[0]->Int32Value(Context).ToChecked();
+     Info.GetReturnValue().Set(Self->IsValidIndex(Index));
+ }
+@@ -193,8 +193,8 @@ void FScriptArrayWrapper::Empty(const v8::FunctionCallbackInfo<v8::Value>& Info)
+     v8::HandleScope HandleScope(Isolate);
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.Holder(), 0);
+-    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.This(), 0);
++    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     if (!Inner->IsPropertyValid())
+     {
+         FV8Utils::ThrowException(Isolate, "item info is invalid!");
+@@ -235,8 +235,8 @@ int32 FScriptArrayWrapper::FindIndexInner(const v8::FunctionCallbackInfo<v8::Val
+     v8::HandleScope HandleScope(Isolate);
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.Holder(), 0);
+-    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptArray>(Info.This(), 0);
++    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     if (!Inner->IsPropertyValid())
+     {
+         FV8Utils::ThrowException(Isolate, "item info is invalid!");
+@@ -295,8 +295,8 @@ void FScriptSetWrapper::Add(const v8::FunctionCallbackInfo<v8::Value>& Info)
+ 
+     CHECK_V8_ARGS_LEN(1);
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.Holder(), 0);
+-    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.This(), 0);
++    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     if (!Inner->IsPropertyValid())
+     {
+         FV8Utils::ThrowException(Isolate, "item info is invalid!");
+@@ -329,8 +329,8 @@ void FScriptSetWrapper::InternalGet(const v8::FunctionCallbackInfo<v8::Value>& I
+ 
+     CHECK_V8_ARGS_LEN(1);
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.Holder(), 0);
+-    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.This(), 0);
++    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     if (!Inner->IsPropertyValid())
+     {
+         FV8Utils::ThrowException(Isolate, "item info is invalid!");
+@@ -350,7 +350,7 @@ void FScriptSetWrapper::InternalGet(const v8::FunctionCallbackInfo<v8::Value>& I
+         auto Ret = Inner->UEToJs(Isolate, Context, Data, PassByPointer);
+         if (Inner->NeedLinkOuter && PassByPointer)
+         {
+-            LinkOuterImpl(Context, Info.Holder(), Ret);
++            LinkOuterImpl(Context, Info.This(), Ret);
+         }
+         Info.GetReturnValue().Set(Ret);
+     }
+@@ -388,8 +388,8 @@ void FScriptSetWrapper::RemoveAt(const v8::FunctionCallbackInfo<v8::Value>& Info
+ 
+     CHECK_V8_ARGS_LEN(1);
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.Holder(), 0);
+-    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.This(), 0);
++    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     if (!Inner->IsPropertyValid())
+     {
+         FV8Utils::ThrowException(Isolate, "item info is invalid!");
+@@ -417,7 +417,7 @@ void FScriptSetWrapper::GetMaxIndex(const v8::FunctionCallbackInfo<v8::Value>& I
+     v8::HandleScope HandleScope(Isolate);
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.Holder(), 0);
++    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.This(), 0);
+     uint32 Result = Self->GetMaxIndex();
+     Info.GetReturnValue().Set(Result);
+ }
+@@ -430,7 +430,7 @@ void FScriptSetWrapper::IsValidIndex(const v8::FunctionCallbackInfo<v8::Value>&
+ 
+     CHECK_V8_ARGS_LEN(1);
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.Holder(), 0);
++    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.This(), 0);
+     int32 Index = Info[0]->Int32Value(Context).ToChecked();
+     uint32 Result = Self->IsValidIndex(Index);
+     Info.GetReturnValue().Set(Result);
+@@ -442,8 +442,8 @@ void FScriptSetWrapper::Empty(const v8::FunctionCallbackInfo<v8::Value>& Info)
+     v8::HandleScope HandleScope(Isolate);
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.Holder(), 0);
+-    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.This(), 0);
++    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     if (!Inner->IsPropertyValid())
+     {
+         FV8Utils::ThrowException(Isolate, "item info is invalid!");
+@@ -459,8 +459,8 @@ int32 FScriptSetWrapper::FindIndexInner(const v8::FunctionCallbackInfo<v8::Value
+     v8::HandleScope HandleScope(Isolate);
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.Holder(), 0);
+-    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptSet>(Info.This(), 0);
++    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     if (!Inner->IsPropertyValid())
+     {
+         FV8Utils::ThrowException(Isolate, "item info is invalid!");
+@@ -513,10 +513,10 @@ void FScriptMapWrapper::Add(const v8::FunctionCallbackInfo<v8::Value>& Info)
+ 
+     CHECK_V8_ARGS_LEN(2);
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.Holder(), 0);
+-    auto KeyPropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.This(), 0);
++    auto KeyPropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     auto KeyProperty = KeyPropertyTranslator->Property;
+-    auto ValuePropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 2);
++    auto ValuePropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 2);
+     auto ValueProperty = ValuePropertyTranslator->Property;
+     if (!KeyPropertyTranslator->IsPropertyValid() || !ValuePropertyTranslator->IsPropertyValid())
+     {
+@@ -564,10 +564,10 @@ void FScriptMapWrapper::InternalGet(const v8::FunctionCallbackInfo<v8::Value>& I
+ 
+     CHECK_V8_ARGS_LEN(1);
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.Holder(), 0);
+-    auto KeyPropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.This(), 0);
++    auto KeyPropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     auto KeyProperty = KeyPropertyTranslator->Property;
+-    auto ValuePropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 2);
++    auto ValuePropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 2);
+     auto ValueProperty = ValuePropertyTranslator->Property;
+     if (!KeyPropertyTranslator->IsPropertyValid() || !ValuePropertyTranslator->IsPropertyValid())
+     {
+@@ -591,7 +591,7 @@ void FScriptMapWrapper::InternalGet(const v8::FunctionCallbackInfo<v8::Value>& I
+         auto Ret = ValuePropertyTranslator->UEToJs(Isolate, Context, ValuePtr, PassByPointer);
+         if (ValuePropertyTranslator->NeedLinkOuter && PassByPointer)
+         {
+-            LinkOuterImpl(Context, Info.Holder(), Ret);
++            LinkOuterImpl(Context, Info.This(), Ret);
+         }
+         Info.GetReturnValue().Set(Ret);
+     }
+@@ -621,10 +621,10 @@ void FScriptMapWrapper::Remove(const v8::FunctionCallbackInfo<v8::Value>& Info)
+ 
+     CHECK_V8_ARGS_LEN(1);
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.Holder(), 0);
+-    auto KeyPropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.This(), 0);
++    auto KeyPropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     auto KeyProperty = KeyPropertyTranslator->Property;
+-    auto ValuePropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 2);
++    auto ValuePropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 2);
+     auto ValueProperty = ValuePropertyTranslator->Property;
+     if (!KeyPropertyTranslator->IsPropertyValid() || !ValuePropertyTranslator->IsPropertyValid())
+     {
+@@ -658,7 +658,7 @@ void FScriptMapWrapper::GetMaxIndex(const v8::FunctionCallbackInfo<v8::Value>& I
+     v8::HandleScope HandleScope(Isolate);
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.Holder(), 0);
++    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.This(), 0);
+     int32 Result = Self->GetMaxIndex();
+     Info.GetReturnValue().Set(Result);
+ }
+@@ -671,7 +671,7 @@ void FScriptMapWrapper::IsValidIndex(const v8::FunctionCallbackInfo<v8::Value>&
+ 
+     CHECK_V8_ARGS_LEN(1);
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.Holder(), 0);
++    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.This(), 0);
+     int32 Index = Info[0]->Int32Value(Context).ToChecked();
+     Info.GetReturnValue().Set(Self->IsValidIndex(Index));
+ }
+@@ -684,7 +684,7 @@ void FScriptMapWrapper::GetKey(const v8::FunctionCallbackInfo<v8::Value>& Info)
+ 
+     CHECK_V8_ARGS_LEN(1);
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.Holder(), 0);
++    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.This(), 0);
+     int32 Index = Info[0]->Int32Value(Context).ToChecked();
+     if (Self->IsValidIndex(Index) == false)
+     {
+@@ -693,9 +693,9 @@ void FScriptMapWrapper::GetKey(const v8::FunctionCallbackInfo<v8::Value>& Info)
+     }
+     else
+     {
+-        auto KeyPropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++        auto KeyPropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+         auto KeyProperty = KeyPropertyTranslator->Property;
+-        auto ValuePropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 2);
++        auto ValuePropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 2);
+         auto ValueProperty = ValuePropertyTranslator->Property;
+         if (!KeyPropertyTranslator->IsPropertyValid() || !ValuePropertyTranslator->IsPropertyValid())
+         {
+@@ -716,10 +716,10 @@ void FScriptMapWrapper::Empty(const v8::FunctionCallbackInfo<v8::Value>& Info)
+     v8::HandleScope HandleScope(Isolate);
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+ 
+-    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.Holder(), 0);
+-    auto KeyPropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<FScriptMap>(Info.This(), 0);
++    auto KeyPropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     auto KeyProperty = KeyPropertyTranslator->Property;
+-    auto ValuePropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 2);
++    auto ValuePropertyTranslator = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 2);
+     auto ValueProperty = ValuePropertyTranslator->Property;
+     if (!KeyPropertyTranslator->IsPropertyValid() || !ValuePropertyTranslator->IsPropertyValid())
+     {
+@@ -758,7 +758,7 @@ void FFixSizeArrayWrapper::Num(const v8::FunctionCallbackInfo<v8::Value>& Info)
+     v8::HandleScope HandleScope(Isolate);
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+ 
+-    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     if (!Inner->IsPropertyValid())
+     {
+         FV8Utils::ThrowException(Isolate, "item info is invalid!");
+@@ -773,8 +773,8 @@ void FFixSizeArrayWrapper::InternalGet(const v8::FunctionCallbackInfo<v8::Value>
+     v8::HandleScope HandleScope(Isolate);
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+ 
+-    auto Self = FV8Utils::GetPointerFast<uint8>(Info.Holder(), 0);
+-    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<uint8>(Info.This(), 0);
++    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     if (!Inner->IsPropertyValid())
+     {
+         FV8Utils::ThrowException(Isolate, "item info is invalid!");
+@@ -804,7 +804,7 @@ void FFixSizeArrayWrapper::InternalGet(const v8::FunctionCallbackInfo<v8::Value>
+     auto Ret = Inner->UEToJs(Isolate, Context, Ptr, PassByPointer);
+     if (Inner->NeedLinkOuter && PassByPointer)
+     {
+-        LinkOuterImpl(Context, Info.Holder(), Ret);
++        LinkOuterImpl(Context, Info.This(), Ret);
+     }
+     Info.GetReturnValue().Set(Ret);
+ }
+@@ -825,8 +825,8 @@ void FFixSizeArrayWrapper::Set(const v8::FunctionCallbackInfo<v8::Value>& Info)
+     v8::HandleScope HandleScope(Isolate);
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+ 
+-    auto Self = FV8Utils::GetPointerFast<uint8>(Info.Holder(), 0);
+-    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.Holder(), 1);
++    auto Self = FV8Utils::GetPointerFast<uint8>(Info.This(), 0);
++    auto Inner = FV8Utils::GetPointerFast<FPropertyTranslator>(Info.This(), 1);
+     if (!Inner->IsPropertyValid())
+     {
+         FV8Utils::ThrowException(Isolate, "item info is invalid!");
+diff --git a/Source/JsEnv/Private/ContainerWrapper.h b/Source/JsEnv/Private/ContainerWrapper.h
+index b58882c..c525873 100644
+--- a/Source/JsEnv/Private/ContainerWrapper.h
++++ b/Source/JsEnv/Private/ContainerWrapper.h
+@@ -269,7 +269,7 @@ public:
+         v8::HandleScope HandleScope(Isolate);
+         v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+ 
+-        auto Self = FV8Utils::GetPointerFast<T>(Info.Holder());
++        auto Self = FV8Utils::GetPointerFast<T>(Info.This());
+         Info.GetReturnValue().Set(Self->Num());
+     }
+ };
+diff --git a/Source/JsEnv/Private/DelegateWrapper.cpp b/Source/JsEnv/Private/DelegateWrapper.cpp
+index 0417e4e..06cb099 100644
+--- a/Source/JsEnv/Private/DelegateWrapper.cpp
++++ b/Source/JsEnv/Private/DelegateWrapper.cpp
+@@ -37,7 +37,7 @@ void FDelegateWrapper::IsBound(const v8::FunctionCallbackInfo<v8::Value>& Info)
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+     v8::Context::Scope ContextScope(Context);
+ 
+-    auto DelegatePtr = FV8Utils::GetPointerFast<FScriptDelegate>(Info.Holder(), 0);
++    auto DelegatePtr = FV8Utils::GetPointerFast<FScriptDelegate>(Info.This(), 0);
+ 
+     Info.GetReturnValue().Set(DelegatePtr->IsBound());
+ }
+@@ -52,7 +52,7 @@ void FDelegateWrapper::Bind(const v8::FunctionCallbackInfo<v8::Value>& Info)
+ 
+     if (Info.Length() == 1 && Info[0]->IsFunction())
+     {
+-        auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.Holder(), 0);
++        auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.This(), 0);
+         FV8Utils::IsolateData<IObjectMapper>(Isolate)->AddToDelegate(
+             Isolate, Context, DelegatePtr, v8::Local<v8::Function>::Cast(Info[0]));
+         return;
+@@ -66,7 +66,7 @@ void FDelegateWrapper::Bind(const v8::FunctionCallbackInfo<v8::Value>& Info)
+                 FV8Utils::ThrowException(Isolate, "passing a invalid object");
+                 return;
+             }
+-            auto DelegatePtr = FV8Utils::GetPointerFast<FScriptDelegate>(Info.Holder(), 0);
++            auto DelegatePtr = FV8Utils::GetPointerFast<FScriptDelegate>(Info.This(), 0);
+             FScriptDelegate Delegate;
+             Delegate.BindUFunction(Object, FName(*FV8Utils::ToFString(Isolate, Info[1])));
+             *DelegatePtr = Delegate;
+@@ -84,7 +84,7 @@ void FDelegateWrapper::Unbind(const v8::FunctionCallbackInfo<v8::Value>& Info)
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+     v8::Context::Scope ContextScope(Context);
+ 
+-    auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.Holder(), 0);
++    auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.This(), 0);
+     FV8Utils::IsolateData<IObjectMapper>(Isolate)->ClearDelegate(Isolate, Context, DelegatePtr);
+ }
+ 
+@@ -96,7 +96,7 @@ void FDelegateWrapper::Execute(const v8::FunctionCallbackInfo<v8::Value>& Info)
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+     v8::Context::Scope ContextScope(Context);
+ 
+-    auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.Holder(), 0);
++    auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.This(), 0);
+     FV8Utils::IsolateData<IObjectMapper>(Isolate)->ExecuteDelegate(Isolate, Context, Info, DelegatePtr);
+ }
+ 
+@@ -127,7 +127,7 @@ void FMulticastDelegateWrapper::Add(const v8::FunctionCallbackInfo<v8::Value>& I
+ 
+     if (Info.Length() == 1 && Info[0]->IsFunction())
+     {
+-        auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.Holder(), 0);
++        auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.This(), 0);
+         FV8Utils::IsolateData<IObjectMapper>(Isolate)->AddToDelegate(
+             Isolate, Context, DelegatePtr, v8::Local<v8::Function>::Cast(Info[0]));
+         return;
+@@ -141,7 +141,7 @@ void FMulticastDelegateWrapper::Add(const v8::FunctionCallbackInfo<v8::Value>& I
+                 FV8Utils::ThrowException(Isolate, "passing a invalid object");
+                 return;
+             }
+-            auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.Holder(), 0);
++            auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.This(), 0);
+             if (auto Property = CastFieldMacro<MulticastDelegatePropertyMacro>(
+                     FV8Utils::IsolateData<IObjectMapper>(Isolate)->FindDelegateProperty(DelegatePtr)))
+             {
+@@ -175,7 +175,7 @@ void FMulticastDelegateWrapper::Remove(const v8::FunctionCallbackInfo<v8::Value>
+ 
+     if (Info.Length() == 1 && Info[0]->IsFunction())
+     {
+-        auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.Holder(), 0);
++        auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.This(), 0);
+         FV8Utils::IsolateData<IObjectMapper>(Isolate)->RemoveFromDelegate(
+             Isolate, Context, DelegatePtr, v8::Local<v8::Function>::Cast(Info[0]));
+     }
+@@ -193,7 +193,7 @@ void FMulticastDelegateWrapper::Clear(const v8::FunctionCallbackInfo<v8::Value>&
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+     v8::Context::Scope ContextScope(Context);
+ 
+-    auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.Holder(), 0);
++    auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.This(), 0);
+     FV8Utils::IsolateData<IObjectMapper>(Isolate)->ClearDelegate(Isolate, Context, DelegatePtr);
+ }
+ 
+@@ -205,7 +205,7 @@ void FMulticastDelegateWrapper::Broadcast(const v8::FunctionCallbackInfo<v8::Val
+     v8::Local<v8::Context> Context = Isolate->GetCurrentContext();
+     v8::Context::Scope ContextScope(Context);
+ 
+-    auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.Holder(), 0);
++    auto DelegatePtr = FV8Utils::GetPointerFast<void>(Info.This(), 0);
+     FV8Utils::IsolateData<IObjectMapper>(Isolate)->ExecuteDelegate(Isolate, Context, Info, DelegatePtr);
+ }
+ }    // namespace PUERTS_NAMESPACE
+diff --git a/Source/JsEnv/Private/FunctionTranslator.cpp b/Source/JsEnv/Private/FunctionTranslator.cpp
+index 00bb283..f378543 100644
+--- a/Source/JsEnv/Private/FunctionTranslator.cpp
++++ b/Source/JsEnv/Private/FunctionTranslator.cpp
+@@ -240,7 +240,7 @@ void FFunctionTranslator::Call(const v8::FunctionCallbackInfo<v8::Value>& Info)
+ void FFunctionTranslator::Call(
+     v8::Isolate* Isolate, v8::Local<v8::Context>& Context, const v8::FunctionCallbackInfo<v8::Value>& Info)
+ {
+-    UObject* CallObject = IsStatic ? BindObject.Get() : FV8Utils::GetUObject(Info.Holder());
++    UObject* CallObject = IsStatic ? BindObject.Get() : FV8Utils::GetUObject(Info.This());
+     if (!CallObject)
+     {
+         if (IsStatic)    //延时初始化
+@@ -710,7 +710,7 @@ void FExtensionMethodTranslator::CallExtension(
+     if (Params)
+         Function->InitializeStruct(Params);
+ 
+-    if (!Arguments[0]->JsToUEInContainer(Isolate, Context, Info.Holder(), Params, false))
++    if (!Arguments[0]->JsToUEInContainer(Isolate, Context, Info.This(), Params, false))
+     {
+         if (Params)
+         {
+@@ -760,7 +760,7 @@ void FExtensionMethodTranslator::CallExtension(
+     if (!IsUObject)    // FScriptStruct, so copy back
+     {
+         auto StructProperty = Arguments[0]->StructProperty;
+-        StructProperty->CopySingleValue(FV8Utils::GetPointer(Info.Holder()), StructProperty->ContainerPtrToValuePtr<void>(Params));
++        StructProperty->CopySingleValue(FV8Utils::GetPointer(Info.This()), StructProperty->ContainerPtrToValuePtr<void>(Params));
+     }
+ 
+     if (Params)
+diff --git a/Source/JsEnv/Private/JsEnvImpl.cpp b/Source/JsEnv/Private/JsEnvImpl.cpp
+index 2eac202..d83ea97 100644
+--- a/Source/JsEnv/Private/JsEnvImpl.cpp
++++ b/Source/JsEnv/Private/JsEnvImpl.cpp
+@@ -1189,7 +1189,12 @@ bool FJsEnvImpl::IdleNotificationDeadline(double DeadlineInSeconds)
+     v8::Locker Locker(MainIsolate);
+ #endif
+ #ifndef WITH_QUICKJS
++#if V8_MAJOR_VERSION >= 12
++    // V8 12 removed idle notifications; its own heuristics schedule the idle-time GC.
++    return true;
++#else
+     return MainIsolate->IdleNotificationDeadline(DeadlineInSeconds);
++#endif
+ #else
+     return true;
+ #endif
+@@ -3835,8 +3840,12 @@ v8::MaybeLocal<v8::Module> FJsEnvImpl::FetchESModuleTree(v8::Local<v8::Context>
+     }
+ 
+ #if V8_MAJOR_VERSION > 8
++#if V8_MAJOR_VERSION >= 12
++    v8::ScriptOrigin Origin(FV8Utils::ToV8String(Isolate, FileName), 0, 0, false, -1, v8::Local<v8::Value>(), false, false, true);
++#else
+     v8::ScriptOrigin Origin(
+         Isolate, FV8Utils::ToV8String(Isolate, FileName), 0, 0, false, -1, v8::Local<v8::Value>(), false, false, true);
++#endif
+ #else
+     v8::ScriptOrigin Origin(FV8Utils::ToV8String(Isolate, FileName), v8::Local<v8::Integer>(), v8::Local<v8::Integer>(),
+         v8::Local<v8::Boolean>(), v8::Local<v8::Integer>(), v8::Local<v8::Value>(), v8::Local<v8::Boolean>(),
+@@ -3984,7 +3993,11 @@ void FJsEnvImpl::ExecuteModule(const FString& ModuleName)
+ #endif
+         v8::Local<v8::String> Name = FV8Utils::ToV8String(Isolate, FormattedScriptUrl);
+ #if V8_MAJOR_VERSION > 8
+-        v8::ScriptOrigin Origin(Isolate, Name);
++        v8::ScriptOrigin Origin(
++#if V8_MAJOR_VERSION < 12
++            Isolate,
++#endif
++            Name);
+ #else
+         v8::ScriptOrigin Origin(Name);
+ #endif
+@@ -4065,7 +4078,11 @@ void FJsEnvImpl::EvalScript(const v8::FunctionCallbackInfo<v8::Value>& Info)
+ #endif
+     v8::Local<v8::String> Name = FV8Utils::ToV8String(Isolate, FormattedScriptUrl);
+ #if V8_MAJOR_VERSION > 8
+-    v8::ScriptOrigin Origin(Isolate, Name);
++    v8::ScriptOrigin Origin(
++#if V8_MAJOR_VERSION < 12
++            Isolate,
++#endif
++            Name);
+ #else
+     v8::ScriptOrigin Origin(Name);
+ #endif
+diff --git a/Source/JsEnv/Private/PesapiV8Impl.cpp b/Source/JsEnv/Private/PesapiV8Impl.cpp
+index 5ef456f..4ca519f 100644
+--- a/Source/JsEnv/Private/PesapiV8Impl.cpp
++++ b/Source/JsEnv/Private/PesapiV8Impl.cpp
+@@ -1,4 +1,4 @@
+-﻿/*
++/*
+  * Tencent is pleased to support the open source community by making Puerts available.
+  * Copyright (C) 2020 Tencent.  All rights reserved.
+  * Puerts is licensed under the BSD 3-Clause License, except for the third-party components listed in the file 'LICENSE' which may
+@@ -455,7 +455,7 @@ pesapi_value pesapi_get_this(pesapi_callback_info pinfo)
+ pesapi_value pesapi_get_holder(pesapi_callback_info pinfo)
+ {
+     auto info = reinterpret_cast<const v8::FunctionCallbackInfo<v8::Value>*>(pinfo);
+-    return v8impl::PesapiValueFromV8LocalValue((*info).Holder());
++    return v8impl::PesapiValueFromV8LocalValue((*info).This());
+ }
+ 
+ void* pesapi_get_userdata(pesapi_callback_info pinfo)
+@@ -786,7 +786,9 @@ pesapi_value pesapi_eval(pesapi_env env, const uint8_t* code, size_t code_size,
+     buff.insert(buff.end(), code, code + code_size);
+     buff.push_back('\0');
+     v8::Local<v8::String> source = v8::String::NewFromUtf8(isolate, buff.data(), v8::NewStringType::kNormal).ToLocalChecked();
+-#if V8_MAJOR_VERSION > 8
++#if V8_MAJOR_VERSION >= 12
++    v8::ScriptOrigin origin(url);
++#elif V8_MAJOR_VERSION > 8
+     v8::ScriptOrigin origin(isolate, url);
+ #else
+     v8::ScriptOrigin origin(url);
+diff --git a/Source/JsEnv/Private/PropertyTranslator.cpp b/Source/JsEnv/Private/PropertyTranslator.cpp
+index e6d5174..e57b3f2 100644
+--- a/Source/JsEnv/Private/PropertyTranslator.cpp
++++ b/Source/JsEnv/Private/PropertyTranslator.cpp
+@@ -48,7 +48,7 @@ void FPropertyTranslator::Getter(
+ 
+     if (OwnerIsClass)
+     {
+-        UObject* Object = FV8Utils::GetUObject(Info.Holder());
++        UObject* Object = FV8Utils::GetUObject(Info.This());
+         if (!Object)
+         {
+             FV8Utils::ThrowException(Isolate, "access a null object");
+@@ -63,7 +63,7 @@ void FPropertyTranslator::Getter(
+     }
+     else
+     {
+-        auto Ptr = FV8Utils::GetPointer(Info.Holder());
++        auto Ptr = FV8Utils::GetPointer(Info.This());
+         if (!Ptr)
+         {
+             FV8Utils::ThrowException(Isolate, "access a null struct");
+@@ -73,7 +73,7 @@ void FPropertyTranslator::Getter(
+     }
+     if (NeedLinkOuter)
+     {
+-        LinkOuterImpl(Context, Info.Holder(), Ret);
++        LinkOuterImpl(Context, Info.This(), Ret);
+     }
+     Info.GetReturnValue().Set(Ret);
+ }
+@@ -98,7 +98,7 @@ void FPropertyTranslator::Setter(v8::Isolate* Isolate, v8::Local<v8::Context>& C
+ 
+     if (OwnerIsClass)
+     {
+-        UObject* Object = FV8Utils::GetUObject(Info.Holder());
++        UObject* Object = FV8Utils::GetUObject(Info.This());
+         if (!Object)
+         {
+             FV8Utils::ThrowException(Isolate, "access a null object");
+@@ -113,7 +113,7 @@ void FPropertyTranslator::Setter(v8::Isolate* Isolate, v8::Local<v8::Context>& C
+     }
+     else
+     {
+-        auto Ptr = FV8Utils::GetPointer(Info.Holder());
++        auto Ptr = FV8Utils::GetPointer(Info.This());
+         if (!Ptr)
+         {
+             FV8Utils::ThrowException(Isolate, "access a null struct");
+@@ -139,7 +139,7 @@ void FPropertyTranslator::DelegateGetter(const v8::FunctionCallbackInfo<v8::Valu
+         return;
+     }
+ 
+-    auto Object = FV8Utils::GetUObject(Info.Holder());
++    auto Object = FV8Utils::GetUObject(Info.This());
+     if (!Object)
+     {
+         FV8Utils::ThrowException(Isolate, "access a null object");
+diff --git a/Source/JsEnv/Private/SoftObjectWrapper.cpp b/Source/JsEnv/Private/SoftObjectWrapper.cpp
+index 3fa762d..5d426e5 100644
+--- a/Source/JsEnv/Private/SoftObjectWrapper.cpp
++++ b/Source/JsEnv/Private/SoftObjectWrapper.cpp
+@@ -21,7 +21,7 @@ static void GenericObjectGet(const v8::FunctionCallbackInfo<v8::Value>& Info, FS
+     auto Isolate = Info.GetIsolate();
+     auto Context = Isolate->GetCurrentContext();
+ 
+-    FSoftObjectPtr* Ptr = FV8Utils::GetPointerFast<FSoftObjectPtr>(Info.Holder());
++    FSoftObjectPtr* Ptr = FV8Utils::GetPointerFast<FSoftObjectPtr>(Info.This());
+     if (!Ptr)
+     {
+         FV8Utils::ThrowException(Isolate, "passing a invalid object for FSoftObjectPtr");
+@@ -32,7 +32,7 @@ static void GenericObjectGet(const v8::FunctionCallbackInfo<v8::Value>& Info, FS
+     if (Obj)
+     {
+         UClass* PropertyClass = nullptr;
+-        if (UObject* Object = FV8Utils::GetUObject(Info.Holder(), 1))
++        if (UObject* Object = FV8Utils::GetUObject(Info.This(), 1))
+         {
+             if (FV8Utils::IsReleasedPtr(Object))
+             {
+@@ -43,7 +43,7 @@ static void GenericObjectGet(const v8::FunctionCallbackInfo<v8::Value>& Info, FS
+         }
+ 
+         UClass* MetaClass = nullptr;
+-        if (UObject* Object = FV8Utils::GetUObject(Info.Holder(), 2))
++        if (UObject* Object = FV8Utils::GetUObject(Info.This(), 2))
+         {
+             if (FV8Utils::IsReleasedPtr(Object))
+             {
+diff --git a/Source/JsEnv/Private/StructWrapper.cpp b/Source/JsEnv/Private/StructWrapper.cpp
+index b894519..7e442c0 100644
+--- a/Source/JsEnv/Private/StructWrapper.cpp
++++ b/Source/JsEnv/Private/StructWrapper.cpp
+@@ -11,6 +11,17 @@
+ #include "ObjectMapper.h"
+ #include "PathEscape.h"
+ 
++// V8 12 changed named property interceptors to return v8::Intercepted, and setters take PropertyCallbackInfo<void>.
++#if !defined(WITH_QUICKJS) && V8_MAJOR_VERSION >= 12
++#define PUERTS_INTERCEPTED v8::Intercepted
++#define PUERTS_INTERCEPT_RESULT(H) ((H) ? v8::Intercepted::kYes : v8::Intercepted::kNo)
++#define PUERTS_SETTER_INFO_T void
++#else
++#define PUERTS_INTERCEPTED void
++#define PUERTS_INTERCEPT_RESULT(H) ((void) (H))
++#define PUERTS_SETTER_INFO_T v8::Value
++#endif
++
+ namespace PUERTS_NAMESPACE
+ {
+ void FStructWrapper::AddExtensionMethods(const std::vector<UFunction*>& InExtensionMethods)
+@@ -369,10 +380,11 @@ v8::Local<v8::FunctionTemplate> FStructWrapper::ToFunctionTemplate(v8::Isolate*
+ #ifndef WITH_QUICKJS
+     if (!IsReuseTemplate)
+         Result->InstanceTemplate()->SetHandler(v8::NamedPropertyHandlerConfiguration(
+-            [](v8::Local<v8::Name> Property, const v8::PropertyCallbackInfo<v8::Value>& Info)
++            [](v8::Local<v8::Name> Property, const v8::PropertyCallbackInfo<v8::Value>& Info) -> PUERTS_INTERCEPTED
+             {
++                bool Handled = false;
+                 if (Property->IsSymbol())
+-                    return;
++                    return PUERTS_INTERCEPT_RESULT(false);
+                 auto InnerIsolate = Info.GetIsolate();
+                 auto Context = InnerIsolate->GetCurrentContext();
+                 auto This = Info.This();
+@@ -384,6 +396,7 @@ v8::Local<v8::FunctionTemplate> FStructWrapper::ToFunctionTemplate(v8::Isolate*
+                     if (Proto->Has(Context, FixedPropertyName).FromMaybe(false))
+                     {
+                         Info.GetReturnValue().Set(This->Get(Context, FixedPropertyName).ToLocalChecked());
++                        Handled = true;
+                         auto DescriptorVal = Proto->GetOwnPropertyDescriptor(Context, FixedPropertyName).ToLocalChecked();
+                         while (!DescriptorVal->IsObject())
+                         {
+@@ -412,11 +425,13 @@ v8::Local<v8::FunctionTemplate> FStructWrapper::ToFunctionTemplate(v8::Isolate*
+                         }
+                     }
+                 }
++                return PUERTS_INTERCEPT_RESULT(Handled);
+             },
+-            [](v8::Local<v8::Name> Property, v8::Local<v8::Value> Value, const v8::PropertyCallbackInfo<v8::Value>& Info)
++            [](v8::Local<v8::Name> Property, v8::Local<v8::Value> Value, const v8::PropertyCallbackInfo<PUERTS_SETTER_INFO_T>& Info) -> PUERTS_INTERCEPTED
+             {
++                bool Handled = false;
+                 if (Property->IsSymbol())
+-                    return;
++                    return PUERTS_INTERCEPT_RESULT(false);
+                 auto InnerIsolate = Info.GetIsolate();
+                 auto Context = InnerIsolate->GetCurrentContext();
+                 auto This = Info.This();
+@@ -428,7 +443,7 @@ v8::Local<v8::FunctionTemplate> FStructWrapper::ToFunctionTemplate(v8::Isolate*
+                     if (Proto->Has(Context, FixedPropertyName).FromMaybe(false))
+                     {
+                         auto _UnUsed = This->Set(Context, FixedPropertyName, Value);
+-                        Info.GetReturnValue().Set(Value);
++                        Handled = true;
+                         auto DescriptorVal = Proto->GetOwnPropertyDescriptor(Context, FixedPropertyName).ToLocalChecked();
+                         while (!DescriptorVal->IsObject())
+                         {
+@@ -452,6 +467,7 @@ v8::Local<v8::FunctionTemplate> FStructWrapper::ToFunctionTemplate(v8::Isolate*
+                         }
+                     }
+                 }
++                return PUERTS_INTERCEPT_RESULT(Handled);
+             },
+             nullptr, nullptr, nullptr, v8::Local<v8::Value>(), v8::PropertyHandlerFlags::kNonMasking));
+ #endif
+diff --git a/Source/JsEnv/Private/WeakObjectPtrWrapper.cpp b/Source/JsEnv/Private/WeakObjectPtrWrapper.cpp
+index 4b13a2f..6a8e39c 100644
+--- a/Source/JsEnv/Private/WeakObjectPtrWrapper.cpp
++++ b/Source/JsEnv/Private/WeakObjectPtrWrapper.cpp
+@@ -18,7 +18,7 @@ void FWeakObjectPtrWrapper::Get(const v8::FunctionCallbackInfo<v8::Value>& Info)
+     auto Isolate = Info.GetIsolate();
+     auto Context = Isolate->GetCurrentContext();
+ 
+-    TWeakObjectPtr<UObject>* Ptr = FV8Utils::GetPointerFast<TWeakObjectPtr<UObject>>(Info.Holder());
++    TWeakObjectPtr<UObject>* Ptr = FV8Utils::GetPointerFast<TWeakObjectPtr<UObject>>(Info.This());
+     if (!Ptr)
+     {
+         FV8Utils::ThrowException(Isolate, "invalid weak object ptr wrapper");
+@@ -40,7 +40,7 @@ void FWeakObjectPtrWrapper::IsValid(const v8::FunctionCallbackInfo<v8::Value>& I
+ {
+     auto Isolate = Info.GetIsolate();
+ 
+-    TWeakObjectPtr<UObject>* Ptr = FV8Utils::GetPointerFast<TWeakObjectPtr<UObject>>(Info.Holder());
++    TWeakObjectPtr<UObject>* Ptr = FV8Utils::GetPointerFast<TWeakObjectPtr<UObject>>(Info.This());
+     if (!Ptr)
+     {
+         Info.GetReturnValue().Set(v8::Boolean::New(Isolate, false));
+diff --git a/Source/JsEnv/Private/WebSocketImpl.cpp b/Source/JsEnv/Private/WebSocketImpl.cpp
+index 803ee73..2e6e674 100644
+--- a/Source/JsEnv/Private/WebSocketImpl.cpp
++++ b/Source/JsEnv/Private/WebSocketImpl.cpp
+@@ -444,7 +444,7 @@ void InitWebsocketPPWrap(v8::Local<v8::Context> Context)
+     WSTemplate->PrototypeTemplate()->Set(v8::String::NewFromUtf8(Isolate, "send").ToLocalChecked(),
+         v8::FunctionTemplate::New(Isolate,
+             [](const v8::FunctionCallbackInfo<v8::Value>& Info) {
+-                static_cast<PUERTS_NAMESPACE::V8WebSocketClientImpl*>(Info.Holder()->GetAlignedPointerFromInternalField(0))
++                static_cast<PUERTS_NAMESPACE::V8WebSocketClientImpl*>(Info.This()->GetAlignedPointerFromInternalField(0))
+                     ->Send(Info);
+             }));
+ 
+@@ -452,21 +452,21 @@ void InitWebsocketPPWrap(v8::Local<v8::Context> Context)
+         v8::FunctionTemplate::New(Isolate,
+             [](const v8::FunctionCallbackInfo<v8::Value>& Info)
+             {
+-                static_cast<PUERTS_NAMESPACE::V8WebSocketClientImpl*>(Info.Holder()->GetAlignedPointerFromInternalField(0))
++                static_cast<PUERTS_NAMESPACE::V8WebSocketClientImpl*>(Info.This()->GetAlignedPointerFromInternalField(0))
+                     ->SetHandles(Info);
+             }));
+ 
+     WSTemplate->PrototypeTemplate()->Set(v8::String::NewFromUtf8(Isolate, "close").ToLocalChecked(),
+         v8::FunctionTemplate::New(Isolate,
+             [](const v8::FunctionCallbackInfo<v8::Value>& Info) {
+-                static_cast<PUERTS_NAMESPACE::V8WebSocketClientImpl*>(Info.Holder()->GetAlignedPointerFromInternalField(0))
++                static_cast<PUERTS_NAMESPACE::V8WebSocketClientImpl*>(Info.This()->GetAlignedPointerFromInternalField(0))
+                     ->Close(Info);
+             }));
+ 
+     WSTemplate->PrototypeTemplate()->Set(v8::String::NewFromUtf8(Isolate, "statue").ToLocalChecked(),
+         v8::FunctionTemplate::New(Isolate,
+             [](const v8::FunctionCallbackInfo<v8::Value>& Info) {
+-                static_cast<PUERTS_NAMESPACE::V8WebSocketClientImpl*>(Info.Holder()->GetAlignedPointerFromInternalField(0))
++                static_cast<PUERTS_NAMESPACE::V8WebSocketClientImpl*>(Info.This()->GetAlignedPointerFromInternalField(0))
+                     ->Statue(Info);
+             }));
+ 
+@@ -475,7 +475,7 @@ void InitWebsocketPPWrap(v8::Local<v8::Context> Context)
+             [](const v8::FunctionCallbackInfo<v8::Value>& Info)
+             {
+                 v8::TryCatch TryCatch(Info.GetIsolate());
+-                static_cast<PUERTS_NAMESPACE::V8WebSocketClientImpl*>(Info.Holder()->GetAlignedPointerFromInternalField(0))
++                static_cast<PUERTS_NAMESPACE::V8WebSocketClientImpl*>(Info.This()->GetAlignedPointerFromInternalField(0))
+                     ->PollOne();
+             }));
+ 
+diff --git a/Source/JsEnv/Public/V8Backend.hpp b/Source/JsEnv/Public/V8Backend.hpp
+index f96927d..f86174c 100644
+--- a/Source/JsEnv/Public/V8Backend.hpp
++++ b/Source/JsEnv/Public/V8Backend.hpp
+@@ -120,7 +120,7 @@ struct API
+ 
+     V8_INLINE static v8::Local<v8::Object> GetHolder(const v8::FunctionCallbackInfo<v8::Value>& info)
+     {
+-        return info.Holder();
++        return info.This();
+     }
+ 
+     // use where GetSelfFromData is true

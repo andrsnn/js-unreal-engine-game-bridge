@@ -82,6 +82,9 @@ public:
 	UFUNCTION() FArrayBufferValue BlobGet(const FString& Url);
 	UFUNCTION() FString BlobType(const FString& Url);
 	UFUNCTION() void BlobRevoke(const FString& Url);
+	/** V8's sampling profiler on the calling thread's isolate: "start", or "stop <file>" to write a .cpuprofile
+	 *  (Chrome DevTools' Performance panel opens it). Called from the game's JavaScript, for example through /bridge/eval. */
+	UFUNCTION() FString ProfileJs(const FString& Command);
 	void StopWorkers();
 
 	/** With the game's JavaScript on its own thread (-JsgbJsThread), calls that change Unreal state are
@@ -114,9 +117,6 @@ public:
 	// Scene sink (Runtime/src/sceneExport.ts describes the layout).
 	UFUNCTION() void Geometry(int32 Id, FArrayBuffer Positions, FArrayBuffer Normals, FArrayBuffer UVs, FArrayBuffer Colors, int32 ColorSize, FArrayBuffer Indices, const FString& Groups);
 	UFUNCTION() void ReleaseGeometry(int32 Id);
-	/** A material or texture the game disposed of or dropped: its Unreal copy is freed. */
-	UFUNCTION() void ReleaseMaterial(int32 Id);
-	UFUNCTION() void ReleaseTexture(int32 Id);
 	UFUNCTION() void Material(int32 Id, const FString& Json);
 	UFUNCTION() void Texture(int32 Id, const FString& Json, FArrayBuffer Bytes);
 	UFUNCTION() void Frame(FArrayBuffer Floats, int32 Count, FArrayBuffer Instances, int32 InstanceFloats);

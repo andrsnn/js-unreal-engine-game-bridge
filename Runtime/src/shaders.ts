@@ -12,13 +12,7 @@ import {channelFor, isExtraAttribute} from './attributes';
 
 export type ShaderInput = {name: string; source: 'localPosition' | 'instanceColor' | 'localAxis' | 'localOrigin' | 'localNormal' | 'uv' | 'vertexColor' | 'primitiveData' | 'instanceData' | 'collection' | 'scalar' | 'vector' | 'texture' | 'cube' | 'volume' | 'worldPosition';
   param?: string; index?: number};
-/** emissiveOutput: the fragment body also writes the shader's emitted light to a second Custom-node output, JsgbEmissive
- *  (built-in materials patched in onBeforeCompile that add to totalEmissiveRadiance). */
-export type TranslatedShader = {key: string; hlsl: string; inputs: ShaderInput[]; vertexHlsl: string; vertexInputs: ShaderInput[]; lit?: boolean; encoded?: boolean; emissiveOutput?: boolean;
-  /** Drawn on an InstancedMesh: Unreal takes the instance's model matrix for the fragment stage in the vertex shader. */
-  instanced?: boolean;
-  /** A camera-facing instanced quad whose world position offset takes the JsgbDepthPull scalar (see the vertex stage). */
-  depthPull?: boolean};
+export type TranslatedShader = {key: string; hlsl: string; inputs: ShaderInput[]; vertexHlsl: string; vertexInputs: ShaderInput[]; lit?: boolean; encoded?: boolean};
 
 type Decl = {qualifier: string; type: string; name: string; array: string};
 const BUILTIN_UNIFORMS: Record<string, string> = {modelMatrix: 'mat4', viewMatrix: 'mat4', projectionMatrix: 'mat4', cameraPosition: 'vec3', isOrthographic: 'bool'};
@@ -98,10 +92,18 @@ function takeDeclarations(src: string, qualifiers: string[]): {src: string; decl
   return {src: out, decls};
 }
 
+// Hashing the whole shader source is slow, and a material is described again whenever a uniform moves. The key
+// is kept per material while its sources and defines stay the same.
+const sourceKeys = new WeakMap<object, {vs: string; fs: string; defines: string; raw: boolean; key: string}>();
 const sourceKey = (m: THREE.ShaderMaterial) => {
-  const s = m.vertexShader + '\u0000' + m.fragmentShader + '\u0000' + JSON.stringify(m.defines ?? {}) + (m.isRawShaderMaterial ? 'raw' : '');
+  const defines = JSON.stringify(m.defines ?? {}), raw = !!m.isRawShaderMaterial;
+  const last = sourceKeys.get(m);
+  if (last && last.vs === m.vertexShader && last.fs === m.fragmentShader && last.defines === defines && last.raw === raw) return last.key;
+  const s = m.vertexShader + '\u0000' + m.fragmentShader + '\u0000' + defines + (raw ? 'raw' : '');
   let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  return 'glsl_' + (h >>> 0).toString(16) + '_' + s.length.toString(36);
+  const key = 'glsl_' + (h >>> 0).toString(16) + '_' + s.length.toString(36);
+  sourceKeys.set(m, {vs: m.vertexShader, fs: m.fragmentShader, defines, raw, key});
+  return key;
 };
 
 /** GLSL 4.50 for glslang, plus what the HLSL glue needs to know. */
@@ -284,17 +286,16 @@ function textHash(s: string) {
   return (a >>> 0).toString(16) + (b >>> 0).toString(16) + s.length.toString(16);
 }
 /** The generated-material description for a ShaderMaterial; undefined while the compiler loads, null when it cannot be translated. */
-export function translateShaderMaterial(material: THREE.ShaderMaterial, instanced?: {color: boolean; matrix?: boolean; extras?: {name: string; size: number; offset: number}[]}): TranslatedShader | null | undefined {
+const vertexUses = new Map<string, {matrix: boolean; color: boolean}>();
+export function translateShaderMaterial(material: THREE.ShaderMaterial, instanced?: {color: boolean; extras?: {name: string; size: number; offset: number}[]}): TranslatedShader | null | undefined {
   // Drawn on an InstancedMesh, a vertex shader that reads instanceMatrix, instanceColor or per-instance attributes
-  // translates differently (see prepare and the attribute glue below). matrix: false keeps instanceMatrix the identity.
+  // translates differently (see prepare and the attribute glue below).
   const vertex = material.vertexShader ?? '';
-  const instancing = {matrix: !!instanced && instanced.matrix !== false && /\binstanceMatrix\b/.test(vertex), color: !!instanced?.color && /\binstanceColor\b/.test(vertex)};
+  let uses = vertexUses.get(vertex);
+  if (!uses) { if (vertexUses.size > 512) vertexUses.clear(); uses = {matrix: /\binstanceMatrix\b/.test(vertex), color: /\binstanceColor\b/.test(vertex)}; vertexUses.set(vertex, uses); }
+  const instancing = {matrix: !!instanced && uses.matrix, color: !!instanced?.color && uses.color};
   const extras = (instanced?.extras ?? []).filter(e => new RegExp(`\\b${e.name}\\b`).test(vertex));
-  // Debugging switch: with jsgbdiag=solid in the run's search (--search '?view=black&jsgbdiag=solid'), shaders with
-  // per-instance attributes draw magenta at full alpha, their fragment stage and its discards skipped. Magenta where
-  // the effect belongs means its geometry is right and its colour or alpha is not.
-  const diagSolid = /[?&]jsgbdiag=solid\b/.test(host.search ?? '');
-  const key = sourceKey(material) + (instancing.matrix ? '_i' : '') + (instancing.color ? '_c' : '') + (extras.length ? '_x' + String(textHash(extras.map(e => `${e.name}${e.size}@${e.offset}`).join(','))).slice(0, 6) : '') + (diagSolid && extras.length ? '_diag' : '');
+  const key = sourceKey(material) + (instancing.matrix ? '_i' : '') + (instancing.color ? '_c' : '') + (extras.length ? '_x' + String(textHash(extras.map(e => `${e.name}${e.size}@${e.offset}`).join(','))).slice(0, 6) : '');
   if (cache.has(key)) return cache.get(key);
   let vs: ReturnType<typeof prepare>, fs: ReturnType<typeof prepare>;
   try { vs = prepare(material, 'vertex', instancing); fs = prepare(material, 'fragment'); } catch (error) {
@@ -398,9 +399,7 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial, instance
     if (has(F, 'gl_FragCoord')) glue.push('fs.gl_FragCoord = Parameters.SvPosition;');
     if (has(F, 'jsgb_PointCoord')) glue.push('fs.jsgb_PointCoord = JsgbUV;');
     if (has(F, 'gl_FrontFacing')) glue.push('fs.gl_FrontFacing = Parameters.TwoSidedSign > 0;');
-    const emissiveOutput = has(F, 'jsgb_Emissive');
-    glue.push(`fs.${F.entry}();`, ...(emissiveOutput ? ['JsgbEmissive = fs.jsgb_Emissive;'] : []), 'return fs.jsgb_FragColor;');
-    if (diagSolid && extras.length) glue = glue.filter(l => !/^fs\.\w+_main\(\);$|^JsgbEmissive = /.test(l)).map(l => l === 'return fs.jsgb_FragColor;' ? (emissiveOutput ? 'JsgbEmissive = float3(1, 0, 1); ' : '') + 'return float4(1, 0, 1, 1);' : l);
+    glue.push(`fs.${F.entry}();`, 'return fs.jsgb_FragColor;');
     const hlsl = [V.types + F.types, V.struct, F.struct, ...vsGlue, ...glue].filter(Boolean).join('\n');
     // Vertex stage: the shader's own gl_Position, taken back to a world position, becomes Unreal's
     // world position offset (billboards, view-space quads). The view-space point is solved from the
@@ -409,24 +408,14 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial, instance
     // away), which pushed surfaces tens of units back, so lines behind them showed through.
     const vertexInputs: ShaderInput[] = [...vsInputs.filter(i => !i.name.startsWith('T_')),
       ...[0, 1, 2, 3].map(i => ({name: `JsgbW${i}`, source: 'collection' as const, param: `CamCol${i}`})), {name: 'JsgbWorld', source: 'worldPosition'}];
-    // A camera-facing quad on an InstancedMesh (its vertex shader places it from instanceMatrix: sprites, streaks,
-    // drive cores) is pulled toward the camera along each vertex's own view ray by JsgbDepthPull (a material scalar,
-    // 0.5 by default, sceneExport.ts) times the instance's radius, half its X scale. Its pixels stay where they were
-    // on screen; only their depth moves, so an effect the game puts on a hull draws over that surface. Unreal draws
-    // hulls without the game's damage holes, which hid the flames sitting in them. Geometry that is truly in front
-    // still hides it. Free sprites get the same small pull: the shader can't tell the two apart.
-    const placed = !(vsInputs.some(i => i.name.startsWith('T_')) || standardVertexTransform(material.vertexShader));
-    const depthPull = placed && instancing.matrix;
-    if (depthPull) vertexInputs.push({name: 'U_JsgbDepthPull', source: 'scalar', param: 'JsgbDepthPull'});
-    const vertexHlsl = !placed ? '' : [V.types, V.struct, ...vsGlue,
+    const vertexHlsl = vsInputs.some(i => i.name.startsWith('T_')) || standardVertexTransform(material.vertexShader) ? '' : [V.types, V.struct, ...vsGlue,
       'float4 jsgbC = vs.gl_Position; float3 jsgbV;',
       'if (abs(JsgbPr2.w) > 0.5) { jsgbV.z = jsgbC.w / JsgbPr2.w; jsgbV.x = (jsgbC.x - JsgbPr2.x * jsgbV.z) / JsgbPr0.x; jsgbV.y = (jsgbC.y - JsgbPr2.y * jsgbV.z) / JsgbPr1.y; }',
       'else { float jsgbInvW = 1.0 / (abs(jsgbC.w) > 1e-8 ? jsgbC.w : 1e-8); jsgbV.z = (jsgbC.z * jsgbInvW - JsgbPr3.z) / JsgbPr2.z; jsgbV.x = (jsgbC.x * jsgbInvW - JsgbPr3.x) / JsgbPr0.x; jsgbV.y = (jsgbC.y * jsgbInvW - JsgbPr3.y) / JsgbPr1.y; }',
-      depthPull ? 'float jsgbPull = U_JsgbDepthPull * 0.5 * length(JsgbMX); if (abs(JsgbPr2.w) > 0.5) { jsgbV *= max(1.0 - jsgbPull / max(length(jsgbV), 1e-6), 0.05); } else { jsgbV.z += jsgbPull; }' : '',
       'float3 jsgbT = (jsgbV.x * JsgbW0 + jsgbV.y * JsgbW1 + jsgbV.z * JsgbW2 + JsgbW3).xyz;',
       'float3 jsgbOffset = float3(jsgbT.x, jsgbT.z, jsgbT.y) * 100.0 - JsgbWorld;',
       'return any(isnan(jsgbOffset)) || dot(jsgbOffset, jsgbOffset) < 1e-4 ? float3(0, 0, 0) : jsgbOffset;'].filter(Boolean).join('\n');
-    result = {key, hlsl, inputs, vertexHlsl, vertexInputs, ...(emissiveOutput ? {emissiveOutput} : {}), ...(instanced ? {instanced: true} : {}), ...(depthPull ? {depthPull: true} : {})};
+    result = {key, hlsl, inputs, vertexHlsl, vertexInputs};
   } catch (error) {
     host.log('warn', `custom shader ${material.name || key} stays generic: ${error instanceof Error ? error.message : error}`);
   }
@@ -450,6 +439,7 @@ const MAPS: [string, string][] = [['map', 'MAP'], ['alphaMap', 'ALPHAMAP'], ['em
 const hookedSource = new WeakMap<object, {key: string; material: THREE.ShaderMaterial}>();
 
 /** Built-in uniform values from the material's own properties, as WebGLRenderer sets them each frame. */
+const SCALARS = ['roughness', 'metalness', 'shininess', 'alphaTest', 'reflectivity', 'aoMapIntensity'];
 export function fillBuiltinUniforms(material: THREE.Material, u: Record<string, {value: any}>) {
   const m = material as Record<string, any>;
   const set = (k: string, v: unknown) => { if (u[k] && v !== undefined) u[k].value = v; };
@@ -457,23 +447,28 @@ export function fillBuiltinUniforms(material: THREE.Material, u: Record<string, 
   set('opacity', m.opacity);
   if (m.emissive?.isColor && u.emissive) { const e = u.emissive.value?.isColor ? u.emissive.value : (u.emissive.value = m.emissive.clone()); e.copy(m.emissive).multiplyScalar(m.emissiveIntensity ?? 1); }
   if (m.specular?.isColor) set('specular', m.specular);
-  for (const k of ['roughness', 'metalness', 'shininess', 'alphaTest', 'reflectivity', 'aoMapIntensity']) if (typeof m[k] === 'number') set(k, m[k]);
+  for (const k of SCALARS) if (typeof m[k] === 'number') set(k, m[k]);
   for (const [k] of MAPS) set(k, m[k] ?? null);
   // Texture transforms travel as two rows (the material parameters carry vectors, not matrices), with
   // three's flipY applied: Unreal textures keep the image's first row at v = 0.
-  for (const [k] of MAPS) {
-    const r0 = u[`${k}Transform_r0`], r1 = u[`${k}Transform_r1`];
+  for (const [k, k0, k1] of mapTransformKeys()) {
+    const r0 = u[k0], r1 = u[k1];
     if (!r0 || !r1) continue;
     const t = m[k] as THREE.Texture | null;
     if (t?.matrixAutoUpdate) t.updateMatrix();
-    const e = t ? t.matrix.elements : [1, 0, 0, 0, 1, 0, 0, 0, 1];
-    r0.value = new THREE.Vector3(e[0], e[3], e[6]);
-    r1.value = t?.flipY !== false ? new THREE.Vector3(-e[1], -e[4], 1 - e[7]) : new THREE.Vector3(e[1], e[4], e[7]);
+    const e = t ? t.matrix.elements : IDENTITY3;
+    // Set in place: this runs for every patched material every frame.
+    const v0 = r0.value?.isVector3 ? r0.value : (r0.value = new THREE.Vector3()), v1 = r1.value?.isVector3 ? r1.value : (r1.value = new THREE.Vector3());
+    v0.set(e[0], e[3], e[6]);
+    if (t?.flipY !== false) v1.set(-e[1], -e[4], 1 - e[7]); else v1.set(e[1], e[4], e[7]);
   }
 }
+const IDENTITY3 = [1, 0, 0, 0, 1, 0, 0, 0, 1];
+let transformKeys: [string, string, string][] | null = null;
+const mapTransformKeys = () => transformKeys ??= MAPS.map(([k]) => [k, `${k}Transform_r0`, `${k}Transform_r1`] as [string, string, string]);
 
 /** The generated-material description for a built-in material patched in onBeforeCompile, or null/undefined as translateShaderMaterial. */
-export function translateHookedMaterial(material: THREE.Material, hooked: HookedShader, hookKey: string, instancing?: {color: boolean; extras?: {name: string; size: number; offset: number}[]}): TranslatedShader | null | undefined {
+export function translateHookedMaterial(material: THREE.Material, hooked: HookedShader, hookKey: string, instancing?: {color: boolean}): TranslatedShader | null | undefined {
   if (!HOOKABLE.has(material.type)) return null;
   const m = material as Record<string, any>;
   const defines: Record<string, unknown> = {...hooked.defines, ...(m.defines ?? {})};
@@ -481,8 +476,6 @@ export function translateHookedMaterial(material: THREE.Material, hooked: Hooked
   for (const [k, d] of MAPS) if (m[k]) { defines[`USE_${d}`] = ''; defines[`${d}_UV`] = 'uv'; defines.USE_UV = ''; }
   if (m.vertexColors) defines.USE_COLOR = '';
   if (m.alphaTest > 0) defines.USE_ALPHATEST = '';
-  // alphaHash declares vPosition and getAlphaHashThreshold, which hooks use for their own dithered discards.
-  if (m.alphaHash) defines.USE_ALPHAHASH = '';
   if (m.flatShading) defines.FLAT_SHADED = '';
   if (m.side === THREE.DoubleSide) defines.DOUBLE_SIDED = '';
   // On an InstancedMesh: Unreal's model matrix already holds each instance's transform, so instanceMatrix is
@@ -506,13 +499,6 @@ export function translateHookedMaterial(material: THREE.Material, hooked: Hooked
     const body = kept.slice(main);
     const open = (body.match(/^[ \t]*#if/gm) ?? []).length - (body.match(/^[ \t]*#endif/gm) ?? []).length;
     for (let i = 0; i < open; i++) kept += '\n#endif';
-    // Emitted light is added after the cut (emissivemap_fragment), often with the game's own lines beside it (a hot
-    // glow from a per-instance heat value). Those lines run here too and the result goes out as JsgbEmissive.
-    const emissive = UNLIT_HOOKED.has(material.type) || !/\bvec3\s+totalEmissiveRadiance\b/.test(kept.slice(main)) ? '' : emissiveLines(hooked.fragmentShader);
-    if (emissive) {
-      kept = kept.slice(0, main) + 'vec3 jsgb_Emissive;\n' + kept.slice(main);
-      kept += `\n${expandIncludes(emissive)}\n\tjsgb_Emissive = totalEmissiveRadiance;`;
-    }
     kept += '\n\tgl_FragColor = vec4( diffuseColor.rgb, diffuseColor.a );\n}\n';
     const uniforms = hooked.uniforms;
     for (const [k] of MAPS) if (vertex.includes(` ${k}Transform_r0;`)) {
@@ -524,26 +510,7 @@ export function translateHookedMaterial(material: THREE.Material, hooked: Hooked
     hookedSource.set(material, cached);
   }
   fillBuiltinUniforms(material, hooked.uniforms as Record<string, {value: any}>);
-  // Per-instance attributes the hook reads (InstancedBufferAttribute) come from per-instance custom data. Unreal's
-  // model matrix already holds each instance's transform, so instanceMatrix stays the identity (USE_INSTANCING above).
-  const t = translateShaderMaterial(cached.material, instancing?.extras?.length ? {color: false, matrix: false, extras: instancing.extras} : undefined);
+  const t = translateShaderMaterial(cached.material);
   if (t) t.lit = !UNLIT_HOOKED.has(material.type);
   return t;
-}
-
-/** The emitted-light part of a patched built-in fragment shader: the emissivemap_fragment chunk and the lines the hook
- *  put between the end of the surface and the start of lighting that add to totalEmissiveRadiance. Empty when the hook
- *  left emitted light alone, so materials without such edits translate as before. */
-export function emissiveLines(fragmentShader: string): string {
-  const main = fragmentShader.search(/\bvoid\s+main\s*\(/);
-  if (main < 0) return '';
-  const body = fragmentShader.slice(main);
-  const cut = Math.min(...LIGHTING_STARTS.map(rx => { const at = body.search(rx); return at < 0 ? Infinity : at; }));
-  if (cut === Infinity) return '';
-  const rest = body.slice(cut), end = rest.search(/^[ \t]*#include <(lights_\w+|aomap_fragment|opaque_fragment)>/m);
-  const lines = (end < 0 ? rest : rest.slice(0, end)).split(/\r?\n/);
-  // Lines that read the normal need normal_fragment_begin, which the generated material leaves to Unreal.
-  const added = lines.filter(l => !/^\s*#/.test(l) && /\btotalEmissiveRadiance\b/.test(l) && !/\b(normal|nonPerturbedNormal|geometryNormal|faceDirection|clearcoatNormal)\b/.test(l));
-  if (!added.length) return '';
-  return lines.filter(l => /^\s*#include <emissivemap_fragment>/.test(l) || added.includes(l)).join('\n');
 }

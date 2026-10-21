@@ -1,8 +1,25 @@
 Binaries/
 Intermediate/
-Builds/
-node_modules/
+JavaScript/node_modules/
 __pycache__/
 *.log
+Runtime/node_modules/
 jsgb.local.json
+Builds/
+node_modules/
 NOTES.md
+# Messages, screenshots and notes from other sessions; scratch output
+/msg-*.txt
+/*.jpg
+/*.png
+/flicker/
+/VIDEO-REQUESTS.md
+Tools/AudioImporter/ContentOnlyProject/Saved/
+Tools/AudioImporter/ContentOnlyProject/Plugins/JsGameBridge/Content
+
+# CEF binaries and headers: Tools/install-cef.ps1 puts them here
+/ThirdParty/CEF*/
+
+# Copied from your Unreal install by Tools/setup-cef152.ps1 (Epic source, never committed)
+/Source/WebBrowserCef/
+/Source/CEF3UtilsCef/

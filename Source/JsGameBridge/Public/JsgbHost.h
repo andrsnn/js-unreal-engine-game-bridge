@@ -27,9 +27,16 @@ public:
 	UPROPERTY() TObjectPtr<class UJsgbBridge> Display;
 	/** The page's frame rate, which Unreal's frame rate is held to. */
 	int32 PageFps = 60;
+	/** Unreal's frame cap the page asked for (window.jsgb.display), at most PageFps. */
+	float Cap = 60.f;
 	UFUNCTION() FString DisplayModes();
 	UFUNCTION() FString DisplayGet();
 	UFUNCTION() void DisplaySet(const FString& Json);
+	/** window.close() in the page: closes the game, as closing a browser tab would. */
+	UFUNCTION() void Quit();
+	/** A Web Audio context in the page is running (it started after a user gesture). */
+	UFUNCTION() void AudioRunning() { bAudioRunning = true; }
+	bool bAudioRunning = false;
 };
 
 UCLASS()
@@ -78,15 +85,19 @@ public:
 	void SendMouse(const FString& Type, float X, float Y, int32 Button, int32 Buttons, float DX, float DY);
 	void SendWheel(float DeltaY);
 	void SendGamepads(const FString& Json);
+	void SendGamepadsToJs(const FString& Json);
 	FString Eval(const FString& Source);
 	/** An answer from the game's JavaScript that arrives later; Text is set before bDone. */
 	struct FAnswer { FString Text; std::atomic<bool> bDone{false}; };
 	/** Runs Source in the game's JavaScript without waiting for it. */
 	TSharedRef<FAnswer> Ask(const FString& Source);
 	bool HasOverlay() const { return Browser.IsValid(); }
+	/** A page game (pixi.js and the like) runs in the built-in browser; the host feeds it gamepads through the page. */
+	bool IsPageGame() const { return !PageIndex.IsEmpty(); }
+	/** A gamepad button went down: until the page's Web Audio runs, give the page a real key press (F24) as the user
+	 *  gesture Chromium needs to start sound. A gamepad press is not one. */
+	void PagePadGesture();
 	bool IsRecording() const { return !RecordDir.IsEmpty(); }
-	/** A host script (-JsgbScript) drives the game: the desktop mouse is not passed on. */
-	bool IsScripted() const { return Script.Num() > 0; }
 
 	UPROPERTY() TObjectPtr<UJsgbBridge> Bridge;
 	UPROPERTY() TObjectPtr<UJsgbSceneMirror> Mirror;
@@ -120,9 +131,6 @@ private:
 	UPROPERTY() TObjectPtr<class UExponentialHeightFogComponent> LumenFog;
 	FString LumenPreset;
 	bool bLumenOn = false, bLumenAvailable = false;
-	/** The override models are in memory (they load each time Lumen mode turns on). */
-	bool bModelsReady = false, bLumenAtStart = false;
-	int32 LumenGeneration = 0;
 	TMap<FString, FString> LumenSaved;
 	bool SavedGiOverride = false, SavedReflectionOverride = false;
 	EDynamicGlobalIlluminationMethod::Type SavedGi = EDynamicGlobalIlluminationMethod::None;
@@ -156,6 +164,8 @@ private:
 	double CamSpeedSum = 0, CamSpeedSum2 = 0;
 	int32 CamSpeedFrames = 0;
 	TSharedPtr<SWebBrowser> Browser;
+	/** The page game's browser window (a child window of the game window, or off screen with -JsgbPageOsr). */
+	TSharedPtr<class IWebBrowserWindow> PageWindow;
 	UPROPERTY() TObjectPtr<UJsgbPagePort> PagePort;
 	TSharedPtr<IHttpRouter> Router;
 	FDelegateHandle RouteHandle;
@@ -165,6 +175,15 @@ private:
 	/** The web build's page, relative to the first public root, when publication.json has "page"; empty otherwise. */
 	FString PageIndex;
 	bool bDocumentReady = false;
+	/** When the page last fetched a file from the host. Unreal ticks faster while it does: the HTTP server and Chromium's
+	 *  browser thread both run on Unreal's game thread, once per frame. */
+	double LastPageFile = 0;
+	float PageLoadFps = 0.f;
+	/** The last gamepad state sent, sent again to a page that reloads. */
+	FString LastPadJson;
+	/** Handheld preset (-JsgbHandheld, or no NVIDIA GPU): no Lumen, no DLSS or frame generation, TSR at a lower render scale, 60 FPS cap. */
+	bool bHandheld = false;
+	void ApplyHandheld();
 	int64 PushedUIVersion = -1;
 	bool bRestart = false;
 	FString PendingBundle;

@@ -26,6 +26,8 @@ for (const level of ['log', 'info', 'debug', 'warn', 'error'] as const) {
 function safeJson(v: unknown) { try { return JSON.stringify(v)?.slice(0, 2000) ?? String(v); } catch { return String(v); } }
 
 let frames = 0, booted = false, bootError = '';
+// Frame part totals (Date.now steps of 1 ms average out over 300 frames).
+const parts = new Float64Array(6); let partFrames = 0;
 g.__jsgb = {
   /** One host tick: due timers and promise jobs within budgetMs, the animation frame, then the
    *  scene, UI and audio go out to the host. */
@@ -40,6 +42,14 @@ g.__jsgb = {
     const t3 = wallNow();
     try { flushAudio(audioTime()); } catch (e) { host.log('error', 'audio: ' + (e instanceof Error ? e.stack : e)); }
     const t4 = wallNow();
+    // Every 300 frames, the average time of each part of a frame, so the game's own work and the bridge's can be told apart.
+    const p0 = pumpTiming;
+    parts[0] += t1 - t0; parts[1] += p0.rafMs; parts[2] += t2 - t1; parts[3] += t3 - t2; parts[4] += t4 - t3; parts[5] += t4 - t0;
+    if (booted && ++partFrames >= 300) {
+      const f = (v: number) => (v / partFrames).toFixed(2);
+      host.log('log', `js frame parts over ${partFrames} frames: whole ${f(parts[5])} ms = pump ${f(parts[0])} (animation frame ${f(parts[1])}) + scene export ${f(parts[2])} + ui ${f(parts[3])} + audio ${f(parts[4])}`);
+      parts.fill(0); partFrames = 0;
+    }
     // A JavaScript frame much longer than 60 FPS allows gets a breakdown in the log.
     if (booted && t4 - t0 > 30) {
       const p = pumpTiming;

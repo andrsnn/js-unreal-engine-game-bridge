@@ -56,6 +56,8 @@ export function deliver(target: Ev | null, e: Ev): boolean {
   if (target && e.target == null) { try { Object.defineProperty(e, 'target', {value: target, configurable: true}); } catch { /* read-only */ } }
   windowTarget.fire(e, 'capture');
   if (!e.__jsgbStopped && target) target.dispatchEvent(e);
+  // The DOM shim clears target after dispatch. Window bubble is still part of this dispatch.
+  if (target) { try { Object.defineProperty(e, 'target', {value: target, configurable: true}); } catch { /* read-only */ } }
   if (!e.__jsgbStopped && e.bubbles !== false) windowTarget.fire(e, 'bubble');
   return !e.defaultPrevented;
 }

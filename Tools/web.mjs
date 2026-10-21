@@ -2,7 +2,7 @@
 // The browser side of a conformance check, from the same source commit as the Unreal bundle.
 //   node Tools/web.mjs build   <game>                  the game's own Vite build into <out>/web
 //   node Tools/web.mjs dev     <game>                  the game's Vite dev server, opened in the browser
-//   node Tools/web.mjs capture <game> --script s.txt [--frames dir --fps 10] [--res 1280x720] [--live dir] [--wait 120]
+//   node Tools/web.mjs capture <game> --script s.txt [--frames dir --fps 10] [--res 1280x720] [--live dir]
 // --live films the page in real time (Chrome's screencast) and records when every animation frame ran.
 // capture serves <out>/web plus the public folders, opens it in headless Chrome, and runs the same
 // script format as the Unreal host (seconds after load: wait/gone/click/key/eval/seed/shot/quit).
@@ -171,7 +171,7 @@ async function capture() {
         || [...document.querySelectorAll('button,a')].some(el => el.textContent.trim().toUpperCase().includes(w.toUpperCase()) && el.getClientRects().length > 0);
     })();
     return has === want ? {t: window.__jsgbVirtualMs ? window.__jsgbVirtualMs() : null} : false;
-  }, [what, present], {polling: 'raf', timeout: +flag('--wait', 120) * 1000}).then(h => h.jsonValue()).catch(() => null);
+  }, [what, present], {polling: 'raf', timeout: 120000}).then(h => h.jsonValue()).catch(() => null);
 
   const steps = fs.readFileSync(flag('--script'), 'utf8').split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith('#'))
     .map(l => { const [when, verb, ...args] = l.split(' '); return {time: +when, verb, args: args.join(' ')}; }).sort((a, b) => a.time - b.time);

@@ -1,5 +1,5 @@
 # Prints a material's expressions and what feeds each input, for debugging generated graphs.
-# Run: UnrealEditor-Cmd.exe <Host.uproject> -run=pythonscript -script="<this repo>/Tools/materials/inspect_material.py /JsGameBridge/Mirror/M_JsgbBillboardAdd"
+# Run: UnrealEditor-Cmd.exe <project> -run=pythonscript -script="G:/JsGameBridge/Tools/materials/inspect_material.py /JsGameBridge/Mirror/M_JsgbBillboardAdd"
 import sys
 import unreal
 

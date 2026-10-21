@@ -7,7 +7,10 @@
 THIRD_PARTY_INCLUDES_START
 #include "v8.h"
 #include "libplatform/libplatform.h"
+#include "v8-profiler.h"
 THIRD_PARTY_INCLUDES_END
+#include "JsgbBridge.h"
+#include "Misc/FileHelper.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogJsgbWorker, Log, All);
 
@@ -103,7 +106,11 @@ namespace
 	bool RunScript(v8::Isolate* I, v8::Local<v8::Context> Ctx, const FString& Code, const FString& Name, FString& Error)
 	{
 		v8::TryCatch Try(I);
+#if V8_MAJOR_VERSION >= 12
+		v8::ScriptOrigin Origin(V8String(I, Name));
+#else
 		v8::ScriptOrigin Origin(I, V8String(I, Name));
+#endif
 		v8::Local<v8::Script> Script;
 		if (!v8::Script::Compile(Ctx, V8String(I, Code), &Origin).ToLocal(&Script) || Script->Run(Ctx).IsEmpty())
 		{
@@ -231,4 +238,42 @@ uint32 FJsgbWorker::Run()
 	I->Dispose();
 	delete Params.array_buffer_allocator;
 	return 0;
+}
+
+namespace
+{
+	/** Collects V8's JSON profile in memory. */
+	struct FJsgbProfileText : public v8::OutputStream
+	{
+		TArray<uint8> Bytes;
+		virtual void EndOfStream() override {}
+		virtual WriteResult WriteAsciiChunk(char* Data, int Size) override { Bytes.Append(reinterpret_cast<uint8*>(Data), Size); return kContinue; }
+	};
+	v8::CpuProfiler* GJsgbProfiler = nullptr;
+}
+
+FString UJsgbBridge::ProfileJs(const FString& Command)
+{
+	v8::Isolate* I = v8::Isolate::GetCurrent();
+	if (!I) { return TEXT("no isolate on this thread"); }
+	v8::HandleScope Scope(I);
+	const v8::Local<v8::String> Title = v8::String::NewFromUtf8Literal(I, "jsgb");
+	if (Command == TEXT("start"))
+	{
+		if (!GJsgbProfiler) { GJsgbProfiler = v8::CpuProfiler::New(I); GJsgbProfiler->SetSamplingInterval(250); }
+		GJsgbProfiler->StartProfiling(Title, true);
+		return TEXT("started");
+	}
+	if (Command.StartsWith(TEXT("stop ")) && GJsgbProfiler)
+	{
+		v8::CpuProfile* Profile = GJsgbProfiler->StopProfiling(Title);
+		if (!Profile) { return TEXT("no profile"); }
+		FJsgbProfileText Out;
+		Profile->Serialize(&Out);
+		Profile->Delete();
+		const FString File = Command.Mid(5).TrimStartAndEnd();
+		FFileHelper::SaveArrayToFile(Out.Bytes, *File);
+		return FString::Printf(TEXT("wrote %d bytes to %s"), Out.Bytes.Num(), *File);
+	}
+	return TEXT("use start or stop <file>");
 }
