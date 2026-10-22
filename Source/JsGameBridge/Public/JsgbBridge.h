@@ -120,6 +120,8 @@ public:
 	UFUNCTION() void Geometry(int32 Id, FArrayBuffer Positions, FArrayBuffer Normals, FArrayBuffer UVs, FArrayBuffer Colors, int32 ColorSize, FArrayBuffer Indices, const FString& Groups);
 	UFUNCTION() void ReleaseGeometry(int32 Id);
 	UFUNCTION() void Material(int32 Id, const FString& Json);
+	/** Colour, map and uniforms of a material described before ({"color","map","uniforms"}), when nothing else changed. */
+	UFUNCTION() void MaterialUniforms(int32 Id, const FString& Json);
 	UFUNCTION() void Texture(int32 Id, const FString& Json, FArrayBuffer Bytes);
 	UFUNCTION() void Frame(FArrayBuffer Floats, int32 Count, FArrayBuffer Instances, int32 InstanceFloats);
 	UFUNCTION() void Events(const FString& Json);
@@ -138,6 +140,8 @@ public:
 	TMap<int32, TSharedPtr<class FJsgbWorker>> Workers;
 	int32 NextWorker = 0;
 	FString StoreDir;
+	/** The game folder's jsgb-store: entries a package ships, read when StoreDir has none. */
+	FString SeedStoreDir;
 	FString LogPath;
 	double StartSeconds = 0;
 	/** When > 0, the game clock advances this many ms per host tick (deterministic captures). */

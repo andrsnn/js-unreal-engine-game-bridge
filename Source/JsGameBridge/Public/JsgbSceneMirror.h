@@ -196,6 +196,9 @@ public:
 	void SetGeometry(int32 Id, const FArrayBuffer& Positions, const FArrayBuffer& Normals, const FArrayBuffer& UVs, const FArrayBuffer& Colors, int32 ColorSize, const FArrayBuffer& Indices, const FString& Groups);
 	void ReleaseGeometry(int32 Id);
 	void SetMaterial(int32 Id, const FString& Json);
+	/** Colour, map and uniform values for a material SetMaterial described: only those parameters change. */
+	void SetMaterialValues(int32 Id, const FString& Json);
+	void ApplyUniforms(FJsgbMaterial& M, const TSharedPtr<class FJsonObject>& J);
 	void SetTexture(int32 Id, const FString& Json, const FArrayBuffer& Bytes);
 	/** Decodes and lays out a texture's pixels; safe on any thread. FileData holds the bytes of a "file" texture. */
 	static TSharedPtr<FJsgbPreparedTexture> PrepareTexture(const FString& Json, const FArrayBuffer& Bytes, const TArray<uint8>& FileData);
@@ -224,7 +227,8 @@ public:
 	/** With the game's JavaScript on its own thread, objects and the camera glide between snapshots:
 	 *  each snapshot sets where they go, and Interpolate moves them there over the time between snapshots. */
 	bool bInterpolate = false;
-	void Interpolate(float Alpha);
+	/** Alpha for the objects, CameraAlpha for the camera (which may finish its glide sooner, for less input delay). */
+	void Interpolate(float Alpha, float CameraAlpha = -1.f);
 	TArray<int32> Moving;
 	FTransform CameraFrom, CameraTo;
 	bool bCameraPlaced = false;

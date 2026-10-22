@@ -156,9 +156,9 @@ class ThreadWorker {
     if (!bytes) { setTimeout(() => this.fail('postMessage: this value cannot be copied to a worker thread'), 0); return; }
     host.workerPost!(this.id, bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength) as ArrayBuffer);
   }
-  deliver(bytes: ArrayBuffer) {
+  deliver(bytes: ArrayBuffer, base = 0) {
     if (this.dead) return;
-    const e = {data: decode(bytes)};
+    const e = {data: decode(bytes, base)};
     this.onmessage?.(e); for (const l of this.listeners.message ?? []) l(e);
   }
   fail(message: string) {
@@ -180,12 +180,13 @@ export function pollWorkers(): number {
   const words = new Int32Array(buf), text = new TextDecoder();
   for (let at = 0; at + 12 <= buf.byteLength;) {
     const id = words[at >> 2], kind = words[(at >> 2) + 1], n = words[(at >> 2) + 2];
-    const bytes = buf.slice(at + 12, at + 12 + n);
+    const start = at + 12;
     at = (at + 12 + n + 3) & ~3;
     const w = threads.get(id);
     if (!w) continue;
     replies++;
-    try { if (kind === 1) w.fail(text.decode(new Uint8Array(bytes))); else w.deliver(bytes); }
+    // Read in place: a reply can be tens of megabytes, and decode copies each of its buffers out once.
+    try { if (kind === 1) w.fail(text.decode(new Uint8Array(buf, start, n))); else w.deliver(buf, start); }
     catch (e) { host.log('error', `worker ${w.name || id}: ${e instanceof Error ? e.stack : e}`); }
   }
   return replies;

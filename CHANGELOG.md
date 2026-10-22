@@ -1,5 +1,27 @@
 # Changelog
 
+## 0.7.2
+
+Smoother Unreal frames for games with many materials and custom shaders.
+
+- Shader translations are kept on disk. A translation is keyed by the translator build and the shader's text, so a
+  shader is translated once per bridge build, not on every launch. Each translation froze the game's JavaScript for
+  0.15 to 0.8 s. The host also reads the game folder's `jsgb-store`, and `Tools/ship-shaders.mjs` copies a run's
+  translations there, so a package can ship them and players never translate those shaders. At most one shader is
+  translated per frame.
+- Material export: a material patched in `onBeforeCompile` checks only the uniforms the hook added and its maps'
+  transforms each frame. three's own uniforms are filled in only when the material is described. Struct and array
+  uniforms no longer force a full description every frame.
+- A material whose only change is uniform values sends just those values (`materialUniforms`). The host sets those
+  parameters instead of reading the whole description again.
+- Worker replies are decoded where they arrive, with one copy of each buffer instead of two.
+- The camera finishes its glide within 1.5 Unreal frames of an update, which cuts input delay by about one game frame.
+  `-JsgbCameraGlide=<frames>` sets it, and 0 restores the old timing.
+- Measurement: `/bridge/frametimes` reports wall-clock times, so freezes over 0.4 s show at their real length.
+  `/bridge/status` has `keyToCameraMs`, the time from a key sent through `/bridge/key` or `/bridge/input` until the
+  camera moves.
+- Class changes reach the `class` attribute again. A fast `classList.value` read wrote the old classes back.
+
 ## 0.7.1
 
 - Display scaling: the host is DPI aware from its first window. Unreal games start DPI unaware, and Chromium turned

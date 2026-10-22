@@ -181,16 +181,25 @@ void UJsgbBridge::Log(const FString& Level, const FString& Text)
 
 void UJsgbBridge::RequestReload() { bReloadRequested = true; }
 
+// Translated shaders ("jsgb-translated-..." keys) are files named shader-<md5>.json, so a package can ship the ones its
+// game uses: Tools/jsgb.mjs copies them into the game folder's jsgb-store, which is read when this PC has none yet.
+static FString StoreFile(const FString& Key)
+{
+	const FString Name = FMD5::HashAnsiString(*Key) + TEXT(".json");
+	return Key.StartsWith(TEXT("jsgb-translated-")) ? TEXT("shader-") + Name : Name;
+}
+
 FString UJsgbBridge::LoadStore(const FString& Key)
 {
 	FString Data;
-	FFileHelper::LoadFileToString(Data, *(StoreDir / (FMD5::HashAnsiString(*Key) + TEXT(".json"))));
+	const FString File = StoreFile(Key);
+	if (!FFileHelper::LoadFileToString(Data, *(StoreDir / File)) && !SeedStoreDir.IsEmpty()) { FFileHelper::LoadFileToString(Data, *(SeedStoreDir / File)); }
 	return Data;
 }
 
 void UJsgbBridge::SaveStore(const FString& Key, const FString& Data)
 {
-	FFileHelper::SaveStringToFile(Data, *(StoreDir / (FMD5::HashAnsiString(*Key) + TEXT(".json"))), FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
+	FFileHelper::SaveStringToFile(Data, *(StoreDir / StoreFile(Key)), FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM);
 }
 
 // Process-wide, so it survives the JS environment restart of a hot reload. Past 4 GB the oldest
@@ -273,6 +282,11 @@ void UJsgbBridge::Geometry(int32 Id, FArrayBuffer Positions, FArrayBuffer Normal
 }
 
 void UJsgbBridge::ReleaseGeometry(int32 Id) { RunOnGame([this, Id] { if (Mirror) { Mirror->ReleaseGeometry(Id); } }); }
+void UJsgbBridge::MaterialUniforms(int32 Id, const FString& Json)
+{
+	RunOnGame([this, Id, Json] { const double T0 = FPlatformTime::Seconds(); if (Mirror) { Mirror->SetMaterialValues(Id, Json); } const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0; MirrorMs += Ms; MaterialMs += Ms; ++MaterialCalls; });
+}
+
 void UJsgbBridge::Material(int32 Id, const FString& Json)
 {
 	RunOnGame([this, Id, Json] { const double T0 = FPlatformTime::Seconds(); if (Mirror) { Mirror->SetMaterial(Id, Json); } const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0; MirrorMs += Ms; MaterialMs += Ms; ++MaterialCalls; });

@@ -94,16 +94,18 @@ function takeDeclarations(src: string, qualifiers: string[]): {src: string; decl
 
 // Hashing the whole shader source is slow, and a material is described again whenever a uniform moves. The key
 // is kept per material while its sources and defines stay the same.
-const sourceKeys = new WeakMap<object, {vs: string; fs: string; defines: string; raw: boolean; key: string}>();
-const sourceKey = (m: THREE.ShaderMaterial) => {
+// The key also names the cooked Unreal materials a package ships, so its form stays as it is. `full` is a longer hash
+// of the same text, for the translations kept on disk.
+const sourceKeys = new WeakMap<object, {vs: string; fs: string; defines: string; raw: boolean; key: string; full: string}>();
+const sourceEntry = (m: THREE.ShaderMaterial) => {
   const defines = JSON.stringify(m.defines ?? {}), raw = !!m.isRawShaderMaterial;
   const last = sourceKeys.get(m);
-  if (last && last.vs === m.vertexShader && last.fs === m.fragmentShader && last.defines === defines && last.raw === raw) return last.key;
+  if (last && last.vs === m.vertexShader && last.fs === m.fragmentShader && last.defines === defines && last.raw === raw) return last;
   const s = m.vertexShader + '\u0000' + m.fragmentShader + '\u0000' + defines + (raw ? 'raw' : '');
   let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  const key = 'glsl_' + (h >>> 0).toString(16) + '_' + s.length.toString(36);
-  sourceKeys.set(m, {vs: m.vertexShader, fs: m.fragmentShader, defines, raw, key});
-  return key;
+  const entry = {vs: m.vertexShader, fs: m.fragmentShader, defines, raw, key: 'glsl_' + (h >>> 0).toString(16) + '_' + s.length.toString(36), full: textHash(s)};
+  sourceKeys.set(m, entry);
+  return entry;
 };
 
 /** GLSL 4.50 for glslang, plus what the HLSL glue needs to know. */
@@ -280,6 +282,14 @@ function zero(target: string, m: Member): string {
 }
 
 const cache = new Map<string, TranslatedShader | null>();
+const VERSION = typeof __JSGB_SHADER_VERSION__ === 'string' ? __JSGB_SHADER_VERSION__ : 'dev';
+// Translating a shader the first time takes 0.3 to 2 s on the game's JavaScript thread (the GLSL rewrite and the
+// WebAssembly compiler). Whole translations are kept on disk, keyed by the translator build and the shader's text,
+// and a package can ship them (the host also reads the game folder's jsgb-store), so a known shader costs a file read.
+// At most one shader is translated per exported frame; the others keep the generic material a frame longer, so
+// several new shaders are never translated in the same frame.
+let translationsThisFrame = 0;
+export function newShaderFrame() { translationsThisFrame = 0; }
 function textHash(s: string) {
   let a = 0x811c9dc5, b = 0x9747b28c;
   for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); a = Math.imul(a ^ c, 0x01000193); b = Math.imul(b ^ c, 0x5bd1e995) ^ (b >>> 13); }
@@ -295,12 +305,25 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial, instance
   if (!uses) { if (vertexUses.size > 512) vertexUses.clear(); uses = {matrix: /\binstanceMatrix\b/.test(vertex), color: /\binstanceColor\b/.test(vertex)}; vertexUses.set(vertex, uses); }
   const instancing = {matrix: !!instanced && uses.matrix, color: !!instanced?.color && uses.color};
   const extras = (instanced?.extras ?? []).filter(e => new RegExp(`\\b${e.name}\\b`).test(vertex));
-  const key = sourceKey(material) + (instancing.matrix ? '_i' : '') + (instancing.color ? '_c' : '') + (extras.length ? '_x' + String(textHash(extras.map(e => `${e.name}${e.size}@${e.offset}`).join(','))).slice(0, 6) : '');
+  const source = sourceEntry(material);
+  const key = source.key + (instancing.matrix ? '_i' : '') + (instancing.color ? '_c' : '') + (extras.length ? '_x' + String(textHash(extras.map(e => `${e.name}${e.size}@${e.offset}`).join(','))).slice(0, 6) : '');
   if (cache.has(key)) return cache.get(key);
+  const diskKey = 'jsgb-translated-' + VERSION + ':' + key + ':' + source.full;
+  const saved = host.storage?.load(diskKey);
+  if (saved) {
+    try {
+      const t = JSON.parse(saved) as TranslatedShader | {failed: true};
+      if ('failed' in t) { cache.set(key, null); return null; }
+      if (t.key === key && typeof t.hlsl === 'string') { cache.set(key, t); return t; }
+    } catch { /* translated again below */ }
+  }
+  if (translationsThisFrame > 0) return undefined;
+  translationsThisFrame++;
   let vs: ReturnType<typeof prepare>, fs: ReturnType<typeof prepare>;
   try { vs = prepare(material, 'vertex', instancing); fs = prepare(material, 'fragment'); } catch (error) {
     host.log('warn', `custom shader ${material.name || key} stays generic: ${error instanceof Error ? error.message : error}`);
     cache.set(key, null);
+    host.storage?.save(diskKey, '{"failed":true}');
     return null;
   }
   // Compiled stages persist in the host store, so a reload or relaunch skips the compiler.
@@ -311,7 +334,8 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial, instance
   const stored = (glsl: string, label: string) => { const out = host.storage?.load(stageKey(glsl, label)) ?? ''; return compiled(out) ? out : ''; };
   let vh = stored(vs.glsl, 'vertex'), fh = stored(fs.glsl, 'fragment');
   const c = vh && fh ? null : crossShader();
-  if (!c && !(vh && fh)) return c === null ? null : undefined;
+  if (!c && !(vh && fh)) { if (c === undefined) translationsThisFrame = 0; return c === null ? null : undefined; }
+  const started = Date.now();
   let result: TranslatedShader | null = null;
   try {
     const run = (glsl: string, label: 'vertex' | 'fragment') => {
@@ -416,8 +440,11 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial, instance
       'float3 jsgbOffset = float3(jsgbT.x, jsgbT.z, jsgbT.y) * 100.0 - JsgbWorld;',
       'return any(isnan(jsgbOffset)) || dot(jsgbOffset, jsgbOffset) < 1e-4 ? float3(0, 0, 0) : jsgbOffset;'].filter(Boolean).join('\n');
     result = {key, hlsl, inputs, vertexHlsl, vertexInputs};
+    host.storage?.save(diskKey, JSON.stringify(result));
+    host.log('log', `shader ${key} translated in ${Date.now() - started} ms; kept on disk for later launches`);
   } catch (error) {
     host.log('warn', `custom shader ${material.name || key} stays generic: ${error instanceof Error ? error.message : error}`);
+    host.storage?.save(diskKey, '{"failed":true}');
   }
   cache.set(key, result);
   return result;
@@ -437,6 +464,8 @@ const NO_LIGHTS = ['NUM_DIR_LIGHTS', 'NUM_SPOT_LIGHTS', 'NUM_RECT_AREA_LIGHTS', 
 const LIGHTING_STARTS = [/^[ \t]*#include <normal_fragment_begin>/m, /^[ \t]*#include <lights_/m, /^[ \t]*#include <aomap_fragment>/m, /^[ \t]*#ifdef USE_LIGHTMAP/m, /^[ \t]*#include <opaque_fragment>/m];
 const MAPS: [string, string][] = [['map', 'MAP'], ['alphaMap', 'ALPHAMAP'], ['emissiveMap', 'EMISSIVEMAP'], ['roughnessMap', 'ROUGHNESSMAP'], ['metalnessMap', 'METALNESSMAP'], ['specularMap', 'SPECULARMAP'], ['aoMap', 'AOMAP']];
 const hookedSource = new WeakMap<object, {key: string; material: THREE.ShaderMaterial}>();
+// The rebuilt sources by key, shared by every material with the same hook and defines (each keeps its own uniforms).
+const hookedText = new Map<string, {vertex: string; fragment: string} | null>();
 
 /** Built-in uniform values from the material's own properties, as WebGLRenderer sets them each frame. */
 const SCALARS = ['roughness', 'metalness', 'shininess', 'alphaTest', 'reflectivity', 'aoMapIntensity'];
@@ -484,22 +513,32 @@ export function translateHookedMaterial(material: THREE.Material, hooked: Hooked
   const key = `${hookKey}|${material.type}|${JSON.stringify(defines)}`;
   let cached = hookedSource.get(material);
   if (!cached || cached.key !== key) {
-    // Texture transforms: mat3 uniforms become two vec3 rows.
-    const rows = (s: string) => s.replace(/uniform\s+mat3\s+(\w+Transform)\s*;/g, 'uniform vec3 $1_r0; uniform vec3 $1_r1;')
-      .replace(/\(\s*(\w+Transform)\s*\*\s*vec3\(\s*(\w+)\s*,\s*1(?:\.0)?\s*\)\s*\)\s*\.xy/g, 'vec2( dot( $1_r0, vec3( $2, 1.0 ) ), dot( $1_r1, vec3( $2, 1.0 ) ) )');
-    const vertex = rows(expandIncludes(hooked.vertexShader));
-    let fragment = rows(expandIncludes(hooked.fragmentShader.replace(/^[ \t]*#include <(normal_fragment_begin|lights_\w+|aomap_fragment|opaque_fragment)>/gm, '__JSGB_CUT_$1__')));
-    fragment = fragment.replace(/__JSGB_CUT_(\w+)__/g, '#include <$1>');
-    const main = fragment.search(/\bvoid\s+main\s*\(/);
-    const cuts = LIGHTING_STARTS.map(rx => { const at = fragment.slice(main).search(rx); return at < 0 ? Infinity : main + at; });
-    const cut = Math.min(...cuts);
-    if (main < 0 || cut === Infinity) return null;
-    let kept = fragment.slice(0, cut);
-    // Close any #if blocks the cut left open inside main.
-    const body = kept.slice(main);
-    const open = (body.match(/^[ \t]*#if/gm) ?? []).length - (body.match(/^[ \t]*#endif/gm) ?? []).length;
-    for (let i = 0; i < open; i++) kept += '\n#endif';
-    kept += '\n\tgl_FragColor = vec4( diffuseColor.rgb, diffuseColor.a );\n}\n';
+    let text = hookedText.get(key);
+    if (text === undefined) {
+      // Texture transforms: mat3 uniforms become two vec3 rows.
+      const rows = (s: string) => s.replace(/uniform\s+mat3\s+(\w+Transform)\s*;/g, 'uniform vec3 $1_r0; uniform vec3 $1_r1;')
+        .replace(/\(\s*(\w+Transform)\s*\*\s*vec3\(\s*(\w+)\s*,\s*1(?:\.0)?\s*\)\s*\)\s*\.xy/g, 'vec2( dot( $1_r0, vec3( $2, 1.0 ) ), dot( $1_r1, vec3( $2, 1.0 ) ) )');
+      const vertex = rows(expandIncludes(hooked.vertexShader));
+      let fragment = rows(expandIncludes(hooked.fragmentShader.replace(/^[ \t]*#include <(normal_fragment_begin|lights_\w+|aomap_fragment|opaque_fragment)>/gm, '__JSGB_CUT_$1__')));
+      fragment = fragment.replace(/__JSGB_CUT_(\w+)__/g, '#include <$1>');
+      const main = fragment.search(/\bvoid\s+main\s*\(/);
+      const cuts = LIGHTING_STARTS.map(rx => { const at = fragment.slice(main).search(rx); return at < 0 ? Infinity : main + at; });
+      const cut = Math.min(...cuts);
+      text = null;
+      if (main >= 0 && cut !== Infinity) {
+        let kept = fragment.slice(0, cut);
+        // Close any #if blocks the cut left open inside main.
+        const body = kept.slice(main);
+        const open = (body.match(/^[ \t]*#if/gm) ?? []).length - (body.match(/^[ \t]*#endif/gm) ?? []).length;
+        for (let i = 0; i < open; i++) kept += '\n#endif';
+        kept += '\n\tgl_FragColor = vec4( diffuseColor.rgb, diffuseColor.a );\n}\n';
+        text = {vertex, fragment: kept};
+      }
+      if (hookedText.size > 256) hookedText.clear();
+      hookedText.set(key, text);
+    }
+    if (!text) return null;
+    const {vertex, fragment: kept} = text;
     const uniforms = hooked.uniforms;
     for (const [k] of MAPS) if (vertex.includes(` ${k}Transform_r0;`)) {
       uniforms[`${k}Transform_r0`] ??= {value: new THREE.Vector3(1, 0, 0)}; uniforms[`${k}Transform_r1`] ??= {value: new THREE.Vector3(0, 1, 0)};

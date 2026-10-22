@@ -995,34 +995,54 @@ void UJsgbSceneMirror::SetMaterial(int32 Id, const FString& Json)
 		}
 		UE_LOG(LogJsgbMirror, Display, TEXT("TRACE material %d (%s): uniforms %s"), Id, *CustomKey, *Names);
 	}
-	if (bUniforms)
-	{
-		// Uniforms (shader materials and onBeforeCompile hooks) drive same-named parameters without
-		// the "u" prefix (uTime -> Time). Unknown names are ignored by the material.
-		for (const TPair<FString, TSharedPtr<FJsonValue>>& U : (*Uniforms)->Values)
-		{
-			const FString Key(*U.Key);
-			// Generated materials use the uniform names as they are.
-			const FString Name = !M.bCustom && Key.StartsWith(TEXT("u")) && Key.Len() > 1 && FChar::IsUpper(Key[1]) ? Key.RightChop(1) : Key;
-			if (U.Value->Type == EJson::Number) { Mid->SetScalarParameterValue(*Name, U.Value->AsNumber()); }
-			else if (U.Value->Type == EJson::Object)
-			{
-				const int32 TexId = static_cast<int32>(Num(U.Value->AsObject(), TEXT("tex")));
-				M.UniformTextures.AddUnique(TPair<FName, int32>(FName(*Name), TexId));
-				// Generated materials flip v for a texture three uploads flipped (flipY), as built-in ones do with FlipV.
-				if (const FJsgbTexture* T = Textures.Find(TexId)) { if (T->Texture) { Mid->SetTextureParameterValue(*Name, T->Texture); if (M.bCustom) { Mid->SetScalarParameterValue(*(Name + TEXT("_jsgbFlipY")), T->bFlipY ? 1.f : 0.f); } } }
-			}
-			else if (U.Value->Type == EJson::Array)
-			{
-				const TArray<TSharedPtr<FJsonValue>>& A = U.Value->AsArray();
-				FLinearColor V(0, 0, 0, 1);
-				for (int32 I = 0; I < FMath::Min(4, A.Num()); ++I) { V.Component(I) = A[I]->AsNumber(); }
-				Mid->SetVectorParameterValue(*Name, V);
-			}
-		}
-	}
+	ApplyUniforms(M, J);
 	M.Map = static_cast<int32>(Num(J, TEXT("map")));
 	ApplyTextureParams(Mid, M.Map);
+}
+
+void UJsgbSceneMirror::SetMaterialValues(int32 Id, const FString& Json)
+{
+	FJsgbMaterial* M = Materials.Find(Id);
+	if (!M || !M->Instance) { return; }
+	TSharedPtr<FJsonObject> J = ParseJson(Json);
+	if (!J) { return; }
+	// The full description kept for comparison no longer matches the parameters, so the next one is always applied.
+	M->Json.Reset();
+	M->Color = JsonColor(J, TEXT("color"), FLinearColor::White);
+	M->Instance->SetVectorParameterValue(TEXT("Color"), M->Color);
+	ApplyUniforms(*M, J);
+	const int32 Map = static_cast<int32>(Num(J, TEXT("map")));
+	if (Map != M->Map) { M->Map = Map; ApplyTextureParams(M->Instance, Map); }
+}
+
+void UJsgbSceneMirror::ApplyUniforms(FJsgbMaterial& M, const TSharedPtr<FJsonObject>& J)
+{
+	UMaterialInstanceDynamic* Mid = M.Instance;
+	const TSharedPtr<FJsonObject>* Uniforms = nullptr;
+	if (!Mid || !J->TryGetObjectField(TEXT("uniforms"), Uniforms) || !Uniforms || !Uniforms->IsValid()) { return; }
+	// Uniforms (shader materials and onBeforeCompile hooks) drive same-named parameters without
+	// the "u" prefix (uTime -> Time). Unknown names are ignored by the material.
+	for (const TPair<FString, TSharedPtr<FJsonValue>>& U : (*Uniforms)->Values)
+	{
+		const FString Key(*U.Key);
+		// Generated materials use the uniform names as they are.
+		const FString Name = !M.bCustom && Key.StartsWith(TEXT("u")) && Key.Len() > 1 && FChar::IsUpper(Key[1]) ? Key.RightChop(1) : Key;
+		if (U.Value->Type == EJson::Number) { Mid->SetScalarParameterValue(*Name, U.Value->AsNumber()); }
+		else if (U.Value->Type == EJson::Object)
+		{
+			const int32 TexId = static_cast<int32>(Num(U.Value->AsObject(), TEXT("tex")));
+			M.UniformTextures.AddUnique(TPair<FName, int32>(FName(*Name), TexId));
+			// Generated materials flip v for a texture three uploads flipped (flipY), as built-in ones do with FlipV.
+			if (const FJsgbTexture* T = Textures.Find(TexId)) { if (T->Texture) { Mid->SetTextureParameterValue(*Name, T->Texture); if (M.bCustom) { Mid->SetScalarParameterValue(*(Name + TEXT("_jsgbFlipY")), T->bFlipY ? 1.f : 0.f); } } }
+		}
+		else if (U.Value->Type == EJson::Array)
+		{
+			const TArray<TSharedPtr<FJsonValue>>& A = U.Value->AsArray();
+			FLinearColor V(0, 0, 0, 1);
+			for (int32 I = 0; I < FMath::Min(4, A.Num()); ++I) { V.Component(I) = A[I]->AsNumber(); }
+			Mid->SetVectorParameterValue(*Name, V);
+		}
+	}
 }
 
 UMaterialInstanceDynamic* UJsgbSceneMirror::MaterialFor(int32 Id)
@@ -1296,9 +1316,10 @@ void UJsgbSceneMirror::Place(FJsgbEntity& Ent, USceneComponent* C, const FTransf
 	if (!Current.Equals(T, 1e-3)) { Moving.Add(Ent.Id); }
 }
 
-void UJsgbSceneMirror::Interpolate(float Alpha)
+void UJsgbSceneMirror::Interpolate(float Alpha, float CameraAlpha)
 {
 	Alpha = FMath::Clamp(Alpha, 0.f, 1.f);
+	CameraAlpha = CameraAlpha < 0.f ? Alpha : FMath::Clamp(CameraAlpha, 0.f, 1.f);
 	for (const int32 Id : Moving)
 	{
 		FJsgbEntity* Ent = Entities.Find(Id);
@@ -1317,7 +1338,7 @@ void UJsgbSceneMirror::Interpolate(float Alpha)
 	if (Camera && bCameraPlaced)
 	{
 		FTransform B;
-		B.Blend(CameraFrom, CameraTo, Alpha);
+		B.Blend(CameraFrom, CameraTo, CameraAlpha);
 		Camera->SetWorldLocationAndRotation(B.GetLocation(), B.Rotator());
 	}
 }

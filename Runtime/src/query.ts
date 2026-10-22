@@ -92,6 +92,15 @@ export function installNoOpSkips(doc: any) {
   const probe = doc.createElement('div');
   const List = probe.classList?.constructor?.prototype;
   if (List?.add) {
+    // linkedom writes the class attribute from classList.value after every change. While a change is being made,
+    // value must be the new token set, not the attribute (which still holds the old classes): reading the attribute
+    // there wrote the old classes back, so every class added or removed after the first never reached the attribute.
+    // The overlay and linkedom's own selectors (:not(.collapsed), descendant rules) then saw stale classes.
+    let writing = 0;
+    for (const name of ['add', 'remove', 'toggle', 'replace']) {
+      const original = List[name];
+      if (typeof original === 'function') List[name] = function (this: Set<string>, ...args: unknown[]) { writing++; try { return original.apply(this, args); } finally { writing--; } };
+    }
     const add = List.add, remove = List.remove;
     List.add = function (this: Set<string>, ...tokens: string[]) { if (tokens.every(t => this.has(t))) return; return add.apply(this, tokens); };
     List.remove = function (this: Set<string>, ...tokens: string[]) { if (!tokens.some(t => this.has(t))) return; return remove.apply(this, tokens); };
@@ -102,6 +111,7 @@ export function installNoOpSkips(doc: any) {
     const join = Object.getOwnPropertyDescriptor(List, 'value')?.get;
     if (owner && join) {
       Object.defineProperty(List, 'value', {configurable: true, get(this: any) {
+        if (writing) return join.call(this);
         const attr = this[owner]?.getAttributeNode('class');
         return attr ? attr.value : join.call(this);
       }});

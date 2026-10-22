@@ -161,6 +161,9 @@ private:
 	double SegmentStart = 0, SegmentEnd = 0, LastProduced = 0, DrawInterval = 1.0 / 60.0;
 	/** How evenly the camera moves: its speed each frame while it moves, summed for the frame log. */
 	FVector LastCameraAt = FVector::ZeroVector;
+	/** Key-to-camera probe (POST /bridge/key "down ..."): when the key came, the camera then, and the last result in ms (-1: no move in 2 s). */
+	double KeyProbeAt = 0, KeyToCameraMs = 0;
+	FTransform KeyProbeFrom;
 	double CamSpeedSum = 0, CamSpeedSum2 = 0;
 	int32 CamSpeedFrames = 0;
 	TSharedPtr<SWebBrowser> Browser;
@@ -239,6 +242,7 @@ private:
 	TSharedPtr<class STextBlock> HudText;
 	/** Frame times in ms since GET /bridge/frametimes last read them. */
 	TArray<float> FrameTimesMs;
+	double LastTickWall = 0;
 	/** The last tick's js, mirror, build queue, builds, build stall and UI push times, for the slow-frame log. */
 	TArray<double> LastTick;
 	/** Unreal's own per-frame times (as stat unit shows them), summed since the last frame log: game thread, render thread,

@@ -35,6 +35,7 @@ globalThis.__jsgbHost = {
     geometry: (id, pos, nrm, uv, col, colorSize, idx, groups) => bridge.Geometry(id, buf(pos), buf(nrm), buf(uv), buf(col), colorSize, buf(idx), groups),
     releaseGeometry: id => bridge.ReleaseGeometry(id),
     material: (id, json) => bridge.Material(id, json),
+    materialUniforms: bridge.MaterialUniforms ? (id, json) => bridge.MaterialUniforms(id, json) : undefined,
     texture: (id, json, bytes) => bridge.Texture(id, json, buf(bytes)),
     frame: (floats, count, inst, instCount) => bridge.Frame(floats, count, inst, instCount),
     events: json => bridge.Events(json),

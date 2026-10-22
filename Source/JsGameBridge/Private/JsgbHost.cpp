@@ -734,6 +734,8 @@ void AJsgbHost::StartJs()
 	Bridge->StoreDir = FPaths::ProjectSavedDir() / TEXT("JsGameBridge") / GameId / TEXT("Store");
 	if (FParse::Param(FCommandLine::Get(), TEXT("JsgbFresh")) && ReadyFrame < 0 && Frame == 0) { IFileManager::Get().DeleteDirectory(*Bridge->StoreDir, false, true); }
 	IFileManager::Get().MakeDirectory(*Bridge->StoreDir, true);
+	// Read-only entries the package ships (translated shaders), used when Saved has none.
+	Bridge->SeedStoreDir = GameDir / TEXT("jsgb-store");
 	Bridge->LogPath = FPaths::ProjectSavedDir() / TEXT("JsGameBridge") / GameId / TEXT("js.log");
 	IFileManager::Get().Delete(*Bridge->LogPath);
 
@@ -983,6 +985,7 @@ void AJsgbHost::StartServer()
 			O->SetNumberField(TEXT("drawn"), H->Mirror->DrawnEntities);
 			O->SetNumberField(TEXT("pendingBuilds"), H->Mirror->PendingBuilds());
 			O->SetNumberField(TEXT("jsErrors"), H->Bridge ? H->Bridge->ErrorCount : 0);
+			O->SetNumberField(TEXT("keyToCameraMs"), H->KeyToCameraMs);
 			O->SetNumberField(TEXT("uiVersion"), H->Bridge ? H->Bridge->UIVersion : 0);
 			O->SetNumberField(TEXT("uiLayoutMessages"), H->UIPort ? H->UIPort->LayoutMessages : 0);
 			O->SetNumberField(TEXT("uiAppliedVersion"), H->UIPort ? H->UIPort->AppliedUIVersion : -1);
@@ -1069,6 +1072,9 @@ void AJsgbHost::StartServer()
 			if (Route == TEXT("/bridge/pagejs")) { if (H->Browser.IsValid()) { H->Browser->ExecuteJavascript(In); } O->SetBoolField(TEXT("sent"), H->Browser.IsValid()); }
 			else
 			{
+				// Key-to-camera probe: a key pressed through this route starts a clock that stops when the drawn camera
+				// first moves (status reports it as keyToCameraMs).
+				if (In.StartsWith(TEXT("down ")) && H->Camera) { H->KeyProbeAt = FPlatformTime::Seconds(); H->KeyProbeFrom = H->Camera->GetComponentTransform(); }
 				// "down KeyW" or "up KeyW", through Slate like a real key press; "click 0.5 0.5" clicks that point of the window
 				// (fractions of its width and height) with the left mouse button.
 				// Real mouse wheel input for recorded play checks, through the same Slate route as hardware.
@@ -1134,7 +1140,7 @@ void AJsgbHost::StartServer()
 			if (!bRemote) { Done(FHttpServerResponse::Error(EHttpServerResponseCodes::Forbidden, TEXT("start Unreal with -JsgbAllowRemote"))); return true; }
 			auto O = MakeShared<FJsonObject>();
 			if (Route == TEXT("/bridge/eval")) { O->SetStringField(TEXT("result"), H->Eval(Body(R))); }
-			else if (Route == TEXT("/bridge/input")) { if (H->UIPort) { H->UIPort->SendInput(Body(R)); } else if (UJsgbBridge* B = H->Bridge) { const FString In = Body(R); B->RunOnJs([B, In] { if (B->OnUIInput.IsBound()) { B->OnUIInput.Execute(In); } }); } O->SetBoolField(TEXT("accepted"), true); }
+			else if (Route == TEXT("/bridge/input")) { if (Body(R).Contains(TEXT("\"keydown\"")) && H->Camera) { H->KeyProbeAt = FPlatformTime::Seconds(); H->KeyProbeFrom = H->Camera->GetComponentTransform(); } if (H->UIPort) { H->UIPort->SendInput(Body(R)); } else if (UJsgbBridge* B = H->Bridge) { const FString In = Body(R); B->RunOnJs([B, In] { if (B->OnUIInput.IsBound()) { B->OnUIInput.Execute(In); } }); } O->SetBoolField(TEXT("accepted"), true); }
 			else if (Route == TEXT("/bridge/capture")) { const FString Path = Body(R).TrimStartAndEnd(); H->Capture(Path); O->SetStringField(TEXT("path"), Path); }
 			else { O->SetBoolField(TEXT("closing"), true); FPlatformMisc::RequestExit(false); }
 			Json(O);
@@ -1780,7 +1786,10 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		static IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"));
 		if (MaxFps && MaxFps->GetFloat() != Want) { JsgbSetFrameCap(MaxFps, Want); }
 	}
-	if (FrameTimesMs.Num() < 1000000) { FrameTimesMs.Add(DeltaSeconds * 1000.f); }
+	// Wall-clock time between ticks: Unreal clamps DeltaSeconds (0.4 s), which hid how long the longest freezes were.
+	const double WallNow = FPlatformTime::Seconds();
+	if (FrameTimesMs.Num() < 1000000) { FrameTimesMs.Add(LastTickWall > 0 ? static_cast<float>((WallNow - LastTickWall) * 1000.0) : DeltaSeconds * 1000.f); }
+	LastTickWall = WallNow;
 	if (RecordDir.IsEmpty() && CaptureQueue.Num() && !FScreenshotRequest::IsScreenshotRequested()) { FScreenshotRequest::RequestScreenshot(CaptureQueue[0], true, false); CaptureQueue.RemoveAt(0); }
 	if (Grabber)
 	{
@@ -1876,7 +1885,18 @@ void AJsgbHost::Tick(float DeltaSeconds)
 			static const bool bArrival = FParse::Param(FCommandLine::Get(), TEXT("JsgbArrivalInterpolation"));
 			if (bArrival) { SegmentEnd = Now + SnapshotInterval; }
 		}
-		Mirror->Interpolate(LastSnapshot > 0 ? static_cast<float>((Now - SegmentStart) / (SegmentEnd - SegmentStart)) : 1.f);
+		// The camera finishes its glide sooner than the objects: -JsgbCameraGlide=<draw frames> after the update arrives
+		// (default 1.5; 0 glides it with the objects). A camera one game frame behind added a game frame of input delay to
+		// every pan, orbit and zoom (key-to-camera was 74 to 106 ms in Hard Burn at about 37 game frames a second).
+		static const double CameraGlide = [] { double F = 1.5; FParse::Value(FCommandLine::Get(), TEXT("JsgbCameraGlide="), F); return FMath::Max(0.0, F); }();
+		const double CameraEnd = CameraGlide > 0 ? FMath::Min(SegmentEnd, SegmentStart + CameraGlide * DrawInterval) : SegmentEnd;
+		Mirror->Interpolate(LastSnapshot > 0 ? static_cast<float>((Now - SegmentStart) / (SegmentEnd - SegmentStart)) : 1.f,
+			LastSnapshot > 0 ? static_cast<float>((Now - SegmentStart) / FMath::Max(1e-4, CameraEnd - SegmentStart)) : 1.f);
+		if (KeyProbeAt > 0)
+		{
+			if (!Camera->GetComponentTransform().Equals(KeyProbeFrom, 1e-3)) { KeyToCameraMs = (FPlatformTime::Seconds() - KeyProbeAt) * 1000.0; KeyProbeAt = 0; }
+			else if (FPlatformTime::Seconds() - KeyProbeAt > 2.0) { KeyToCameraMs = -1; KeyProbeAt = 0; }
+		}
 		const FVector CameraAt = Camera->GetComponentLocation();
 		const double Speed = DeltaSeconds > 0 ? FVector::Dist(CameraAt, LastCameraAt) / DeltaSeconds : 0;
 		if (Speed > 10.0 && Speed < 100000.0) { CamSpeedSum += Speed; CamSpeedSum2 += Speed * Speed; ++CamSpeedFrames; }

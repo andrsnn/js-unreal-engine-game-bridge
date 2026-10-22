@@ -51,10 +51,12 @@ export function encode(value: unknown): Uint8Array | null {
   return out;
 }
 
-export function decode(bytes: ArrayBuffer): unknown {
-  const n = new DataView(bytes).getUint32(0, true);
-  const {s, b} = JSON.parse(new TextDecoder().decode(new Uint8Array(bytes, 8, n))) as {s: Shape; b: number[]};
-  let at = (8 + n + 7) & ~7;
+/** Decodes a message that starts `base` bytes into `bytes` (a worker reply inside the poll buffer is read in place,
+ *  so each of its ArrayBuffers is copied once, not twice). */
+export function decode(bytes: ArrayBuffer, base = 0): unknown {
+  const n = new DataView(bytes, base).getUint32(0, true);
+  const {s, b} = JSON.parse(new TextDecoder().decode(new Uint8Array(bytes, base + 8, n))) as {s: Shape; b: number[]};
+  let at = base + ((8 + n + 7) & ~7);
   const buffers = b.map(len => { const copy = bytes.slice(at, at + len); at += (len + 7) & ~7; return copy; });
   const walk = (v: Shape): unknown => {
     if (v === null || typeof v !== 'object') return v;

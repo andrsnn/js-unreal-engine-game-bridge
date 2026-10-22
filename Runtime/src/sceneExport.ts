@@ -2,7 +2,7 @@ import * as THREE from 'three-real';
 import {host, assetRegistry, registrySwaps, type SceneSink} from './host';
 import {lastFrame, post, captures} from './renderer';
 import {frameCount} from './frameCount';
-import {translateShaderMaterial, translateHookedMaterial, fillBuiltinUniforms, type HookedShader, type TranslatedShader} from './shaders';
+import {translateShaderMaterial, translateHookedMaterial, fillBuiltinUniforms, newShaderFrame, type HookedShader, type TranslatedShader} from './shaders';
 import {channelFor, isExtraAttribute} from './attributes';
 import {overrideRules, overrideFor, effectFlags} from './overrides';
 import {graphicsState} from './graphics';
@@ -24,7 +24,16 @@ let nextId = 1;
 const ids = new WeakMap<object, number>();
 const traced = new WeakSet<object>();
 let exportCount = 0;
-const idOf = (o: object) => { let id = ids.get(o); if (!id) { id = nextId++; ids.set(o, id); } return id; };
+// The id lives on the object under a symbol: a property read is several times cheaper than a WeakMap lookup, and the
+// exporter looks up thousands of ids a frame (every material's textures among them). Frozen objects use the WeakMap.
+const ID = Symbol('jsgbId');
+const idOf = (o: object) => {
+  const own = (o as Record<symbol, number>)[ID];
+  if (own) return own;
+  let id = ids.get(o);
+  if (!id) { id = nextId++; ids.set(o, id); try { Object.defineProperty(o, ID, {value: id, enumerable: false, writable: true}); } catch { /* frozen */ } }
+  return id;
+};
 
 // Registry keys travel as small integers; the host learns each name once through events().
 const keyIds = new Map<string, number>();
@@ -310,11 +319,11 @@ function uniformValues(uniforms: Record<string, {value: unknown}> | undefined, o
  *  so Unreal materials can implement those features by name. */
 const SHADER_LIB: Record<string, string> = {MeshStandardMaterial: 'standard', MeshPhysicalMaterial: 'physical', MeshLambertMaterial: 'lambert', MeshPhongMaterial: 'phong',
   MeshBasicMaterial: 'basic', MeshToonMaterial: 'toon', MeshMatcapMaterial: 'matcap', MeshNormalMaterial: 'normal', MeshDepthMaterial: 'depth', PointsMaterial: 'points', SpriteMaterial: 'sprite', LineBasicMaterial: 'basic'};
-const hookCache = new WeakMap<THREE.Material, {key: string; shader: HookedShader; version: number; hook: unknown}>();
+const hookCache = new WeakMap<THREE.Material, {key: string; shader: HookedShader; version: number; hook: unknown; added?: string[]}>();
 const defaultHook = THREE.Material.prototype.onBeforeCompile;
 const defaultCacheKey = THREE.Material.prototype.customProgramCacheKey;
 const hookRenderer = {capabilities: {isWebGL2: true, maxTextures: 16, precision: 'highp'}, extensions: {has: () => false, get: () => null}, getRenderTarget: () => null};
-function hookShader(mat: THREE.Material): {key: string; shader: HookedShader} | undefined {
+function hookShader(mat: THREE.Material): {key: string; shader: HookedShader; added?: string[]} | undefined {
   if (mat.onBeforeCompile === defaultHook || (mat as THREE.ShaderMaterial).isShaderMaterial) return undefined;
   const cached = hookCache.get(mat);
   // three's own customProgramCacheKey is the hook's source text (Function.toString), which is slow to build every
@@ -339,13 +348,24 @@ function hookUniforms(mat: THREE.Material): Record<string, {value: unknown}> | u
 
 /** A short stable name for a custom shader, so the registry can map it to an Unreal material. */
 const shaderKeys = new WeakMap<THREE.ShaderMaterial, {vs: string; fs: string; key: string}>();
+// Keys by source text too: a game that makes new materials from the same shader strings (labels, effects) had each new
+// material's whole source hashed again (0.7 s of a 45 s title screen in Hard Burn).
+const keysBySource = new Map<string, Map<string, string>>();
 function shaderKey(m: THREE.ShaderMaterial): string {
   if (m.name) return m.name;
   const last = shaderKeys.get(m);
   if (last && last.vs === m.vertexShader && last.fs === m.fragmentShader) return last.key;
-  let h = 0; const s = (m.fragmentShader ?? '') + (m.vertexShader ?? '');
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
-  const key = 'shader_' + (h >>> 0).toString(16);
+  const vs = m.vertexShader ?? '', fs = m.fragmentShader ?? '';
+  let byFragment = keysBySource.get(vs);
+  let key = byFragment?.get(fs);
+  if (key === undefined) {
+    let h = 0; const s = fs + vs;
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+    key = 'shader_' + (h >>> 0).toString(16);
+    if (keysBySource.size > 256) keysBySource.clear();
+    if (!byFragment) keysBySource.set(vs, byFragment = new Map());
+    byFragment.set(fs, key);
+  }
   shaderKeys.set(m, {vs: m.vertexShader, fs: m.fragmentShader, key});
   return key;
 }
@@ -379,8 +399,13 @@ const put = (i: number, v: number) => { if (i >= scratch.length) { const grown =
 // Uniform values as numbers after the material's own, for shader and hooked materials. Returns -1 for a
 // value it can't compare, and the material is then described in full every frame as before.
 function quickUniforms(u: Record<string, {value: unknown}>, i: number): number {
-  for (const k in u) {
-    const v = u[k]?.value as any;
+  for (const k in u) { i = quickValue(u[k]?.value, i); if (i < 0) return -1; }
+  return i;
+}
+function quickValue(value: unknown, i: number, depth = 0): number {
+  if (depth > 6) return -1;
+  {
+    const v = value as any;
     if (typeof v === 'number') i = put(i, v);
     else if (typeof v === 'boolean') i = put(i, +v);
     else if (v === null || v === undefined) i = put(i, -1.2345e-7);
@@ -390,15 +415,37 @@ function quickUniforms(u: Record<string, {value: unknown}>, i: number): number {
     else if (v.isVector4 || v.isQuaternion) { i = put(i, v.x); i = put(i, v.y); i = put(i, v.z); i = put(i, v.w); }
     else if (v.isMatrix3 || v.isMatrix4) { for (const e of v.elements) i = put(i, e); }
     else if (v.isTexture) { i = put(i, idOf(v)); i = put(i, v.version); }
-    else if (Array.isArray(v) || ArrayBuffer.isView(v)) {
-      for (const x of v as ArrayLike<any>) {
-        if (typeof x === 'number') i = put(i, x);
-        else if (x?.isVector3 || x?.isColor) { i = put(i, x.x ?? x.r); i = put(i, x.y ?? x.g); i = put(i, x.z ?? x.b); }
-        else if (x?.isVector2) { i = put(i, x.x); i = put(i, x.y); }
-        else if (x?.isVector4) { i = put(i, x.x); i = put(i, x.y); i = put(i, x.z); i = put(i, x.w); }
-        else return -1;
-      }
-    } else return -1;
+    else if (ArrayBuffer.isView(v)) { const a = v as unknown as ArrayLike<number>; i = put(i, a.length); for (let k = 0; k < a.length; k++) i = put(i, a[k]); }
+    // Arrays and plain objects (light arrays, struct uniforms) value by value. Before, any of them made the material be
+    // described in full every frame.
+    else if (Array.isArray(v)) { i = put(i, v.length); for (const x of v) { i = quickValue(x, i, depth + 1); if (i < 0) return -1; } }
+    else if (Object.getPrototypeOf(v) === Object.prototype) { for (const k in v) { i = quickValue(v[k], i, depth + 1); if (i < 0) return -1; } }
+    else return -1;
+  }
+  return i;
+}
+// A material patched in onBeforeCompile: three's own uniforms in the hooked shader only ever hold values taken from the
+// material's properties (fillBuiltinUniforms), which quickValues already reads, and its map transforms. So each frame
+// only the uniforms the hook added and the maps' transforms are read; the uniforms are filled in only when the
+// material is described. Filling and reading all of them for every material every frame cost several milliseconds.
+const HOOK_MAPS = ['map', 'alphaMap', 'emissiveMap', 'roughnessMap', 'metalnessMap', 'specularMap', 'aoMap'];
+const libUniformNames = new Map<string, Set<string>>();
+function quickHooked(mat: THREE.Material, entry: {shader: HookedShader; added?: string[]}, i: number): number {
+  if (!entry.added) {
+    const lib = SHADER_LIB[mat.type] ?? 'standard';
+    let names = libUniformNames.get(lib);
+    if (!names) libUniformNames.set(lib, names = new Set(Object.keys((THREE.ShaderLib as Record<string, {uniforms: object}>)[lib]?.uniforms ?? {})));
+    entry.added = Object.keys(entry.shader.uniforms).filter(k => !names!.has(k) && !/Transform_r[01]$/.test(k));
+  }
+  const u = entry.shader.uniforms;
+  for (const k of entry.added) { i = quickValue(u[k]?.value, i); if (i < 0) return -1; }
+  const m = mat as unknown as Record<string, THREE.Texture | null | undefined>;
+  for (const k of HOOK_MAPS) {
+    const t = m[k];
+    if (!t) continue;
+    i = put(i, idOf(t)); i = put(i, t.version); i = put(i, +t.flipY);
+    if (t.matrixAutoUpdate) { i = put(i, t.offset.x); i = put(i, t.offset.y); i = put(i, t.repeat.x); i = put(i, t.repeat.y); i = put(i, t.rotation); i = put(i, t.center.x); i = put(i, t.center.y); }
+    else for (const e of t.matrix.elements) i = put(i, e);
   }
   return i;
 }
@@ -433,10 +480,13 @@ function syncMaterial(mat: THREE.Material): number {
   materialFrame.set(mat, exportCount);
   const m = mat as THREE.MeshStandardMaterial & THREE.MeshPhysicalMaterial & THREE.ShaderMaterial & THREE.MeshBasicMaterial & THREE.PointsMaterial;
   const shader = !!m.isShaderMaterial;
-  const extra = shader ? m.uniforms as Record<string, {value: unknown}> : hookUniforms(mat);
+  const hookEntry = shader ? undefined : hookShader(mat);
   const base = quickValues(m as never);
   let count = base;
-  if (extra) count = quickUniforms(extra, count);
+  if (shader) count = quickUniforms(m.uniforms as Record<string, {value: unknown}>, count);
+  else if (hookEntry) count = quickHooked(mat, hookEntry, count);
+  // The uniforms to describe, filled in from the material only past this point (see quickHooked).
+  const extra = () => shader ? m.uniforms as Record<string, {value: unknown}> : hookUniforms(mat);
   let uniformsOnly = false;
   if (count >= 0) {
     const last = quick.get(mat), key = mat.userData?.materialKey ?? mat.userData?.assetMaterialKey;
@@ -453,9 +503,17 @@ function syncMaterial(mat: THREE.Material): number {
     const rest = materialRest.get(mat)!;
     const color = shader ? uniformColor(m) ?? [0.7, 0.7, 0.7] : colorOf(m.color);
     const map = shader ? uniformTexture(m) : textureId(m.map);
-    const uniforms = extra ? uniformValues(extra) : undefined;
-    const sig = '{"color":' + JSON.stringify(color) + ',"map":' + map + (uniforms ? ',"uniforms":' + JSON.stringify(uniforms) : '') + rest.json;
-    if (materialSig.get(id) !== sig) { materialSig.set(id, sig); sink()?.material(id, sig); }
+    const filled = extra();
+    const uniforms = filled ? uniformValues(filled) : undefined;
+    const head = '{"color":' + JSON.stringify(color) + ',"map":' + map + (uniforms ? ',"uniforms":' + JSON.stringify(uniforms) : '');
+    const sig = head + rest.json;
+    if (materialSig.get(id) !== sig) {
+      materialSig.set(id, sig);
+      // Only the values moved: the host updates those parameters instead of reading the whole description again
+      // (an animated shader uniform on a hundred materials cost the game thread about 6 ms a frame).
+      const out = sink();
+      if (out?.materialUniforms) out.materialUniforms(id, head + '}'); else out?.material(id, sig);
+    }
     return id;
   }
   const registryKey = mat.userData?.materialKey ?? mat.userData?.assetMaterialKey ?? (shader ? shaderKey(m) : undefined);
@@ -902,7 +960,7 @@ export function exportFrame(): number {
   let top: THREE.Object3D = scene; while (top.parent) top = top.parent;
   top.updateMatrixWorld();
   cam.updateMatrixWorld();
-  n = 0; ni = 0; exportCount++;
+  n = 0; ni = 0; exportCount++; newShaderFrame();
   // Header (HEADER_FLOATS): camera, background, fog, environment, post-processing.
   pushMatrix(cam.matrixWorld);
   push(cam.isPerspectiveCamera ? cam.fov : 0); push(cam.isPerspectiveCamera ? cam.aspect : (cam.right - cam.left) / Math.max(1e-6, cam.top - cam.bottom));
@@ -961,7 +1019,7 @@ export function exportFrame(): number {
 export function objectById(id: number): unknown {
   let top = lastFrame.scene as THREE.Object3D | null, found: THREE.Object3D | null = null;
   while (top?.parent) top = top.parent;
-  top?.traverse(o => { if (ids.get(o) === id) found = o; });
+  top?.traverse(o => { if (((o as unknown as Record<symbol, number>)[ID] ?? ids.get(o)) === id) found = o; });
   return found;
 }
 

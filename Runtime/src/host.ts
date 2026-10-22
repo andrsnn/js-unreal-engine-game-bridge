@@ -4,6 +4,8 @@ export interface SceneSink {
   geometry(id: number, positions: ArrayBuffer, normals: ArrayBuffer | null, uvs: ArrayBuffer | null, colors: ArrayBuffer | null, colorSize: number, indices: ArrayBuffer | null, groups: string): void;
   releaseGeometry(id: number): void;
   material(id: number, json: string): void;
+  /** Colour, map and uniform values of a material described before, when nothing else about it changed. */
+  materialUniforms?(id: number, json: string): void;
   texture(id: number, json: string, bytes: ArrayBuffer | null): void;
   frame(floats: ArrayBuffer, count: number, instanceData: ArrayBuffer, instanceFloats: number): void;
   /** A custom shader translated to an Unreal material body, sent once per shader key. */
