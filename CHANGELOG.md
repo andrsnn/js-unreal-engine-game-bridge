@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.7.1
+
+- Display scaling: the host is DPI aware from its first window. Unreal games start DPI unaware, and Chromium turned
+  DPI awareness on when it started, so at Windows scales above 100% the window was stretched and the UI overlay could
+  not be seen or clicked. `Tools/run-unreal.mjs` passes
+  `-ini:Engine:[/Script/Engine.UserInterfaceSettings]:bAllowHighDPIInGameMode=True`. Put the same argument in your own
+  launchers. The overlay page then lays out like Chrome (1280x720 CSS pixels at pixel ratio 1.5 in a 1920x1080 window
+  at 150%).
+- Frame rates: the JavaScript thread runs at up to 120 frames per second (it was 60; `-JsgbJsHz=<n>` sets it). The UI
+  overlay draws at up to 120 (it was 60; `-JsgbUiFps=<n>` sets it). It draws only when the page changes. In our Hard Burn
+  test, 120 was smoother than 60: p99 frame time 11.1 ms against 13.1, and no frame over 100 ms in a minute against one.
+- Frame cap: `-JsgbSceneFps=<n>` is the default cap. A cap the player saved in the game's display settings, unlimited
+  included, wins over it. The host sets `t.MaxFPS` only when it differs, at a priority that applies. Before, it retried
+  every frame and logged a refusal each time.
+
 ## 0.7.0
 
 - Page games (a publication with `"page"`) and the UI overlay draw with Chromium 152 (CEF 152) instead of the

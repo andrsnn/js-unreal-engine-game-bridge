@@ -59,6 +59,8 @@ public:
 	/** Where this game's display settings are kept (Saved/JsGameBridge/<game>/display.json): each game keeps its own,
 	 *  and Unreal's shared settings file isn't written. */
 	FString DisplayFile;
+	/** The game's display.json (or a display set since) has a frame cap the player chose, unlimited (0) included. */
+	bool bSavedFrameCap = false;
 	/** Applies a display change ({width?, height?, mode?, vsync?, maxFps?}) without saving Unreal's settings. Game thread. */
 	static void ApplyDisplay(const TSharedPtr<class FJsonObject>& In);
 	/** At launch: clears any frame cap left in Unreal's shared settings, then applies this game's saved display settings. */

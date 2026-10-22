@@ -456,6 +456,7 @@ void UJsgbBridge::DisplaySet(const FString& Json)
 		FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Json), In);
 		if (!In) { return; }
 		ApplyDisplay(In);
+		if (In->HasField(TEXT("maxFps"))) { bSavedFrameCap = true; }
 		// Kept for this game only: merged into its display.json.
 		if (!DisplayFile.IsEmpty())
 		{
@@ -521,6 +522,7 @@ void UJsgbBridge::RestoreDisplay()
 	if (!DisplayFile.IsEmpty() && FFileHelper::LoadFileToString(Saved, *DisplayFile) && FJsonSerializer::Deserialize(TJsonReaderFactory<>::Create(Saved), In) && In)
 	{
 		ApplyDisplay(In);
+		bSavedFrameCap = In->HasField(TEXT("maxFps"));
 		Log(TEXT("log"), TEXT("display settings restored: ") + Saved);
 	}
 	UpdateDisplayInfo();

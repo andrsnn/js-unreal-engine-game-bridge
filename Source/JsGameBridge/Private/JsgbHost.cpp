@@ -543,6 +543,15 @@ void AJsgbHost::PagePadGesture()
 
 FString UJsgbPagePort::DisplayModes() { return Display ? Display->DisplayModes() : FString(TEXT("[]")); }
 FString UJsgbPagePort::DisplayGet() { return Display ? Display->DisplayGet() : FString(TEXT("{}")); }
+// Sets t.MaxFPS at its current priority or SetByCode, whichever is higher. Once -ExecCmds or a saved display setting
+// has set it from the console, a SetByCode write is refused, and the per-frame checks below retried it every frame:
+// 10,823 "was ignored" log lines in one Hard Burn session.
+static void JsgbSetFrameCap(IConsoleVariable* MaxFps, float Fps)
+{
+	const uint32 Current = static_cast<uint32>(MaxFps->GetFlags()) & static_cast<uint32>(ECVF_SetByMask);
+	MaxFps->Set(Fps, static_cast<EConsoleVariableFlags>(FMath::Max(Current, static_cast<uint32>(ECVF_SetByCode))));
+}
+
 void UJsgbPagePort::DisplaySet(const FString& Json)
 {
 	if (!Display) { return; }
@@ -553,7 +562,7 @@ void UJsgbPagePort::DisplaySet(const FString& Json)
 	UGameUserSettings* S = GEngine ? GEngine->GetGameUserSettings() : nullptr;
 	const float Limit = S ? S->GetFrameRateLimit() : 0.f;
 	Cap = Limit <= 0 || Limit > PageFps ? static_cast<float>(PageFps) : Limit;
-	if (IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"))) { MaxFps->Set(Cap, ECVF_SetByCode); }
+	if (IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"))) { JsgbSetFrameCap(MaxFps, Cap); }
 }
 
 // "KeyW", "Digit1", "Space", "ArrowUp" and the like as an Unreal key, its Windows key code and its character, for
@@ -747,7 +756,7 @@ void AJsgbHost::StartJs()
 	// Deterministic captures (fixed steps) keep the JavaScript on the game thread.
 	if (FParse::Param(FCommandLine::Get(), TEXT("JsgbJsThread")) && Bridge->FixedStepMs <= 0 && Bridge->OnFrame.IsBound())
 	{
-		double Hz = 60;
+		double Hz = 120;
 		FParse::Value(FCommandLine::Get(), TEXT("JsgbJsHz="), Hz);
 		Bridge->bJsThread = true;
 		Mirror->bInterpolate = !FParse::Param(FCommandLine::Get(), TEXT("JsgbNoInterpolation"));
@@ -789,9 +798,16 @@ void AJsgbHost::CreateOverlay()
 	FFileHelper::LoadFileToString(Client, *(PluginDir / TEXT("JavaScript/jsgb-ui-client.js")));
 	UIPort = NewObject<UJsgbUIPort>(this);
 	UIPort->Bridge = Bridge;
+	// The overlay page's frame cap. The browser draws a frame only when the page changed, so this caps how often an
+	// animating page is copied into Unreal. -JsgbUiFps=<n> sets it. 120 measured smoother than 60 in Hard Burn
+	// (p99 11.1 ms against 13.1, p99.9 34 ms against 48, no frame over 100 ms in a minute against one).
+	int32 UiFps = 120;
+	FParse::Value(FCommandLine::Get(), TEXT("JsgbUiFps="), UiFps);
+	UiFps = FMath::Clamp(UiFps, 1, 240);
+	UE_LOG(LogJsgbHost, Display, TEXT("UI overlay drawn at up to %d frames per second"), UiFps);
 	SAssignNew(Browser, SWebBrowser).InitialURL(TEXT("about:blank"))
 		.ShowControls(false).ShowAddressBar(false).ShowInitialThrobber(false)
-		.SupportsTransparency(true).BackgroundColor(FColor(0, 0, 0, 0)).BrowserFrameRate(60)
+		.SupportsTransparency(true).BackgroundColor(FColor(0, 0, 0, 0)).BrowserFrameRate(UiFps)
 		.PopupMenuMethod(EPopupMethod::UseCurrentWindow)
 		.OnLoadStarted_Lambda([this]() { bDocumentReady = false; })
 		.OnLoadCompleted_Lambda([this]() { bDocumentReady = true; PushedUIVersion = -1; UE_LOG(LogJsgbHost, Display, TEXT("UI overlay document loaded")); })
@@ -1743,8 +1759,9 @@ void AJsgbHost::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	++Frame;
 	GJsgbWindowFocus.store(FSlateApplication::IsInitialized() && FSlateApplication::Get().IsActive(), std::memory_order_relaxed);
-	// A mirrored scene can present at its simulation cadence, independently of page-game caps.
-	// Apply after the game's display preferences too; otherwise a saved unlimited cap wins at startup.
+	// A mirrored scene can present at its simulation cadence, independently of page-game caps. -JsgbSceneFps is the
+	// default cap. A frame cap the player saved in the game's display settings (unlimited too) wins over it. Unreal's own
+	// start-up settings and the game user settings file also set t.MaxFPS, so the default is set again whenever it differs.
 	static const float SceneFps = [] { float Fps = 0; FParse::Value(FCommandLine::Get(), TEXT("JsgbSceneFps="), Fps); return FMath::Clamp(Fps, 0.f, 240.f); }();
 	if (SceneFps > 0 && !IsPageGame())
 	{
@@ -1752,7 +1769,7 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		static IConsoleVariable* Pacer = IConsoleManager::Get().FindConsoleVariable(TEXT("t.Streamline.Reflex.HandleMaxTickRate"));
 		if (Pacer && Pacer->GetInt() != 0) { Pacer->Set(0, ECVF_SetByCode); }
 		static IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"));
-		if (MaxFps && MaxFps->GetFloat() != SceneFps) { MaxFps->Set(SceneFps, ECVF_SetByCode); }
+		if (MaxFps && !(Bridge && Bridge->bSavedFrameCap) && MaxFps->GetFloat() != SceneFps) { JsgbSetFrameCap(MaxFps, SceneFps); }
 	}
 	UpdateHud(DeltaSeconds);
 	// A page game loading files: Unreal ticks up to PageLoadFps until a second after the last request, then returns to the
@@ -1760,8 +1777,8 @@ void AJsgbHost::Tick(float DeltaSeconds)
 	if (PagePort)
 	{
 		const float Want = FPlatformTime::Seconds() - LastPageFile < 1.0 ? FMath::Max(PageLoadFps, PagePort->Cap) : PagePort->Cap;
-		IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"));
-		if (MaxFps && MaxFps->GetFloat() != Want) { MaxFps->Set(Want, ECVF_SetByCode); }
+		static IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"));
+		if (MaxFps && MaxFps->GetFloat() != Want) { JsgbSetFrameCap(MaxFps, Want); }
 	}
 	if (FrameTimesMs.Num() < 1000000) { FrameTimesMs.Add(DeltaSeconds * 1000.f); }
 	if (RecordDir.IsEmpty() && CaptureQueue.Num() && !FScreenshotRequest::IsScreenshotRequested()) { FScreenshotRequest::RequestScreenshot(CaptureQueue[0], true, false); CaptureQueue.RemoveAt(0); }

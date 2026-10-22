@@ -47,6 +47,9 @@ const args = [project, '/Engine/Maps/Entry?game=/Script/JsGameBridge.JsgbGameMod
 // A game run never uses Unreal's Python plugin (an editor plugin), whose start-up scripts and garbage collection
 // cost 15 to 20 ms frames during play.
 args.push('-DisablePython');
+// DPI aware from the first window. Unreal games start DPI unaware, and the browser that draws the page or UI overlay
+// turns DPI awareness on when it starts, which broke the UI at Windows display scales above 100%.
+args.push('-ini:Engine:[/Script/Engine.UserInterfaceSettings]:bAllowHighDPIInGameMode=True');
 // Off screen, the window may be larger than the desktop.
 if (has('--offscreen')) args.push('-RenderOffScreen', '-ForceRes');
 if (has('--no-ui')) args.push('-JsgbNoUI');
