@@ -40,6 +40,8 @@ export interface JsgbHost {
   graphics?: {get(): string; set(json: string): void};
   /** Persistent key/value store for localStorage and sessionStorage. */
   storage?: {load(key: string): string | null; save(key: string, data: string): void};
+  /** The host-driven camera rig (cameraRig.ts). */
+  camera?: {take(): string; give(version: number, json: string): void; config(json: string): void; off(): void};
   /** Bytes that outlive a hot reload (the JS environment restarts, the host keeps them). */
   cache?: {get(key: string): ArrayBuffer | null; put(key: string, bytes: ArrayBuffer): void};
   sink?: SceneSink;

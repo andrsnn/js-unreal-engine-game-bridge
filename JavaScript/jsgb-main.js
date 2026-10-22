@@ -31,6 +31,7 @@ globalThis.__jsgbHost = {
   storage: {load: key => bridge.LoadStore(key) || null, save: (key, data) => bridge.SaveStore(key, data)},
   display: {modes: () => bridge.DisplayModes(), get: () => bridge.DisplayGet(), set: json => bridge.DisplaySet(json)},
   graphics: {get: () => bridge.GraphicsGet(), set: json => bridge.GraphicsSet(json)},
+  camera: bridge.CameraTake ? {take: () => bridge.CameraTake(), give: (v, json) => bridge.CameraGive(v, json), config: json => bridge.CameraConfig(json), off: () => bridge.CameraOff()} : undefined,
   sink: {
     geometry: (id, pos, nrm, uv, col, colorSize, idx, groups) => bridge.Geometry(id, buf(pos), buf(nrm), buf(uv), buf(col), colorSize, buf(idx), groups),
     releaseGeometry: id => bridge.ReleaseGeometry(id),

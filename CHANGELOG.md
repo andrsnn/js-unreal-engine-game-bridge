@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.7.3
+
+- Games can hand an orbit camera to `jsgb.camera.rig`: the host applies held camera keys on each drawn frame.
+  Key bindings, speeds and limits come from the game. Each game frame adopts the host state and returns its own
+  changes, preserving glides, following, wheel zoom and drag orbit. The browser game keeps its existing controls.
+- Rig poses and view ownership travel atomically with their scene snapshot. Between-frame camera changes survive
+  adoption of host input, and native limits constrain input without changing game-authored poses.
+- Camera cuts and returns from another view snap to the new pose. The host yields while the game draws another
+  camera or places the orbit camera itself. Rotation added by the game, including shake and roll, is retained.
+- The UI overlay defaults to 60 paints per second again. At larger resolutions the synchronous overlay copies
+  caused long frame times at 120. `-JsgbUiFps=<n>` still overrides the cap.
+- The input-delay probe samples the final drawn camera. Rig diagnostics report position and rotation agreement.
+- Bundle adapters can import game modules with the `jsgb-game:` prefix.
+
 ## 0.7.2
 
 Smoother Unreal frames for games with many materials and custom shaders.

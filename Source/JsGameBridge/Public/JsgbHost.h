@@ -243,6 +243,9 @@ private:
 	/** Frame times in ms since GET /bridge/frametimes last read them. */
 	TArray<float> FrameTimesMs;
 	double LastTickWall = 0;
+	double RigGapCm = 0;
+	double RigRotationGapDeg = 0;
+	float ObjectAlpha = 1.f;
 	/** The last tick's js, mirror, build queue, builds, build stall and UI push times, for the slow-frame log. */
 	TArray<double> LastTick;
 	/** Unreal's own per-frame times (as stat unit shows them), summed since the last frame log: game thread, render thread,

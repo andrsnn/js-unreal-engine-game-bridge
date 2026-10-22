@@ -4,6 +4,7 @@
 #include <source_location>
 #include "UObject/Object.h"
 #include "ArrayBuffer.h"
+#include "JsgbCameraRig.h"
 #include "JsgbBridge.generated.h"
 
 class UJsgbSceneMirror;
@@ -120,6 +121,16 @@ public:
 	UFUNCTION() void Geometry(int32 Id, FArrayBuffer Positions, FArrayBuffer Normals, FArrayBuffer UVs, FArrayBuffer Colors, int32 ColorSize, FArrayBuffer Indices, const FString& Groups);
 	UFUNCTION() void ReleaseGeometry(int32 Id);
 	UFUNCTION() void Material(int32 Id, const FString& Json);
+	/** window.jsgb.camera.rig (Runtime/src/cameraRig.ts): the camera the host moves with the keys (JsgbCameraRig.h). */
+	UFUNCTION() FString CameraTake() { return CameraRig.Take(); }
+	UFUNCTION() void CameraGive(int32 Version, const FString& Json);
+	UFUNCTION() void CameraConfig(const FString& Json) { CameraRig.Configure(Json); }
+	UFUNCTION() void CameraOff() { CameraRig.Reset(); }
+	FJsgbCameraRig CameraRig;
+	// JavaScript-thread staging: consumed by Frame and queued atomically with its camera matrix.
+	FJsgbCameraRig::FState PendingCameraBase;
+	int64 PendingCameraSeq = 0;
+	bool bPendingCameraBase = false;
 	/** Colour, map and uniforms of a material described before ({"color","map","uniforms"}), when nothing else changed. */
 	UFUNCTION() void MaterialUniforms(int32 Id, const FString& Json);
 	UFUNCTION() void Texture(int32 Id, const FString& Json, FArrayBuffer Bytes);

@@ -130,6 +130,8 @@ function bridgePlugin(game, page) {
       // Adapters (Games/<game>.json "adapters"): the bridge's own modules for one game, run once the game's entry has
       // evaluated, such as a row in the game's options menu for a host feature. The game's files stay as they are.
       b.onResolve({filter: /^jsgb:adapters$/}, () => ({path: 'adapters', namespace: 'jsgb-adapters'}));
+      // An adapter reaches the game's own modules as 'jsgb-game:<path in the game's repo>' (the same module the game uses).
+      b.onResolve({filter: /^jsgb-game:/}, a => ({path: path.resolve(game.repo, a.path.slice('jsgb-game:'.length))}));
       b.onLoad({filter: /.*/, namespace: 'jsgb-adapters'}, () => ({resolveDir: bridge, loader: 'js',
         contents: (game.adapters ?? []).map(f => `import ${JSON.stringify(path.resolve(bridge, f))};`).join('\n') || 'export {};'}));
       // 'three' is the real library with WebGLRenderer replaced; the runtime reaches the real one as 'three-real'.

@@ -210,6 +210,8 @@ private:
 		if (H->IsPageGame() && E.GetKey().IsGamepadKey()) { return true; }
 		// F6 and F7 (with -JsgbDlssKeys) switch DLSS modes and Frame Generation while the game runs.
 		if (bDown && !E.IsRepeat() && H->HandleDlssKey(E.GetKey())) { return true; }
+		// The camera rig sees every key first (the overlay page still gets it and passes it to the game as before).
+		if (H->Bridge && H->Bridge->CameraRig.IsActive() && !E.IsRepeat()) { const FString RigCode = DomCode(E.GetKey()); if (!RigCode.IsEmpty()) { H->Bridge->CameraRig.Key(RigCode, bDown); } }
 		if (H->HasOverlay()) { return false; }
 		const FString Code = DomCode(E.GetKey());
 		if (Code.IsEmpty()) { return false; }
@@ -801,9 +803,9 @@ void AJsgbHost::CreateOverlay()
 	UIPort = NewObject<UJsgbUIPort>(this);
 	UIPort->Bridge = Bridge;
 	// The overlay page's frame cap. The browser draws a frame only when the page changed, so this caps how often an
-	// animating page is copied into Unreal. -JsgbUiFps=<n> sets it. 120 measured smoother than 60 in Hard Burn
-	// (p99 11.1 ms against 13.1, p99.9 34 ms against 48, no frame over 100 ms in a minute against one).
-	int32 UiFps = 120;
+	// animating page is copied into Unreal. -JsgbUiFps=<n> sets it. Each copy waits for the GPU on the game thread: in Hard
+	// Burn at 2560x1600 a 120 cap held the game at 66 FPS (p99.9 197 ms) against 117 FPS (p99.9 27 ms) at 60.
+	int32 UiFps = 60;
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbUiFps="), UiFps);
 	UiFps = FMath::Clamp(UiFps, 1, 240);
 	UE_LOG(LogJsgbHost, Display, TEXT("UI overlay drawn at up to %d frames per second"), UiFps);
@@ -1890,8 +1892,35 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		// every pan, orbit and zoom (key-to-camera was 74 to 106 ms in Hard Burn at about 37 game frames a second).
 		static const double CameraGlide = [] { double F = 1.5; FParse::Value(FCommandLine::Get(), TEXT("JsgbCameraGlide="), F); return FMath::Max(0.0, F); }();
 		const double CameraEnd = CameraGlide > 0 ? FMath::Min(SegmentEnd, SegmentStart + CameraGlide * DrawInterval) : SegmentEnd;
-		Mirror->Interpolate(LastSnapshot > 0 ? static_cast<float>((Now - SegmentStart) / (SegmentEnd - SegmentStart)) : 1.f,
+		ObjectAlpha = LastSnapshot > 0 ? static_cast<float>((Now - SegmentStart) / (SegmentEnd - SegmentStart)) : 1.f;
+		Mirror->Interpolate(ObjectAlpha,
 			LastSnapshot > 0 ? static_cast<float>((Now - SegmentStart) / FMath::Max(1e-4, CameraEnd - SegmentStart)) : 1.f);
+
+	}
+	else if (!bHeld) { Bridge->OnFrame.Execute(ReadyFrame < 0 ? 40.f : 8.f); }
+	// A game that hands its camera to the host (window.jsgb.camera.rig): the keys held now move it on this frame.
+	if (Camera && Bridge)
+	{
+		// Keys held when the window loses focus never send a key up: forget them then, as a browser does on blur.
+		static bool bHadFocus = true;
+		const bool bFocus = JsgbWindowHasFocus();
+		if (bHadFocus && !bFocus) { Bridge->CameraRig.ReleaseKeys(); }
+		bHadFocus = bFocus;
+		FVector RigAt; FRotator RigRot; bool bRigMoved = false;
+		if (Bridge->CameraRig.Tick(DeltaSeconds, JsThread && Mirror->bInterpolate ? ObjectAlpha : 1.f, RigAt, RigRot, bRigMoved))
+		{
+			Camera->SetWorldLocationAndRotation(RigAt, RigRot);
+			// How far the host's camera is from the one the game last drew with (a check that both agree when no key is held).
+			if (!bRigMoved && ObjectAlpha >= 1.f)
+			{
+				RigGapCm = FMath::Max(RigGapCm, FVector::Dist(RigAt, Mirror->CameraLocation));
+				RigRotationGapDeg = FMath::Max(RigRotationGapDeg, FMath::RadiansToDegrees(RigRot.Quaternion().AngularDistance(Mirror->CameraRotation.Quaternion())));
+			}
+			if (Frame % 600 == 0) { Bridge->Log(TEXT("log"), FString::Printf(TEXT("camera rig: largest gap to the game's camera with no key held %.1f cm, %.3f degrees"), RigGapCm, RigRotationGapDeg)); RigGapCm = 0; RigRotationGapDeg = 0; }
+		}
+	}
+	if (Camera)
+	{
 		if (KeyProbeAt > 0)
 		{
 			if (!Camera->GetComponentTransform().Equals(KeyProbeFrom, 1e-3)) { KeyToCameraMs = (FPlatformTime::Seconds() - KeyProbeAt) * 1000.0; KeyProbeAt = 0; }
@@ -1902,7 +1931,6 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		if (Speed > 10.0 && Speed < 100000.0) { CamSpeedSum += Speed; CamSpeedSum2 += Speed * Speed; ++CamSpeedFrames; }
 		LastCameraAt = CameraAt;
 	}
-	else if (!bHeld) { Bridge->OnFrame.Execute(ReadyFrame < 0 ? 40.f : 8.f); }
 	const double T1 = FPlatformTime::Seconds();
 	JsMs += (T1 - T0) * 1000.0; ++TimedFrames;
 	PushUI();

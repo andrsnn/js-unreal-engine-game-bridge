@@ -282,6 +282,11 @@ void UJsgbBridge::Geometry(int32 Id, FArrayBuffer Positions, FArrayBuffer Normal
 }
 
 void UJsgbBridge::ReleaseGeometry(int32 Id) { RunOnGame([this, Id] { if (Mirror) { Mirror->ReleaseGeometry(Id); } }); }
+void UJsgbBridge::CameraGive(int32 Version, const FString& Json)
+{
+	bPendingCameraBase = CameraRig.Give(Version, Json, PendingCameraBase, PendingCameraSeq);
+}
+
 void UJsgbBridge::MaterialUniforms(int32 Id, const FString& Json)
 {
 	RunOnGame([this, Id, Json] { const double T0 = FPlatformTime::Seconds(); if (Mirror) { Mirror->SetMaterialValues(Id, Json); } const double Ms = (FPlatformTime::Seconds() - T0) * 1000.0; MirrorMs += Ms; MaterialMs += Ms; ++MaterialCalls; });
@@ -319,12 +324,19 @@ void UJsgbBridge::Frame(FArrayBuffer Floats, int32 Count, FArrayBuffer Instances
 	const int32 Available = static_cast<int32>(Floats.Length / sizeof(float));
 	const int32 InstAvailable = static_cast<int32>(Instances.Length / sizeof(float));
 	const int32 N = FMath::Clamp(Count, 0, Available), NI = FMath::Clamp(InstanceFloats, 0, InstAvailable);
-	auto Apply = [this](const float* D, int32 DN, const float* Inst, int32 InstN)
+	// A drain may stop between any two queued commands. Keep the rig pose and view ownership
+	// in the same command as the scene matrix; skipped snapshots skip their rig pose as well.
+	const bool bRigBase = bPendingCameraBase;
+	const FJsgbCameraRig::FState RigBase = PendingCameraBase;
+	const int64 RigSeq = PendingCameraSeq;
+	bPendingCameraBase = false;
+	auto Apply = [this, bRigBase, RigBase, RigSeq](const float* D, int32 DN, const float* Inst, int32 InstN)
 	{
 		if (!Mirror) { return; }
 		++SceneFrames;
 		const double T0 = FPlatformTime::Seconds();
 		Mirror->ApplyFrame(D, DN, Inst, InstN);
+		if (bRigBase) { CameraRig.SnapshotBase(RigBase, RigSeq); }
 		MirrorMs += (FPlatformTime::Seconds() - T0) * 1000.0;
 	};
 	if (!bJsThread || IsInGameThread()) { Apply(static_cast<const float*>(Floats.Data), N, static_cast<const float*>(Instances.Data), NI); return; }

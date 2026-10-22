@@ -15,6 +15,7 @@ import {input} from './input';
 import {publishUI, uiInput, clickElement, findElement} from './ui';
 import {lastFrame, post} from './renderer';
 import {exportFrame, describeScene, emitEvent, objectById} from './sceneExport';
+import {cameraFrameStart, cameraFrameEnd} from './cameraRig';
 
 const g = globalThis as Record<string, any>;
 for (const level of ['log', 'info', 'debug', 'warn', 'error'] as const) {
@@ -33,9 +34,11 @@ g.__jsgb = {
    *  scene, UI and audio go out to the host. */
   frame: async (budgetMs = 8) => {
     const t0 = wallNow();
+    cameraFrameStart();
     await pumpFrame(budgetMs); frames++;
     const t1 = wallNow();
     refreshGraphics();
+    cameraFrameEnd();
     try { exportFrame(); } catch (e) { host.log('error', 'scene export: ' + (e instanceof Error ? e.stack : e)); }
     const t2 = wallNow();
     try { publishUI(); } catch (e) { host.log('error', 'ui publish: ' + (e instanceof Error ? e.stack : e)); }
