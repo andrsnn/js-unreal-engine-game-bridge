@@ -16,7 +16,7 @@ const files = fs.readdirSync(dir).filter(f => f.endsWith('.test.mjs'));
 for (const f of files) {
   // Bundled next to the source's own folder, so import.meta.url paths in a test still resolve.
   await esbuild.build({entryPoints: [path.join(dir, f)], outfile: path.join(dir, `.bundle-${f}`), bundle: true, format: 'esm', platform: 'node',
-    nodePaths: [path.join(bridge, 'Runtime/node_modules')], logLevel: 'warning'});
+    alias: {'three-real': 'three'}, nodePaths: [path.join(bridge, 'Runtime/node_modules')], logLevel: 'warning'});
 }
 const r = spawnSync(process.execPath, ['--test', ...files.map(f => path.join(dir, `.bundle-${f}`))], {stdio: 'inherit'});
 for (const f of files) fs.rmSync(path.join(dir, `.bundle-${f}`), {force: true});

@@ -134,6 +134,12 @@ function bridgePlugin(game, page) {
       b.onResolve({filter: /^jsgb-game:/}, a => ({path: path.resolve(game.repo, a.path.slice('jsgb-game:'.length))}));
       b.onLoad({filter: /.*/, namespace: 'jsgb-adapters'}, () => ({resolveDir: bridge, loader: 'js',
         contents: (game.adapters ?? []).map(f => `import ${JSON.stringify(path.resolve(bridge, f))};`).join('\n') || 'export {};'}));
+      // Observe the real constructor, keeping class identity and inheritance unchanged for games and add-ons.
+      b.onLoad({filter: /(?:three\.(?:core|module)|ShaderMaterial)\.js$/}, async a => ({
+        contents: (await fs.promises.readFile(a.path, 'utf8')).replace(/this\.isShaderMaterial\s*=\s*true;/g,
+          'this.isShaderMaterial = true; globalThis.__jsgbPackagingMaterials?.add(this);'),
+        resolveDir: path.dirname(a.path), loader: 'js',
+      }));
       // 'three' is the real library with WebGLRenderer replaced; the runtime reaches the real one as 'three-real'.
       b.onResolve({filter: /^three$/}, a => a.importer === path.join(src, 'three.ts') ? {path: three.core} : {path: path.join(src, 'three.ts')});
       b.onResolve({filter: /^three-real$/}, () => ({path: three.core}));
@@ -291,7 +297,7 @@ export async function build(game) {
     define: {
       'import.meta.env': JSON.stringify({DEV: false, PROD: true, SSR: false, MODE: 'production', BASE_URL: '/', UNREAL: true, ...(game.env ?? {})}),
       __JSGB_WEBGL_MODULE_DRAWS__: String(await webglModuleDraws(esbuild, threeFiles(game).core)),
-      __JSGB_SHADER_VERSION__: JSON.stringify(sha256(Buffer.concat([fs.readFileSync(path.join(runtime, 'src/shaders.ts')), fs.readFileSync(path.join(runtime, 'vendor/cross-shader/CrossShader.wasm'))])).slice(0, 12)),
+      __JSGB_SHADER_VERSION__: JSON.stringify(sha256(Buffer.concat(['src/shaders.ts', 'src/shaderWorker.ts', 'src/shaderWorkerHost.ts', 'vendor/cross-shader/CrossShader.cjs', 'vendor/cross-shader/CrossShader.wasm'].map(f => fs.readFileSync(path.join(runtime, f))))).slice(0, 12)),
       'process.env.NODE_ENV': '"production"', 'import.meta.hot': 'undefined', 'import.meta.url': '"http://localhost/index.js"', __JSGB_PAGE__: JSON.stringify(pageInfo), __JSGB_INLINE__: JSON.stringify(page.inline), ...(game.define ?? {}),
     },
     loader: {'.json': 'json', '.css': 'css', '.glsl': 'text', '.vert': 'text', '.frag': 'text', '.wgsl': 'text', '.txt': 'text',
@@ -309,6 +315,11 @@ export async function build(game) {
   fs.mkdirSync(path.join(game.out, 'jsgb'), {recursive: true});
   await esbuild.build({entryPoints: [path.join(runtime, 'src/workerRuntime.ts')], bundle: true, format: 'iife', target: 'es2020', platform: 'neutral',
     mainFields: ['browser', 'module', 'main'], nodePaths: [path.join(runtime, 'node_modules')], outfile: path.join(game.out, 'jsgb/worker-runtime.js'), logLevel: 'warning'});
+  await esbuild.build({...common, entryPoints: [path.join(runtime, 'src/shaderWorker.ts')], format: 'iife', splitting: false,
+    outfile: path.join(game.out, 'jsgb/shader-worker.js'), plugins: [{name: 'shader-worker', setup(b) {
+      b.onResolve({filter: /^three-real$/}, () => ({path: threeFiles(game).core}));
+      b.onResolve({filter: /^\.\/host$/}, () => ({path: path.join(runtime, 'src/shaderWorkerHost.ts')}));
+    }}]});
   const wasm = path.join(runtime, 'vendor/cross-shader/CrossShader.wasm'), wasmOut = path.join(game.out, 'jsgb/CrossShader.wasm');
   if (!fs.existsSync(wasmOut) || fs.statSync(wasmOut).size !== fs.statSync(wasm).size) fs.copyFileSync(wasm, wasmOut);
   // index.html stylesheets come after the CSS the modules import, as in the page.
@@ -412,7 +423,12 @@ export async function swapCss(game) {
 
 const isMain = process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.argv[1])).href;
 if (!isMain) { /* imported as a library */ }
-else if (command === 'build') await build(loadGame(gameArg));
+else if (command === 'build') {
+  const game = loadGame(gameArg);
+  await build(game);
+  const {prepareShaders} = await import('./prepare-shaders.mjs');
+  try { prepareShaders(game); } catch (e) { console.error(e.message); process.exitCode = 1; }
+}
 else if (command === 'reload') await reload(loadGame(gameArg));
 else if (command === 'unreal' || command === 'watch') {
   const game = loadGame(gameArg);

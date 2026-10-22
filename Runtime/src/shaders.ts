@@ -1,7 +1,7 @@
 declare const __JSGB_SHADER_VERSION__: string;
 import * as THREE from 'three-real';
 import createCrossShader from '../vendor/cross-shader/CrossShader.cjs';
-import {host} from './host';
+import {host, type BackgroundWorker} from './host';
 import {channelFor, isExtraAttribute} from './attributes';
 
 /** Custom ShaderMaterials become generated Unreal materials. Both GLSL stages are rewritten as
@@ -149,6 +149,12 @@ function prepare(material: THREE.ShaderMaterial, stage: 'vertex' | 'fragment', i
     ...samplers.map((d, i) => `layout(binding = ${i + 1}) uniform ${d.type} ${d.name}${d.array};`),
     'mat4 modelViewMatrix; mat3 normalMatrix;'];
   let loc = 0;
+  const location = (d: Decl) => {
+    const at = loc;
+    const columns = /^mat(\d)/.exec(d.type)?.[1];
+    loc += (columns ? +columns : 1) * (d.array ? +(d.array.slice(1, -1)) || 1 : 1);
+    return at;
+  };
   if (stage === 'vertex') {
     const attrs: Decl[] = raw ? [] : [{qualifier: 'in', type: 'vec3', name: 'position', array: ''}, {qualifier: 'in', type: 'vec3', name: 'normal', array: ''}, {qualifier: 'in', type: 'vec2', name: 'uv', array: ''}];
     if (!raw && /\bUSE_COLOR\b|\bvertexColors\b/.test(JSON.stringify(material.defines ?? {})) || material.vertexColors) attrs.push({qualifier: 'in', type: material.defines?.USE_COLOR_ALPHA ? 'vec4' : 'vec3', name: 'color', array: ''});
@@ -158,9 +164,9 @@ function prepare(material: THREE.ShaderMaterial, stage: 'vertex' | 'fragment', i
       // three.js defines USE_INSTANCING_COLOR itself for an InstancedMesh with instance colours.
       if (material.defines?.USE_INSTANCING_COLOR !== undefined || instancing.color) attrs.push({qualifier: 'in', type: 'vec3', name: 'instanceColor', array: ''}); else lines.push('vec3 instanceColor = vec3(1.0);');
     }
-    for (const d of attrs) lines.push(`layout(location = ${loc++}) in ${d.type} ${d.name}${d.array};`);
+    for (const d of attrs) lines.push(`layout(location = ${location(d)}) in ${d.type} ${d.name}${d.array};`);
     loc = 0;
-    for (const d of v.decls) lines.push(`layout(location = ${loc++}) out ${d.type} ${d.name}${d.array};`);
+    for (const d of v.decls) lines.push(`layout(location = ${location(d)}) out ${d.type} ${d.name}${d.array};`);
     // Point size has no HLSL equivalent; the billboard material sizes points itself.
     lines.push('float jsgb_PointSize;', '#define gl_PointSize jsgb_PointSize');
     // On an InstancedMesh, Unreal's model matrix holds the instance's whole transform. A shader that reads
@@ -175,12 +181,15 @@ function prepare(material: THREE.ShaderMaterial, stage: 'vertex' | 'fragment', i
     lines.push(src, main);
     return {glsl: lines.join('\n'), uniforms, attributes: attrs, varyings: v.decls};
   }
-  for (const d of v.decls) lines.push(`layout(location = ${loc++}) in ${d.type} ${d.name}${d.array};`);
+  for (const d of v.decls) lines.push(`layout(location = ${location(d)}) in ${d.type} ${d.name}${d.array};`);
   lines.push('layout(location = 0) out vec4 jsgb_FragColor;');
   // Points draw as quads whose UVs are the corner, which is what gl_PointCoord means.
   lines.push('vec2 jsgb_PointCoord;', '#define gl_PointCoord jsgb_PointCoord');
   if (outs.decls[0]) lines.push(`#define ${outs.decls[0].name} jsgb_FragColor`); else lines.push('#define gl_FragColor jsgb_FragColor');
   if (glsl3) lines.push('#define varying in');
+  if (/\blinearToOutputTexel\s*\(/.test(src) && !/vec4\s+linearToOutputTexel\s*\(/.test(src)) {
+    lines.push('vec4 linearToOutputTexel(vec4 v) { return vec4(mix(pow(max(v.rgb, vec3(0.0)), vec3(0.41666)) * 1.055 - vec3(0.055), v.rgb * 12.92, lessThanEqual(v.rgb, vec3(0.0031308))), v.a); }');
+  }
   lines.push(src, 'void main() { modelViewMatrix = viewMatrix * modelMatrix; normalMatrix = transpose(inverse(mat3(modelViewMatrix))); jsgb_main(); }');
   return {glsl: lines.join('\n'), uniforms, attributes: [] as Decl[], varyings: v.decls};
 }
@@ -224,11 +233,52 @@ function modernSampling(s: string): string {
 
 type Member = {type: string; name: string; array: string; resource?: 'tex' | 'cube' | 'volume'};
 
+/** Split old combined texture/sampler function arguments into the objects the host accepts. */
+export function modernSamplerParameters(src: string): string {
+  const functions = new Map<string, {index: number; type: string; name: string}[]>();
+  const declarations = /\b\w+\s+(\w+)\s*\(/g;
+  let match: RegExpExecArray | null;
+  while ((match = declarations.exec(src))) {
+    const {args, end} = callArgs(src, match.index + match[0].length - 1);
+    if (!/^\s*[{;]/.test(src.slice(end))) continue;
+    const textures = args.flatMap((arg, index) => {
+      const m = /\b(sampler2D|samplerCUBE|sampler3D)\s+(\w+)\s*$/.exec(arg);
+      return m ? [{index, type: m[1], name: m[2]}] : [];
+    });
+    if (textures.length) functions.set(match[1], textures);
+  }
+  if (!functions.size) return src;
+  const rewrite = (text: string): string => {
+    const calls = new RegExp(`\\b(${[...functions.keys()].join('|')})\\s*\\(`, 'g');
+    let out = '', last = 0, m: RegExpExecArray | null;
+    while ((m = calls.exec(text))) {
+      const {args, end} = callArgs(text, m.index + m[0].length - 1);
+      const parameters = functions.get(m[1])!;
+      const expanded = args.flatMap((arg, index) => {
+        const p = parameters.find(p => p.index === index);
+        if (!p) return [rewrite(arg)];
+        const declaration = /\b(sampler2D|samplerCUBE|sampler3D)\s+\w+\s*$/.test(arg);
+        if (declaration) return [(p.type === 'sampler2D' ? 'Texture2D' : p.type === 'samplerCUBE' ? 'TextureCube' : 'Texture3D') + ' ' + p.name,
+          'SamplerState ' + p.name + 'Sampler', ...(p.type === 'sampler2D' ? ['float ' + p.name + '_jsgbFlipY'] : [])];
+        const value = arg.trim();
+        return [value, value.replace(/^(\w+)/, '$1Sampler'), ...(p.type === 'sampler2D' ? [value.replace(/^(\w+)/, '$1_jsgbFlipY')] : [])];
+      });
+      out += text.slice(last, m.index) + m[0] + expanded.join(', ') + ')';
+      last = end; calls.lastIndex = end;
+    }
+    return out + text.slice(last);
+  };
+  return rewrite(src);
+}
+
 /** three.js uploads an image with flipY set upside down, so v = 0 is the image's last row; Unreal keeps the first
  *  row at v = 0. Each 2D texture's samples flip v when its <name>_jsgbFlipY member is 1 (the host sets it per texture). */
 function flipSamples(body: string, members: Member[]): string {
-  const textures = members.filter(m => m.resource === 'tex').map(m => m.name);
+  const globals = members.filter(m => m.resource === 'tex').map(m => m.name);
+  const parameters = [...body.matchAll(/Texture2D\s+(\w+)\s*,\s*SamplerState\s+\w+Sampler\s*,\s*float\s+\w+_jsgbFlipY/g)].map(m => m[1]);
+  const textures = [...new Set([...globals, ...parameters])];
   if (!textures.length) return body;
+  for (const t of globals) members.push({type: 'float', name: t + '_jsgbFlipY', array: ''});
   const rx = new RegExp(`\\b(${textures.join('|')})\\.(Sample|SampleLevel|SampleBias|SampleGrad)\\s*\\(`, 'g');
   let out = '', last = 0, m: RegExpExecArray | null;
   while ((m = rx.exec(body))) {
@@ -239,7 +289,6 @@ function flipSamples(body: string, members: Member[]): string {
     last = end; rx.lastIndex = end;
   }
   if (!last) return body;
-  for (const t of textures) members.push({type: 'float', name: t + '_jsgbFlipY', array: ''});
   return 'float2 jsgbFlipUV(float2 c, float f) { return float2(c.x, f > 0.5 ? 1.0 - c.y : c.y); }\n' + out + body.slice(last);
 }
 /** SPIRV-Cross HLSL as a struct: globals become members, functions become methods. */
@@ -269,7 +318,7 @@ function toStruct(hlsl: string, name: string): {struct: string; members: Member[
   src = src.replace(/^struct\s+\w+\s*\{[\s\S]*?^\};\s*$/gm, m => { types += m + '\n'; return ''; });
   src = src.replace(/^static\s+const[^;]*;\s*$/gm, m => { types += m + '\n'; return ''; });
   const entry = /\bvoid\s+(vert_main|frag_main)\s*\(\s*\)/.exec(src)?.[1] ?? 'main';
-  let body = flipSamples(modernSampling(src).trim(), members);
+  let body = flipSamples(modernSampling(modernSamplerParameters(src)).trim(), members);
   const decl = members.map(m => m.resource ? `  ${m.type} ${m.name}; SamplerState ${m.name}Sampler;` : `  ${m.type} ${m.name}${m.array};`).join('\n');
   return {struct: `struct ${name} {\n${decl}\n${body.replace(/^/gm, '  ')}\n};\n`, members, types, entry};
 }
@@ -283,11 +332,8 @@ function zero(target: string, m: Member): string {
 
 const cache = new Map<string, TranslatedShader | null>();
 const VERSION = typeof __JSGB_SHADER_VERSION__ === 'string' ? __JSGB_SHADER_VERSION__ : 'dev';
-// Translating a shader the first time takes 0.3 to 2 s on the game's JavaScript thread (the GLSL rewrite and the
-// WebAssembly compiler). Whole translations are kept on disk, keyed by the translator build and the shader's text,
-// and a package can ship them (the host also reads the game folder's jsgb-store), so a known shader costs a file read.
-// At most one shader is translated per exported frame; the others keep the generic material a frame longer, so
-// several new shaders are never translated in the same frame.
+// Packages carry complete translations. A live cache miss runs entirely on a background thread;
+// the exporter keeps its generic material until the reply arrives, then sends the finished material.
 let translationsThisFrame = 0;
 export function newShaderFrame() { translationsThisFrame = 0; }
 function textHash(s: string) {
@@ -296,6 +342,49 @@ function textHash(s: string) {
   return (a >>> 0).toString(16) + (b >>> 0).toString(16) + s.length.toString(16);
 }
 /** The generated-material description for a ShaderMaterial; undefined while the compiler loads, null when it cannot be translated. */
+const pendingTranslations = new Map<string, string>();
+let shaderWorker: BackgroundWorker | null | undefined;
+const shaderStats = {queued: 0, completed: 0, failed: 0, pending: 0, lastKey: '', lastCompileMs: 0, lastReplyMs: 0};
+(globalThis as any).__jsgbShaderStats = shaderStats;
+function backgroundTranslation(key: string, diskKey: string, material: THREE.ShaderMaterial, instanced: any) {
+  if (pendingTranslations.has(key)) return undefined;
+  if (shaderWorker === undefined) {
+    try { shaderWorker = host.backgroundWorker?.('/jsgb/shader-worker.js', 'shader translator') ?? null; }
+    catch (e) { shaderWorker = null; host.log('warn', `background shader compiler could not start: ${e}`); }
+    if (shaderWorker) {
+      shaderWorker.onmessage = ({data}) => {
+        const disk = pendingTranslations.get(data.key);
+        if (!disk) return;
+        const started = Date.now();
+        const result = data.result as TranslatedShader | null;
+        if (result && (result.key !== data.key || typeof result.hlsl !== 'string')) return;
+        cache.set(data.key, result);
+        host.storage?.save(disk, JSON.stringify(result ?? {failed: true}));
+        pendingTranslations.delete(data.key);
+        shaderStats.pending = pendingTranslations.size;
+        shaderStats.lastKey = data.key; shaderStats.lastCompileMs = data.ms;
+        if (result) shaderStats.completed++; else shaderStats.failed++;
+        shaderStats.lastReplyMs = Date.now() - started;
+        host.log(result ? 'log' : 'warn', `shader ${data.key} ${result ? 'translated' : 'failed'} on background worker in ${data.ms} ms; reply ${shaderStats.lastReplyMs} ms`);
+      };
+      shaderWorker.onerror = error => {
+        host.log('warn', `background shader compiler: ${error.message ?? error}`);
+        for (const k of pendingTranslations.keys()) cache.set(k, null);
+        shaderStats.failed += pendingTranslations.size;
+        pendingTranslations.clear(); shaderStats.pending = 0;
+        shaderWorker?.terminate(); shaderWorker = null;
+      };
+    } else host.log('warn', 'Background shader compiler is unavailable; missing shaders use the fallback material. Repackage with a current host.');
+  }
+  if (!shaderWorker) { cache.set(key, null); return null; }
+  pendingTranslations.set(key, diskKey); shaderStats.queued++; shaderStats.pending = pendingTranslations.size;
+  shaderWorker.postMessage({key, material: {
+    name: material.name, vertexShader: material.vertexShader, fragmentShader: material.fragmentShader,
+    defines: material.defines, isRawShaderMaterial: material.isRawShaderMaterial,
+    vertexColors: material.vertexColors, glslVersion: material.glslVersion,
+  }, instanced: instanced ? {color: !!instanced.color, extras: (instanced.extras ?? []).map((e: any) => ({name: e.name, size: e.size, offset: e.offset}))} : undefined});
+  return undefined;
+}
 const vertexUses = new Map<string, {matrix: boolean; color: boolean}>();
 export function translateShaderMaterial(material: THREE.ShaderMaterial, instanced?: {color: boolean; extras?: {name: string; size: number; offset: number}[]}): TranslatedShader | null | undefined {
   // Drawn on an InstancedMesh, a vertex shader that reads instanceMatrix, instanceColor or per-instance attributes
@@ -317,6 +406,7 @@ export function translateShaderMaterial(material: THREE.ShaderMaterial, instance
       if (t.key === key && typeof t.hlsl === 'string') { cache.set(key, t); return t; }
     } catch { /* translated again below */ }
   }
+  if (!host.shaderPreparation) return backgroundTranslation(key, diskKey, material, instanced);
   if (translationsThisFrame > 0) return undefined;
   translationsThisFrame++;
   let vs: ReturnType<typeof prepare>, fs: ReturnType<typeof prepare>;
@@ -553,3 +643,26 @@ export function translateHookedMaterial(material: THREE.Material, hooked: Hooked
   if (t) t.lit = !UNLIT_HOOKED.has(material.type);
   return t;
 }
+
+// Internal packaging hook: materials gathered during the scripted views also cover off-camera objects.
+const preparedNative = new Set<string>();
+(globalThis as any).__jsgbPrepareMaterials = () => {
+  const pending: string[] = [], failed: string[] = [];
+  for (const m of (globalThis as any).__jsgbPackagingMaterials ?? []) {
+    newShaderFrame();
+    const t = translateShaderMaterial(m);
+    const name = m.name || sourceEntry(m).key;
+    if (t === undefined) pending.push(name);
+    else if (t === null) failed.push(name);
+    else {
+      const variant = `${t.key}:${m.blending}:${m.transparent}:${m.side}`;
+      if (!preparedNative.has(variant)) {
+        preparedNative.add(variant);
+        host.sink.shader?.(t.key, JSON.stringify(t));
+        host.sink.material(-preparedNative.size, JSON.stringify({type: 'ShaderMaterial', shader: true, custom: t.key,
+          unlit: !t.lit, blending: m.blending, transparent: m.transparent, side: m.side, color: [1, 1, 1], opacity: 1}));
+      }
+    }
+  }
+  return {pending, failed};
+};

@@ -14,7 +14,12 @@ export interface SceneSink {
   events?(json: string): void;
 }
 
+export type BackgroundWorker = {onmessage: ((event: {data: any}) => void) | null; onerror: ((event: any) => void) | null; postMessage(data: unknown): void; terminate(): void};
 export interface JsgbHost {
+  /** Internal packaging/translator workers may compile synchronously; a live game never does. */
+  shaderPreparation?: boolean;
+  /** A real worker only: null when this host cannot start a background thread. */
+  backgroundWorker?(url: string, name: string): BackgroundWorker | null;
   /** Reads a file below the web build's site root ("/models/x.glb"); null when missing. */
   readFile(path: string): ArrayBuffer | null;
   /** Web Workers on their own threads: create returns 0 when the host runs workers on the game thread. */

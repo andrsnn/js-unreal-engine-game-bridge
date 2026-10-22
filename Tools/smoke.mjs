@@ -5,7 +5,10 @@
 //     click('Button text' | 'css selector')   key('KeyW', 'down'|'up'|'press')   shot('name')
 //     waitFor('Button text' | 'css selector')  (holds the script until it appears, up to 30 s)
 import fs from 'node:fs';
+import {shaderAssetName} from './cook-shaders.mjs';
+import {Buffer} from 'node:buffer';
 import path from 'node:path';
+import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
 
 // The registry as the Unreal host loads it: registry.json, with overrides.json's rules added as assets (JsgbHost.cpp).
@@ -20,15 +23,19 @@ function registryWithOverrides(out) {
   return JSON.stringify(reg);
 }
 
-export async function smoke(game, {frames = 600, script, search = '', verbose = false} = {}) {
+export async function smoke(game, {frames = 600, script, search = '', verbose = false, prepareShaders = false, captureScript} = {}) {
   const publication = JSON.parse(fs.readFileSync(path.join(game.out, 'publication.json'), 'utf8'));
   const t0 = performance.now(), nativeNow = performance.now.bind(performance), nodeTimeout = setTimeout;
   const print = console.log.bind(console);
   const stats = {files: 0, missing: new Set(), geometries: 0, geometryMB: 0, materials: 0, textures: 0, frames: 0, records: {}, lastFloats: 0,
     errors: 0, warns: 0, uiPublishes: 0, uiBytes: 0, voices: 0, voiceFiles: new Set(), pcmVoices: 0, events: 0, unsupported: new Set()};
-  const logs = [], seen = new Set(), storage = new Map();
+  const logs = [], seen = new Set(), storage = new Map(), shaderBodies = new Map(), nativeCoverage = {};
+  const shaderStore = path.join(game.out, 'jsgb-store');
+  const storeFile = k => 'shader-' + createHash('md5').update(Buffer.from(k, 'latin1')).digest('hex') + '.json';
+  if (prepareShaders) globalThis.__jsgbPackagingMaterials = new Set();
   let lastUI = '';
   const host = {
+    shaderPreparation: prepareShaders,
     search,
     now: () => nativeNow() - t0,
     trace: process.env.JSGB_TRACE === '1',
@@ -45,16 +52,36 @@ export async function smoke(game, {frames = 600, script, search = '', verbose = 
       if ((level !== 'log' || verbose) && !seen.has(key)) { seen.add(key); print(level, text.slice(0, 1500)); }
     },
     reload() { print('reload requested'); },
-    storage: {load: k => storage.get(k) ?? null, save: (k, v) => storage.set(k, v)},
+    storage: {load: k => {
+      if (storage.has(k)) return storage.get(k);
+      const f = path.join(shaderStore, storeFile(k));
+      return k.startsWith('jsgb-translated-') && fs.existsSync(f) ? fs.readFileSync(f, 'utf8') : null;
+    }, save: (k, v) => {
+      storage.set(k, v);
+      if (prepareShaders && k.startsWith('jsgb-translated-')) {
+        fs.mkdirSync(shaderStore, {recursive: true}); fs.writeFileSync(path.join(shaderStore, storeFile(k)), v);
+      }
+    }},
     registry: registryWithOverrides(game.out),
     sink: {
       geometry(id, pos, nrm, uv, col, cs, idx) { stats.geometries++; stats.geometryMB += (pos.byteLength + (nrm?.byteLength ?? 0) + (uv?.byteLength ?? 0) + (col?.byteLength ?? 0) + (idx?.byteLength ?? 0)) / 1e6; },
       releaseGeometry() {},
-      material() { stats.materials++; },
+      material(id, json) {
+        stats.materials++;
+        if (prepareShaders) {
+          const m = JSON.parse(json);
+          if (m.custom) {
+            const name = shaderAssetName(m);
+            const shader = shaderBodies.get(m.custom);
+            if (!shader) throw Error(`Shader ${m.custom} is not ready; include its view in captureScripts and package again.`);
+            nativeCoverage[name] = {shader: m.custom, sha256: createHash('sha256').update(shader).digest('hex'), body: JSON.parse(shader)};
+          }
+        }
+      },
       texture() { stats.textures++; },
       frame(f, count) { stats.frames++; stats.lastFloats = count; lastFrame = new Float32Array(f, 0, count).slice(); },
       events(json) { stats.events += JSON.parse(json).length; },
-      shader(key, json) { stats.shaders = (stats.shaders ?? 0) + 1; fs.mkdirSync(path.join(game.out, 'shaders'), {recursive: true}); const t = JSON.parse(json); fs.writeFileSync(path.join(game.out, 'shaders', key + '.hlsl'), t.hlsl); },
+      shader(key, json) { shaderBodies.set(key, json); stats.shaders = (stats.shaders ?? 0) + 1; fs.mkdirSync(path.join(game.out, 'shaders'), {recursive: true}); const t = JSON.parse(json); fs.writeFileSync(path.join(game.out, 'shaders', key + '.hlsl'), t.hlsl); },
     },
     ui: {publish(html) { stats.uiPublishes++; stats.uiBytes = html.length; lastUI = html; }},
     audio: {
@@ -93,9 +120,30 @@ export async function smoke(game, {frames = 600, script, search = '', verbose = 
   const steps = (script ? fs.readFileSync(script, 'utf8') : '').split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith('#'))
     .map(l => { const i = l.indexOf(':'); return {frame: +l.slice(0, i), cmd: l.slice(i + 1).trim()}; });
   let waiting = null, waitStart = 0;
+  const captureSteps = (captureScript ? fs.readFileSync(captureScript, 'utf8') : '').split(/\r?\n/).map(l => l.trim()).filter(l => l && !l.startsWith('#')).map(l => {
+    const m = /^(\S+)\s+(\S+)(?:\s+(.*))?$/.exec(l); return {time: +m[1] * 1000, verb: m[2], arg: m[3] ?? ''};
+  });
+  let captureWaiting = null, captureWaitStarted = 0;
+  let captureStarted = null;
+  const captureBootDeadline = host.now() + 180000;
+  const captureEnd = captureSteps.length ? Math.max(...captureSteps.map(s => s.time)) + 2000 : 5000;
   const pending = [...steps].sort((a, b) => a.frame - b.frame);
   let frame = 0;
-  for (; frame < frames; frame++) {
+  for (; captureScript ? (captureStarted === null || captureWaiting ? host.now() < captureBootDeadline + captureEnd : host.now() - captureStarted < captureEnd) : frame < frames; frame++) {
+    if (captureScript && jsgb.booted) {
+      captureStarted ??= host.now();
+      if (captureWaiting) {
+        const found = find(captureWaiting.arg.replace(/^['"]|['"]$/g, ''));
+        if (captureWaiting.verb === 'gone' ? !found : found) { captureStarted += host.now() - captureWaitStarted; captureWaiting = null; }
+      }
+      while (!captureWaiting && captureSteps.length && captureSteps[0].time <= host.now() - captureStarted) {
+        const s = captureSteps.shift();
+        if (s.verb === 'wait' || s.verb === 'gone') { captureWaiting = s; captureWaitStarted = host.now(); break; }
+        if (s.verb === 'click') g.click((0, eval)(s.arg));
+        else if (s.verb === 'key') (0, eval)('key(' + s.arg + ')');
+        else if (s.verb === 'eval') (0, eval)(s.arg);
+      }
+    }
     await jsgb.frame(12);
     if (waiting) { if (find(waiting)) { print(`frame ${frame}: found ${waiting}`); waiting = null; } else if (host.now() - waitStart > 30000) { host.log('error', 'waitFor timed out: ' + waiting); waiting = null; } }
     while (!waiting && pending.length && pending[0].frame <= frame) {
@@ -108,13 +156,34 @@ export async function smoke(game, {frames = 600, script, search = '', verbose = 
     if (frame % 120 === 0) print(`frame ${frame} t=${(host.now() / 1000).toFixed(1)}s booted=${jsgb.booted} timers=${jsgb.pendingTimers()} geo=${stats.geometries} mat=${stats.materials} tex=${stats.textures} floats=${stats.lastFloats} ui=${stats.uiPublishes} voices=${stats.voices}`);
     await new Promise(r => nodeTimeout(r, 1));
   }
+  let shaderCoverage = null;
+  if (prepareShaders) {
+    const deadline = nativeNow() + 60000;
+    do {
+      shaderCoverage = g.__jsgbPrepareMaterials();
+      if (!shaderCoverage.pending.length) break;
+      await jsgb.frame(12); await new Promise(r => nodeTimeout(r, 1));
+    } while (nativeNow() < deadline);
+    if (!jsgb.booted) shaderCoverage.pending.push('game startup');
+    if (captureWaiting) shaderCoverage.pending.push('view ' + captureWaiting.arg);
+    fs.writeFileSync(path.join(game.out, 'smoke.log'), logs.join('\n'));
+    fs.writeFileSync(path.join(game.out, 'smoke-ui.html'), lastUI);
+    if (shaderFailures.length) {
+      fs.mkdirSync(path.join(game.out, 'shaders'), {recursive: true});
+      for (const f of shaderFailures) fs.writeFileSync(path.join(game.out, 'shaders', `${f.key}.${f.label}.failed.txt`), `${f.glsl}\n\n${f.out}`);
+    }
+    const missing = [...shaderCoverage.pending, ...shaderCoverage.failed];
+    if (missing.length) throw Error(`Shader ${missing[0]} is not ready; open its view in the game's captureScripts and fix any shader error before packaging.`);
+    if (stats.errors) throw Error(`Shader view capture failed; fix the game errors in smoke.log before packaging.`);
+  }
   const scene = jsgb.describeScene();
   const report = {game: game.id, sourceCommit: publication.sourceCommit, bundleSHA256: publication.bundleSHA256, frames: frame, seconds: +(host.now() / 1000).toFixed(1), booted: jsgb.booted, bootError: jsgb.bootError,
-    ...stats, geometryMB: +stats.geometryMB.toFixed(1), missing: [...stats.missing].slice(0, 30), missingCount: stats.missing.size, voiceFiles: [...stats.voiceFiles].slice(0, 30), unsupported: [...stats.unsupported], scene};
+    shaderCoverage, ...stats, geometryMB: +stats.geometryMB.toFixed(1), missing: [...stats.missing].slice(0, 30), missingCount: stats.missing.size, voiceFiles: [...stats.voiceFiles].slice(0, 30), unsupported: [...stats.unsupported], scene};
   Object.assign(globalThis, nodeGlobals);
   for (const [o, k, d] of saved) if (d) Object.defineProperty(o, k, d);
   if (shaderFailures.length) { fs.mkdirSync(path.join(game.out, 'shaders'), {recursive: true}); for (const f of shaderFailures) fs.writeFileSync(path.join(game.out, 'shaders', `${f.key}.${f.label}.failed.txt`), `${f.glsl}\n\n==== output ====\n${f.out}`); }
   fs.writeFileSync(path.join(game.out, 'smoke.log'), logs.join('\n'));
+  if (prepareShaders) fs.writeFileSync(path.join(game.out, 'native-shader-coverage.json'), JSON.stringify(nativeCoverage, null, 1));
   fs.writeFileSync(path.join(game.out, 'smoke-report.json'), JSON.stringify(report, null, 1));
   fs.writeFileSync(path.join(game.out, 'smoke-ui.html'), lastUI);
   print(JSON.stringify(report).slice(0, 3000));

@@ -68,6 +68,9 @@ The pieces:
 
 1. Make an Unreal 5.8 C++ project to host games. Add [Puerts](https://github.com/Tencent/puerts) and
    this repository as plugins (`Plugins/Puerts`, `Plugins/JsGameBridge`).
+
+   The package command uses a host project named `JsgbHost`.
+
 2. Run the browser setup once, before the first build. The build stops and tells you to run it if you
    haven't:
 
@@ -130,6 +133,23 @@ A port may still need:
   material can replace it.
 - A query string or seed so both targets build the same world for the conformance test.
 
+## Shaders are prepared when you package
+
+Shaders tell surfaces and effects how to look. A browser and Unreal need different versions, so the
+bridge prepares them before the game ships. Run your normal build or package command; there is no
+separate shader command to remember.
+
+Packaging gathers the game's materials, including ones outside the camera, and visits the views listed
+in `captureScripts`. It includes ready-to-use copies with the game. If a known shader cannot be prepared,
+packaging stops and names the shader and what to fix.
+
+During play, a missing saved copy is prepared in the background. The object uses a simple surface until
+its prepared material is ready, then switches automatically. The result is saved for later launches.
+
+Usually you need to do nothing. Keep `captureScripts`, the list of views packaging visits, covering new
+game views. A completely new shader created after packaging may keep its simple surface until you
+package again. Players never need to run a shader command or install a shader tool.
+
 ## Display settings
 
 A game's options menu can change the Unreal window through `window.jsgb.display`. In a browser the object doesn't
@@ -172,7 +192,8 @@ Pairs of frames line up at each `wait` and `gone`, so a slower load on one side 
 | --- | --- |
 | `npm run unreal -- <game>` | Build, start Unreal or reload it, then reload on every save |
 | `npm run web -- <game>` | The game's Vite dev server with a reload timer |
-| `node Tools/jsgb.mjs build <game>` | Build the Unreal bundle only |
+| `node Tools/jsgb.mjs build <game>` | Build the Unreal bundle and prepare shader translations |
+| `node Tools/laptop-package.mjs --games <game> --out ./Package` | Build a playable package, including prepared shader materials |
 | `node Tools/jsgb.mjs smoke <game>` | Boot the bundle in Node and report problems |
 | `npm run conformance -- <game>` | Browser and Unreal side by side from one commit |
 | `node Tools/run-unreal.mjs <game> --offscreen --script s.txt --capture dir` | Scripted Unreal run with frame capture |
@@ -189,11 +210,7 @@ it can check the Unreal version without opening Unreal itself.
 
 ## Limits
 
-- Generated shader materials need an editor build of the host (`UnrealEditor -game`). In a packaged
-  game they fall back to generic materials unless the registry supplies one.
-- Loading is slower than in the browser. Workers run on the game thread, and V8 in Puerts is older
-  than Chrome's. Hard Burn's first frame after a reload takes about 15 seconds in Unreal and about 4
-  in the browser.
+- Loading can be slower than in the browser while Unreal creates meshes and textures.
 - Custom post-processing passes (your own `EffectComposer` passes) are not translated. Bloom, fog,
   tone mapping and exposure are.
 - Canvases that a second renderer draws into the page (minimaps, previews) show as empty in the

@@ -192,6 +192,16 @@ export function pollWorkers(): number {
   return replies;
 }
 
+// Shader compilation must never take the cooperative (game-thread) worker fallback.
+host.backgroundWorker = (url, name) => {
+  if (!host.workerCreate) return null;
+  const bytes = host.readFile(resolveAssetPath(url));
+  if (!bytes) return null;
+  const id = host.workerCreate(new TextDecoder().decode(bytes), url, name);
+  if (id <= 0) return null;
+  const w = new ThreadWorker(id, name); threads.set(id, w); return w;
+};
+
 /** A worker given as source (a file or blob URL), or bundled with a standalone copy, runs on its own thread
  *  when the host supports it. Otherwise it runs on the game thread, as before. */
 function WorkerFactory(code: string | URL | ((self: unknown) => void), opts?: {name?: string}) {

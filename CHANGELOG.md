@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.8.0
+
+- Normal builds collect shader materials, including off-camera sources, and visit configured game views.
+  Packages include saved translations and compiled native material variants; failures name the shader and the next step.
+- A missing saved translation runs on a background worker. Objects use a simple surface until their prepared material
+  is ready, then switch automatically. Results are saved for later launches.
+- Texture helper functions now carry their texture, sampler and image orientation correctly into native materials.
+- Packaging preserves existing host content and checks native compilation failures instead of silently shipping a default surface.
+- The README explains shader preparation and the usual developer workflow in plain words.
+
 ## 0.7.3
 
 - Games can hand an orbit camera to `jsgb.camera.rig`: the host applies held camera keys on each drawn frame.
