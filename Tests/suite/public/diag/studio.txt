@@ -1,0 +1,3 @@
+0 wait #ready
+3 shot studio
+4 quit

@@ -1,0 +1,30 @@
+{
+ "name": "diag_frigate",
+ "source": "C:\\JsgbFidelityBuild\\diag\\symfix.glb",
+ "glb": "C:\\JsgbFidelityBuild\\diag\\prep\\diag_frigate.glb",
+ "textures": {
+  "baseColor": {
+   "file": "C:\\JsgbFidelityBuild\\diag\\prep\\T_diag_frigate_baseColor.png",
+   "width": 4096,
+   "height": 4096
+  },
+  "metallicRoughness": {
+   "file": "C:\\JsgbFidelityBuild\\diag\\prep\\T_diag_frigate_metallicRoughness.png",
+   "width": 4096,
+   "height": 4096
+  }
+ },
+ "bounds": [
+  [
+   -0.5004448890686035,
+   -0.21373292803764343,
+   -0.3631925582885742
+  ],
+  [
+   0.3982596695423126,
+   0.3003746271133423,
+   0.3343135118484497
+  ]
+ ],
+ "triangles": 927715
+}
