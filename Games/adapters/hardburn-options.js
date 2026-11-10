@@ -34,12 +34,42 @@ function add() {
   show();
 }
 
+function addPreset() {
+  if (!graphics?.get().available || document.querySelector('[data-jsgb-preset]')) return;
+  const rows = [...document.querySelectorAll('.menu-option-row')];
+  const after = rows.find(r => r.querySelector('small')?.textContent === 'Lumen lighting') ?? rows.find(r => r.querySelector('small')?.textContent === 'Resolution');
+  if (!after) return;
+  const row = document.createElement('div');
+  row.className = 'menu-option-row opt-wrap';
+  row.dataset.jsgbPreset = '';
+  const title = document.createElement('small');
+  title.className = 'menu-note';
+  title.textContent = 'Graphics quality';
+  row.append(title);
+  for (const [value, label] of [['epic', 'EPIC'], ['high', 'HIGH'], ['medium', 'MEDIUM'], ['low', 'LOW']]) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label;
+    b.dataset.value = value;
+    b.onclick = () => graphics.set({preset: value});
+    row.append(b);
+  }
+  const hint = document.createElement('p');
+  hint.className = 'menu-note opt-hint';
+  hint.dataset.jsgbPreset = '';
+  hint.textContent = 'Epic is the default. Lower presets lower shadows, reflections, textures and DLSS quality for a slower graphics card.';
+  const anchor = after.nextElementSibling?.classList.contains('opt-hint') ? after.nextElementSibling : after;
+  anchor.after(row, hint);
+  show();
+}
+
 function show() {
+  for (const b of document.querySelectorAll('[data-jsgb-preset] button')) b.setAttribute('aria-pressed', String(b.dataset.value === (graphics.get().preset ?? 'epic')));
   const lumen = graphics.get().lumen;
   for (const b of document.querySelectorAll('[data-jsgb-lumen] button')) b.setAttribute('aria-pressed', String(b.dataset.value === String(lumen)));
 }
 
 if (graphics) {
-  setInterval(add, 250);
+  setInterval(() => { add(); addPreset(); }, 250);
   addEventListener('jsgbgraphicschange', show);
 }

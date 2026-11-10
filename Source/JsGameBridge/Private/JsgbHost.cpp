@@ -1113,10 +1113,25 @@ bool AJsgbHost::HandleDlssKey(const FKey& Key)
 {
 	// F9: Lumen mode on or off, in every game this host can light with Lumen.
 	if (Key == EKeys::F9 && bLumenAvailable) { SetLumen(!bLumenOn); return true; }
-	if (bShowKeys && Key == EKeys::F8) { bShowJitter = !bShowJitter; return true; }
+	if (Key == EKeys::F8) { bShowHud = !bShowHud; return true; }
 	if (!bShowKeys || (Key != EKeys::F6 && Key != EKeys::F7)) { return false; }
 	if (Key == EKeys::F6) { CycleUpscaler(); } else { ToggleFrameGen(); }
 	return true;
+}
+
+void AJsgbHost::ApplyQualityPreset(const FString& Preset)
+{
+	const FString P = Preset.ToLower();
+	int32 Level = P == TEXT("epic") ? 3 : P == TEXT("high") ? 2 : P == TEXT("medium") ? 1 : P == TEXT("low") ? 0 : -1;
+	if (Level < 0) { return; }
+	QualityPreset = P;
+	static const TCHAR* Groups[] = {TEXT("sg.ViewDistanceQuality"), TEXT("sg.AntiAliasingQuality"), TEXT("sg.ShadowQuality"), TEXT("sg.GlobalIlluminationQuality"), TEXT("sg.ReflectionQuality"), TEXT("sg.PostProcessQuality"), TEXT("sg.TextureQuality"), TEXT("sg.EffectsQuality"), TEXT("sg.ShadingQuality")};
+	for (const TCHAR* G : Groups) { SetCVar(G, FString::FromInt(Level)); }
+	static const TCHAR* Dlss[] = {TEXT("performance"), TEXT("balanced"), TEXT("balanced"), TEXT("quality")};
+	ApplyUpscaler(Dlss[Level], FString());
+	bFrameGen = Level >= 2; FrameGenFrames = 1;
+	if (bLumenAvailable && bLumenOn) { LumenPreset = Level >= 3 ? TEXT("high") : TEXT("light"); SetLumen(true); }
+	PublishGraphics();
 }
 
 void AJsgbHost::CycleUpscaler()
@@ -1291,6 +1306,7 @@ void AJsgbHost::UpdateHud(float DeltaSeconds)
 	HudFps = HudFrames / HudSeconds;
 	HudFrames = 0; HudSeconds = 0;
 	HudPresentedFps = Upscaler.Contains(TEXT("Frame Generation")) ? PresentedFps() : -1.f;
+	if (!bShowHud && HudText.IsValid() && HudBox.IsValid() && GEngine && GEngine->GameViewport) { GEngine->GameViewport->RemoveViewportWidgetContent(HudBox.ToSharedRef()); HudBox.Reset(); HudText.Reset(); }
 	if (!bShowHud || !GEngine || !GEngine->GameViewport) { return; }
 	if (!HudText.IsValid())
 	{
@@ -1309,6 +1325,7 @@ void AJsgbHost::UpdateHud(float DeltaSeconds)
 					]
 				]
 			];
+		HudBox = Box;
 		GEngine->GameViewport->AddViewportWidgetContent(Box, 300);
 	}
 	// While a capture runs, each frame waits for its screenshot, so the frame rate means nothing: show the mode only.

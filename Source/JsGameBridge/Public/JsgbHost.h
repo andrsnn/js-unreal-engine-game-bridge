@@ -123,6 +123,9 @@ private:
 	EDynamicGlobalIlluminationMethod::Type SavedGi = EDynamicGlobalIlluminationMethod::None;
 	EReflectionMethod::Type SavedReflection = EReflectionMethod::None;
 	void ApplyUpscaler(const FString& Mode, const FString& TsrPercent);
+	/** epic, high, medium or low: scalability groups, DLSS mode, Lumen preset and frame generation together. */
+	void ApplyQualityPreset(const FString& Preset);
+	FString QualityPreset = TEXT("epic");
 	/** F6: the next DLSS mode (off, DLAA, Quality, Balanced, Performance, DLSS 5). F7: Frame Generation off, 2x, and on RTX 50
 	 *  GPUs 3x and 4x (Multi Frame Generation). */
 	void CycleUpscaler();
@@ -213,6 +216,7 @@ private:
 	int32 HudFrames = 0;
 	double HudSeconds = 0, HudFps = 0, HudPresentedFps = -1;
 	TSharedPtr<class STextBlock> HudText;
+	TSharedPtr<class SWidget> HudBox;
 	/** Frame times in ms since GET /bridge/frametimes last read them. */
 	TArray<float> FrameTimesMs;
 	/** The last tick's js, mirror, build queue, builds, build stall and UI push times, for the slow-frame log. */

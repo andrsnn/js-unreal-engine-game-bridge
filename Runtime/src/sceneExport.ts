@@ -762,16 +762,18 @@ function emitEngineLights() {
     o.getWorldPosition(plumeAt);
     plumeBack.set(0, 0, -1).transformDirection(o.matrixWorld).multiplyScalar(width);
     plumeAt.add(plumeBack);
-    plumeColour.set(u.driveColour ?? 0xff8a3a);
+    // A saturated light at full strength washed whole hulls in the drive colour (pink on purple drives), so the colour is
+    // half toward white and the light is weaker and shorter: an accent on the hull near the nozzle, not a wash.
+    plumeColour.set(u.driveColour ?? 0xff8a3a).lerp(plumeWhite, 0.5);
     // Candela that scale with the nozzle's area, so the light on the hull is the same for a big or small ship.
     const intensity = ENGINE_LIGHT_CANDELA * throttle * width * width;
     push(LIGHT); push(idOf(o)); push(2); push(plumeColour.r); push(plumeColour.g); push(plumeColour.b); push(intensity);
     push(plumeAt.x); push(plumeAt.y); push(plumeAt.z); push(0); push(0); push(-1);
-    push(width * 30); push(2); push(0); push(0); push(0); push(0); push(0); push(0);
+    push(width * 18); push(2); push(0); push(0); push(0); push(0); push(0); push(0);
   }
   plumes.length = 0;
 }
-const ENGINE_LIGHT_CANDELA = 600;
+const ENGINE_LIGHT_CANDELA = 160, plumeWhite = new THREE.Color(1, 1, 1);
 function walk(o: THREE.Object3D, cam: THREE.Camera, skipKey: string | null) {
   if (!o.visible) return;
   if ((o as THREE.LOD).isLOD && (o as THREE.LOD).autoUpdate) (o as THREE.LOD).update(cam);

@@ -32,9 +32,10 @@ const log = t => console.log(`[package ${new Date().toTimeString().slice(0, 8)}]
 // Games start with DLSS off: on the RTX 5080 laptop the driver keeps the GPU at 330-550 MHz (power state P5) most of the
 // time while DLSS runs, and about one frame in ten then takes 17 to 40 ms. F6 turns DLSS on.
 const GAMES = {
-  hardburn: {name: 'Hard Burn', flags: ['-JsgbJsThread']},
+  hardburn: {name: 'Hard Burn', flags: ['-JsgbJsThread', '-JsgbDLSS=quality', '-JsgbFrameGen', '-JsgbLumen=high', '-JsgbNoFog', '-ExecCmds="sg.ResolutionQuality 100,sg.ViewDistanceQuality 3,sg.AntiAliasingQuality 3,sg.ShadowQuality 3,sg.GlobalIlluminationQuality 3,sg.ReflectionQuality 3,sg.PostProcessQuality 3,sg.TextureQuality 3,sg.EffectsQuality 3,sg.ShadingQuality 3,r.Streaming.PoolSize 14000,r.Streaming.LimitPoolSizeToVRAM 0,r.Streaming.MipBias 0,r.MaxAnisotropy 16,r.Streaming.FullyLoadUsedTextures 1"']},
   unlit: {name: 'Unlit Worlds', flags: ['-JsgbJsThread']},
   saltblade: {name: 'Saltblade', flags: []},
+  'cats-against-humanity': {name: 'Cats Against Humanity', flags: ['-JsgbJsThread']},
 };
 const games = flag('--games', Object.keys(GAMES).join(',')).split(',');
 const pins = Object.fromEntries((flag('--pin', '') || '').split(',').filter(Boolean).map(p => p.split('=')));
@@ -42,6 +43,12 @@ const pins = Object.fromEntries((flag('--pin', '') || '').split(',').filter(Bool
 const winTar = process.platform === 'win32' ? path.join(process.env.SystemRoot ?? 'C:/Windows', 'System32', 'tar.exe') : 'tar';
 // A game as Games/<id>.json describes it, or its pinned commit exported to <out>/../sources/<id>-<commit>, described by a
 // copy of its Games/<id>.json next to it (the page build loads the game from that file).
+// Free space, in GB, on the drive holding `target` (Windows).
+function freeGB(target) {
+  const letter = path.resolve(target).slice(0, 1);
+  const r = spawnSync('powershell', ['-NoProfile', '-Command', `(Get-PSDrive ${letter}).Free`], {encoding: 'utf8'});
+  return Number(String(r.stdout).trim()) / 2 ** 30;
+}
 function gameFor(id) {
   let game = loadGame(id);
   if (!pins[id]) return game;
@@ -52,10 +59,20 @@ function gameFor(id) {
     log(`${id}: exporting ${commit} to ${dir}`);
     fs.rmSync(dir, {recursive: true, force: true});
     fs.mkdirSync(dir, {recursive: true});
-    const tar = path.join(dir, '..', `${id}-${commit}.tar`);
-    const r = spawnSync('git', ['-C', game.repo, 'archive', '--format=tar', '-o', tar, commit], {stdio: 'inherit'});
-    if (r.status !== 0 || spawnSync(winTar, ['-xf', tar, '-C', dir], {stdio: 'inherit'}).status !== 0) throw Error(`${id}: exporting ${commit} failed`);
-    fs.rmSync(tar);
+    // Only what the build needs, and no tar file in between: git's archive goes straight into the extractor. Screenshots, a committed
+    // build (dist), test output and reference images are left out; together they were 7 GB of a 20 GB export.
+    const left = ['shots', 'dist', 'output', 'refs', 'node_modules'];
+    const sizes = spawnSync('git', ['-C', game.repo, 'ls-tree', '-r', '-l', commit], {encoding: 'utf8', maxBuffer: 1 << 30}).stdout.split('\n').filter(Boolean).map(l => {const m = /^\S+ \S+ \S+\s+(\d+|-)\t(.*)$/.exec(l); return m ? {size: m[1] === '-' ? 0 : +m[1], file: m[2]} : null;}).filter(Boolean);
+    const expected = sizes.filter(s => !left.some(d => s.file === d || s.file.startsWith(d + '/'))).reduce((n, s) => n + s.size, 0) / 2 ** 30;
+    const free = freeGB(dir);
+    log(`${id}: export will be ${expected.toFixed(1)} GB; ${free.toFixed(0)} GB free on that drive`);
+    if (free < expected + 60) throw Error(`${id}: not enough free space for the export (${free.toFixed(0)} GB free, needs ${(expected + 60).toFixed(0)} GB)`);
+    const line = `git -C "${game.repo}" archive --format=tar ${commit} -- . ${left.map(d => `":(exclude)${d}"`).join(' ')} | "${winTar}" -xf - -C "${dir}"`;
+    const r = spawnSync('cmd.exe', ['/d', '/s', '/c', `"${line}"`], {stdio: 'inherit', windowsVerbatimArguments: true});
+    if (r.status !== 0) throw Error(`${id}: exporting ${commit} failed`);
+    // At most this export and one older one stay on disk.
+    const others = fs.readdirSync(path.dirname(dir), {withFileTypes: true}).filter(e => e.isDirectory() && e.name.startsWith(id + '-') && path.join(path.dirname(dir), e.name) !== dir).map(e => ({name: e.name, time: fs.statSync(path.join(path.dirname(dir), e.name)).mtimeMs})).sort((a, c) => c.time - a.time);
+    for (const old of others.slice(1)) { log(`${id}: removing old export ${old.name}`); fs.rmSync(path.join(path.dirname(dir), old.name), {recursive: true, force: true}); }
     if (fs.existsSync(path.join(game.repo, 'node_modules'))) fs.symlinkSync(path.join(game.repo, 'node_modules'), path.join(dir, 'node_modules'), 'junction');
     fs.writeFileSync(path.join(dir, '.jsgb-exported'), commit);
   }
@@ -133,6 +150,8 @@ for (const id of games) {
   } else {
     const bundle = path.basename(pub.bundle);
     for (const name of [bundle, bundle.replace(/\.mjs$/, '.css'), 'page.json', 'registry.json', 'overrides.json']) {
+      // Rules that name models the package does not carry would hide the game's own hulls, so they ship only with the models.
+      if (name === 'overrides.json' && !(settings().fidelityContent && fs.existsSync(settings().fidelityContent))) continue;
       if (fs.existsSync(path.join(game.out, name))) copy(path.join(game.out, name), path.join(dest, name));
     }
     mirror(path.join(game.out, 'jsgb'), path.join(dest, 'jsgb'));
@@ -146,7 +165,7 @@ for (const id of games) {
     '@echo off',
     `rem ${name} in Unreal Engine through JsGameBridge. F6 switches the DLSS mode, F7 Frame Generation (off, 2x, 3x, 4x).`,
     'cd /d "%~dp0"',
-    `start "" "%~dp0host\\Windows\\JsgbHost.exe" "-JsgbGame=%~dp0games\\${id}" -windowed -ResX=1920 -ResY=1080 -JsgbHud -JsgbDlssKeys -JsgbJitter ${flags.join(' ')} -log=jsgb-${id}.log %*`,
+    `start "" "%~dp0host\\Windows\\JsgbHost.exe" "-JsgbGame=%~dp0games\\${id}" -windowed -ResX=1920 -ResY=1080 -JsgbDlssKeys -JsgbJitter ${flags.join(' ')} -log=jsgb-${id}.log %*`,
     ''].join('\r\n'));
   log(`${id}: ${pub.sourceCommit.slice(0, 8)}${pub.sourceDirty ? ' (with uncommitted changes)' : ''}`);
 }

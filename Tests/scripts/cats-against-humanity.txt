@@ -1,0 +1,11 @@
+# Cats Against Humanity: title screen, start a run, walk the studio.
+0 wait 'Start a new run'
+3 shot cats-title
+4 click 'Start a new run'
+8 shot cats-studio-start
+9 key 'KeyD','down'
+11 key 'KeyD','up'
+12 key 'KeyW','down'
+14 key 'KeyW','up'
+15 shot cats-studio-moved
+20 quit

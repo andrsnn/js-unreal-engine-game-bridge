@@ -128,9 +128,10 @@ void AJsgbHost::SetLumen(bool bOn)
 		LumenFog->SetVolumetricFogDistance(bLight ? 600000.f : 1200000.f);
 		LumenFog->SetupAttachment(GetRootComponent());
 		LumenFog->RegisterComponent();
+		if (FParse::Param(FCommandLine::Get(), TEXT("JsgbNoFog"))) { LumenFog->SetVisibility(false); LumenFog->SetVolumetricFog(false); }
 	}
 	if (LumenSky) { LumenSky->SetVisibility(bOn); }
-	if (LumenFog) { LumenFog->SetVisibility(bOn); }
+	if (LumenFog) { LumenFog->SetVisibility(bOn && !FParse::Param(FCommandLine::Get(), TEXT("JsgbNoFog"))); }
 
 	Mirror->bLumen = bOn;
 	Mirror->SunSourceAngle = bLight ? 0.6f : 1.2f;
@@ -152,11 +153,13 @@ void AJsgbHost::SetLumen(bool bOn)
 void AJsgbHost::PublishGraphics()
 {
 	if (!Bridge) { return; }
-	Bridge->SetGraphicsInfo(FString::Printf(TEXT("{\"lumen\":%s,\"available\":%s}"), bLumenOn ? TEXT("true") : TEXT("false"), bLumenAvailable ? TEXT("true") : TEXT("false")));
+	Bridge->SetGraphicsInfo(FString::Printf(TEXT("{\"lumen\":%s,\"available\":%s,\"preset\":\"%s\"}"), bLumenOn ? TEXT("true") : TEXT("false"), bLumenAvailable ? TEXT("true") : TEXT("false"), *QualityPreset));
 	TWeakObjectPtr<AJsgbHost> Self(this);
 	Bridge->OnGraphicsSet = [Self](const TSharedPtr<FJsonObject>& In)
 	{
 		bool bOn = false;
+		FString Preset;
+		if (Self.IsValid() && In && In->TryGetStringField(TEXT("preset"), Preset)) { Self->ApplyQualityPreset(Preset); }
 		if (Self.IsValid() && In && In->TryGetBoolField(TEXT("lumen"), bOn)) { Self->SetLumen(bOn); }
 	};
 }
