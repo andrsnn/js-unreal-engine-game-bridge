@@ -4,6 +4,7 @@
 #include "JsgbBridge.h"
 #include "JsgbSceneMirror.h"
 #include "JsgbAudio.h"
+#include "JsgbWorkers.h"
 #include "JsEnv.h"
 #include "JSLogger.h"
 #include "JSModuleLoader.h"
@@ -180,7 +181,9 @@ public:
 	virtual bool HandleMouseMoveEvent(FSlateApplication& SlateApp, const FPointerEvent& E) override
 	{
 		AJsgbHost* H = Host.Get();
-		if (H && !H->HasOverlay()) { const FVector2D P = Local(E); H->SendMouse(TEXT("mousemove"), P.X, P.Y, 0, MouseButtons, E.GetCursorDelta().X, E.GetCursorDelta().Y); }
+		// A scripted capture ignores the desktop mouse: a cursor resting at the window's edge scrolled the game's
+		// camera away from the pose the script set (the gas giant shot of mine.txt showed empty space).
+		if (H && !H->HasOverlay() && !H->IsScripted()) { const FVector2D P = Local(E); H->SendMouse(TEXT("mousemove"), P.X, P.Y, 0, MouseButtons, E.GetCursorDelta().X, E.GetCursorDelta().Y); }
 		return false;
 	}
 	virtual bool HandleMouseButtonDownEvent(FSlateApplication& SlateApp, const FPointerEvent& E) override { return Button(E, true); }
@@ -189,7 +192,7 @@ public:
 	virtual bool HandleMouseWheelOrGestureEvent(FSlateApplication& SlateApp, const FPointerEvent& E, const FPointerEvent* Gesture) override
 	{
 		AJsgbHost* H = Host.Get();
-		if (H && !H->HasOverlay()) { H->SendWheel(-E.GetWheelDelta() * 100.f); }
+		if (H && !H->HasOverlay() && !H->IsScripted()) { H->SendWheel(-E.GetWheelDelta() * 100.f); }
 		return false;
 	}
 	virtual const TCHAR* GetDebugName() const override { return TEXT("JsGameBridgeInput"); }
@@ -221,7 +224,7 @@ private:
 	bool Button(const FPointerEvent& E, bool bDown)
 	{
 		AJsgbHost* H = Host.Get();
-		if (!H || H->HasOverlay()) { return false; }
+		if (!H || H->HasOverlay() || H->IsScripted()) { return false; }
 		const FKey K = E.GetEffectingButton();
 		const int32 B = K == EKeys::LeftMouseButton ? 0 : K == EKeys::MiddleMouseButton ? 1 : K == EKeys::RightMouseButton ? 2 : 3;
 		const int32 Bit = B == 0 ? 1 : B == 1 ? 4 : B == 2 ? 2 : 8;
@@ -476,6 +479,7 @@ void AJsgbHost::BeginPlay()
 	const FString ScriptPath = Arg(TEXT("JsgbScript="));
 	if (!ScriptPath.IsEmpty()) { LoadScript(ScriptPath); }
 	if (!LoadPublication(Arg(TEXT("JsgbGame=")), FString())) { return; }
+	if (bLumenAtStart) { SetLumen(true); }
 	ShowLoading();
 	StartServer();
 	if (!PageIndex.IsEmpty()) { CreatePageView(); return; }
@@ -545,6 +549,18 @@ void AJsgbHost::PagePadGesture()
 
 FString UJsgbPagePort::DisplayModes() { return Display ? Display->DisplayModes() : FString(TEXT("[]")); }
 FString UJsgbPagePort::DisplayGet() { return Display ? Display->DisplayGet() : FString(TEXT("{}")); }
+FString UJsgbPagePort::LoadCampaign()
+{
+	FString Json;
+	if (Display) { FFileHelper::LoadFileToString(Json, *(Display->StoreDir / TEXT("campaign.json"))); }
+	return Json;
+}
+bool UJsgbPagePort::SaveCampaign(const FString& Json)
+{
+	if (!Display) { return false; }
+	const FString File = Display->StoreDir / TEXT("campaign.json"), Temp = File + TEXT(".tmp");
+	return FFileHelper::SaveStringToFile(Json, *Temp, FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM) && IFileManager::Get().Move(*File, *Temp, true, true);
+}
 // Sets t.MaxFPS at its current priority or SetByCode, whichever is higher. Once -ExecCmds or a saved display setting
 // has set it from the console, a SetByCode write is refused, and the per-frame checks below retried it every frame:
 // 10,823 "was ignored" log lines in one Hard Burn session.
@@ -616,6 +632,8 @@ void AJsgbHost::CreatePageView()
 	PagePort->Cap = PageFps;
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbPageLoadFps="), PageLoadFps);
 	PagePort->Display = NewObject<UJsgbBridge>(this);
+	PagePort->Display->StoreDir = FPaths::ProjectSavedDir() / TEXT("JsGameBridge") / FPaths::GetCleanFilename(GameDir) / TEXT("Store");
+	IFileManager::Get().MakeDirectory(*PagePort->Display->StoreDir, true);
 	PagePort->Display->DisplayFile = FPaths::ProjectSavedDir() / TEXT("JsGameBridge") / FPaths::GetCleanFilename(GameDir) / TEXT("display.json");
 	PagePort->Display->RestoreDisplay();
 	if (IConsoleVariable* MaxFps = IConsoleManager::Get().FindConsoleVariable(TEXT("t.MaxFPS"))) { MaxFps->Set(static_cast<float>(PageFps), ECVF_SetByCode); }
@@ -629,7 +647,7 @@ void AJsgbHost::CreatePageView()
 	// the empty scene's TSR and post processing took GPU time the page needs. -JsgbWorld keeps it (viewport screenshots
 	// need the scene drawn).
 	if (bHandheld && !FParse::Param(FCommandLine::Get(), TEXT("JsgbWorld"))) { GEngine->GameViewport->bDisableWorldRendering = true; }
-	const FString Url = FString::Printf(TEXT("http://127.0.0.1:%d/"), Port) + PageIndex + PageSearch;
+	const FString Url = FString::Printf(TEXT("http://127.0.0.1:%d/"), Port) + PageIndex + PageSearch + (PageSearch.IsEmpty() ? TEXT("?jsgb=1") : TEXT("&jsgb=1"));
 	// The page draws in its own child window of the game window by default, as Chrome does: Chromium presents its frames
 	// itself. Off-screen rendering (-JsgbPageOsr) copies every frame into an Unreal texture and waits for the GPU on the
 	// game thread for each copy (Unreal's CEF helper, CopySharedTextureSync), which halved the page's frame rate on an
@@ -726,6 +744,7 @@ void AJsgbHost::StartJs()
 	Bridge->Search = Search;
 	Bridge->Trace = FParse::Param(FCommandLine::Get(), TEXT("JsgbTraceMirror"));
 	Mirror->bTrace = Bridge->Trace;
+	FParse::Value(FCommandLine::Get(), TEXT("JsgbEnvRadiance="), Mirror->EnvRadiance);
 	FParse::Value(FCommandLine::Get(), TEXT("JsgbSeed="), Bridge->Seed);
 	// Web Workers run on their own threads unless -JsgbGameThreadWorkers asks for the old single-thread mode.
 	if (!FParse::Param(FCommandLine::Get(), TEXT("JsgbGameThreadWorkers"))) { FFileHelper::LoadFileToString(Bridge->WorkerRuntime, *(GameDir / TEXT("jsgb/worker-runtime.js"))); }
@@ -740,6 +759,7 @@ void AJsgbHost::StartJs()
 	Bridge->SeedStoreDir = GameDir / TEXT("jsgb-store");
 	Bridge->LogPath = FPaths::ProjectSavedDir() / TEXT("JsGameBridge") / GameId / TEXT("js.log");
 	IFileManager::Get().Delete(*Bridge->LogPath);
+	IFileManager::Get().Delete(*(FPaths::GetPath(Bridge->LogPath) / TEXT("js-errors.log")));
 
 	const FString PluginDir = IPluginManager::Get().FindPlugin(TEXT("JsGameBridge"))->GetBaseDir();
 	const FString Bootstrap = FPaths::ConvertRelativePathToFull(PluginDir / TEXT("JavaScript/jsgb-main.js"));
@@ -756,6 +776,8 @@ void AJsgbHost::StartJs()
 	ReadyFrame = -1;
 	PushedUIVersion = -1;
 	if (Browser.IsValid() && bDocumentReady) { Browser->ExecuteJavascript(TEXT("window.JsGameUI&&window.JsGameUI.reset()")); }
+	// Real-time play spreads a burst of new objects over frames; fixed-step captures stay frame-exact.
+	Mirror->bDeferOnGameThread = Bridge->FixedStepMs <= 0 && !FParse::Param(FCommandLine::Get(), TEXT("JsgbNoDefer"));
 #ifdef THREAD_SAFE
 	// Deterministic captures (fixed steps) keep the JavaScript on the game thread.
 	if (FParse::Param(FCommandLine::Get(), TEXT("JsgbJsThread")) && Bridge->FixedStepMs <= 0 && Bridge->OnFrame.IsBound())
@@ -828,7 +850,8 @@ void AJsgbHost::CreateOverlay()
 	// Unreal view shows through where the web canvas was.
 	const FString Html = TEXT("<!doctype html><html><head><meta charset='utf-8'><base href='") + Origin + TEXT("'><title>") + Title + TEXT("</title><style id='jsgb-page-css'>") + PageCss +
 		TEXT("</style><style>html,body{background:transparent!important;overflow:hidden!important}::-webkit-scrollbar{display:none}canvas:not([data-jsgb-pixels]){background:transparent!important;opacity:0!important}</style><script>") + Client + TEXT("</script></head><body></body></html>");
-	Browser->LoadString(Html, Origin + TEXT("index.html"));
+	OverlayHtml = Html;
+	Browser->LoadURL(Origin + TEXT("bridge/overlay.html"));
 	if (APlayerController* Pc = UGameplayStatics::GetPlayerController(GetWorld(), 0))
 	{
 		FInputModeGameAndUI Mode;
@@ -945,6 +968,27 @@ void AJsgbHost::PushUI()
 	Bridge->UICanvases.Reset();
 }
 
+// Static page assets can be large or on a slow disk. Reading them must not
+// stop the native frame pump. This worker owns only copied paths and bytes.
+static TUniquePtr<FHttpServerResponse> JsgbReadPageAsset(const TArray<FString>& Roots, const FString& GameDir, const FString& Index, const FString& Route)
+{
+ TArray<uint8> Data;
+ const FString Rel = Route == TEXT("/") ? Index : Route.RightChop(1);
+ for (const FString& Root : Roots) { if (FFileHelper::LoadFileToArray(Data, *(Root / Rel), FILEREAD_Silent)) { break; } }
+ if (Data.Num() == 0) { return FHttpServerResponse::Error(EHttpServerResponseCodes::NotFound); }
+ FString Init;
+ if (Rel == Index && FFileHelper::LoadFileToString(Init, *(GameDir / TEXT("page-init.js"))))
+ {
+  FString Html; FFileHelper::BufferToString(Html, Data.GetData(), Data.Num());
+  const int32 At = Html.Find(TEXT("<head>"));
+  if (At != INDEX_NONE) { Html.InsertAt(At + 6, TEXT("<script>") + Init + TEXT("</script>")); const FTCHARToUTF8 Utf8(*Html); Data = TArray<uint8>(reinterpret_cast<const uint8*>(Utf8.Get()), Utf8.Length()); }
+ }
+ const FString Ext = FPaths::GetExtension(Route).ToLower();
+ static const TMap<FString,FString> Mime = {{TEXT("png"),TEXT("image/png")},{TEXT("jpg"),TEXT("image/jpeg")},{TEXT("jpeg"),TEXT("image/jpeg")},{TEXT("webp"),TEXT("image/webp")},{TEXT("gif"),TEXT("image/gif")},{TEXT("svg"),TEXT("image/svg+xml")},{TEXT("woff2"),TEXT("font/woff2")},{TEXT("woff"),TEXT("font/woff")},{TEXT("ttf"),TEXT("font/ttf")},{TEXT("otf"),TEXT("font/otf")},{TEXT("css"),TEXT("text/css")},{TEXT("json"),TEXT("application/json")},{TEXT("ogg"),TEXT("audio/ogg")},{TEXT("mp3"),TEXT("audio/mpeg")},{TEXT("html"),TEXT("text/html")},{TEXT("js"),TEXT("text/javascript")},{TEXT("mjs"),TEXT("text/javascript")},{TEXT("wasm"),TEXT("application/wasm")},{TEXT("wav"),TEXT("audio/wav")},{TEXT("m4a"),TEXT("audio/mp4")},{TEXT("mp4"),TEXT("video/mp4")},{TEXT("webm"),TEXT("video/webm")},{TEXT("ktx2"),TEXT("image/ktx2")}};
+ const FString* Type = Mime.Find(Ext);
+ return FHttpServerResponse::Create(MoveTemp(Data), Type ? *Type : TEXT("application/octet-stream"));
+}
+
 void AJsgbHost::StartServer()
 {
 	if (Router) { return; }
@@ -964,6 +1008,19 @@ void AJsgbHost::StartServer()
 			Resp->Code = Code;
 			Done(MoveTemp(Resp));
 		};
+		if (Route.StartsWith(TEXT("/bridge/blob/")))
+		{
+			// A blob URL in the overlay's copy of the page (an image the game made): its shared bytes (FJsgbBlobs).
+			TArray<uint8> Bytes; FString Type;
+			if (!FJsgbBlobs::Get(TEXT("blob:") + Route.Mid(13), Bytes, Type)) { return false; }
+			Done(FHttpServerResponse::Create(MoveTemp(Bytes), Type.IsEmpty() ? TEXT("application/octet-stream") : Type));
+			return true;
+		}
+		if (Route == TEXT("/bridge/overlay.html") && !H->OverlayHtml.IsEmpty())
+		{
+			Done(FHttpServerResponse::Create(H->OverlayHtml, TEXT("text/html; charset=utf-8")));
+			return true;
+		}
 		if (Route == TEXT("/bridge/status"))
 		{
 			auto O = MakeShared<FJsonObject>();
@@ -1150,6 +1207,18 @@ void AJsgbHost::StartServer()
 		}
 		if (R.Verb == EHttpServerRequestVerbs::VERB_GET && !Route.StartsWith(TEXT("/bridge/")) && (H->Bridge || !H->PageIndex.IsEmpty()))
 		{
+            if (!H->Bridge && !Route.Contains(TEXT("..")))
+            {
+                H->LastPageFile = FPlatformTime::Seconds();
+                const TArray<FString> Roots = H->PublicRoots;
+                const FString GameDir = H->GameDir, Index = H->PageIndex;
+                Async(EAsyncExecution::ThreadPool, [Roots, GameDir, Index, Route, Done]
+                {
+                    auto Response = JsgbReadPageAsset(Roots, GameDir, Index, Route);
+                    AsyncTask(ENamedThreads::GameThread, [Done, Response = MoveTemp(Response)]() mutable { Done(MoveTemp(Response)); });
+                });
+                return true;
+            }
 			// The overlay's page loads images and fonts from the web build's site root. A page game loads everything from
 			// its public roots, in order.
 			FArrayBufferValue File;
@@ -1824,7 +1893,15 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		bRestart = false;
 		if (ReloadStart < 0) { ReloadStart = FPlatformTime::Seconds(); ReloadBuildMs = -1; }
 		StopJs();
-		if (!PendingBundle.IsEmpty()) { LoadPublication(GameDir, PendingBundle); PendingBundle.Reset(); }
+		if (!PendingBundle.IsEmpty())
+		{
+			// The old registry's override models are released before the new build's registry replaces it, and the new
+			// build's are loaded after.
+			const bool bWasLumen = bLumenOn;
+			if (bWasLumen) { SetLumen(false); }
+			LoadPublication(GameDir, PendingBundle); PendingBundle.Reset();
+			if (bWasLumen) { SetLumen(true); }
+		}
 		StartJs();
 	}
 	UpdateLoading();
@@ -1892,9 +1969,12 @@ void AJsgbHost::Tick(float DeltaSeconds)
 		// every pan, orbit and zoom (key-to-camera was 74 to 106 ms in Hard Burn at about 37 game frames a second).
 		static const double CameraGlide = [] { double F = 1.5; FParse::Value(FCommandLine::Get(), TEXT("JsgbCameraGlide="), F); return FMath::Max(0.0, F); }();
 		const double CameraEnd = CameraGlide > 0 ? FMath::Min(SegmentEnd, SegmentStart + CameraGlide * DrawInterval) : SegmentEnd;
-		ObjectAlpha = LastSnapshot > 0 ? static_cast<float>((Now - SegmentStart) / (SegmentEnd - SegmentStart)) : 1.f;
+		// This tick is presented one draw interval from now. Sampling only at arrival restarts at zero
+		// forever when a faster JS producer supplies a new snapshot on every rendered frame (30 FPS caps).
+		const double PresentAt = Now + DrawInterval;
+		ObjectAlpha = LastSnapshot > 0 ? static_cast<float>((PresentAt - SegmentStart) / (SegmentEnd - SegmentStart)) : 1.f;
 		Mirror->Interpolate(ObjectAlpha,
-			LastSnapshot > 0 ? static_cast<float>((Now - SegmentStart) / FMath::Max(1e-4, CameraEnd - SegmentStart)) : 1.f);
+			LastSnapshot > 0 ? static_cast<float>((PresentAt - SegmentStart) / FMath::Max(1e-4, CameraEnd - SegmentStart)) : 1.f);
 
 	}
 	else if (!bHeld) { Bridge->OnFrame.Execute(ReadyFrame < 0 ? 40.f : 8.f); }

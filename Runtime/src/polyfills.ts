@@ -1,5 +1,7 @@
 import '../../JavaScript/LanguageBuiltins.mjs';
 import './intl';
+import {base64Bytes, bytesBase64} from './base64';
+export {base64Bytes, bytesBase64};
 
 /** Standard web APIs that Puerts' V8 (9.4, no Node, no browser) lacks. Each install is guarded,
  *  so a newer host keeps its native version. */
@@ -49,15 +51,9 @@ if (!g.TextDecoder) {
       return out + String.fromCharCode(...chunk); } };
 }
 
-const B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-g.atob ??= (s: string) => { s = String(s).replace(/[^A-Za-z0-9+/]/g, ''); let out = '';
-  for (let i = 0; i < s.length; i += 4) { const n = B64.indexOf(s[i]) << 18 | B64.indexOf(s[i + 1]) << 12 | (B64.indexOf(s[i + 2]) & 63) << 6 | B64.indexOf(s[i + 3]) & 63;
-    out += String.fromCharCode(n >> 16 & 255); if (s[i + 2] !== undefined) out += String.fromCharCode(n >> 8 & 255); if (s[i + 3] !== undefined) out += String.fromCharCode(n & 255); }
-  return out; };
-g.btoa ??= (s: string) => { let out = '';
-  for (let i = 0; i < s.length; i += 3) { const a = s.charCodeAt(i), b = s.charCodeAt(i + 1), c = s.charCodeAt(i + 2), n = a << 16 | (b || 0) << 8 | (c || 0);
-    out += B64[n >> 18 & 63] + B64[n >> 12 & 63] + (isNaN(b) ? '=' : B64[n >> 6 & 63]) + (isNaN(c) ? '=' : B64[n & 63]); }
-  return out; };
+const bytesText = (b: Uint8Array) => { const parts: string[] = []; for (let i = 0; i < b.length; i += 0x8000) parts.push(String.fromCharCode.apply(null, b.subarray(i, i + 0x8000) as unknown as number[])); return parts.join(''); };
+g.atob ??= (s: string) => bytesText(base64Bytes(String(s)));
+g.btoa ??= (s: string) => { s = String(s); const b = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) b[i] = s.charCodeAt(i) & 255; return bytesBase64(b); };
 
 if (!g.URLSearchParams) {
   g.URLSearchParams = class URLSearchParams {

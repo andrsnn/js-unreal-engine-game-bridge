@@ -4,8 +4,10 @@
   "type": "module",
   "description": "Browser environment and Three.js scene mirror that run unchanged web games inside Unreal through Puerts.",
   "dependencies": {
+    "@jsquash/webp": "1.5.0",
     "esbuild": "0.25.12",
     "fflate": "0.8.2",
+    "jpeg-js": "^0.4.4",
     "linkedom": "0.18.12"
   },
   "devDependencies": {

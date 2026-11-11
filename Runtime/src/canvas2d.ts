@@ -1,4 +1,4 @@
-import {decodePng} from './png';
+import {decodeImageFile} from './imageDecode';
 
 /** Software CanvasRenderingContext2D for the Unreal target. The game draws many of its textures
  *  (pixel-art surfaces, decals, gradients) at runtime; this rasterizes them into an RGBA buffer
@@ -79,7 +79,7 @@ function sourcePixels(src: any): Bitmap | null {
   if (src.data && src.width && src.height) return src as Bitmap;
   if (src.__pixels) return src.__pixels;
   const bytes: Uint8Array | undefined = src.__bytes ?? (src.__jsgbAsset || src.__src ? readImage(src.__jsgbAsset ?? src.__src) : undefined);
-  if (bytes) { const decoded = decodePng(bytes); if (decoded) { try { src.__pixels = decoded; } catch { /* frozen */ } return decoded; } }
+  if (bytes) { const decoded = decodeImageFile(bytes); if (decoded) { try { src.__pixels = decoded; } catch { /* frozen */ } return decoded; } }
   return null;
 }
 let imageReader: ((path: string) => Uint8Array | undefined) = () => undefined;

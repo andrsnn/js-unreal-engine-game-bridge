@@ -29,6 +29,12 @@ test('host camera keeps game rotation shake, and yields to views that place the 
   cameraFrameEnd();
   assert.equal(messages.at(-1).drive, false);
   assert.equal(messages.at(-1).axes, undefined);
+  // A camera moved by a focus or wheel event can have a stale world matrix until scene export.
+  // Pose ownership is decided before export, so refresh it before comparing the pose.
+  cam.position.setFromSphericalCoords(state.radius, state.phi, state.theta).add(new Vector3(...state.target));
+  lastFrame.camera = cam;
+  cameraFrameEnd();
+  assert.equal(messages.at(-1).drive, true);
   lastFrame.camera = new PerspectiveCamera();
   cameraFrameEnd();
   assert.equal(messages.at(-1).drive, false);

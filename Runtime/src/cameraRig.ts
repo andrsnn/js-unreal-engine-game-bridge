@@ -75,7 +75,8 @@ export function cameraFrameEnd() {
     // The host draws the camera from the rig only while the game draws with the rig's camera where the rig puts it (not
     // another camera, nor a first-person or close-up view that places this camera itself).
     let drive = !rig.camera || lastFrame.camera === rig.camera();
-    const cam = rig.camera?.() as {matrixWorld?: {elements: ArrayLike<number>}} | undefined;
+    const cam = rig.camera?.() as {updateMatrixWorld?: () => void; matrixWorld?: {elements: ArrayLike<number>}} | undefined;
+    cam?.updateMatrixWorld?.();
     if (drive && cam?.matrixWorld) {
       const e = cam.matrixWorld.elements, s = Math.sin(state.phi), r = state.radius;
       const dx = e[12] - (state.target[0] + r * s * Math.sin(state.theta)), dy = e[13] - (state.target[1] + r * Math.cos(state.phi)), dz = e[14] - (state.target[2] + r * s * Math.cos(state.theta));

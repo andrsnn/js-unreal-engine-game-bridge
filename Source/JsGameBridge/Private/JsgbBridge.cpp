@@ -87,6 +87,8 @@ void UJsgbBridge::BlobPut(const FString& Url, FArrayBuffer Bytes, const FString&
 FArrayBufferValue UJsgbBridge::BlobGet(const FString& Url) { FArrayBufferValue Out; FString Type; FJsgbBlobs::Get(Url, Out.Data, Type); return Out; }
 FString UJsgbBridge::BlobType(const FString& Url) { TArray<uint8> Bytes; FString Type; FJsgbBlobs::Get(Url, Bytes, Type); return Type; }
 void UJsgbBridge::BlobRevoke(const FString& Url) { FJsgbBlobs::Revoke(Url); }
+void UJsgbBridge::CaptureRead(int32 TextureId) { if (Mirror) { Mirror->RequestCaptureRead(TextureId); } }
+FArrayBufferValue UJsgbBridge::CaptureTake(int32 TextureId) { FArrayBufferValue Out; if (Mirror) { Mirror->TakeCaptureRead(TextureId, Out.Data); } return Out; }
 
 void UJsgbBridge::RunOnGame(TFunction<void()>&& Fn, bool bFrame, std::source_location From)
 {
@@ -176,6 +178,13 @@ void UJsgbBridge::Log(const FString& Level, const FString& Text)
 	{
 		const FString Line = FString::Printf(TEXT("[%.2f] %s %s\n"), NowMs() / 1000.0, *Level, *Text);
 		FFileHelper::SaveStringToFile(Line, *LogPath, FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM, &IFileManager::Get(), FILEWRITE_Append);
+		// Errors also go to js-errors.log beside it, with the wall-clock time: a packaged (Shipping) build writes no
+		// Unreal log, and the game's errors are what a play-test reads first.
+		if (Level == TEXT("error"))
+		{
+			const FString ErrLine = FString::Printf(TEXT("[%s +%.2fs] %s\n"), *FDateTime::Now().ToString(TEXT("%Y-%m-%d %H:%M:%S")), NowMs() / 1000.0, *Text);
+			FFileHelper::SaveStringToFile(ErrLine, *(FPaths::GetPath(LogPath) / TEXT("js-errors.log")), FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM, &IFileManager::Get(), FILEWRITE_Append);
+		}
 	}
 }
 
@@ -282,6 +291,9 @@ void UJsgbBridge::Geometry(int32 Id, FArrayBuffer Positions, FArrayBuffer Normal
 }
 
 void UJsgbBridge::ReleaseGeometry(int32 Id) { RunOnGame([this, Id] { if (Mirror) { Mirror->ReleaseGeometry(Id); } }); }
+void UJsgbBridge::ReleaseMaterial(int32 Id) { RunOnGame([this, Id] { if (Mirror) { Mirror->ReleaseMaterial(Id); } }); }
+void UJsgbBridge::ReleaseTexture(int32 Id) { RunOnGame([this, Id] { if (Mirror) { Mirror->ReleaseTexture(Id); } }); }
+
 void UJsgbBridge::CameraGive(int32 Version, const FString& Json)
 {
 	bPendingCameraBase = CameraRig.Give(Version, Json, PendingCameraBase, PendingCameraSeq);

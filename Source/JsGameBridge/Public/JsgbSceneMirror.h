@@ -4,6 +4,7 @@
 #include "Engine/StreamableManager.h"
 #include "Components/ActorComponent.h"
 #include "Components/LineBatchComponent.h"
+#include "Engine/TextureDefines.h"
 #include "ArrayBuffer.h"
 #include "JsgbSceneMirror.generated.h"
 
@@ -21,6 +22,8 @@ class UCameraComponent;
 class USceneCaptureComponent2D;
 class UTextureRenderTarget2D;
 class UJsgbBridge;
+class USkeletalMesh;
+class UPoseableMeshComponent;
 
 /** A mesh's render buffers, built from the game's arrays on any thread; FinishMesh makes the Unreal mesh. */
 struct FJsgbPreparedMesh
@@ -96,6 +99,8 @@ struct FJsgbMaterial
 	bool bFatWorld = false;
 	/** three.js draws it opaque without writing depth (a sky dome drawn first): Unreal draws it translucent, first. */
 	bool bDrawFirst = false;
+	/** Its generated material moves vertices in the vertex shader (world position offset: camera-facing sprites). */
+	bool bMovesVertices = false;
 	/** Textures bound through uniforms (shader materials and hooks): parameter name and texture id. */
 	TArray<TPair<FName, int32>> UniformTextures;
 };
@@ -120,6 +125,10 @@ struct FJsgbEntity
 	int32 Geometry = 0;
 	int32 GeometryRevision = -1;
 	TArray<int32, TInlineAllocator<2>> Materials;
+	/** Skeletal swaps: the hide-mask texture id last set on each slot (0: none). */
+	TArray<int32> HideMasks;
+	/** Skeletal swaps with asset materials: the material variant last applied (empty: the asset's own). */
+	FString Variant;
 	uint32 Seen = 0;
 	int32 InstanceCount = 0;
 	/** The instances moved last frame, so their previous transforms still differ from the current ones. */
@@ -161,6 +170,9 @@ struct FJsgbCapture
 	/** The objects drawn into it this frame. */
 	TArray<TWeakObjectPtr<UPrimitiveComponent>> Members;
 	uint32 Seen = 0;
+	/** The last frame something in this scene was not drawn yet (a swap not posed, a deferred build): a pixel read
+	 *  waits for a frame where everything was drawn. */
+	uint32 NotReady = 0;
 };
 
 USTRUCT()
@@ -181,6 +193,27 @@ struct FJsgbOverrideMaterials
 	UPROPERTY() TObjectPtr<UStaticMesh> Mesh;
 };
 
+/** Skeletal swaps (Runtime/src/skeletal.ts): the names an asset key's records index, from its "skeleton" event. */
+struct FJsgbSkeletonNames
+{
+	TArray<FString> Bones, Morphs, Slots;
+};
+
+/** A skeletal swap's mapping onto its Unreal skeletal mesh, worked out once per mesh: three.js joint to Unreal bone,
+ *  morph target and material slot, the reference pose in component space, and the fit G from three's bind-pose
+ *  vertex space to the Unreal reference pose (column-major 4x4). Offset places the component: three's mesh-local
+ *  space through G's inverse into Unreal's axes. */
+struct FJsgbSkeletalPose
+{
+	TWeakObjectPtr<USkeletalMesh> Mesh;
+	int32 Joints = -1;
+	TArray<int32> BoneOf, MorphOf, SlotOf;
+	TArray<FTransform> RefCS;
+	double G[16] = {0}, GInv[16] = {0};
+	FTransform Offset;
+	bool bFitted = false;
+};
+
 /** Draws the web game's Three.js scene with Unreal components. Geometry becomes runtime static
  *  meshes shared by every object that uses it; instanced meshes become ISMs; points and sprites
  *  become camera-facing quads; lines go to a line batcher; lights, ambient, fog, background and
@@ -195,6 +228,8 @@ public:
 
 	void SetGeometry(int32 Id, const FArrayBuffer& Positions, const FArrayBuffer& Normals, const FArrayBuffer& UVs, const FArrayBuffer& Colors, int32 ColorSize, const FArrayBuffer& Indices, const FString& Groups);
 	void ReleaseGeometry(int32 Id);
+	void ReleaseMaterial(int32 Id);
+	void ReleaseTexture(int32 Id);
 	void SetMaterial(int32 Id, const FString& Json);
 	/** Colour, map and uniform values for a material SetMaterial described: only those parameters change. */
 	void SetMaterialValues(int32 Id, const FString& Json);
@@ -213,6 +248,10 @@ public:
 	bool SetAssetRegistry(const FString& Json);
 	FStreamableManager Streamable;
 	TSharedPtr<struct FStreamableHandle> RegistryLoad;
+	/** Loads the override models in the background (Lumen mode on) and calls Done once they are in memory, or
+	 *  releases them (off). */
+	void LoadOverrides(bool bLoad, TFunction<void()> Done = nullptr);
+	TSharedPtr<struct FStreamableHandle> OverrideLoad;
 	void ResetAll();
 
 	UPROPERTY() TObjectPtr<UCameraComponent> Camera;
@@ -245,6 +284,9 @@ public:
 	float BuildBudgetMs = 6.f;
 	/** With the JavaScript thread, new objects past this many milliseconds of one update wait for the next snapshot. */
 	float CreateBudgetMs = 8.f;
+	/** JavaScript on the game thread, real time (not fixed-step captures): new objects past CreateBudgetMs also wait,
+	 *  for the next frame's update (a game entering a new area added hundreds at once: frames of 0.5 to 1.5 s). */
+	bool bDeferOnGameThread = false;
 	/** New objects left for the next snapshot this frame. */
 	int32 DeferredEntities = 0;
 	float LightScale = 1.f;
@@ -258,6 +300,9 @@ public:
 	/** Lumen mode: extra exposure in stops, bloom and directional light multipliers on top of the game's own. */
 	float ExposureOffset = 0.f, BloomScale = 1.f, SunScale = 1.f;
 	float LumenAmbientScale = 1.f;
+	/** The average light of an environment map (three.js envMap, scene.environment) a material reflects; times the
+	 *  material's envMapIntensity it becomes its EnvLight. -JsgbEnvRadiance= overrides it. */
+	float EnvRadiance = 5.f;
 	int32 FrameCounter = 0;
 
 	FVector CameraLocation = FVector::ZeroVector;
@@ -304,6 +349,7 @@ private:
 	}
 	UMaterialInstanceDynamic* MaterialFor(int32 Id);
 	void ApplyTextureParams(UMaterialInstanceDynamic* Mid, int32 TextureId);
+	class UTexture2D* SameShapeTexture(UTexture* Old, const struct FTexturePlatformData& New, bool bSRGB, TextureFilter Filter, TextureAddress X, TextureAddress Y);
 	UStaticMeshComponent* NewComponent(bool bInstanced);
 	FJsgbEntity& EntityOf(int32 Id, int32 Kind);
 	void ApplyLight(const float* S, uint32 Stamp, FLinearColor& Ambient, FLinearColor& HemiSky, FLinearColor& HemiGround, int32 Capture = 0);
@@ -319,6 +365,13 @@ private:
 	UMaterialInterface* GeneratedParent(const FString& Key, int32 Blend, bool bTwoSided);
 	void SetModelData(FJsgbEntity& Ent, UPrimitiveComponent* C, const float* M, const float* Mats, int32 NumMats);
 	void CheckGenerated();
+	/** Poses a skeletal swap's component from one SKELETAL record (JsgbSkeletal.cpp). Returns false until the mesh,
+	 *  its names and a bind-pose fit are ready. OutOffset goes before the object's own transform. */
+	bool PoseSkeletal(FJsgbEntity& Ent, USkeletalMesh* Mesh, int32 KeyId, int32 NumSlots, int32 Joints, int32 Morphs, const float* Mats, const float* HideMaskIds,
+		const float* JointData, const float* Weights, FTransform& OutOffset);
+	UPoseableMeshComponent* NewPoseable();
+	TMap<int32, FJsgbSkeletonNames> SkeletonNames;
+	TMap<int32, FJsgbSkeletalPose> SkeletalPoses;
 
 	UPROPERTY() TMap<int32, FJsgbGeometry> Geometries;
 	UPROPERTY() TMap<int32, FJsgbMaterial> Materials;
@@ -326,6 +379,16 @@ private:
 	UPROPERTY() TMap<int32, FJsgbEntity> Entities;
 	UPROPERTY() TMap<int32, FJsgbLight> Lights;
 	UPROPERTY() TMap<int32, FJsgbCapture> Captures;
+	/** Pixel reads of capture targets the game asked for (readRenderTargetPixelsAsync), by texture id: the frame
+	 *  stamp when asked. */
+	TMap<int32, uint32> ReadRequests;
+public:
+	/** The game wants the pixels of the render target this texture id draws into (a portrait, a thumbnail). */
+	void RequestCaptureRead(int32 TextureId);
+	/** Once the capture's scene has been mirrored for two frames: renders it now, reads it back and returns
+	 *  [width, height] as int32s, then width x height RGBA float32 rows from the top. False while not ready. */
+	bool TakeCaptureRead(int32 TextureId, TArray<uint8>& Out);
+private:
 	/** While a frame is applied: the render target whose scene the records belong to (0 for the game's view). */
 	int32 CurrentCapture = 0;
 	UPROPERTY() TArray<TObjectPtr<UMaterialInterface>> Parents;
@@ -352,6 +415,9 @@ private:
 	UPROPERTY() TMap<FString, TObjectPtr<UMaterial>> Generated;
 	TArray<FString> GeneratedPending;
 	TMap<int32, FString> KeyNames;
+	/** Skeletal swaps with "materials": "asset": the material variant each entity draws with (the asset's
+	 *  "variants": {name: {slot: material}}), from the game's "variant" events. */
+	TMap<int32, FString> EntityVariants;
 	/** Asset overrides: one material instance per override and slot, shared by every object it draws. */
 	UPROPERTY() TMap<FString, FJsgbOverrideMaterials> OverrideMaterials;
 	void UseOverrideMaterials(UStaticMeshComponent* C, int32 KeyId);

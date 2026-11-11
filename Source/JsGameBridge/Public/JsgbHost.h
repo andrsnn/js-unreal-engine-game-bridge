@@ -32,6 +32,8 @@ public:
 	UFUNCTION() FString DisplayModes();
 	UFUNCTION() FString DisplayGet();
 	UFUNCTION() void DisplaySet(const FString& Json);
+	UFUNCTION() FString LoadCampaign();
+	UFUNCTION() bool SaveCampaign(const FString& Json);
 	/** window.close() in the page: closes the game, as closing a browser tab would. */
 	UFUNCTION() void Quit();
 	/** A Web Audio context in the page is running (it started after a user gesture). */
@@ -98,6 +100,8 @@ public:
 	 *  gesture Chromium needs to start sound. A gamepad press is not one. */
 	void PagePadGesture();
 	bool IsRecording() const { return !RecordDir.IsEmpty(); }
+	/** A host script (-JsgbScript) drives the game: the desktop mouse is not passed on. */
+	bool IsScripted() const { return Script.Num() > 0; }
 
 	UPROPERTY() TObjectPtr<UJsgbBridge> Bridge;
 	UPROPERTY() TObjectPtr<UJsgbSceneMirror> Mirror;
@@ -131,6 +135,9 @@ private:
 	UPROPERTY() TObjectPtr<class UExponentialHeightFogComponent> LumenFog;
 	FString LumenPreset;
 	bool bLumenOn = false, bLumenAvailable = false;
+	/** The override models are in memory (they load each time Lumen mode turns on). */
+	bool bModelsReady = false, bLumenAtStart = false;
+	int32 LumenGeneration = 0;
 	TMap<FString, FString> LumenSaved;
 	bool SavedGiOverride = false, SavedReflectionOverride = false;
 	EDynamicGlobalIlluminationMethod::Type SavedGi = EDynamicGlobalIlluminationMethod::None;
@@ -167,6 +174,9 @@ private:
 	double CamSpeedSum = 0, CamSpeedSum2 = 0;
 	int32 CamSpeedFrames = 0;
 	TSharedPtr<SWebBrowser> Browser;
+	/** The UI overlay document, served at /bridge/overlay.html (UE 5.8's SWebBrowser::LoadString fetched the dummy URL
+	 *  from this server instead of showing the string, so the overlay showed the game's own index.html). */
+	FString OverlayHtml;
 	/** The page game's browser window (a child window of the game window, or off screen with -JsgbPageOsr). */
 	TSharedPtr<class IWebBrowserWindow> PageWindow;
 	UPROPERTY() TObjectPtr<UJsgbPagePort> PagePort;

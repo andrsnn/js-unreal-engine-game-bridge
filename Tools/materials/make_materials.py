@@ -19,18 +19,31 @@ def fresh(name, cls, factory):
     return AT.create_asset(name, ROOT, cls, factory)
 
 
+def usable_on_skinned(mat):
+    # Mirror masters also draw skeletal meshes and morph targets. A -game run cannot add a missing usage flag, and
+    # skeletal swaps then drew the default material, so every generated master is saved with both usages on.
+    mat.set_editor_property('used_with_skeletal_mesh', True)
+    mat.set_editor_property('used_with_morph_targets', True)
+
+
 def make_mpc():
     # Materials reference the collection, so an existing one is updated in place.
     path = f'{ROOT}/MPC_JsgbScene'
     mpc = unreal.load_asset(path) or AT.create_asset('MPC_JsgbScene', ROOT, unreal.MaterialParameterCollection, unreal.MaterialParameterCollectionFactoryNew())
-    params = []
+    # Existing parameters keep their ids: every material saved against the collection (including generated ones that
+    # packages cook) finds them by id, so only missing names are added.
+    params = list(mpc.get_editor_property('vector_parameters'))
+    have = {str(p.get_editor_property('parameter_name')) for p in params}
     for n in MPC_PARAMS:
+        if n in have:
+            continue
         p = unreal.CollectionVectorParameter()
         p.set_editor_property('parameter_name', n)
         p.set_editor_property('default_value', unreal.LinearColor(0, 0, 0, 0))
         params.append(p)
-    mpc.set_editor_property('vector_parameters', params)
-    EAL.save_loaded_asset(mpc)
+    if len(params) != len(have):
+        mpc.set_editor_property('vector_parameters', params)
+        EAL.save_loaded_asset(mpc)
     return mpc
 
 
@@ -221,7 +234,10 @@ def make_surface(name, mpc, shading='lit', blend='opaque', two_sided=False, bill
         nrm = g.node(unreal.MaterialExpressionVertexNormalWS)
         up = g.add(g.mul(g.mask(nrm, b=True), g.const(0.5)), g.const(0.5))
         hemi = g.lerp(g.collection(mpc, 'HemiGround'), g.collection(mpc, 'HemiSky'), up)
-        amb = g.mul(base, g.add(g.collection(mpc, 'Ambient'), hemi))
+        # A material with an environment map also gets the light it reflects from it (EnvLight, set per material from the
+        # map's intensity), beside the ambient and hemisphere light.
+        env = g.vector('EnvLight', unreal.LinearColor(0, 0, 0, 0))
+        amb = g.mul(base, g.add(g.add(g.collection(mpc, 'Ambient'), hemi), env))
         MEL.connect_material_property(base, '', unreal.MaterialProperty.MP_BASE_COLOR)
         MEL.connect_material_property(g.add(emissive, amb), '', unreal.MaterialProperty.MP_EMISSIVE_COLOR)
         MEL.connect_material_property(g.scalar('Roughness', 0.8), '', unreal.MaterialProperty.MP_ROUGHNESS)
@@ -236,6 +252,7 @@ def make_surface(name, mpc, shading='lit', blend='opaque', two_sided=False, bill
         MEL.connect_material_property(g.mul(g.add(base, emissive), alpha), '', unreal.MaterialProperty.MP_EMISSIVE_COLOR)
     if billboard:
         billboard_offset(g)
+    usable_on_skinned(mat)
     errors = MEL.recompile_material(mat)
     EAL.save_loaded_asset(mat)
     unreal.log_warning(f'JsGameBridge material {name} saved; compile messages: {list(errors)}')
@@ -277,6 +294,7 @@ def make_sky():
     tex = g.node(unreal.MaterialExpressionTextureObjectParameter, parameter_name='Map', texture=unreal.load_asset('/Engine/EngineResources/WhiteSquareTexture'))
     g.link(tex, '', node, 'Tex')
     MEL.connect_material_property(node, '', unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    usable_on_skinned(mat)
     errors = MEL.recompile_material(mat)
     EAL.save_loaded_asset(mat)
     unreal.log_warning(f'JsGameBridge material M_JsgbSky saved; compile messages: {list(errors)}')
@@ -337,6 +355,7 @@ def make_post(mpc):
     bg_on = g.mul(beyond, g.mask(bg, al=True))
     out = g.lerp(fogged, g.mask(bg, r=True, g=True, b=True), bg_on)
     MEL.connect_material_property(out, '', unreal.MaterialProperty.MP_EMISSIVE_COLOR)
+    usable_on_skinned(mat)
     errors = MEL.recompile_material(mat)
     EAL.save_loaded_asset(mat)
     unreal.log_warning(f'JsGameBridge material M_JsgbScenePost saved; compile messages: {list(errors)}')

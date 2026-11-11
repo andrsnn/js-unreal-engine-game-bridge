@@ -1,8 +1,9 @@
 import {parseHTML} from 'linkedom';
 import {installFastQueries, installNoOpSkips} from './query';
 import {host} from './host';
-import {blobStore} from './polyfills';
+import {blobStore, base64Bytes, bytesBase64} from './polyfills';
 import {imageSize} from './imageSize';
+import {isWebp,decodeWebp} from './webp';
 import {windowTarget} from './input';
 import {Context2D, Path2DImpl, setImageReader, OffscreenCanvasImpl, ImageDataImpl, ImageBitmapImpl} from './canvas2d';
 
@@ -177,20 +178,45 @@ g.IntersectionObserver ??= class { constructor(private cb: (e: unknown[]) => voi
 g.CSS ??= {supports: () => true, escape: (s: string) => s.replace(/[^\w-]/g, c => '\\' + c)};
 
 // Storage. Saves persist through the host when it offers a store; otherwise they live for the session.
+// Each item is its own store entry ("<kind>#<key>", listed in "<kind>#index"), and a flush writes only the items that
+// changed. The whole map used to go out as one JSON on every change: a game keeping saves in localStorage (the life
+// sim: 7 MB) froze ~75 ms each time it set any item. Stores written in the old one-entry form are read and moved over.
 function makeStorage(kind: string) {
   const store = (g.__jsgbHost as {storage?: {load(k: string): string | null; save(k: string, data: string): void}}).storage;
-  const m = new Map<string, string>(Object.entries(JSON.parse(store?.load(kind) ?? '{}') as Record<string, string>));
+  const m = new Map<string, string>();
+  const dirty = new Set<string>();
+  let indexDirty = false;
+  const index = store?.load(kind + '#index');
+  let keys: string[] | null = null;
+  try { keys = index ? JSON.parse(index) as string[] : null; } catch { keys = null; }
+  if (keys) {
+    for (const k of keys) { const v = store!.load(kind + '#' + k); if (v) { try { m.set(k, JSON.parse(v) as string); } catch { /* a torn write: the item is lost, not the store */ } } }
+  } else {
+    for (const [k, v] of Object.entries(JSON.parse(store?.load(kind) || '{}') as Record<string, string>)) { m.set(k, v); dirty.add(k); }
+    indexDirty = m.size > 0;
+  }
   let pending = false;
-  const flush = () => { if (!pending) return; pending = false; store?.save(kind, JSON.stringify(Object.fromEntries(m))); };
+  const flush = () => {
+    if (!pending && !dirty.size && !indexDirty) return;
+    pending = false;
+    if (!store) { dirty.clear(); indexDirty = false; return; }
+    for (const k of dirty) store.save(kind + '#' + k, m.has(k) ? JSON.stringify(m.get(k)) : '');
+    dirty.clear();
+    if (indexDirty) { store.save(kind + '#index', JSON.stringify([...m.keys()])); indexDirty = false; }
+  };
   storageFlushes.push(flush);
-  const touch = () => { if (store && !pending) { pending = true; setTimeout(flush, 250); } };
+  const touch = (k: string | null) => {
+    if (k === null) { for (const key of m.keys()) dirty.add(key); } else dirty.add(k);
+    if (store && !pending) { pending = true; setTimeout(flush, 250); }
+  };
+  if (dirty.size) touch(null);
   return {
     get length() { return m.size; },
     key: (i: number) => [...m.keys()][i] ?? null,
     getItem: (k: string) => m.has(k) ? m.get(k)! : null,
-    setItem: (k: string, v: string) => { m.set(k, String(v)); touch(); },
-    removeItem: (k: string) => { m.delete(k); touch(); },
-    clear: () => { m.clear(); touch(); },
+    setItem: (k: string, v: string) => { k = String(k); if (!m.has(k)) indexDirty = true; m.set(k, String(v)); touch(k); },
+    removeItem: (k: string) => { k = String(k); if (!m.has(k)) return; m.delete(k); indexDirty = true; touch(k); },
+    clear: () => { const keys = [...m.keys()]; m.clear(); indexDirty = true; for (const k of keys) dirty.add(k); touch(null); },
   };
 }
 g.localStorage = makeStorage('localStorage');
@@ -203,8 +229,22 @@ CanvasP.getContext = function (this: Record<string, any>, kind: string) {
   if (kind !== '2d') return null;
   return this.__ctx ??= new Context2D(this);
 };
-CanvasP.toDataURL = () => 'data:image/png;base64,';
-CanvasP.toBlob = (cb: (b: unknown) => void) => setTimeout(() => cb(new g.Blob([], {type: 'image/png'})), 0);
+// A 2D canvas's pixels as an image file. Browsers write PNG or JPEG; a BMP (uncompressed, 32-bit) is a file the
+// overlay's browser shows just the same and needs no compressor here. A canvas without a 2D context is empty.
+function canvasBmp(c: Record<string, any>): Uint8Array {
+  const b = c.__ctx?.bitmap?.() as {width: number; height: number; data: Uint8ClampedArray} | undefined;
+  const w = b?.width ?? Math.max(1, c.width | 0), h = b?.height ?? Math.max(1, c.height | 0);
+  const out = new Uint8Array(54 + w * h * 4), v = new DataView(out.buffer);
+  out[0] = 0x42; out[1] = 0x4d; v.setUint32(2, out.length, true); v.setUint32(10, 54, true);
+  v.setUint32(14, 40, true); v.setInt32(18, w, true); v.setInt32(22, -h, true); v.setUint16(26, 1, true); v.setUint16(28, 32, true);
+  v.setUint32(34, w * h * 4, true);
+  if (b) for (let i = 0, o = 54; i < w * h * 4; i += 4, o += 4) { out[o] = b.data[i + 2]; out[o + 1] = b.data[i + 1]; out[o + 2] = b.data[i]; out[o + 3] = b.data[i + 3]; }
+  return out;
+}
+CanvasP.toDataURL = function (this: Record<string, any>) {
+  return 'data:image/bmp;base64,' + bytesBase64(canvasBmp(this));
+};
+CanvasP.toBlob = function (this: Record<string, any>, cb: (b: unknown) => void) { const bytes = canvasBmp(this); setTimeout(() => cb(new g.Blob([bytes], {type: 'image/bmp'})), 0); };
 CanvasP.transferControlToOffscreen = function (this: unknown) { return this; };
 CanvasP.captureStream = () => ({getTracks: () => []});
 for (const dim of ['width', 'height'] as const) {
@@ -222,24 +262,41 @@ export function resolveAssetPath(url: string): string {
   const u = new g.URL(url, 'http://localhost/');
   return decodeURIComponent(u.pathname);
 }
+const dataUrlCache = new Map<string, Uint8Array>();
+let dataUrlBytes = 0;
 function bytesFor(src: string): ArrayBuffer | null {
   if (src.startsWith('blob:')) { const b = blobStore.get(src) as {bytes?: Uint8Array} | undefined; return b?.bytes ? b.bytes.slice().buffer : null; }
   if (src.startsWith('data:')) {
+    // A page that rebuilds its markup sets the same data: URL again and again (a portrait in a list redrawn each
+    // update): the last few decodes are kept by URL.
+    const hit = dataUrlCache.get(src);
+    if (hit) { dataUrlCache.delete(src); dataUrlCache.set(src, hit); return hit.slice().buffer; }
     const comma = src.indexOf(','); const meta = src.slice(5, comma); const body = src.slice(comma + 1);
-    const text = meta.endsWith(';base64') ? g.atob(body) : decodeURIComponent(body);
-    const out = new Uint8Array(text.length); for (let i = 0; i < text.length; i++) out[i] = text.charCodeAt(i); return out.buffer;
+    let out: Uint8Array;
+    if (meta.endsWith(';base64')) out = base64Bytes(body);
+    else { const text = decodeURIComponent(body); out = new Uint8Array(text.length); for (let i = 0; i < text.length; i++) out[i] = text.charCodeAt(i); }
+    dataUrlCache.set(src, out); dataUrlBytes += out.length;
+    for (const [k, v] of dataUrlCache) { if (dataUrlCache.size <= 4 || dataUrlBytes <= 16 << 20) break; dataUrlCache.delete(k); dataUrlBytes -= v.length; }
+    return out.slice().buffer;
   }
   return host.readFile(resolveAssetPath(src));
 }
 setImageReader(path => { const b = bytesFor(path); return b ? new Uint8Array(b) : undefined; });
 const ImgP = page.HTMLImageElement.prototype as Record<string, any>;
 Object.defineProperty(ImgP, 'src', {
-  get() { return this.__src ?? ''; },
+  // The source is also the element's src attribute, as in a browser: the overlay's copy of the page is built from the
+  // markup (an image given its source by property showed broken there), and games compare getAttribute('src') to
+  // skip setting the same picture every frame. Markup-parsed images (innerHTML) have only the attribute.
+  get() { return this.__src ?? this.getAttribute('src') ?? ''; },
   set(v: string) {
     this.__src = String(v);
-    setTimeout(() => {
+    if (this.getAttribute('src') !== this.__src) this.setAttribute('src', this.__src);
+    setTimeout(async () => {
       const bytes = bytesFor(this.__src);
       if (!bytes) { this.__ok = false; this.dispatchEvent(new BaseEvent('error')); this.onerror?.(new BaseEvent('error')); return; }
+      const encoded=new Uint8Array(bytes);
+      if(isWebp(encoded))this.__pixels=await decodeWebp(encoded,()=>host.readFile(resolveAssetPath('/jsgb/webp_dec.wasm')));
+      else if(this.__src.startsWith('blob:')||this.__src.startsWith('data:'))this.__bytes=encoded;
       const size = imageSize(new Uint8Array(bytes));
       this.__w = size.width; this.__h = size.height; this.__ok = true; this.__jsgbAsset = this.__src.startsWith('blob:') || this.__src.startsWith('data:') ? undefined : resolveAssetPath(this.__src);
       this.dispatchEvent(new BaseEvent('load')); this.onload?.(new BaseEvent('load'));
@@ -253,12 +310,29 @@ Object.defineProperty(ImgP, 'complete', {get() { return this.__ok !== undefined;
 ImgP.decode = function (this: Record<string, any>) { return new Promise<void>((res, rej) => { if (this.__ok) res(); else { this.addEventListener('load', () => res()); this.addEventListener('error', () => rej(new Error('decode failed'))); } }); };
 
 g.ImageBitmap ??= ImageBitmapImpl;
-g.createImageBitmap ??= async (source: Record<string, any>) => {
-  if (source?.bytes) { const s = imageSize(source.bytes); return new g.ImageBitmap(s.width, s.height, undefined, source.bytes); }
+// imageOrientation 'flipY' (a game that sets texture.flipY = false and flips the picture while decoding): the bitmap's
+// rows run bottom to top, as in a browser. Decoded pixels are flipped here; an image still encoded is marked, and the
+// texture export inverts its flipY.
+const flipRows = (b: {width: number; height: number; data: Uint8ClampedArray | Uint8Array}) => {
+  const row = b.width * 4, tmp = new Uint8Array(row), d = b.data;
+  for (let y = 0, z = b.height - 1; y < z; y++, z--) { tmp.set(d.subarray(y * row, y * row + row)); d.copyWithin(y * row, z * row, z * row + row); d.set(tmp, z * row); }
+};
+const makeBitmap = async (source: Record<string, any>) => {
+  const encoded=source?.bytes??(typeof source?.arrayBuffer==='function'?new Uint8Array(await source.arrayBuffer()):undefined);
+  if(encoded){const bytes=new Uint8Array(encoded);if(isWebp(bytes)){const pixels=await decodeWebp(bytes,()=>host.readFile(resolveAssetPath('/jsgb/webp_dec.wasm')));return new g.ImageBitmap(pixels.width,pixels.height,undefined,undefined,pixels);}const s=imageSize(bytes);return new g.ImageBitmap(s.width,s.height,undefined,bytes);}
   if (source?.__ctx) { const b = source.__ctx.bitmap(); return new g.ImageBitmap(b.width, b.height, undefined, undefined, {width: b.width, height: b.height, data: b.data.slice()}); }
   if (source?.data && source?.width) return new g.ImageBitmap(source.width, source.height, undefined, undefined, {width: source.width, height: source.height, data: new Uint8ClampedArray(source.data)});
   if (source?.__jsgbAsset || source?.naturalWidth) return new g.ImageBitmap(source.naturalWidth ?? source.width, source.naturalHeight ?? source.height, source.__jsgbAsset);
   return new g.ImageBitmap(source?.width ?? 1, source?.height ?? 1);
+};
+g.createImageBitmap ??= async (source: Record<string, any>, ...rest: unknown[]) => {
+  const options = rest.find(o => o && typeof o === 'object') as Record<string, any> | undefined;
+  const b = await makeBitmap(source) as Record<string, any>;
+  if (options?.imageOrientation === 'flipY' || options?.imageOrientation === 'flip') {
+    const pixels = b.__ctx?.bitmap?.() ?? b.__pixels;
+    if (pixels?.data && pixels.width && pixels.height) flipRows(pixels); else b.__jsgbFlipY = true;
+  }
+  return b;
 };
 
 // Media elements and speech stay silent until audio routes through Unreal.

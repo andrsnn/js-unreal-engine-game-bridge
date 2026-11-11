@@ -84,6 +84,9 @@ public:
 	UFUNCTION() void BlobPut(const FString& Url, FArrayBuffer Bytes, const FString& Type);
 	UFUNCTION() FArrayBufferValue BlobGet(const FString& Url);
 	UFUNCTION() FString BlobType(const FString& Url);
+	/** readRenderTargetPixelsAsync: ask for a capture target's pixels, then poll until they come (JsgbSceneMirror). */
+	UFUNCTION() void CaptureRead(int32 TextureId);
+	UFUNCTION() FArrayBufferValue CaptureTake(int32 TextureId);
 	UFUNCTION() void BlobRevoke(const FString& Url);
 	/** V8's sampling profiler on the calling thread's isolate: "start", or "stop <file>" to write a .cpuprofile
 	 *  (Chrome DevTools' Performance panel opens it). Called from the game's JavaScript, for example through /bridge/eval. */
@@ -120,6 +123,9 @@ public:
 	// Scene sink (Runtime/src/sceneExport.ts describes the layout).
 	UFUNCTION() void Geometry(int32 Id, FArrayBuffer Positions, FArrayBuffer Normals, FArrayBuffer UVs, FArrayBuffer Colors, int32 ColorSize, FArrayBuffer Indices, const FString& Groups);
 	UFUNCTION() void ReleaseGeometry(int32 Id);
+	/** A material or texture the game disposed of or dropped: its Unreal copy is freed. */
+	UFUNCTION() void ReleaseMaterial(int32 Id);
+	UFUNCTION() void ReleaseTexture(int32 Id);
 	UFUNCTION() void Material(int32 Id, const FString& Json);
 	/** window.jsgb.camera.rig (Runtime/src/cameraRig.ts): the camera the host moves with the keys (JsgbCameraRig.h). */
 	UFUNCTION() FString CameraTake() { return CameraRig.Take(); }

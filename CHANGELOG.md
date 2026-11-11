@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.9.0
+
+- Skinned glTF characters draw as Unreal skeletal meshes, posed every frame from the game's joints and morph targets.
+  Hide masks and asset materials work on them, and screenshots wait until a posed character is fully drawn.
+- Material rules: a rule can match the material a glTF file loaded with (opaque or cut-out) and draw it with an Unreal
+  material, passing the file's own texture maps.
+- Lumen mode adds light to explosions and lit vapour, and a game can set its own Lumen ambient level.
+- WebP and other images decode inside the bridge, losslessly, so models keep their original textures. 2D canvases
+  read JPEG and BMP pixels, and `data:` URLs and base64 are faster.
+- Workers run on their own V8 copy in packaged builds, and TypeScript in worker modules is stripped before wrapping.
+- Fewer hitches: `localStorage` saves only the items that changed, and new objects are spread over several frames.
+- Sprites drawn on `InstancedBufferGeometry` and passes drawn straight to the screen keep their colours in Unreal.
+- JavaScript errors also go to `js-errors.log`, with the time they happened.
+- `Tools/play-live.mjs`, `Tools/play-package.ps1` and `Tools/play-splash.ps1` play a game full screen behind a launch
+  window with a progress bar.
+
 ## 0.8.0
 
 - Normal builds collect shader materials, including off-camera sources, and visit configured game views.

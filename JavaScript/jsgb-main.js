@@ -22,6 +22,8 @@ globalThis.__jsgbHost = {
   workerPost: (id, bytes) => bridge.WorkerPost(id, bytes),
   workerPoll: () => { const b = bridge.WorkerPoll(); return b && b.byteLength > 0 ? b : null; },
   workerTerminate: id => bridge.WorkerTerminate(id),
+  captureRead: id => bridge.CaptureRead(id),
+  captureTake: id => { const b = bridge.CaptureTake(id); return b && b.byteLength > 0 ? b : null; },
   readFile: path => { const b = bridge.ReadFile(path); return b && b.byteLength > 0 ? b : null; },
   log: (level, text) => bridge.Log(level, String(text)),
   reload: () => bridge.RequestReload(),
@@ -35,6 +37,8 @@ globalThis.__jsgbHost = {
   sink: {
     geometry: (id, pos, nrm, uv, col, colorSize, idx, groups) => bridge.Geometry(id, buf(pos), buf(nrm), buf(uv), buf(col), colorSize, buf(idx), groups),
     releaseGeometry: id => bridge.ReleaseGeometry(id),
+    releaseMaterial: id => bridge.ReleaseMaterial && bridge.ReleaseMaterial(id),
+    releaseTexture: id => bridge.ReleaseTexture && bridge.ReleaseTexture(id),
     material: (id, json) => bridge.Material(id, json),
     materialUniforms: bridge.MaterialUniforms ? (id, json) => bridge.MaterialUniforms(id, json) : undefined,
     texture: (id, json, bytes) => bridge.Texture(id, json, buf(bytes)),

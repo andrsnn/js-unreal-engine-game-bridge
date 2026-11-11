@@ -4,6 +4,7 @@
 //   node Tools/jsgb.mjs build  <game>            write <out>/<game>.mjs, .css, page.json, publication.json
 //   node Tools/jsgb.mjs smoke  <game> [--frames 600] [--script steps.txt] [--search ?x] [--no-build]
 //   node Tools/jsgb.mjs unreal <game>            build, start Unreal (or hot-reload it), then reload on every save
+//        [--js-thread]                         the game's JavaScript on its own thread (Tools/run-unreal.mjs sets Puerts up)
 //   node Tools/jsgb.mjs reload <game>            hot-reload the last build
 //   node Tools/jsgb.mjs watch  <game>            build and hot-reload on every save in the game's folder
 // <game> names Games/<game>.json, or is a path to such a file.
@@ -12,6 +13,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {execFileSync, spawnSync} from 'node:child_process';
 import {fileURLToPath, pathToFileURL} from 'node:url';
+import {workerMainSource, workerScript} from './worker-main.mjs';
 
 const bridge = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const runtime = path.join(bridge, 'Runtime');
@@ -202,18 +204,11 @@ import {gltfLoaded as __jsgbGltfLoaded} from ${JSON.stringify(path.join(src, 'ov
       });
       b.onResolve({filter: /^jsgb-worker-main:/}, a => ({path: a.path.slice('jsgb-worker-main:'.length), namespace: 'jsgb-worker-main'}));
       b.onLoad({filter: /.*/, namespace: 'jsgb-worker-main'}, async a => {
-        const code = await fs.promises.readFile(a.path, 'utf8');
-        const top = [], body = [];
-        for (const line of code.split(/\r?\n/)) {
-          if (/^\s*import\s/.test(line) || /^export\s+(interface|type)\s/.test(line)) top.push(line);
-          else if (/^export\s*\{\s*\};?\s*$/.test(line) || /^\/\/\/\s*<reference/.test(line)) continue;
-          else body.push(line.replace(/\bself\b/g, '__jsgbSelf').replace(/\bglobalThis\b/g, '__jsgbSelf').replace(/^(\s*)onmessage\s*=/, '$1__jsgbSelf.onmessage ='));
-        }
+        const code = await workerScript(b.esbuild, await fs.promises.readFile(a.path, 'utf8'), a.path);
         // The same module is also bundled on its own (workerBundles), so it can run on a worker thread.
         const url = workerUrl(game, a.path);
         workerEntries.set(a.path, url);
-        return {contents: `${top.join('\n')}\nexport default function __jsgbWorkerMain(__jsgbSelf) {\nconst postMessage = (d, t) => __jsgbSelf.postMessage(d, t);\n${body.join('\n')}\n}\n__jsgbWorkerMain.url = ${JSON.stringify(url)};\n`,
-          loader: path.extname(a.path) === '.ts' ? 'ts' : 'js', resolveDir: path.dirname(a.path), watchFiles: [a.path]};
+        return {contents: workerMainSource(code, url), loader: 'js', resolveDir: path.dirname(a.path), watchFiles: [a.path]};
       });
     },
   };
@@ -281,6 +276,36 @@ async function webglModuleDraws(esbuild, threeModule) {
   return draws;
 }
 
+// Unreal's image decoders read no WebP. Each WebP image in the game's public folders, and each one the bundle copied
+// to <out>/assets, gets a PNG copy at <out>/jsgb/webp/<path>.png, which textures load instead (sceneExport.ts
+// unrealImagePath). Python with Pillow writes them; copies newer than their image are kept.
+export function webpCopies(game) {
+  const roots = [...game.publicRoots.filter(r => r !== game.repo && r !== game.out).map(r => [r, r]), [game.out, path.join(game.out, 'assets')]];
+  const jobs = [], seen = new Set();
+  const walk = (root, dir) => {
+    if (!fs.existsSync(dir)) return;
+    for (const e of fs.readdirSync(dir, {withFileTypes: true})) {
+      const file = path.join(dir, e.name);
+      if (e.isDirectory()) { if (e.name !== 'node_modules') walk(root, file); continue; }
+      if (!/\.webp$/i.test(e.name)) continue;
+      const rel = path.relative(root, file).replace(/\.webp$/i, '.png'), dest = path.join(game.out, 'jsgb/webp', rel);
+      if (seen.has(rel)) continue;
+      seen.add(rel);
+      if (!fs.existsSync(dest) || fs.statSync(dest).mtimeMs < fs.statSync(file).mtimeMs) jobs.push([file, dest]);
+    }
+  };
+  for (const [root, dir] of roots) walk(root, dir);
+  if (!jobs.length) return 0;
+  const list = path.join(game.out, 'jsgb/webp-jobs.json');
+  fs.writeFileSync(list, JSON.stringify(jobs));
+  const script = 'import json, os, sys\nfrom PIL import Image\nfor src, dest in json.load(open(sys.argv[1])):\n    os.makedirs(os.path.dirname(dest), exist_ok=True)\n    Image.open(src).save(dest)\n';
+  const r = spawnSync(process.env.PYTHON ?? 'python', ['-c', script, list], {encoding: 'utf8'});
+  fs.rmSync(list, {force: true});
+  if (r.status !== 0) { console.warn(`WebP images stay blank in Unreal: no PNG copies (Python with Pillow is needed): ${String(r.stderr || r.error?.message || '').trim().split('\n').pop()}`); return 0; }
+  console.log(`wrote PNG copies of ${jobs.length} WebP images for Unreal`);
+  return jobs.length;
+}
+
 export async function build(game) {
   if (game.page) return buildPage(game);
   const esbuild = await import(pathToFileURL(path.join(runtime, 'node_modules/esbuild/lib/main.js')).href);
@@ -322,6 +347,9 @@ export async function build(game) {
     }}]});
   const wasm = path.join(runtime, 'vendor/cross-shader/CrossShader.wasm'), wasmOut = path.join(game.out, 'jsgb/CrossShader.wasm');
   if (!fs.existsSync(wasmOut) || fs.statSync(wasmOut).size !== fs.statSync(wasm).size) fs.copyFileSync(wasm, wasmOut);
+  webpCopies(game);
+  fs.copyFileSync(path.join(runtime,'node_modules/@jsquash/webp/codec/dec/webp_dec.wasm'),path.join(game.out,'jsgb/webp_dec.wasm'));
+  fs.copyFileSync(path.join(runtime,'node_modules/@jsquash/webp/LICENSE'),path.join(game.out,'jsgb/WebP-LICENSE.txt'));
   // index.html stylesheets come after the CSS the modules import, as in the page.
   const cssFile = path.join(game.out, game.id + '.css');
   const moduleCss = fs.existsSync(cssFile) ? fs.readFileSync(cssFile, 'utf8') : '';
@@ -339,11 +367,20 @@ export async function build(game) {
   }
   fs.writeFileSync(path.join(game.out, 'jsgb/fonts.json'), JSON.stringify(faces));
   fs.writeFileSync(path.join(game.out, 'page.json'), JSON.stringify({...pageInfo, css: game.id + '.css'}, null, 1));
+  // The overlay page the host passes to LoadString, also written as <out>/index.html. The engine's own CEF (an editor
+  // host without the bridge's CEF build) fetches the overlay URL from the host's server instead of using the string,
+  // and the server then found the game's source index.html last in the public roots: its module script failed on
+  // "three" and the game's error handler covered the screen with its startup failure card. The out folder comes first.
+  const client = fs.readFileSync(path.join(bridge, 'JavaScript/jsgb-ui-client.js'), 'utf8');
+  fs.writeFileSync(path.join(game.out, 'index.html'), `<!doctype html><html><head><meta charset='utf-8'><title>${page.title ?? ''}</title><style id='jsgb-page-css'>${allCss}` +
+    `</style><style>html,body{background:transparent!important;overflow:hidden!important}::-webkit-scrollbar{display:none}canvas:not([data-jsgb-pixels]){background:transparent!important;opacity:0!important}</style><script>${client}</script></head><body></body></html>`);
   const bundlePath = path.join(game.out, game.id + '.mjs');
   const bundle = fs.readFileSync(bundlePath);
   // The registry the host loads: every map the game lists, merged key by key.
   const assets = {};
   for (const file of game.registry) for (const [k, v] of Object.entries(JSON.parse(fs.readFileSync(file, 'utf8')).assets ?? {})) assets[k] = {...assets[k], ...v};
+  // Material rules (Runtime/src/materialRules.ts): every file's list, in the order the game lists the files.
+  const materials = game.registry.flatMap(file => JSON.parse(fs.readFileSync(file, 'utf8')).materials ?? []);
   // Web audio files that the audio pipeline imported as Unreal sound waves play those assets.
   const files = {};
   if (game.audioCues) {
@@ -354,7 +391,7 @@ export async function build(game) {
   const overridesOut = path.join(game.out, 'overrides.json');
   if (game.overrides) fs.copyFileSync(path.resolve(bridge, game.overrides), overridesOut);
   else if (fs.existsSync(overridesOut)) fs.rmSync(overridesOut);
-  fs.writeFileSync(path.join(game.out, 'registry.json'), JSON.stringify({version: 1, assets, files, swaps: {assets: !!game.swaps?.assets, effects: !!game.swaps?.effects}}));
+  fs.writeFileSync(path.join(game.out, 'registry.json'), JSON.stringify({version: 1, assets, materials, files, swaps: {assets: !!game.swaps?.assets, effects: !!game.swaps?.effects}}));
   const publication = {version: 1, game: game.id, sourceCommit: commit || '0'.repeat(40), sourceDirty: !!git(game.repo, 'status', '--porcelain', '--untracked-files=no'),
     bridgeCommit: git(bridge, 'rev-parse', 'HEAD'), bundle: bundlePath, bundleSHA256: sha256(bundle), modules: Object.keys(result.metafile.inputs).length,
     bytes: bundle.length, buildMilliseconds: Math.round(performance.now() - started), publicRoots: game.publicRoots, search: game.search ?? '', title: page.title};
@@ -440,7 +477,7 @@ else if (command === 'unreal' || command === 'watch') {
     if (running && path.dirname(path.resolve(running.bundle ?? '')) === game.out) await reload(game);
     else if (running) throw Error(`Unreal is running another game (${running.game}); close it first`);
     else {
-      const started = spawnSync(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), gameArg, '--res', flag('--res', '1600x900'), '--timeout', flag('--timeout', '14400'), '--detach', ...(flag('--search') ? ['--search', flag('--search')] : []), ...['--offscreen', '--mute', '--frame-gen', '--hud'].filter(has), ...['--dlss', '--tsr', '--vibrance'].flatMap(f => flag(f) ? [f, flag(f)] : [])], {stdio: 'inherit'});
+      const started = spawnSync(process.execPath, [path.join(bridge, 'Tools/run-unreal.mjs'), gameArg, '--res', flag('--res', '1600x900'), '--timeout', flag('--timeout', '14400'), '--detach', ...(flag('--search') ? ['--search', flag('--search')] : []), ...['--offscreen', '--mute', '--frame-gen', '--hud', '--js-thread'].filter(has), ...['--dlss', '--tsr', '--vibrance', '--js-hz'].flatMap(f => flag(f) ? [f, flag(f)] : [])], {stdio: 'inherit'});
       if (started.status !== 0) throw Error('Unreal did not start; see the log above');
     }
   }

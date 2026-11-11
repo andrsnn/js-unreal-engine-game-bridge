@@ -1,6 +1,8 @@
 /** Stand-in for THREE.WebGLRenderer on the Unreal target. Unreal draws the scene, so render calls
  *  only record what was drawn last; every other renderer API answers with plausible values. */
 import {frameCount} from './frameCount';
+import {objectId} from './sceneExport';
+import {host} from './host';
 
 const g = globalThis as Record<string, any>;
 const COMPRESSED = new Set(['EXT_texture_compression_bptc', 'WEBGL_compressed_texture_s3tc', 'WEBGL_compressed_texture_s3tc_srgb']);
@@ -14,12 +16,19 @@ export function deepNoop(): any {
 /** The scene Unreal mirrors: the latest Scene the main renderer drew with a perspective camera
  *  (into the screen or into a post-processing target), else the latest Scene it drew at all. */
 /** linear: the view is drawn into a render target that post-processing shows (EffectComposer), not to the screen. */
-export const lastFrame: {scene: unknown; camera: unknown; frame: number; renderer: unknown; linear: boolean} = {scene: null, camera: null, frame: 0, renderer: null, linear: false};
+// pointScale: screen pixels per pixel of the target the view is drawn into. A view drawn into a small target and blown up
+// (Hard Burn's pixel mode) shows a 1 pixel point as a block; Unreal draws the view at full size, so points scale by it.
+export const lastFrame: {scene: unknown; camera: unknown; frame: number; renderer: unknown; linear: boolean; pointScale: number} = {scene: null, camera: null, frame: 0, renderer: null, linear: false, pointScale: 1};
 /** Post-processing the game asked for, read from its renderer and full-screen passes. */
 export const post: Record<string, number> = {exposure: 1, toneMapping: 0, bloomStrength: 0, bloomRadius: 0, bloomThreshold: 1, bloomFrame: -1};
 const renderers: Record<string, any>[] = [];
 /** Scenes the game draws into render targets, by target: the latest scene and camera, and the animation frame. */
+/** The game's view before a render into each target took its place (undone when the target turns out to be read). */
+const beforeTarget = new WeakMap<object, {scene: unknown; camera: unknown}>();
 export const captures = new Map<Record<string, any>, {scene: Record<string, any>; camera: Record<string, any>; frame: number}>();
+/** Groups the game draws on their own (a pass that renders one root of the scene with the camera switched to other
+ *  layers), with the camera's layer mask during that draw. The mirror shows that root's objects on those layers. */
+export const passRoots = new Map<Record<string, any>, {mask: number; frame: number; linear: boolean}>();
 // The animation frame in which a perspective camera was last rendered.
 let perspectiveFrame = -1;
 function mainRenderer() {
@@ -88,26 +97,43 @@ export class UnrealRenderer {
       getActiveCubeFace: () => 0, getActiveMipmapLevel: () => 0,
       render: (scene: Record<string, any>, camera: Record<string, any>) => {
         info.render.frame++;
+        // A scene drawn into a render target by any renderer is remembered, so a later pixel read can capture it.
+        const rt = target as Record<string, any> | null;
+        if (rt?.texture && scene?.isScene) captures.set(rt, {scene, camera, frame: frameCount.animation});
         if (self !== mainRenderer()) return;
         g.__jsgbCanvas = canvas;
-        post.exposure = (self as Record<string, any>).toneMappingExposure ?? 1; post.toneMapping = (self as Record<string, any>).toneMapping ?? 0;
-        if (!scene?.isScene) { notePost(scene); return; }
+        // three.js tone maps (and applies exposure) only when drawing to the screen, or in an OutputPass that does it for
+        // a post-processing chain. A view drawn into a render target and shown by plain shader passes is never tone
+        // mapped (Hard Burn's pixel mode), so Unreal's tone curve and exposure stay off for it.
+        const toneMapped = (on: boolean) => { post.exposure = on ? (self as Record<string, any>).toneMappingExposure ?? 1 : 1; post.toneMapping = on ? (self as Record<string, any>).toneMapping ?? 0 : 0; };
+        if (!scene?.isScene) {
+          if (scene?.material?.name === 'OutputShader' || scene?.material?.uniforms?.toneMappingExposure) toneMapped(true);
+          // linear: drawn into a render target. A pass drawn straight to the screen writes display (sRGB) values.
+          if (scene?.isGroup && camera?.layers) passRoots.set(scene, {mask: camera.layers.mask, frame: frameCount.animation, linear: !!target});
+          // A group drawn straight to the screen after the post chain (Hard Burn's pixel ships, guns, shots and effects) is
+          // never tone mapped. Unreal has one tone curve for the whole frame, so it goes off: these sprites are most of
+          // what such a frame shows. With it on they read about 14% brighter than in the browser.
+          if (scene?.isGroup && camera?.layers && !target) toneMapped(false);
+          notePost(scene); return;
+        }
         // A scene drawn into a render target that a material shows (a screen, a minimap) is a capture; Unreal
         // draws it with a scene capture, and it never replaces the game's view.
         const t = target as Record<string, any> | null;
         if (t?.texture) {
           captures.set(t, {scene, camera, frame: frameCount.animation});
-          if (t.texture.__jsgbMapped) return;
+          // A target the game reads pixels back from (a portrait) is never the game's view.
+          if (t.texture.__jsgbMapped || t.texture.__jsgbRead) return;
+          if (lastFrame.scene && lastFrame.scene !== scene) beforeTarget.set(t, {scene: lastFrame.scene, camera: lastFrame.camera});
         }
         const perspective = !!camera?.isPerspectiveCamera;
         // The scene Unreal mirrors: a perspective render, or an orthographic one in a frame without one. Within a
         // frame, an orthographic pass after the perspective scene is a HUD or overlay, not the view.
-        if (perspective || perspectiveFrame !== frameCount.animation) { lastFrame.scene = scene; lastFrame.camera = camera; lastFrame.renderer = self; lastFrame.linear = !!t; lastFrame.frame++; }
+        if (perspective || perspectiveFrame !== frameCount.animation) { lastFrame.scene = scene; lastFrame.camera = camera; lastFrame.renderer = self; lastFrame.linear = !!t; lastFrame.pointScale = t?.height > 0 ? Math.max(1, height * pixelRatio / t.height) : 1; lastFrame.frame++; toneMapped(!t); }
         if (perspective) perspectiveFrame = frameCount.animation;
       },
       compile: () => new Set(), compileAsync: async () => {},
       setAnimationLoop: (fn: ((t: number) => void) | null) => { if (fn) { const loop = (t: number) => { fn(t); g.requestAnimationFrame(loop); }; g.requestAnimationFrame(loop); } },
-      readRenderTargetPixels() {}, readRenderTargetPixelsAsync: async (_t: unknown, _x: number, _y: number, _w: number, _h: number, buffer: unknown) => buffer,
+      readRenderTargetPixels() {}, readRenderTargetPixelsAsync: (t: unknown, x: number, y: number, w: number, h: number, buffer?: ArrayLike<number>) => readCapturePixels(t as Record<string, any>, x, y, w, h, buffer),
       copyFramebufferToTexture() {}, copyTextureToTexture() {}, copyTextureToTexture3D() {}, initTexture() {}, initRenderTarget() {},
       resetState() {}, dispose() {}, forceContextLoss() {}, clear() {}, clearColor() {}, clearDepth() {}, clearStencil() {},
       setViewport() {}, setScissor() {}, setScissorTest() {}, setOpaqueSort() {}, setTransparentSort() {}, renderBufferDirect() {},
@@ -121,4 +147,46 @@ export class UnrealRenderer {
     base.dispose = () => { const i = renderers.indexOf(self); if (i >= 0) renderers.splice(i, 1); };
     return self as unknown as UnrealRenderer;
   }
+}
+
+/** readRenderTargetPixelsAsync: Unreal draws the scene last rendered into the target with a scene capture (the
+ *  capture records sceneExport sends for mapped targets) and reads it back. Rows come bottom first and RGBA as
+ *  floats, as WebGL gives them; the call resolves with the caller's buffer (or a new Float32Array). Without a host
+ *  read, or after about 3 seconds, it resolves with what it was given. */
+async function readCapturePixels(t: Record<string, any>, x: number, y: number, w: number, h: number, buffer?: ArrayLike<number>): Promise<unknown> {
+  const tex = t?.texture, last = captures.get(t);
+  if (!tex || !last || !host.captureRead || !host.captureTake) return buffer;
+  tex.__jsgbMapped = true; tex.__jsgbRead = true;
+  // The first render into this target was taken for the game's view: give the view back.
+  if (lastFrame.scene === last.scene) {
+    const before = beforeTarget.get(t);
+    lastFrame.scene = (before?.scene ?? null) as typeof lastFrame.scene; lastFrame.camera = (before?.camera ?? null) as typeof lastFrame.camera;
+  }
+  const id = objectId(tex);
+  host.captureRead(id);
+  const g = globalThis as unknown as {requestAnimationFrame(f: () => void): number};
+  try {
+    for (let tries = 0; tries < 720; tries++) { // the host waits up to 600 of its frames for a fully drawn scene
+      // Keep the scene exported while waiting: the exporter sends captures drawn in the last two frames.
+      captures.set(t, {...last, frame: frameCount.animation});
+      await new Promise<void>(r => g.requestAnimationFrame(() => r()));
+      const bytes = host.captureTake(id);
+      if (!bytes) continue;
+      const [W, H] = new Int32Array(bytes, 0, 2);
+      const src = new Float32Array(bytes, 8, W * H * 4);
+      const out = (buffer && (buffer as Float32Array).length >= w * h * 4 ? buffer : new Float32Array(w * h * 4)) as Float32Array;
+      for (let row = 0; row < h; row++) {
+        const sy = H - 1 - (y + row); // bottom row first
+        if (sy < 0 || sy >= H) continue;
+        for (let col = 0; col < w; col++) {
+          const sx = x + col; if (sx >= W) break;
+          const i = (sy * W + sx) * 4, o = (row * w + col) * 4;
+          out[o] = src[i]; out[o + 1] = src[i + 1]; out[o + 2] = src[i + 2]; out[o + 3] = src[i + 3];
+        }
+      }
+      return out;
+    }
+    host.log('warn', `render target read ${id} timed out`);
+    return buffer;
+  } finally { tex.__jsgbMapped = false; captures.delete(t); }
 }

@@ -1,4 +1,4 @@
-/** Width and height from an encoded PNG, JPEG, WebP, GIF or KTX2 header. */
+/** Width and height from an encoded PNG, JPEG, WebP, GIF, BMP or KTX2 header. */
 export function imageSize(b: Uint8Array): {width: number; height: number} {
   const u32 = (o: number) => (b[o] << 24 | b[o + 1] << 16 | b[o + 2] << 8 | b[o + 3]) >>> 0;
   const le16 = (o: number) => b[o] | b[o + 1] << 8;
@@ -20,6 +20,8 @@ export function imageSize(b: Uint8Array): {width: number; height: number} {
       o += 2 + len;
     }
   }
+  // BMP (canvas toDataURL / toBlob here): the height is negative for top-down rows.
+  if (b.length > 26 && b[0] === 0x42 && b[1] === 0x4d) return {width: Math.abs(le32(18) | 0), height: Math.abs(le32(22) | 0)};
   if (b.length > 28 && b[0] === 0xab && b[1] === 0x4b) return {width: le32(20), height: le32(24)};
   return {width: 1, height: 1};
 }

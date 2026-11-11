@@ -3,6 +3,9 @@
 export interface SceneSink {
   geometry(id: number, positions: ArrayBuffer, normals: ArrayBuffer | null, uvs: ArrayBuffer | null, colors: ArrayBuffer | null, colorSize: number, indices: ArrayBuffer | null, groups: string): void;
   releaseGeometry(id: number): void;
+  /** A material or texture the game disposed of, or no longer holds: the host frees its Unreal copy. */
+  releaseMaterial?(id: number): void;
+  releaseTexture?(id: number): void;
   material(id: number, json: string): void;
   /** Colour, map and uniform values of a material described before, when nothing else about it changed. */
   materialUniforms?(id: number, json: string): void;
@@ -28,6 +31,10 @@ export interface JsgbHost {
   /** Replies since the last poll: [id, kind (0 message, 1 error), length, bytes padded to 4] repeated. */
   workerPoll?(): ArrayBuffer | null;
   workerTerminate?(id: number): void;
+  /** readRenderTargetPixelsAsync: ask for a capture target's pixels, then poll; take returns [width, height] int32s
+   *  and RGBA float32 rows from the top, or null while not ready. */
+  captureRead?(textureId: number): void;
+  captureTake?(textureId: number): ArrayBuffer | null;
   /** Monotonic milliseconds. */
   now(): number;
   log(level: 'log' | 'warn' | 'error', text: string): void;

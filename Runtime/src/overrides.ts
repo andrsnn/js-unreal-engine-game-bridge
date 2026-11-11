@@ -15,17 +15,26 @@ export type OverrideRule = {
   /** Unreal static mesh path. */
   mesh?: string;
   /** How the Unreal mesh lines up with the three.js mesh: "bounds" fits the source bounds onto the
-   *  three.js geometry's bounds (centre and largest side), "none" uses the source's own units. */
-  fit?: 'bounds' | 'none';
+   *  three.js geometry's bounds (centre and largest side), "source" preserves a same-glTF native import's
+   *  source coordinates across its node transforms, "none" uses the source's own units. */
+  fit?: 'bounds' | 'source' | 'none';
+  /** Keep this native asset in the default view as well as Lumen mode. */
+  always?: boolean;
   /** The Unreal mesh's bounds in its source file's units: [[minX, minY, minZ], [maxX, maxY, maxZ]]. */
   bounds?: [number[], number[]];
   /** Other meshes from the same glTF file as the matched one: hidden (default) or drawn as before. */
   others?: 'hide' | 'keep';
   /** Draw nothing for what the rule matches (the game's object stays in the game). */
   hide?: boolean;
+  /** The rule belongs to one Unreal effect ("effects" in overrides.json) and applies only while that effect is on. */
+  effect?: keyof EffectFlags;
+  /** A Niagara system to play at each of the game's effect objects the rule matches (userData patterns), for as long as
+   *  the object is in the scene (lumenEffects.ts). */
+  niagara?: string;
 };
 
-type SourceInfo = {url: string; primary: boolean};
+/** gltfMesh and primitive: which glTF mesh and primitive the three.js mesh is (GLTFLoader makes one mesh per primitive). */
+type SourceInfo = {url: string; primary: boolean; sourceToLocal: THREE.Matrix4; material?: THREE.Material | THREE.Material[]; gltfMesh?: string; primitive?: number};
 export type OverrideHit = {key: string; hide: boolean; fit: THREE.Matrix4 | null};
 
 // Where each mesh's data came from. Games often build new geometries that share the loaded attributes
@@ -35,7 +44,8 @@ const byAttribute = new WeakMap<object, SourceInfo>();
 
 /** Called by the patched GLTFLoader for every model it parses. */
 const log = (text: string) => (globalThis as unknown as {__jsgbHost?: {log(level: string, text: string): void}}).__jsgbHost?.log('log', text);
-export function gltfLoaded(gltf: {scene?: THREE.Object3D; scenes?: THREE.Object3D[]}, url: string) {
+type Parser = {json?: {meshes?: {name?: string}[]}; associations?: Map<object, {meshes?: number; primitives?: number}>};
+export function gltfLoaded(gltf: {scene?: THREE.Object3D; scenes?: THREE.Object3D[]; parser?: Parser}, url: string) {
   if (!url) return;
   const meshes: THREE.Mesh[] = [];
   for (const scene of gltf.scenes?.length ? gltf.scenes : gltf.scene ? [gltf.scene] : []) {
@@ -46,9 +56,16 @@ export function gltfLoaded(gltf: {scene?: THREE.Object3D; scenes?: THREE.Object3
   }
   // The mesh with the most vertices stands for the whole model; the rest are its details.
   let primary: THREE.BufferGeometry | null = null, most = -1;
+  for (const scene of gltf.scenes?.length ? gltf.scenes : gltf.scene ? [gltf.scene] : []) scene.updateMatrixWorld(true);
   for (const m of meshes) { const n = m.geometry.attributes.position?.count ?? 0; if (n > most) { most = n; primary = m.geometry; } }
   for (const m of meshes) {
-    const info = {url, primary: m.geometry === primary};
+    // Native imports bake every glTF node into source coordinates. Undo this part's original node transform
+    // before the game reapplies it; fitting a composite import to one part's bounds misplaces its attachments.
+    // The material as loaded, before the game swaps in its own (material rules match it: Runtime/src/materialRules.ts).
+    const at = gltf.parser?.associations?.get(m);
+    const gltfMesh = at?.meshes !== undefined ? gltf.parser?.json?.meshes?.[at.meshes]?.name ?? `mesh_${at.meshes}` : undefined;
+    const info = {url, primary: m.geometry === primary, sourceToLocal: m.matrixWorld.clone().invert(), material: m.material, gltfMesh, primitive: at?.primitives ?? 0};
+    m.userData.jsgbSourceToLocal = info.sourceToLocal.toArray();
     m.userData.jsgbPrimary = info.primary;
     byGeometry.set(m.geometry, info);
     const p = m.geometry.attributes.position;
@@ -79,25 +96,37 @@ function textureUrls(o: THREE.Object3D): string[] {
 }
 
 /** The Unreal effects Lumen mode adds, each switched on or off in overrides.json ("effects"). The game fires the
- *  same events for its own sprite effects: each effect object carries userData.vfxKey. Off unless the file says on. */
-export type EffectFlags = {engineLight: boolean; gunfire: boolean; trails: boolean; smoke: boolean; explosions: boolean; debris: boolean};
+ *  same events for its own sprite effects: each effect object carries userData.vfxKey. Off unless the file says on,
+ *  except bigMuzzle (the muzzle flashes of large and huge guns), which is on unless the file says false. */
+export type EffectFlags = {engineLight: boolean; gunfire: boolean; trails: boolean; smoke: boolean; explosions: boolean; debris: boolean; bigMuzzle: boolean};
 let effects: EffectFlags | null = null;
 export function effectFlags(registryJson: string | undefined): EffectFlags {
   if (effects) return effects;
   let j: Partial<Record<keyof EffectFlags, unknown>> = {};
   try { j = JSON.parse(registryJson || '{}').effects ?? {}; } catch { /* no effects */ }
   return effects = {engineLight: j.engineLight === true, gunfire: j.gunfire === true, trails: j.trails === true, smoke: j.smoke === true,
-    explosions: j.explosions === true, debris: j.debris === true};
+    explosions: j.explosions === true, debris: j.debris === true, bigMuzzle: j.bigMuzzle !== false};
 }
 
 /** The rules from the registry the host loaded ("overrides" array); empty without an overrides file. */
 export function overrideRules(registryJson: string | undefined): Compiled[] {
-  if (rules) return rules;
-  rules = [];
+  if (!rules) [rules, systems] = compile(registryJson);
+  return rules;
+}
+/** The Niagara rules (with "niagara"), whose effect is on. */
+export function systemRules(registryJson: string | undefined): Compiled[] {
+  if (!systems) [rules, systems] = compile(registryJson);
+  return systems;
+}
+let systems: Compiled[] | null = null;
+function compile(registryJson: string | undefined): [Compiled[], Compiled[]] {
+  const rules: Compiled[] = [], systems: Compiled[] = [];
+  const on = effectFlags(registryJson);
   try {
     const list = (JSON.parse(registryJson || '{}').overrides ?? []) as OverrideRule[];
     for (const r of list) {
-      if (!r?.name || !r.match || (!r.mesh && !r.hide)) continue;
+      if (!r?.name || !r.match || (!r.mesh && !r.hide && !r.niagara)) continue;
+      if (r.effect && !on[r.effect]) continue;
       const tests: Compiled['tests'] = [];
       const m = r.match;
       if (m.url) { const t = glob(m.url); tests.push((_o, src) => t(src?.url.replaceAll('\\', '/'))); }
@@ -110,13 +139,13 @@ export function overrideRules(registryJson: string | undefined): Compiled[] {
         const t = glob(v);
         tests.push(o => { for (let p: THREE.Object3D | null = o; p; p = p.parent) { const x = p.userData?.[k]; if (x !== undefined && t(String(x))) return true; } return false; });
       }
-      if (tests.length) rules.push({...r, key: 'override:' + r.name, tests});
+      if (tests.length) (r.niagara ? systems : rules).push({...r, key: 'override:' + r.name, tests});
     }
-  } catch { rules = []; }
-  return rules;
+  } catch { return [[], []]; }
+  return [rules, systems];
 }
 
-function sourceOf(o: THREE.Object3D): SourceInfo | undefined {
+export function sourceOf(o: THREE.Object3D): SourceInfo | undefined {
   const g = (o as THREE.Mesh).geometry;
   if (g) {
     const direct = byGeometry.get(g); if (direct) return direct;
@@ -125,12 +154,12 @@ function sourceOf(o: THREE.Object3D): SourceInfo | undefined {
   }
   // A copy of a loaded mesh with copied geometry still carries its own tag. Objects the game added under
   // a loaded model (mounts, plumes) have none, so they never match the model's rule.
-  if (typeof o.userData?.jsgbSource === 'string') return {url: o.userData.jsgbSource, primary: o.userData.jsgbPrimary !== false};
+  if (typeof o.userData?.jsgbSource === 'string') return {url: o.userData.jsgbSource, primary: o.userData.jsgbPrimary !== false, sourceToLocal: Array.isArray(o.userData.jsgbSourceToLocal) ? new THREE.Matrix4().fromArray(o.userData.jsgbSourceToLocal) : new THREE.Matrix4()};
   return undefined;
 }
 
 // Each object's answer, kept while its geometry stays the same.
-const cache = new WeakMap<THREE.Object3D, {geometry: unknown; hit: OverrideHit | null; until: number}>();
+const cache = new WeakMap<THREE.Object3D, {geometry: unknown; rules: Compiled[]; hit: OverrideHit | null; until: number}>();
 let calls = 0;
 const loggedRules = new Set<string>();
 const fits = new WeakMap<object, Map<string, THREE.Matrix4 | null>>();
@@ -140,19 +169,20 @@ export function overrideFor(o: THREE.Object3D, list: Compiled[]): OverrideHit | 
   const g = (o as THREE.Mesh).geometry;
   const seen = cache.get(o);
   calls++;
-  if (seen && seen.geometry === g && calls < seen.until) return seen.hit;
+  if (seen && seen.geometry === g && seen.rules === list && calls < seen.until) return seen.hit;
   let hit: OverrideHit | null = null;
   const src = sourceOf(o);
   for (const r of list) {
     if (!r.tests.every(t => t(o, src))) continue;
     if (r.hide) { hit = {key: r.key, hide: true, fit: null}; break; }
-    if (src && !src.primary) { if (r.others !== 'keep') hit = {key: r.key, hide: true, fit: null}; break; }
-    hit = {key: r.key, hide: false, fit: fitFor(r, g)};
+    // A rule that names its mesh draws for that mesh whichever it is; otherwise only the model's largest mesh is replaced.
+    if (src && !src.primary && !r.match.mesh) { if (r.others !== 'keep') hit = {key: r.key, hide: true, fit: null}; break; }
+    hit = {key: r.key, hide: false, fit: r.fit === 'source' && src ? src.sourceToLocal : fitFor(r, g)};
     if (!loggedRules.has(r.key)) { loggedRules.add(r.key); log(`overrides: ${r.name} draws ${r.mesh} for ${(o as THREE.InstancedMesh).isInstancedMesh ? 'instanced ' : ''}"${o.name}" from ${src?.url ?? 'its name'}`); }
     break;
   }
   // A miss is checked again now and then while texture rules exist: a texture's image (and its URL) can arrive later.
-  cache.set(o, {geometry: g, hit, until: hit || !list.some(r => r.match.texture) ? Infinity : calls + 20000});
+  cache.set(o, {geometry: g, rules: list, hit, until: hit || !list.some(r => r.match.texture) ? Infinity : calls + 20000});
   return hit;
 }
 

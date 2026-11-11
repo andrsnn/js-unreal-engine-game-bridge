@@ -11,6 +11,12 @@ THIRD_PARTY_INCLUDES_START
 THIRD_PARTY_INCLUDES_END
 #include "JsgbBridge.h"
 #include "Misc/FileHelper.h"
+#include <mutex>
+#if PLATFORM_WINDOWS
+#include "Windows/AllowWindowsPlatformTypes.h"
+#include <windows.h>
+#include "Windows/HideWindowsPlatformTypes.h"
+#endif
 
 DEFINE_LOG_CATEGORY_STATIC(LogJsgbWorker, Log, All);
 
@@ -168,9 +174,39 @@ void FJsgbWorker::Drain(TArray<TPair<TArray<uint8>, bool>>& Out)
 	while (Outbox.Dequeue(Item)) { Out.Add(MoveTemp(Item)); }
 }
 
+namespace
+{
+	/** With V8 as a static library (Puerts' V8 13.6 setup links wee8.lib into every module that uses JsEnv, editor
+	 *  builds included), this module carries its own copy of V8, and Puerts only initialised the copy in JsEnv:
+	 *  v8::Isolate::New here then crashed (null write) on the first worker. Initialise this module's copy once, on
+	 *  Puerts' platform. With V8 in a shared library both modules use the same copy, already initialised. */
+	void EnsureWorkerV8(v8::Platform* Platform)
+	{
+		static std::once_flag Once;
+		std::call_once(Once, [Platform]
+		{
+#if IS_MONOLITHIC
+			// A packaged game is one executable: JsEnv and this module share the one copy of V8 Puerts already set up.
+			// Initialising it again aborts (V8_Fatal in InitializePlatform, the first worker of a Shipping build).
+			return;
+#endif
+#if PLATFORM_WINDOWS
+			HMODULE V8Module = nullptr, ThisModule = nullptr;
+			GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, reinterpret_cast<LPCWSTR>(static_cast<v8::Isolate* (*)(const v8::Isolate::CreateParams&)>(&v8::Isolate::New)), &V8Module);
+			GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, reinterpret_cast<LPCWSTR>(&EnsureWorkerV8), &ThisModule);
+			if (V8Module != ThisModule) { return; }
+#endif
+			UE_LOG(LogJsgbWorker, Display, TEXT("Initialising this module's static copy of V8 for worker isolates"));
+			v8::V8::InitializePlatform(Platform);
+			v8::V8::Initialize();
+		});
+	}
+}
+
 uint32 FJsgbWorker::Run()
 {
 	v8::Platform* Platform = static_cast<v8::Platform*>(IJsEnvModule::Get().GetV8Platform());
+	EnsureWorkerV8(Platform);
 	v8::Isolate::CreateParams Params;
 	Params.array_buffer_allocator = v8::ArrayBuffer::Allocator::NewDefaultAllocator();
 	v8::Isolate* I = v8::Isolate::New(Params);

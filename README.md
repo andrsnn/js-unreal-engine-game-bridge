@@ -68,9 +68,6 @@ The pieces:
 
 1. Make an Unreal 5.8 C++ project to host games. Add [Puerts](https://github.com/Tencent/puerts) and
    this repository as plugins (`Plugins/Puerts`, `Plugins/JsGameBridge`).
-
-   The package command uses a host project named `JsgbHost`.
-
 2. Run the browser setup once, before the first build. The build stops and tells you to run it if you
    haven't:
 
@@ -101,6 +98,8 @@ The pieces:
 6. Run `npm install` in the game's own folder. The bridge uses the game's Vite for the browser side,
    and the game's Playwright for the conformance test.
 7. Install FFmpeg if you want side-by-side films from the conformance test.
+8. To run a game's JavaScript on its own thread, add `--js-thread`: `npm run unreal -- my-game --js-thread`.
+   The first run patches Puerts (`Patches/puerts-thread-safe.patch`) and rebuilds the editor by itself.
 
 ## Port a game
 

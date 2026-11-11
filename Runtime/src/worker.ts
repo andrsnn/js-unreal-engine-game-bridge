@@ -70,7 +70,7 @@ export class UnrealWorker {
         scope.self = scope; scope.location = new g.URL(url.startsWith('blob:') ? 'http://localhost/worker.js' : url, 'http://localhost/'); scope.navigator = g.navigator;
         scope.importScripts = (...urls: string[]) => { for (const u of urls) { const b = host.readFile(resolveAssetPath(u)); if (b) new Function('self', new g.TextDecoder().decode(b))(scope); } };
         const run = new Function('self', 'globalThis', 'postMessage', 'addEventListener', 'removeEventListener', 'close', 'importScripts',
-          `let onmessage = null;\n${text}\n;return () => onmessage;`);
+          `let onmessage = null; const WorkerGlobalScope = {[Symbol.hasInstance]: o => o === self}, DedicatedWorkerGlobalScope = WorkerGlobalScope;\n${text}\n;return () => onmessage;`);
         const handler = run(scope, scope, (d: unknown) => scope.postMessage(d), (t: string, f: Listener) => scope.addEventListener(t, f), (t: string, f: Listener) => scope.removeEventListener(t, f), () => scope.close(), scope.importScripts);
         const original = scope.dispatch.bind(scope);
         scope.dispatch = (data: unknown) => { if (!scope.onmessage) { const h = handler(); if (h) scope.onmessage = h; } original(data); };

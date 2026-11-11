@@ -5,7 +5,8 @@
 // JSGB_ENGINE and JSGB_PROJECT.
 // --clean-host <folder> first makes a new, empty host project there (deleting what was there), links this checkout
 // and the Puerts plugin from PUERTS_DIR into its Plugins folder, and builds and tests that project instead.
-//   node Tools/ci.mjs [--clean-host <folder>] [suite arguments]
+// --host-only (with --clean-host) stops after making the host project: no build, no suite.
+//   node Tools/ci.mjs [--clean-host <folder> [--host-only]] [suite arguments]
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
@@ -19,6 +20,7 @@ if (hostAt >= 0) {
   const host = path.resolve(args[hostAt + 1]);
   args.splice(hostAt, 2);
   process.env.JSGB_PROJECT = cleanHost(host);
+  if (args.includes('--host-only')) { console.log(`ci: host project ready at ${process.env.JSGB_PROJECT}`); process.exit(0); }
 }
 const {engine, project} = settings();
 if (!engine || !project) { console.error('ci: set "engine" and "project" in jsgb.local.json (or JSGB_ENGINE and JSGB_PROJECT)'); process.exit(2); }

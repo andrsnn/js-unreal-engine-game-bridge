@@ -50,3 +50,4 @@ export async function prepareNativeShaders({engine, project, game, captured, cov
     console.log(`${missing.length} native shader materials prepared`);
   } finally {if (!exited) child.kill();}
 }
+

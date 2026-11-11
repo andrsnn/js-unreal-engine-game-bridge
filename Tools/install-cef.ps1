@@ -34,12 +34,17 @@ if (-not (Test-Path $Archive)) {
 $Got = (Get-FileHash -Algorithm SHA1 $Archive).Hash.ToLower()
 if ($Got -ne $Sha1) { throw "SHA1 $Got does not match $Sha1" }
 $Src = Join-Path $Work $Name
-if (-not (Test-Path $Src)) { & tar.exe -xjf $Archive -C $Work; if ($LASTEXITCODE -ne 0) { throw "extract failed" } }
+# Windows' own tar (bsdtar reads .tar.bz2 by itself); Git for Windows puts a GNU tar earlier on PATH that needs bzip2
+# and reads "C:" as a remote host.
+$Tar = Join-Path $env:SystemRoot 'System32\tar.exe'
+if (-not (Test-Path $Src)) { & $Tar -xjf $Archive -C $Work; if ($LASTEXITCODE -ne 0) { if (Test-Path $Src) { Remove-Item -Recurse -Force $Src }; throw "extract failed" } }
 
-# libcef_dll_wrapper with the DLL C runtime (/MD), as Unreal builds.
+# libcef_dll_wrapper with the DLL C runtime (/MD), as Unreal builds. NINJA_JOBS caps the compile jobs (default 4, so
+# the build fits beside other work on a 32 GB laptop).
+$Jobs = if ($env:NINJA_JOBS) { [int]$env:NINJA_JOBS } else { 4 }
 $Build = Join-Path $Work "build-$Major"
 New-Item -ItemType Directory -Force $Build | Out-Null
-$cmd = "call `"$VsVars`" >nul && cd /d `"$Build`" && cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DUSE_SANDBOX=OFF -DCEF_RUNTIME_LIBRARY_FLAG=/MD `"$Src`" && ninja libcef_dll_wrapper"
+$cmd = "call `"$VsVars`" >nul && cd /d `"$Build`" && cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DUSE_SANDBOX=OFF -DCEF_RUNTIME_LIBRARY_FLAG=/MD `"$Src`" && ninja -j $Jobs libcef_dll_wrapper"
 & cmd.exe /c $cmd
 if ($LASTEXITCODE -ne 0) { throw "libcef_dll_wrapper build failed" }
 

@@ -37,6 +37,8 @@ g.postMessage = (data: unknown) => {
 };
 g.close = () => native.close();
 g.self = g;
+// `self instanceof WorkerGlobalScope` is how code tells a worker from the page (Hard Burn's battle worker checks it).
+g.WorkerGlobalScope = g.DedicatedWorkerGlobalScope = class WorkerGlobalScope { static [Symbol.hasInstance](o: unknown) { return o === g; } };
 g.location = new g.URL('http://localhost/worker.js');
 g.navigator ??= {userAgent: 'JsGameBridge-Unreal', language: 'en-US', hardwareConcurrency: 8};
 g.performance ??= {};

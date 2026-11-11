@@ -38,7 +38,8 @@ export function publishUI(intervalMs = 100) {
   const html = `<html${attrs}><head>${headCss ? `<style data-jsgb-head>${headCss}</style>` : ''}</head>${body.outerHTML}</html>`;
   // The game's own origin is http://localhost/; the overlay loads files from the host's origin, so
   // absolute links to the game origin (new URL(path, document.baseURI)) become root-relative.
-  if (html !== last) { last = html; out.publish(html.replaceAll('http://localhost/', '/')); }
+  // Blob URLs live in the game's JavaScript; the host serves their shared copies at /bridge/blob/<name>.
+  if (html !== last) { last = html; out.publish(html.replaceAll('http://localhost/', '/').replaceAll('"blob:', '"/bridge/blob/')); }
   dirty = false;
 }
 

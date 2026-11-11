@@ -14,7 +14,7 @@ import './text';
 import {input} from './input';
 import {publishUI, uiInput, clickElement, findElement} from './ui';
 import {lastFrame, post} from './renderer';
-import {exportFrame, describeScene, emitEvent, objectById} from './sceneExport';
+import {exportFrame, describeScene, emitEvent, objectById, exportStats} from './sceneExport';
 import {cameraFrameStart, cameraFrameEnd} from './cameraRig';
 
 const g = globalThis as Record<string, any>;
@@ -62,7 +62,7 @@ g.__jsgb = {
   input, ui: uiInput, publish: () => publishUI(0), viewport: setViewport, emit: emitEvent,
   click: clickElement, find: (what: string) => !!findElement(what),
   key: (code: string, how = 'press') => { if (how !== 'up') input.key('keydown', code); if (how !== 'down') input.key('keyup', code); return code; },
-  pendingTimers, lastFrame, post, describeScene, objectById,
+  pendingTimers, lastFrame, post, describeScene, objectById, exportStats,
   get frames() { return frames; },
   get booted() { return booted; },
   get bootError() { return bootError; },

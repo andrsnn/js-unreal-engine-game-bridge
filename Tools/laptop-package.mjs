@@ -1,8 +1,21 @@
 #!/usr/bin/env node
-// Build a playable package with automatic shader preparation.
+// Builds the play package for another PC from the latest game sources, smoke-tests it on this PC, then copies what
+// changed to the other PC. Nothing runs on the other PC except the copy: it is someone's machine to play on.
+//   node Tools/laptop-package.mjs [--to <ssh-host>] [--copy-only] [--host] [--no-capture] [--games hardburn,unlit,saltblade] [--no-smoke] [--shortcuts]
+//     [--pin saltblade=e76ad2b,...] [--out C:/JsgbPackage/JsGameBridge] [--config Development|Shipping] [--project <dir>]
+// --config Shipping packages the host as a Shipping build (no console, no engine log file).
+// --pin builds a game from one of its commits instead of its working copy: the commit is exported with git archive
+// next to the package (the game's repository isn't touched) and uses the repository's node_modules.
+// --host packages the Unreal host again (after a change to the plugin's C++ or the engine plugins). Before that, an
+// editor plays each three.js game through the "captureScripts" in its Games/<game>.json and saves every shader material
+// it generates, so the package cooks them (--no-capture skips this). It needs the
+// packaging project (--project, default F:/JsgbPackage/project) with the plugins linked into its Plugins folder.
+// --to <ssh host> copies the package to C:\JsgbPackage\JsGameBridge on that Windows PC, only the files that changed
+// since the last copy; --shortcuts also makes one desktop shortcut per game there.
 import fs from 'node:fs';
 import path from 'node:path';
-import {spawnSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {spawn, spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {build, loadGame, readJson, settings} from './jsgb.mjs';
 import {prepareShaders} from './prepare-shaders.mjs';
@@ -13,18 +26,31 @@ const bridge = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
 const flag = (name, fallback) => { const i = args.indexOf(name); return i >= 0 ? args[i + 1] : fallback; };
 const has = name => args.includes(name);
-if (has('--help')) { console.log('node Tools/laptop-package.mjs --games <name> [--game-config game.json] [--out folder] [--project folder] [--host] [--no-smoke]'); process.exit(0); }
-const out = path.resolve(flag('--out', settings().package ?? path.join(settings().builds, 'package')));
-const project = path.resolve(flag('--project', settings().packageProject ?? path.dirname(settings().project ?? 'JsgbHost.uproject')));
+const out = path.resolve(flag('--out', settings().package ?? 'C:/JsgbPackage/JsGameBridge'));
+const project = path.resolve(flag('--project', settings().packageProject ?? 'F:/JsgbPackage/project'));
+const remote = flag('--to');
+const remoteDir = 'C:\\JsgbPackage\\JsGameBridge';
 const log = t => console.log(`[package ${new Date().toTimeString().slice(0, 8)}] ${t}`);
 
-const selected = flag('--games');
-if (!selected) throw Error('Choose your game with --games <name>; pass --game-config <file> to use a config file.');
-const games = selected.split(',');
+// Each game: the launcher name, and the host flags it starts with. Three.js games run their JavaScript on its own thread.
+// Games start with DLSS off: on the RTX 5080 laptop the driver keeps the GPU at 330-550 MHz (power state P5) most of the
+// time while DLSS runs, and about one frame in ten then takes 17 to 40 ms. F6 turns DLSS on.
+const GAMES = {
+  hardburn: {name: 'Hard Burn', flags: ['-JsgbJsThread']},
+  unlit: {name: 'Unlit Worlds', flags: ['-JsgbJsThread']},
+  saltblade: {name: 'Saltblade', flags: []},
+  // The life sim: Lumen keeps 0.9 of three.js's ambient light, the UI overlay paints on the CPU (Games/lifesim.json),
+  // TSR at full resolution (the host's default FXAA left its dithered hair cards as sparse strings and noisy portraits),
+  // no FPS readout.
+  lifesim: {name: 'Life sim', flags: ['-JsgbLumenAmbient=0.9', '-nocefaccelpaint', '-JsgbTSR=100'], hud: false},
+};
+const config = flag('--config', 'Development');
+if (!/^(Development|Shipping|Test)$/.test(config)) throw Error('--config is Development, Shipping or Test');
+const games = flag('--games', Object.keys(GAMES).join(',')).split(',');
 if (flag('--game-config') && games.length !== 1) throw Error('--game-config selects one game; use --games with one game name.');
 const pins = Object.fromEntries((flag('--pin', '') || '').split(',').filter(Boolean).map(p => p.split('=')));
 // Windows' own tar: a GNU tar earlier on the PATH (Git's) reads "C:" in a path as a remote host.
-const winTar = process.platform === 'win32' ? path.join(process.env.SystemRoot ?? path.join(process.env.SystemDrive ?? '', 'Windows'), 'System32', 'tar.exe') : 'tar';
+const winTar = process.platform === 'win32' ? path.join(process.env.SystemRoot ?? 'C:/Windows', 'System32', 'tar.exe') : 'tar';
 // A game as Games/<id>.json describes it, or its pinned commit exported to <out>/../sources/<id>-<commit>, described by a
 // copy of its Games/<id>.json next to it (the page build loads the game from that file).
 function gameFor(id) {
@@ -34,14 +60,34 @@ function gameFor(id) {
   if (!commit) throw Error(`${id}: no commit ${pins[id]} in ${game.repo}`);
   const dir = path.join(path.dirname(out), 'sources', `${id}-${commit}`);
   if (!fs.existsSync(path.join(dir, '.jsgb-exported'))) {
-    log(`${id}: exporting ${commit} to ${dir}`);
-    fs.rmSync(dir, {recursive: true, force: true});
-    fs.mkdirSync(dir, {recursive: true});
-    const tar = path.join(dir, '..', `${id}-${commit}.tar`);
-    const r = spawnSync('git', ['-C', game.repo, 'archive', '--format=tar', '-o', tar, commit], {stdio: 'inherit'});
-    if (r.status !== 0 || spawnSync(winTar, ['-xf', tar, '-C', dir], {stdio: 'inherit'}).status !== 0) throw Error(`${id}: exporting ${commit} failed`);
-    fs.rmSync(tar);
-    if (fs.existsSync(path.join(game.repo, 'node_modules'))) fs.symlinkSync(path.join(game.repo, 'node_modules'), path.join(dir, 'node_modules'), 'junction');
+    const tar = path.join(dir, '..', `${id}-${commit}.tar`), sources = path.dirname(dir);
+    const extract = paths => {
+      const r = spawnSync('git', ['-C', game.repo, 'archive', '--format=tar', '-o', tar, commit, ...paths], {stdio: 'inherit'});
+      if (r.status !== 0 || spawnSync(winTar, ['-xf', tar, '-C', dir], {stdio: 'inherit'}).status !== 0) throw Error(`${id}: exporting ${commit} failed`);
+      fs.rmSync(tar);
+    };
+    // The newest earlier export of this game is moved here and brought to this commit: only the files that differ are
+    // written (a game with 20 GB of models takes 20 minutes to export whole).
+    const earlier = !fs.existsSync(sources) ? null : fs.readdirSync(sources).filter(n => n.startsWith(id + '-') && fs.existsSync(path.join(sources, n, '.jsgb-exported')))
+      .sort((a, b) => fs.statSync(path.join(sources, b, '.jsgb-exported')).mtimeMs - fs.statSync(path.join(sources, a, '.jsgb-exported')).mtimeMs)[0];
+    const from = earlier ? fs.readFileSync(path.join(sources, earlier, '.jsgb-exported'), 'utf8').trim() : null;
+    const diff = from ? spawnSync('git', ['-C', game.repo, 'diff', '--name-status', '--no-renames', '-z', from, commit], {encoding: 'utf8', maxBuffer: 1 << 28}) : null;
+    if (diff?.status === 0) {
+      const fields = diff.stdout.split('\0').filter(Boolean), changed = [], gone = [];
+      for (let i = 0; i + 1 < fields.length; i += 2) (fields[i] === 'D' ? gone : changed).push(fields[i + 1]);
+      log(`${id}: bringing the export of ${from} to ${commit}: ${changed.length} files written, ${gone.length} removed`);
+      fs.rmSync(dir, {recursive: true, force: true});
+      fs.renameSync(path.join(sources, earlier), dir);
+      fs.rmSync(path.join(dir, '.jsgb-exported'));
+      for (const f of gone) fs.rmSync(path.join(dir, f), {force: true});
+      for (let i = 0; i < changed.length; i += 100) extract(changed.slice(i, i + 100));
+    } else {
+      log(`${id}: exporting ${commit} to ${dir}`);
+      fs.rmSync(dir, {recursive: true, force: true});
+      fs.mkdirSync(dir, {recursive: true});
+      extract([]);
+    }
+    if (fs.existsSync(path.join(game.repo, 'node_modules')) && !fs.existsSync(path.join(dir, 'node_modules'))) fs.symlinkSync(path.join(game.repo, 'node_modules'), path.join(dir, 'node_modules'), 'junction');
     fs.writeFileSync(path.join(dir, '.jsgb-exported'), commit);
   }
   const pinned = spawnSync('git', ['-C', game.repo, 'rev-parse', commit], {encoding: 'utf8'}).stdout.trim();
@@ -60,6 +106,13 @@ function mirror(from, to) {
 const copy = (from, to) => { fs.mkdirSync(path.dirname(to), {recursive: true}); fs.copyFileSync(from, to); };
 
 fs.mkdirSync(out, {recursive: true});
+// --copy-only: copy the package as it is (already built and smoke-tested) to the other PC.
+if (has('--copy-only')) {
+  if (!remote) throw Error('--copy-only needs --to <ssh host>');
+  await sync(remote);
+  log(`done: ${out}`);
+  process.exit(0);
+}
 // Each game is built once, from its repository as it is now. The captures play that build and the package ships it, so
 // the cooked materials are the ones the shipped build asks for even while the game keeps changing.
 const built = {};
@@ -105,7 +158,7 @@ if (rebuildHost) {
   // Puerts' build rules copy its scripts into the project's Content folder from more than one rules instance at once,
   // which sometimes fails with "being used by another process". A second attempt finds the files already copied.
   let r;
-  for (let attempt = 1; attempt <= 2 && !(r?.status === 0); attempt++) r = spawnSync('cmd', ['/c', uat, 'BuildCookRun', `-project=${path.join(project, 'JsgbHost.uproject')}`, '-platform=Win64', '-clientconfig=Development',
+  for (let attempt = 1; attempt <= 2 && !(r?.status === 0); attempt++) r = spawnSync('cmd', ['/c', uat, 'BuildCookRun', `-project=${path.join(project, 'JsgbHost.uproject')}`, '-platform=Win64', `-clientconfig=${config}`,
     '-build', '-cook', '-stage', '-pak', '-iostore', '-archive', `-archivedirectory=${path.join(out, 'host')}`, '-map=/Engine/Maps/Entry', '-noP4', '-utf8output', '-unattended'],
     {stdio: 'inherit'});
   if (r.status !== 0 || !fs.existsSync(hostExe)) throw Error(`packaging the host failed (exit ${r.status})`);
@@ -134,15 +187,17 @@ for (const id of games) {
     mirror(path.join(game.out, 'jsgb-store'), path.join(dest, 'jsgb-store'));
     copy(path.join(game.repo, game.index ?? 'index.html'), path.join(dest, game.index ?? 'index.html'));
     pub.bundle = bundle;
-    pub.publicRoots = ['public', '.'];
+    // Extra public roots that are absolute paths stay as they are (lifesim: the player's Documents/Lifesim, whose
+    // Mods folder the creator reads its skins, make-up and eye colours from).
+    pub.publicRoots = ['public', '.', ...(game.public ?? []).slice(1).filter(r => path.isAbsolute(r))];
   }
   fs.writeFileSync(path.join(dest, 'publication.json'), JSON.stringify(pub, null, 1));
-  const name = game.title ?? id, flags = pub.page ? [] : ['-JsgbJsThread'];
+  const {name, flags, hud = true} = GAMES[id] ?? {name: game.title ?? id, flags: []};
   fs.writeFileSync(path.join(out, `Play ${name}.cmd`), [
     '@echo off',
     `rem ${name} in Unreal Engine through JsGameBridge. F6 switches the DLSS mode, F7 Frame Generation (off, 2x, 3x, 4x).`,
     'cd /d "%~dp0"',
-    `start "" "%~dp0host\\Windows\\JsgbHost.exe" "-JsgbGame=%~dp0games\\${id}" -windowed -ResX=1920 -ResY=1080 -JsgbHud -JsgbDlssKeys -JsgbJitter ${flags.join(' ')} -ini:Engine:[/Script/Engine.UserInterfaceSettings]:bAllowHighDPIInGameMode=True -log=jsgb-${id}.log %*`,
+    `start "" "%~dp0host\\Windows\\JsgbHost.exe" "-JsgbGame=%~dp0games\\${id}" -windowed -ResX=1920 -ResY=1080 ${hud ? '-JsgbHud ' : ''}-JsgbDlssKeys -JsgbJitter ${flags.join(' ')} -ini:Engine:[/Script/Engine.UserInterfaceSettings]:bAllowHighDPIInGameMode=True -log=jsgb-${id}.log %*`,
     ''].join('\r\n'));
   log(`${id}: ${pub.sourceCommit.slice(0, 8)}${pub.sourceDirty ? ' (with uncommitted changes)' : ''}`);
 }
@@ -152,7 +207,7 @@ copy(path.join(bridge, 'Tools/laptop-smoke.ps1'), path.join(out, 'smoke.ps1'));
 // The smoke test runs here, on the package as built, before anything is copied.
 if (!has('--no-smoke')) {
   const smoke = spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(out, 'smoke.ps1'),
-    '-Games', games.map(id => `${id}=${gameFor(id).title ?? id}`).join(';')], {encoding: 'utf8'});
+    '-Games', games.map(id => `${id}=${GAMES[id]?.name ?? id}`).join(';')], {encoding: 'utf8'});
   const lines = smoke.stdout.split('\n').map(l => l.trim()).filter(l => / (PASS|FAIL)/.test(l));
   for (const l of lines) log(`smoke: ${l}`);
   // The smoke runs recorded every pipeline state the games drew with (-logPSO). With the cook's stable shader keys they
@@ -174,6 +229,7 @@ if (!has('--no-smoke')) {
   }
   if (lines.length !== games.length || lines.some(l => / FAIL/.test(l))) throw Error(`smoke test failed, nothing copied:\n${smoke.stdout}${smoke.stderr}`);
 }
+if (remote) await sync(remote);
 log(`done: ${out}`);
 
 // Lumen mode's override models (Games/<game>.json "overrides") are Unreal assets under /Game/Fidelity, imported into the
@@ -193,4 +249,83 @@ function linkFidelityContent() {
   addTo(path.join(project, 'Config/DefaultGame.ini'), '[/Script/UnrealEd.ProjectPackagingSettings]', '+DirectoriesToAlwaysCook=(Path="/Game/Fidelity")');
   addTo(path.join(project, 'Config/DefaultEngine.ini'), '[/Script/Engine.RendererSettings]', 'r.GenerateMeshDistanceFields=True');
   log(`fidelity models from ${source} cook into the host`);
+}
+
+// SHA-256 of a file of any size, read in 8 MB pieces.
+function sha256File(file) {
+  const hash = createHash('sha256'), buf = Buffer.alloc(8 << 20), fd = fs.openSync(file, 'r');
+  for (let n; (n = fs.readSync(fd, buf, 0, buf.length, null)) > 0;) hash.update(buf.subarray(0, n));
+  fs.closeSync(fd);
+  return hash.digest('hex').toUpperCase();
+}
+
+// Copies the package to the other PC. Game files go when their size or time changed. The host (executable, paks,
+// shader libraries) only works as a matching set, so when any host file changed the whole host goes to a staging
+// folder, every file is checked by SHA-256 there, and only then does it replace the old host. A game running there
+// is never closed: while one runs, the new host stays staged and the copy reports it.
+async function sync(host) {
+  const manifestFile = path.join(out, `.synced-${host}.json`);
+  const before = fs.existsSync(manifestFile) ? JSON.parse(fs.readFileSync(manifestFile, 'utf8')) : {};
+  const now = {};
+  const walk = dir => {
+    for (const entry of fs.readdirSync(path.join(out, dir), {withFileTypes: true})) {
+      const rel = dir ? `${dir}/${entry.name}` : entry.name;
+      if (entry.name.startsWith('.synced-') || rel === 'host/Windows/JsgbHost/Saved' || rel === 'smoke') continue;
+      if (entry.isDirectory()) walk(rel);
+      else { const s = fs.statSync(path.join(out, rel)); now[rel] = `${s.size}:${Math.round(s.mtimeMs)}`; }
+    }
+  };
+  walk('');
+  const isHost = f => f.startsWith('host/');
+  const hostFiles = Object.keys(now).filter(isHost);
+  const hostChanged = has('--host') || Object.keys(now).some(f => isHost(f) && before[f] !== now[f]) || Object.keys(before).some(f => isHost(f) && !(f in now));
+  const changed = Object.keys(now).filter(f => !isHost(f) && before[f] !== now[f]);
+  const gone = Object.keys(before).filter(f => !isHost(f) && !(f in now));
+  const ssh = (command, input) => spawnSync('ssh', ['-o', 'BatchMode=yes', host, command], {encoding: 'utf8', input, maxBuffer: 64 << 20});
+  const ps = script => ssh('powershell -NoProfile -Command -', script);
+  const tarTo = (files, dest) => new Promise((resolve, reject) => {
+    const list = path.join(out, `.synced-${host}-list.txt`);
+    fs.writeFileSync(list, files.join('\n') + '\n');
+    // Windows' own tar on both ends; the list holds paths relative to the package folder.
+    const tar = spawn('C:/Windows/System32/tar.exe', ['-cf', '-', '-C', out, '-T', list]);
+    const pipe = spawn('ssh', ['-o', 'BatchMode=yes', host, `tar -xf - -C "${dest}"`], {stdio: ['pipe', 'inherit', 'inherit']});
+    tar.stdout.pipe(pipe.stdin);
+    tar.stderr.pipe(process.stderr);
+    pipe.on('close', code => { fs.rmSync(list, {force: true}); code === 0 ? resolve() : reject(Error(`copy to ${host} failed (exit ${code})`)); });
+  });
+  const stage = `${remoteDir}\\.stage`;
+  ps(`New-Item -ItemType Directory -Force '${remoteDir}' | Out-Null; Remove-Item -Recurse -Force '${stage}' -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force '${stage}' | Out-Null`);
+  if (hostChanged) {
+    log(`copying the whole host (${hostFiles.length} files) to ${host}:${stage}`);
+    await tarTo(hostFiles, stage);
+    // Every host file, checked by SHA-256 on the other PC.
+    const sums = {};
+    for (const f of hostFiles) sums[f.replaceAll('/', '\\')] = sha256File(path.join(out, f));
+    const check = ps(`$want = '${JSON.stringify(sums).replaceAll("'", "''")}' | ConvertFrom-Json; $bad = 0; ` +
+      `foreach ($p in $want.PSObject.Properties) { $f = Join-Path '${stage}' $p.Name; if (-not (Test-Path -LiteralPath $f) -or (Get-FileHash -Algorithm SHA256 -LiteralPath $f).Hash -ne $p.Value) { $bad++; if ($bad -le 5) { "mismatch: " + $p.Name } } }; "bad=$bad"`);
+    if (!/bad=0/.test(check.stdout)) throw Error(`the host copy on ${host} failed its checksum check: ${check.stdout.trim()} ${check.stderr.trim()}`);
+    log(`host checksums match on ${host} (${hostFiles.length} files)`);
+  }
+  if (hostChanged) {
+    // A running game holds the host's files open, so the rename fails and the new host stays staged.
+    const swap = ps(`$h = '${remoteDir}\\host'; if (Test-Path $h) { Rename-Item $h 'host.old' -ErrorAction Stop }; Move-Item '${stage}\\host' $h -ErrorAction Stop; ` +
+      `Remove-Item -Recurse -Force '${remoteDir}\\host.old' -ErrorAction SilentlyContinue; 'swapped'`);
+    if (!/swapped/.test(swap.stdout)) throw Error(`the new host is staged in ${host}:${stage} but a game there is using the old one; copy again once it's closed (${swap.stderr.trim()})`);
+  }
+  log(`copying ${changed.length} changed game files to ${host} (${gone.length} to delete)`);
+  if (changed.length) await tarTo(changed, remoteDir);
+  if (gone.length) {
+    const r = ps(gone.map(f => `Remove-Item -LiteralPath '${remoteDir}\\${f.replaceAll('/', '\\').replaceAll("'", "''")}' -Force -ErrorAction SilentlyContinue`).join('\n'));
+    if (r.status !== 0) log(`deleting old files on ${host} failed: ${r.stderr}`);
+  }
+  ps(`Remove-Item -Recurse -Force '${stage}' -ErrorAction SilentlyContinue`);
+  fs.writeFileSync(manifestFile, JSON.stringify(now));
+  if (!has('--shortcuts')) { log(`copied to ${host}:${remoteDir}`); return; }
+  // One shortcut per game on the desktop, named after the game.
+  const shortcuts = games.map(id => GAMES[id]?.name ?? id).map(name =>
+    `$s = (New-Object -ComObject WScript.Shell).CreateShortcut([Environment]::GetFolderPath('Desktop') + '\\${name} (Unreal).lnk'); ` +
+    `$s.TargetPath = '${remoteDir}\\Play ${name}.cmd'; $s.WorkingDirectory = '${remoteDir}'; $s.IconLocation = '${remoteDir}\\host\\Windows\\JsgbHost.exe,0'; $s.Save()`).join('\n');
+  const r = ps(shortcuts);
+  if (r.status !== 0) throw Error(`making the desktop shortcuts on ${host} failed: ${r.stderr}`);
+  log(`copied to ${host}:${remoteDir}; desktop shortcuts: ${games.map(id => `${GAMES[id]?.name ?? id} (Unreal)`).join(', ')}`);
 }
